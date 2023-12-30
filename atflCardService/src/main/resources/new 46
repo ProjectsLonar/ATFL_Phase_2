@@ -1,0 +1,87 @@
+{
+  "paymentRequest": {
+    "groupInformation": {
+      "clientId": "VODFONEKBL",
+      "legalEntity": "IN",
+      "isBatchPayment": true,
+      "isConsolidateBatch": true,
+      "source": "CBX"
+    },
+    "paymentHeader": {
+      "controlTotal": 1,
+      "controlSum": 10,
+      "paymentReference": "Check Batch",
+      "methodOfPayment": "Check Batch",
+      "effectiveDate": "2020-10-22T00:00:00.0+05:30",
+      "effectiveTime": "2020-10-22T00:00:00.0+05:30",
+      "sendingAccountDetails": {
+        "currency": "INR",
+        "accountId": "41"
+      }
+    },
+    "paymentDetails": [
+      {
+        "effectiveDate": "2020-10-22T00:00:00.0+05:30",
+        "effectiveTime": "2020-10-22T00:00:00.0+05:30",
+        "instrumentDate": "2020-12-05T00:00:00.0+05:30",
+        "paymentReference": "Transaction Reference No",
+        "txnAmount": {
+          "value": 10,
+          "currency": "INR"
+        },
+        "debitAmount": {
+          "value": 10,
+          "currency": "INR"
+        },
+        "chargeType": "OUR",
+        “instReserveField1”:””,
+        “instReserveField2”:””,
+        “instReserveField3”:””,
+        “instReserveField4”:””,			
+        "receiverDetails": {
+          "receiverCode": "REGISTERB3",
+          "receiverName": "Registered Beneficiary 3",
+          "accountDetails": {},
+          "address": {
+            "addressLine1": "Registered Bene 3 Address Line 1",
+            "addressLine2": "Registered Bene 3 Address Line 2",
+            "addressLine3": "Registered Bene 3 Address Line 3"
+          }
+        },
+        "receiverBankDetails": {},
+        "referenceInformation": {}, 
+        "banktobankInfo": {
+            "line1": "ACC/Bank to Bank information1",
+            "line2": "REC/Bank to Bank information2",
+            "line3": "ACC/Bank to Bank information3",
+            "line4": "ACC/Bank to Bank information4
+        },        
+        "enrichmentDetails": {
+          "profileName": "Interbankpkg",
+          "singleSet": {
+              "PONMBR": "Ponumb1",
+              "PAYAMT": 67
+          },
+          "multiSet": [
+            {
+              "EPKG1": "Invoice Detail 1"
+            },
+            {
+              "EPKG1": "Invoice Detail 1"
+            }
+          ]
+        },
+        "payoutDetails": {
+          "deliveryMode": "0",
+          "paymentLocation": "MUMBAI",
+          "authorisePersonDetail": {}
+        },
+        "instrumentNumber": "2028",
+        "singatoryCode1": "00003",
+        "singatoryCode2": "00002",
+        "singatoryCode3": "00003",
+        "instPrintBranch": "MUMBAI"
+      }
+    ]
+  }
+} 
