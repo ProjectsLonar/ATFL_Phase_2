@@ -15,7 +15,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.users.usersmanagement.common.DateTimeClass;
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.dao.AtflMastUsersDao;
 import com.users.usersmanagement.dao.LtMastOutletDao;
@@ -29,6 +29,7 @@ import com.users.usersmanagement.model.LtMastOrganisations;
 //import com.users.usersmanagement.model.LtMastOutlets;
 import com.users.usersmanagement.model.LtMastOutlets;
 import com.users.usersmanagement.model.LtMastOutletsChannel;
+import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastOutletsType;
 import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
@@ -38,9 +39,8 @@ import com.users.usersmanagement.model.RoleMaster;
 import com.users.usersmanagement.model.SiebelMessage;
 import com.users.usersmanagement.model.SiebelMessageRequest;
 import com.users.usersmanagement.model.Status;
+import com.users.usersmanagement.repository.LtMastOutletDumpRepository;
 import com.users.usersmanagement.repository.LtMastOutletRepository;
-
-
 
 @Service
 @PropertySource(value = "classpath:queries/userMasterQueries.properties", ignoreResourceNotFound = true)
@@ -57,13 +57,16 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 
 	@Autowired
 	AtflMastUsersService ltMastUsersService;
-		
+
 	@Autowired
 	LtMastOutletRepository ltMastOutletRepository;
-	
+
+	@Autowired
+	LtMastOutletDumpRepository ltMastOutletDumpRepository;
+
 	@Autowired
 	private Environment env;
-	
+
 	@Override
 	public Status verifyOutlet(String outletCode, String distributorCrmCode, String userId)
 			throws ServiceException, IOException {
@@ -155,7 +158,8 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 
 			} else if (ltMastUser.getRecentSerachId() != null) {
 
-				LtMastUsers LtMastUser = ltMastOutletDao.getMastDataByOutletId(ltMastUser.getRecentSerachId().toString());
+				LtMastUsers LtMastUser = ltMastOutletDao
+						.getMastDataByOutletId(ltMastUser.getRecentSerachId().toString());
 
 				if (LtMastUser != null) {
 					status = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
@@ -171,121 +175,59 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 
 	@Override
 	public Status createOutlet(LtMastOutlets ltMastOutlets) throws ServiceException, IOException {
-	Status status = new Status();
-	LtMastOrganisations ltMastOrganisations = ltMastOutletDao.getOrganisationDetailsById(ltMastOutlets.getOrgId());
-	System.out.println("ltMastOrganisations"+ltMastOrganisations);
-	RelatedOrganization relatedOrganizationDetails =  new RelatedOrganization();
-	relatedOrganizationDetails.setIsPrimaryMVG("Y");
-	relatedOrganizationDetails.setOrganization(ltMastOrganisations.getOrganisationName());
-	
-	ListOfRelatedOrganization listOfRelatedOrganization = new ListOfRelatedOrganization();
-	listOfRelatedOrganization.setRelatedOrganization(relatedOrganizationDetails);
-	
-	BusinessAddress businessAddress = new BusinessAddress();
-	businessAddress.setAddressId("1");
-	businessAddress.setStreetAddress(ltMastOutlets.getAddress1());
-	businessAddress.setStreetAddress2(ltMastOutlets.getAddress2());
-	businessAddress.setCounty("");
-	businessAddress.setCounty("INDIA");
-	businessAddress.setCity(ltMastOutlets.getCity());
-	businessAddress.setState(ltMastOutlets.getState());
-	businessAddress.setPostalCode(ltMastOutlets.getPin_code());
-	businessAddress.setProvince("");
-	businessAddress.setIsPrimaryMVG("Y");
-	
-	ListOfBusinessAddress listOfBusinessAddress = new ListOfBusinessAddress();
-	listOfBusinessAddress.setListOfBusinessAddress(businessAddress);
-	
-	Account account = new Account();
-	
-	account.setAccountStatus(ltMastOutlets.getStatus());
-	account.setType(ltMastOutlets.getOutletType());
-	account.setAccountId("1");
-	account.setRuleAttribute2("add outlet channel");
-	account.setName(ltMastOutlets.getOutletName());
-	account.setaTTerritory(ltMastOutlets.getTerritory());
-	account.setLocation("need to add");
-	account.setListOfBusinessAddress(listOfBusinessAddress);
-	account.setListOfRelatedOrganization(listOfRelatedOrganization);
-	
-	ListOfOutletInterface listOfOutletInterface = new ListOfOutletInterface();
-	listOfOutletInterface.setAccount(account);
-	
-	SiebelMessage siebelMessage = new SiebelMessage();
-	siebelMessage.setIntObjectFormat("Siebel Hierarchical");
-	siebelMessage.setIntObjectName("Outlet Interface");
-	siebelMessage.setMessageId("");
-	siebelMessage.setMessageType("Integration Object");
-	siebelMessage.setListOfOutletInterface(listOfOutletInterface);
-	
-	SiebelMessageRequest SiebelMessageRequest = new SiebelMessageRequest();
-	SiebelMessageRequest.setSiebelMessage(siebelMessage);
-	
-	String apiUrl = env.getProperty("SiebelCreateOutletApi");
-	
-	URL url = new URL(apiUrl);
-	
-	 String username = "Lonar_Test";
-     String password = "Lonar123";
-     String credentials = username + ":" + password;
-	
-	HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-	connection.setRequestMethod("POST");
-	 connection.setDoOutput(true);
-	 connection.setRequestProperty("Content-Type", "application/json");
-     connection.setRequestProperty("Authorization", "Basic_Auth"+credentials);
-     
-     
-     ObjectMapper objectMapper = new ObjectMapper();
-     String jsonPayload = objectMapper.writeValueAsString(SiebelMessageRequest);
-    
-     System.out.println("jsonPayload"+jsonPayload);
-     try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
-         wr.writeBytes(jsonPayload);
-         wr.flush();
-     }
+		Status status = new Status();
 
-     // Get the HTTP response code
-     int responseCode = connection.getResponseCode();
-     System.out.println("Response Code: " + responseCode);
+		LtMastOutletsDump ltMastOutletsDump = new LtMastOutletsDump();
 
-     // Read the response
-     BufferedReader reader;
-     if (responseCode == HttpURLConnection.HTTP_OK) {
-         reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-     } else {
-         reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-     }
+		if (ltMastOutlets != null) {
 
-     // Read the response
-     String line;
-     StringBuilder response = new StringBuilder();
+			ltMastOutletsDump.setDistributorId(ltMastOutlets.getDistributorId());
+			ltMastOutletsDump.setOutletType(ltMastOutlets.getOutletType());
+			ltMastOutletsDump.setOutletName(ltMastOutlets.getOutletName());
+			if (ltMastOutlets.getProprietorName() != null) {
+				ltMastOutletsDump.setProprietorName(ltMastOutlets.getProprietorName());
+			}
+			ltMastOutletsDump.setAddress1(ltMastOutlets.getAddress1());
+			ltMastOutletsDump.setAddress2(ltMastOutlets.getAddress2());
+			ltMastOutletsDump.setLandmark(ltMastOutlets.getLandmark());
+			ltMastOutletsDump.setCountry("INDIA");
+			ltMastOutletsDump.setState(ltMastOutlets.getState());
+			ltMastOutletsDump.setCity(ltMastOutlets.getCity());
+			ltMastOutletsDump.setPin_code(ltMastOutlets.getPin_code());
 
-     while ((line = reader.readLine()) != null) {
-         response.append(line);
-     }
-     reader.close();
+			if (ltMastOutlets.getRegion() != null) {
+				ltMastOutletsDump.setRegion(ltMastOutlets.getRegion());
+			}
+			ltMastOutletsDump.setArea(ltMastOutlets.getArea());
+			ltMastOutletsDump.setTerritory(ltMastOutlets.getTerritory());
+			ltMastOutletsDump.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
+			ltMastOutletsDump.setStatus("DRAFT");
+			ltMastOutletsDump.setPriceList(ltMastOutlets.getPriceList());
+			ltMastOutletsDump.setOrgId(ltMastOutlets.getOrgId());
 
-     // Print the response
-     System.out.println("Response: " + response.toString());
+			ltMastOutletsDump.setCreatedBy(ltMastOutlets.getUserId());
+			ltMastOutletsDump.setLastUpdatedBy(ltMastOutlets.getUserId());
+			ltMastOutletsDump.setLastUpdateLogin(ltMastOutlets.getUserId());
+			ltMastOutletsDump.setCreationDate(DateTimeClass.getCurrentDateTime());
+			ltMastOutletsDump.setLastUpdateDate(DateTimeClass.getCurrentDateTime());
 
-     // Close the connection
-     connection.disconnect();
-     String outletCode = null;
-     LtMastOutlets outletDetails = ltMastOutletDao.getOutletByOutletCode(outletCode);
-     if(outletDetails !=null) {
-    	 status.setCode(INSERT_SUCCESSFULLY);
-    	 status.setData(outletDetails);
-    	 status.setMessage("INSERT_SUCCESSFULLY");
-     }
-     else {
-    	 status.setCode(INSERT_FAIL);
-    	 status.setMessage("INSERT_FAILY");
-     }
-	
-	return status;	
+			LtMastOutletsDump ltMastOutletsDumpupdated = ltMastOutletDumpRepository.save(ltMastOutletsDump);
+
+			if (ltMastOutletsDumpupdated != null) {
+				// send notification
+				status.setMessage("Send For approval.");
+				status.setData(ltMastOutletsDumpupdated);
+				status.setCode(INSERT_SUCCESSFULLY);
+			} else {
+				status.setMessage("INSERT_FAIL");
+				status.setData(null);
+				status.setCode(INSERT_FAIL);
+			}
+		}
+
+		return status;
 	}
-	
+
 	@Override
 	public Status getAllOutletType() throws ServiceException, IOException {
 		Status status = new Status();
@@ -300,7 +242,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		}
 		return status;
 	}
-	
+
 	@Override
 	public Status getAllOutletChannel() throws ServiceException, IOException {
 		Status status = new Status();
@@ -315,9 +257,9 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		}
 		return status;
 	}
-	
+
 	@Override
-	public Status getPriceListAgainstDistributor(String outletId )throws ServiceException, IOException {
+	public Status getPriceListAgainstDistributor(String outletId) throws ServiceException, IOException {
 		Status status = new Status();
 		List<LtMastPricelist> list = ltMastOutletDao.getPriceListAgainstDistributor(outletId);
 		if (list != null) {
@@ -329,5 +271,134 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			status.setMessage("RECORD NOT FOUND");
 		}
 		return status;
+	}
+
+	@Override
+	public Status getPendingAprrovalOutlet(RequestDto requestDto) throws ServiceException, IOException {
+		Status status = new Status();
+		List<LtMastOutletsDump> list = ltMastOutletDao.getPendingAprrovalOutlet(requestDto);
+		if (list != null) {
+			status.setCode(SUCCESS);
+			status.setMessage("RECORD FOUND SUCCESSFULLY");
+			status.setData(list);
+		} else {
+			status.setCode(FAIL);
+			status.setMessage("RECORD NOT FOUND");
+		}
+		return status;
+	}
+
+	@Override
+	public Status approveOutlet(LtMastOutletsDump ltMastOutletsDumps) throws ServiceException, IOException {
+		Status status = new Status();
+
+		//bring object from databse, change status, lastupdatedby,lastupdatedlogin and date  n save
+		LtMastOutletsDump ltMastOutletsDump = new LtMastOutletsDump();
+		
+			//	ltMastOutletDumpRepository.save(ltMastOutletsDumps)
+		  LtMastOrganisations ltMastOrganisations =
+		  ltMastOutletDao.getOrganisationDetailsById(ltMastOutletsDump.getOrgId());
+		  System.out.println("ltMastOrganisations"+ltMastOrganisations);
+		  RelatedOrganization relatedOrganizationDetails = new RelatedOrganization();
+		  relatedOrganizationDetails.setIsPrimaryMVG("Y");
+		  relatedOrganizationDetails.setOrganization(ltMastOrganisations.
+		  getOrganisationName());
+		  
+		  ListOfRelatedOrganization listOfRelatedOrganization = new
+		  ListOfRelatedOrganization();
+		  listOfRelatedOrganization.setRelatedOrganization(relatedOrganizationDetails);
+		  
+		  BusinessAddress businessAddress = new BusinessAddress();
+		  businessAddress.setAddressId("1");
+		  businessAddress.setStreetAddress(ltMastOutletsDump.getAddress1());
+		  businessAddress.setStreetAddress2(ltMastOutletsDump.getAddress2());
+		  businessAddress.setCounty("");
+		  businessAddress.setCounty("INDIA");
+		  businessAddress.setCity(ltMastOutletsDump.getCity());
+		  businessAddress.setState(ltMastOutletsDump.getState());
+		  businessAddress.setPostalCode(ltMastOutletsDump.getPin_code());
+		  businessAddress.setProvince("");
+		  businessAddress.setIsPrimaryMVG("Y");
+		  
+		  ListOfBusinessAddress listOfBusinessAddress = new ListOfBusinessAddress();
+		  listOfBusinessAddress.setListOfBusinessAddress(businessAddress);
+		  
+		  Account account = new Account();
+		  
+		  account.setAccountStatus("NEW");
+		  account.setType(ltMastOutletsDump.getOutletType()); account.setAccountId("1");
+		  account.setRuleAttribute2(ltMastOutletsDump.getOutletChannel());
+		  account.setName(ltMastOutletsDump.getOutletName());
+		  account.setaTTerritory(ltMastOutletsDump.getTerritory());
+		  account.setLocation("need to add");
+		  account.setListOfBusinessAddress(listOfBusinessAddress);
+		  account.setListOfRelatedOrganization(listOfRelatedOrganization);
+		  
+		  ListOfOutletInterface listOfOutletInterface = new ListOfOutletInterface();
+		  listOfOutletInterface.setAccount(account);
+		  
+		  SiebelMessage siebelMessage = new SiebelMessage();
+		  siebelMessage.setIntObjectFormat("Siebel Hierarchical");
+		  siebelMessage.setIntObjectName("Outlet Interface");
+		  siebelMessage.setMessageId("");
+		  siebelMessage.setMessageType("Integration Object");
+		  siebelMessage.setListOfOutletInterface(listOfOutletInterface);
+		  
+		  SiebelMessageRequest SiebelMessageRequest = new SiebelMessageRequest();
+		  SiebelMessageRequest.setSiebelMessage(siebelMessage);
+		  
+		  String apiUrl = env.getProperty("SiebelCreateOutletApi");
+		  
+		  URL url = new URL(apiUrl);
+		  
+		  String username = "Lonar_Test"; String password = "Lonar123"; String
+		  credentials = username + ":" + password;
+		  
+		  HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		  connection.setRequestMethod("POST"); connection.setDoOutput(true);
+		  connection.setRequestProperty("Content-Type", "application/json");
+		  connection.setRequestProperty("Authorization", "Basic_Auth"+credentials);
+		  
+		  
+		  ObjectMapper objectMapper = new ObjectMapper(); String jsonPayload =
+		  objectMapper.writeValueAsString(SiebelMessageRequest);
+		  
+		  System.out.println("jsonPayload"+jsonPayload); try (DataOutputStream wr = new
+		  DataOutputStream(connection.getOutputStream())) { wr.writeBytes(jsonPayload);
+		  wr.flush(); }
+		  
+		  // Get the HTTP response code 
+		  int responseCode = connection.getResponseCode(); System.out.println("Response Code: " + responseCode);
+		  
+		  // Read the response 
+		  BufferedReader reader; 
+		  if (responseCode ==  HttpURLConnection.HTTP_OK) {
+			  reader = new BufferedReader(new
+		  InputStreamReader(connection.getInputStream())); 
+			  } else { 
+				  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
+		  
+		  // Read the response 
+		  String line; 
+		  StringBuilder response = new
+		  StringBuilder();
+		  
+		  while ((line = reader.readLine()) != null) { response.append(line); }
+		  reader.close();
+		  
+		  // Print the response System.out.println("Response: " + response.toString());
+		  
+		  // Close the connection connection.disconnect(); 
+		  String outletCode = null;
+		  LtMastOutlets outletDetails =ltMastOutletDao.getOutletByOutletCode(outletCode); 
+		  if(outletDetails !=null) {
+		  status.setCode(INSERT_SUCCESSFULLY); 
+		  status.setData(outletDetails);
+		  status.setMessage("INSERT_SUCCESSFULLY");
+		  } else {
+		  status.setCode(INSERT_FAIL); 
+		  status.setMessage("INSERT_FAILY"); 
+		  }
+	return status;	 
 	}
 }

@@ -17,6 +17,7 @@ import com.users.usersmanagement.model.CodeMaster;
 import com.users.usersmanagement.model.LtMastOrganisations;
 import com.users.usersmanagement.model.LtMastOutlets;
 import com.users.usersmanagement.model.LtMastOutletsChannel;
+import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastOutletsType;
 import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
@@ -171,5 +172,30 @@ System.out.println("list"+list);
 		}
 
 		return null;
+	}
+	
+	@Override
+	public List<LtMastOutletsDump> getPendingAprrovalOutlet(RequestDto requestDto)throws ServiceException, IOException{
+		String query = env.getProperty("getPendingAprrovalOutlet");
+		if (requestDto.getLimit() == 0) {
+			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+
+		String searchField = null;
+		if (requestDto.getSearchField() != null) {
+			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+		}
+
+		List<LtMastOutletsDump> ltMastOutletslist = jdbcTemplate.query(query,
+				new Object[] { requestDto.getDistributorId(), requestDto.getOrgId(),requestDto.getPrimaryMobile(),requestDto.getOutletName(),
+						searchField, requestDto.getLimit(), requestDto.getOffset() },
+				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+
+		if (!ltMastOutletslist.isEmpty()) {
+			return ltMastOutletslist;
+		}
+
+		return null;
+
 	}
 }

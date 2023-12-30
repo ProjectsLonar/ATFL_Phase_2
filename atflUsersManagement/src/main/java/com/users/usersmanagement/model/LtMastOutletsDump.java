@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -12,12 +13,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Entity
-@Table(name = "lt_mast_outlets_v")
+@Table(name = "lt_mast_outlets_dump")
 @JsonInclude(Include.NON_NULL)
-public class LtMastOutlets extends BaseClass {
+public class LtMastOutletsDump extends BaseClass {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_MAST_OUTLET_DUMP_SEQ")
+	@SequenceGenerator(name = "LT_MAST_OUTLET_DUMP_SEQ", sequenceName = "LT_MAST_OUTLET_DUMP_SEQ", allocationSize = 1)
 	@Column(name = "outlet_id")
 	String outletId;
 
@@ -99,6 +102,9 @@ public class LtMastOutlets extends BaseClass {
 	@Column(name = "PRICE_LIST")
 	String priceList;
 	
+	@Column(name = "OUTLET_CHANNEL")
+	String outletChannel;
+	
 	@Transient
 	String distributorCode;
 	
@@ -125,9 +131,6 @@ public class LtMastOutlets extends BaseClass {
 	
 	@Transient
 	String outletAddress;
-	
-	@Transient
-	String userId;
 
 	public String getPosition() {
 		return position;
@@ -410,9 +413,8 @@ public class LtMastOutlets extends BaseClass {
 	public void setDistributorStatus(String distributorStatus) {
 		this.distributorStatus = distributorStatus;
 	}
-	
-	
 
+	
 	public String getPriceList() {
 		return priceList;
 	}
@@ -421,17 +423,18 @@ public class LtMastOutlets extends BaseClass {
 		this.priceList = priceList;
 	}
 
-	public String getUserId() {
-		return userId;
+	
+	public String getOutletChannel() {
+		return outletChannel;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setOutletChannel(String outletChannel) {
+		this.outletChannel = outletChannel;
 	}
 
 	@Override
 	public String toString() {
-		return "LtMastOutlets [outletId=" + outletId + ", orgId=" + orgId + ", outletCode=" + outletCode
+		return "LtMastOutletsDump [outletId=" + outletId + ", orgId=" + orgId + ", outletCode=" + outletCode
 				+ ", outletType=" + outletType + ", outletName=" + outletName + ", distributorId=" + distributorId
 				+ ", proprietorName=" + proprietorName + ", address1=" + address1 + ", address2=" + address2
 				+ ", address3=" + address3 + ", address4=" + address4 + ", landmark=" + landmark + ", country="
@@ -439,12 +442,13 @@ public class LtMastOutlets extends BaseClass {
 				+ ", area=" + area + ", territory=" + territory + ", outletGstn=" + outletGstn + ", outletPan="
 				+ outletPan + ", licenceNo=" + licenceNo + ", positionsId=" + positionsId + ", phone=" + phone
 				+ ", email=" + email + ", primaryMobile=" + primaryMobile + ", priceList=" + priceList
-				+ ", distributorCode=" + distributorCode + ", distributorCrmCode=" + distributorCrmCode
-				+ ", distributorStatus=" + distributorStatus + ", distributorName=" + distributorName + ", employeeId="
-				+ employeeId + ", empName=" + empName + ", employeeCode=" + employeeCode + ", position=" + position
-				+ ", outletAddress=" + outletAddress + ", userId=" + userId + "]";
+				+ ", outletChannel=" + outletChannel + ", distributorCode=" + distributorCode + ", distributorCrmCode="
+				+ distributorCrmCode + ", distributorStatus=" + distributorStatus + ", distributorName="
+				+ distributorName + ", employeeId=" + employeeId + ", empName=" + empName + ", employeeCode="
+				+ employeeCode + ", position=" + position + ", outletAddress=" + outletAddress + "]";
 	}
 
 	
 }
+
 

@@ -11,6 +11,7 @@ public class RequestDto {
 	private String outletName;
 	private String salesPersonId;
 	private String userId;
+	private String primaryMobile;
 	
 	//Added by Nikhil
 	private String userType;
@@ -115,5 +116,15 @@ public class RequestDto {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+
+	public String getPrimaryMobile() {
+		return primaryMobile;
+	}
+
+	public void setPrimaryMobile(String primaryMobile) {
+		this.primaryMobile = primaryMobile;
+	}
+	
+	
 
 }

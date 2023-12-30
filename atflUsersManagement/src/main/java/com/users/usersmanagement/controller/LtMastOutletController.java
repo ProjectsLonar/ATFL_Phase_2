@@ -18,6 +18,7 @@ import com.users.usersmanagement.common.BusinessException;
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.model.CodeMaster;
 import com.users.usersmanagement.model.LtMastOutlets;
+import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.model.Status;
 import com.users.usersmanagement.service.LtMastOutletService;
@@ -97,5 +98,26 @@ public class LtMastOutletController implements CodeMaster {
 		}
 
 	}
+	
+
+	@RequestMapping(value = "/getPendingAprrovalOutlet", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getPendingAprrovalOutlet(@RequestBody RequestDto requestDto) throws ServerException {
+		try {
+			return new ResponseEntity<Status>(ltMastOutletService.getPendingAprrovalOutlet(requestDto), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+
+	}
+	
+	@PostMapping(value = "/approveOutlet", consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status>approveOutlet(@RequestBody LtMastOutletsDump ltMastOutletsDump) throws ServerException{
+	try {
+		  return new ResponseEntity<Status>(ltMastOutletService.approveOutlet(ltMastOutletsDump), HttpStatus.OK);
+	    }catch(Exception e) {
+	  throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+    }	
+	}
+	
 	
 }

@@ -7,6 +7,7 @@ import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.model.LtMastOrganisations;
 import com.users.usersmanagement.model.LtMastOutlets;
 import com.users.usersmanagement.model.LtMastOutletsChannel;
+import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastOutletsType;
 import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
@@ -30,5 +31,6 @@ public interface LtMastOutletDao {
 	
 	public List<LtMastPricelist> getPriceListAgainstDistributor(String outletId)throws ServiceException, IOException;
 	
+	public List<LtMastOutletsDump> getPendingAprrovalOutlet(RequestDto requestDto)throws ServiceException, IOException;
 
 }

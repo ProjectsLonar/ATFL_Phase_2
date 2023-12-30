@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.model.LtMastOutlets;
+import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.model.Status;
 
@@ -22,4 +23,8 @@ public interface LtMastOutletService {
 	Status createOutlet(LtMastOutlets ltMastOutlets) throws ServiceException, IOException;
 	
 	Status getPriceListAgainstDistributor(String outletCode )throws ServiceException, IOException;
+	
+	Status getPendingAprrovalOutlet(RequestDto requestDto) throws ServiceException, IOException;
+	
+	Status approveOutlet(LtMastOutletsDump ltMastOutletsDump)throws ServiceException, IOException;
 }
