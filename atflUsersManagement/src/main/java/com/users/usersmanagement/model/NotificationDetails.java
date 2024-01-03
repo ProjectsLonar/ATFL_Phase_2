@@ -23,7 +23,7 @@ public class NotificationDetails {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_NOTIFICATION_S")
 	@SequenceGenerator(name = "LT_NOTIFICATION_S", sequenceName = "LT_NOTIFICATION_S", allocationSize = 1)
 	@Column(name = "NOTIFICATION_ID")
-	private String notificationId;
+	private Long notificationId;
 
 	@Column(name = "TRANSACTION_ID")
 	private Long transactionId;
@@ -58,11 +58,11 @@ public class NotificationDetails {
 	@Transient
 	private Integer length;
 
-	public String getNotificationId() {
+	public Long getNotificationId() {
 		return notificationId;
 	}
 
-	public void setNotificationId(String notificationId) {
+	public void setNotificationId(Long notificationId) {
 		this.notificationId = notificationId;
 	}
 

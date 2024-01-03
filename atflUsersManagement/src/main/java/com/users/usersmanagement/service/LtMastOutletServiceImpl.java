@@ -15,8 +15,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.users.usersmanagement.common.DateTimeClass;
 import com.users.usersmanagement.common.ServiceException;
+import com.users.usersmanagement.controller.WebController;
 import com.users.usersmanagement.dao.AtflMastUsersDao;
 import com.users.usersmanagement.dao.LtMastOutletDao;
 import com.users.usersmanagement.model.Account;
@@ -67,6 +67,9 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 	@Autowired
 	private Environment env;
 
+	@Autowired
+	private WebController webController;
+	
 	@Override
 	public Status verifyOutlet(String outletCode, String distributorCrmCode, String userId)
 			throws ServiceException, IOException {
@@ -187,6 +190,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			if (ltMastOutlets.getProprietorName() != null) {
 				ltMastOutletsDump.setProprietorName(ltMastOutlets.getProprietorName());
 			}
+			ltMastOutletsDump.setOutletChannel(ltMastOutlets.getOutletChannel());
 			ltMastOutletsDump.setAddress1(ltMastOutlets.getAddress1());
 			ltMastOutletsDump.setAddress2(ltMastOutlets.getAddress2());
 			ltMastOutletsDump.setLandmark(ltMastOutlets.getLandmark());
@@ -208,13 +212,28 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			ltMastOutletsDump.setCreatedBy(ltMastOutlets.getUserId());
 			ltMastOutletsDump.setLastUpdatedBy(ltMastOutlets.getUserId());
 			ltMastOutletsDump.setLastUpdateLogin(ltMastOutlets.getUserId());
-			ltMastOutletsDump.setCreationDate(DateTimeClass.getCurrentDateTime());
-			ltMastOutletsDump.setLastUpdateDate(DateTimeClass.getCurrentDateTime());
+			ltMastOutletsDump.setCreationDate(new Date());
+			ltMastOutletsDump.setLastUpdateDate(new Date());
 
+			try {
 			LtMastOutletsDump ltMastOutletsDumpupdated = ltMastOutletDumpRepository.save(ltMastOutletsDump);
-
+			
+			LtMastUsers ltMastUsersSysAdmin = ltMastOutletDao.getSystemAdministartorDetails(ltMastOutletsDumpupdated.getOrgId());
+			if(ltMastUsersSysAdmin!=null) {
+			webController.sendOutletApprovalNotification(ltMastUsersSysAdmin, ltMastOutletsDumpupdated);
+			}
+			
 			if (ltMastOutletsDumpupdated != null) {
-				// send notification
+				// send notification to mapped system administrator and sales officer
+				
+				List<LtMastUsers> ltMastUsers = ltMastOutletDao.getAllSalesOfficerAgainstDist(ltMastOutletsDumpupdated.getDistributorId(),
+						ltMastOutletsDumpupdated.getOrgId());
+				for(LtMastUsers user:ltMastUsers) {
+					System.out.println("user"+user);
+					if(user !=null) {
+				webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated);
+				}}
+
 				status.setMessage("Send For approval.");
 				status.setData(ltMastOutletsDumpupdated);
 				status.setCode(INSERT_SUCCESSFULLY);
@@ -223,6 +242,11 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 				status.setData(null);
 				status.setCode(INSERT_FAIL);
 			}
+			}catch (Exception e) {
+			    // Log the exception or handle it accordingly
+			    e.printStackTrace();
+			}
+			
 		}
 
 		return status;
@@ -291,11 +315,17 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 	@Override
 	public Status approveOutlet(LtMastOutletsDump ltMastOutletsDumps) throws ServiceException, IOException {
 		Status status = new Status();
-
+try {
 		//bring object from databse, change status, lastupdatedby,lastupdatedlogin and date  n save
-		LtMastOutletsDump ltMastOutletsDump = new LtMastOutletsDump();
+		LtMastOutletsDump ltMastOutletsDump = ltMastOutletDao.getOutletToChangeStatus(ltMastOutletsDumps.getDistributorId(),
+				ltMastOutletsDumps.getOrgId(),ltMastOutletsDumps.getPrimaryMobile(),ltMastOutletsDumps.getOutletName());
 		
-			//	ltMastOutletDumpRepository.save(ltMastOutletsDumps)
+		ltMastOutletsDump.setStatus(ltMastOutletsDumps.getStatus());
+		ltMastOutletsDump.setLastUpdatedBy(ltMastOutletsDumps.getUserId());
+		ltMastOutletsDump.setLastUpdateLogin(ltMastOutletsDumps.getUserId());
+		ltMastOutletsDump.setLastUpdateDate(new Date());
+		
+		ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
 		  LtMastOrganisations ltMastOrganisations =
 		  ltMastOutletDao.getOrganisationDetailsById(ltMastOutletsDump.getOrgId());
 		  System.out.println("ltMastOrganisations"+ltMastOrganisations);
@@ -363,12 +393,14 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		  ObjectMapper objectMapper = new ObjectMapper(); String jsonPayload =
 		  objectMapper.writeValueAsString(SiebelMessageRequest);
 		  
-		  System.out.println("jsonPayload"+jsonPayload); try (DataOutputStream wr = new
-		  DataOutputStream(connection.getOutputStream())) { wr.writeBytes(jsonPayload);
+		  System.out.println("jsonPayload"+jsonPayload);
+		  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
+			  wr.writeBytes(jsonPayload);
 		  wr.flush(); }
 		  
 		  // Get the HTTP response code 
-		  int responseCode = connection.getResponseCode(); System.out.println("Response Code: " + responseCode);
+		  int responseCode = connection.getResponseCode(); 
+		  System.out.println("Response Code: " + responseCode);
 		  
 		  // Read the response 
 		  BufferedReader reader; 
@@ -397,8 +429,12 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		  status.setMessage("INSERT_SUCCESSFULLY");
 		  } else {
 		  status.setCode(INSERT_FAIL); 
-		  status.setMessage("INSERT_FAILY"); 
+		  status.setMessage("INSERT_FAIL"); 
 		  }
+}catch (Exception e) {
+    // Log the exception or handle it accordingly
+    e.printStackTrace();
+}
 	return status;	 
 	}
 }

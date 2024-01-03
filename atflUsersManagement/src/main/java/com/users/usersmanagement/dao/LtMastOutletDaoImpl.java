@@ -177,6 +177,7 @@ System.out.println("list"+list);
 	@Override
 	public List<LtMastOutletsDump> getPendingAprrovalOutlet(RequestDto requestDto)throws ServiceException, IOException{
 		String query = env.getProperty("getPendingAprrovalOutlet");
+		try {
 		if (requestDto.getLimit() == 0) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 		}
@@ -191,11 +192,58 @@ System.out.println("list"+list);
 						searchField, requestDto.getLimit(), requestDto.getOffset() },
 				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
 
+		System.out.println("list"+ltMastOutletslist);
 		if (!ltMastOutletslist.isEmpty()) {
 			return ltMastOutletslist;
 		}
-
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		return null;
 
+	}
+	
+	
+	@Override
+	public LtMastOutletsDump getOutletToChangeStatus(String distributorId,String orgId,String primaryMobile,String outletName)throws ServiceException, IOException{
+		String query = env.getProperty("getOutletToChangeStatus");
+		List<LtMastOutletsDump> ltMastOutletslist = jdbcTemplate.query(query,
+				new Object[] { distributorId,orgId,primaryMobile,outletName},
+				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+
+		if (!ltMastOutletslist.isEmpty()) {
+			return ltMastOutletslist.get(0);
+		}else {
+			return null;
+		}
+	}
+	
+	@Override
+	public LtMastUsers getSystemAdministartorDetails(String orgId) throws ServiceException, IOException{
+		String query = env.getProperty("getSystemAdministartorDetails");
+		List<LtMastUsers> ltMastUserslist = jdbcTemplate.query(query,
+				new Object[] { orgId},
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+
+		if (!ltMastUserslist.isEmpty()) {
+			return ltMastUserslist.get(0);
+		}else {
+			return null;
+		}
+	}
+	
+	
+	@Override
+	public List<LtMastUsers> getAllSalesOfficerAgainstDist(String distributorId,String orgId)throws ServiceException, IOException{
+		String query = env.getProperty("getAllSalesOfficerAgainstDist");
+		List<LtMastUsers> ltMastUserslist = jdbcTemplate.query(query,
+				new Object[] {distributorId, orgId },
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+
+		if (!ltMastUserslist.isEmpty()) {
+			return ltMastUserslist;
+		}else {
+			return null;
+		}
 	}
 }

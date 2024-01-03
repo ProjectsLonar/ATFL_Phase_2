@@ -10,6 +10,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -38,7 +40,12 @@ public class AndroidPushNotificationsService {
 		restTemplate.setInterceptors(interceptors);
 
 		//String firebaseResponse = restTemplate.postForObject(FIREBASE_API_URL, entity, String.class);
-		String firebaseResponse = restTemplate.postForObject(fireBaseApiUrl, entity, String.class);
+		String firebaseResponse =  null;
+		try {
+		 firebaseResponse = restTemplate.postForObject(fireBaseApiUrl, entity, String.class);
+		}catch(HttpClientErrorException | HttpServerErrorException e) {
+		    // Handle the exception (e.g., log or throw a custom exception)
+		}
 
 		return CompletableFuture.completedFuture(firebaseResponse);
 	}

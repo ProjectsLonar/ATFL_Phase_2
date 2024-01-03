@@ -1,5 +1,6 @@
 package com.users.usersmanagement.model;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,16 +14,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Entity
-@Table(name = "lt_mast_outlets_dump")
+@Table(name = "lt_mast_outlets_stg")
 @JsonInclude(Include.NON_NULL)
 public class LtMastOutletsDump extends BaseClass {
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_MAST_OUTLET_DUMP_SEQ")
 	@SequenceGenerator(name = "LT_MAST_OUTLET_DUMP_SEQ", sequenceName = "LT_MAST_OUTLET_DUMP_SEQ", allocationSize = 1)
-	@Column(name = "outlet_id")
-	String outletId;
+	@Basic(optional = false)
+	@Column(name = "OUTLET_ID")
+	Long outletId;
 
 	@Column(name = "org_id")
 	String orgId;
@@ -42,10 +44,10 @@ public class LtMastOutletsDump extends BaseClass {
 	@Column(name = "proprietor_name")
 	String proprietorName;
 
-	@Column(name = "address_1")
+	@Column(name = "address1")
 	String address1;
 
-	@Column(name = "address_2")
+	@Column(name = "address2")
 	String address2;
 
 	@Column(name = "address_3")
@@ -131,6 +133,9 @@ public class LtMastOutletsDump extends BaseClass {
 	
 	@Transient
 	String outletAddress;
+	
+	@Transient
+	String userId;
 
 	public String getPosition() {
 		return position;
@@ -140,11 +145,13 @@ public class LtMastOutletsDump extends BaseClass {
 		this.position = position;
 	}
 
-	public String getOutletId() {
+	
+
+	public Long getOutletId() {
 		return outletId;
 	}
 
-	public void setOutletId(String outletId) {
+	public void setOutletId(Long outletId) {
 		this.outletId = outletId;
 	}
 
@@ -432,6 +439,14 @@ public class LtMastOutletsDump extends BaseClass {
 		this.outletChannel = outletChannel;
 	}
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	@Override
 	public String toString() {
 		return "LtMastOutletsDump [outletId=" + outletId + ", orgId=" + orgId + ", outletCode=" + outletCode
@@ -445,9 +460,9 @@ public class LtMastOutletsDump extends BaseClass {
 				+ ", outletChannel=" + outletChannel + ", distributorCode=" + distributorCode + ", distributorCrmCode="
 				+ distributorCrmCode + ", distributorStatus=" + distributorStatus + ", distributorName="
 				+ distributorName + ", employeeId=" + employeeId + ", empName=" + empName + ", employeeCode="
-				+ employeeCode + ", position=" + position + ", outletAddress=" + outletAddress + "]";
+				+ employeeCode + ", position=" + position + ", outletAddress=" + outletAddress + ", userId=" + userId
+				+ "]";
 	}
-
 	
 }
 

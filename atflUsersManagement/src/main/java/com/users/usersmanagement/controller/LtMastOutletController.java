@@ -118,6 +118,5 @@ public class LtMastOutletController implements CodeMaster {
 	  throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
     }	
 	}
-	
-	
+		
 }

@@ -107,7 +107,9 @@ public class LtMastOutlets extends BaseClass {
 	
 	@Transient
 	String distributorStatus;
-	
+
+	@Transient
+	String outletChannel;
 	@Transient
 	String distributorName;
 	
@@ -427,6 +429,16 @@ public class LtMastOutlets extends BaseClass {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	
+	
+
+	public String getOutletChannel() {
+		return outletChannel;
+	}
+
+	public void setOutletChannel(String outletChannel) {
+		this.outletChannel = outletChannel;
 	}
 
 	@Override

@@ -32,5 +32,11 @@ public interface LtMastOutletDao {
 	public List<LtMastPricelist> getPriceListAgainstDistributor(String outletId)throws ServiceException, IOException;
 	
 	public List<LtMastOutletsDump> getPendingAprrovalOutlet(RequestDto requestDto)throws ServiceException, IOException;
+	
+	public LtMastOutletsDump getOutletToChangeStatus(String distributorId,String orgId,String primaryMobile,String outletName)throws ServiceException, IOException;
+	
+	public LtMastUsers getSystemAdministartorDetails(String orgId) throws ServiceException, IOException;
+	
+	public List<LtMastUsers> getAllSalesOfficerAgainstDist(String distributorId,String orgId)throws ServiceException, IOException;
 
 }
