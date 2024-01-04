@@ -282,10 +282,13 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			
 			if(!outletList.isEmpty() && outletList != null) {
 				//query = query +" and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
+				//query = query + " and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
+				//		+ " ) ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
 				query = query + " and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
-						+ " ) ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
+						+ " ) ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
 			}else {
-				query = query +" ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
+//				query = query +" ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
+				query = query +" ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ?";
 			}
 			headerIdslist = jdbcTemplate.queryForList(query, String.class, requestDto.getStatus(),
 					requestDto.getOrderNumber(), requestDto.getDistributorId(), requestDto.getHeaderId(), searchField,
@@ -318,6 +321,24 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 		}
 		return null;
 	}
+	
+	@Override
+	public List<ResponseDto> getOrderV2(List<String> headerIdList) throws ServiceException, IOException {
+		try {
+			String query = env.getProperty("getOrderLineV1");
+			query = query + "  and lsh.header_id IN ( " + headerIdList.toString().replace("[", "").replace("]", "")
+					+ " ) ) a order by a.status_o, a.cdate desc, a.header_id ";
+			List<ResponseDto> headerDtolist = jdbcTemplate.query(query, new Object[] {},
+					new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+
+			return headerDtolist;
+		} catch (Exception e) {
+			logger.error("Error Description :", e);
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	@Override
 	public Long getSequancesValue() throws ServiceException, IOException {

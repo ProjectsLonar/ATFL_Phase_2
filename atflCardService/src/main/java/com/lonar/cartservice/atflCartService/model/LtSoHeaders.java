@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -22,9 +23,12 @@ public class LtSoHeaders extends BaseClass{
 	private static final long serialVersionUID = 1L;
 	@Id
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_SO_HEADERS_S")
+	@SequenceGenerator(name = "LT_SO_HEADERS_S", sequenceName = "LT_SO_HEADERS_S", allocationSize = 1)
 	@Basic(optional = false)
 	@Column(name = "HEADER_ID")
-//	Long headerId;
+	//Long headerId;
 	String headerId;
 	
 	@Column(name = "ORDER_NUMBER")
@@ -60,13 +64,14 @@ public class LtSoHeaders extends BaseClass{
 	String userId;
 	
 // ATFL Phase2 new development
-	
+	@Column(name= "INSTOCK_FLAG")
+    private String inStockFlag;	
+    
 	@Transient
-	private String priceList;
+	String beatId;
 	@Transient
-	private String beatId;
+	String priceList;
 	
-
 	public String getHeaderId() {
 		return headerId;
 	}
@@ -158,14 +163,14 @@ public class LtSoHeaders extends BaseClass{
 		this.customerId = customerId;
 	}
 	
-	public String getPriceList() {
-		return priceList;
+
+	public String getInStockFlag() {
+		return inStockFlag;
 	}
 
-	public void setPriceList(String priceList) {
-		this.priceList = priceList;
+	public void setInStockFlag(String inStockFlag) {
+		this.inStockFlag = inStockFlag;
 	}
-
 	
 	public String getBeatId() {
 		return beatId;
@@ -175,6 +180,13 @@ public class LtSoHeaders extends BaseClass{
 		this.beatId = beatId;
 	}
 
+	public String getPriceList() {
+		return priceList;
+	}
+
+	public void setPriceList(String priceList) {
+		this.priceList = priceList;
+	}
 
 	@Override
 	public String toString() {

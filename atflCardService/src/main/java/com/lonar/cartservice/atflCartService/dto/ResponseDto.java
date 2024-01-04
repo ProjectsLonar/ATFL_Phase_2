@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
 public class ResponseDto {
-	private String headerId;
+	private Long headerId;
 	private String orderNumber;
 	private Date orderDate;
 	private String status;
@@ -25,6 +25,9 @@ public class ResponseDto {
 	private Long customerId;
 	private String proprietorName;
 
+	private String BeatId;
+	private String headerPriceList;
+	
 	// Line Data
 	private String lineId;
 	private String productId;
@@ -66,10 +69,10 @@ public class ResponseDto {
 	public void setDistributorCode(String distributorCode) {
 		this.distributorCode = distributorCode;
 	}
-	public String getHeaderId() {
+	public Long getHeaderId() {
 		return headerId;
 	}
-	public void setHeaderId(String headerId) {
+	public void setHeaderId(Long headerId) {
 		this.headerId = headerId;
 	}
 	public String getOrderNumber() {
@@ -351,5 +354,20 @@ public class ResponseDto {
 	public void setInventoryQuantity(String inventoryQuantity) {
 		this.inventoryQuantity = inventoryQuantity;
 	}
+	
+	
+	public String getBeatId() {
+		return BeatId;
+	}
+	public void setBeatId(String beatId) {
+		BeatId = beatId;
+	}
+	public String getHeaderPriceList() {
+		return headerPriceList;
+	}
+	public void setHeaderPriceList(String headerPriceList) {
+		this.headerPriceList = headerPriceList;
+	}
 
+	
 }

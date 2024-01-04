@@ -19,7 +19,7 @@ public interface LtSoHeadersDao {
 
 	void deleteLineDataByHeaderId(String heaaderId) throws ServiceException, IOException;
 	
-	int deleteLineDataByHeaderIdAndReturnStatus(String heaaderId) throws ServiceException, IOException;
+	int deleteLineDataByHeaderIdAndReturnStatus(String headerId) throws ServiceException, IOException;
 
 	List<ResponseDto> getAllOrderInprocess() throws ServiceException, IOException;
 
@@ -29,6 +29,8 @@ public interface LtSoHeadersDao {
 
 	List<ResponseDto> getOrderV1(List<String> headerIdList) throws ServiceException, IOException;
 
+	List<ResponseDto> getOrderV2(List<String> headerIdList) throws ServiceException, IOException;
+	
 	Long getSequancesValue() throws ServiceException, IOException;
 
 	String getDistributorCode(String outletId) throws ServiceException, IOException;

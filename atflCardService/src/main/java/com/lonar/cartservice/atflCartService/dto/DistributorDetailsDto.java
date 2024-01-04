@@ -1,9 +1,14 @@
 package com.lonar.cartservice.atflCartService.dto;
 
+import org.springframework.data.annotation.Transient;
+
 public class DistributorDetailsDto {
 
 	private String distributorId;
-	private Long distributorSequance = 1L;
+	@Transient
+	private String distributorSequance = "1";
+//	private Long distributorSequance = 1L;
+
 	private String distributorCrmCode;
 
 	public String getDistributorId() {
@@ -14,11 +19,11 @@ public class DistributorDetailsDto {
 		this.distributorId = distributorId;
 	}
 
-	public Long getDistributorSequance() {
+	public String getDistributorSequance() {
 		return distributorSequance;
 	}
 
-	public void setDistributorSequance(Long distributorSequance) {
+	public void setDistributorSequance(String distributorSequance) {
 		this.distributorSequance = distributorSequance;
 	}
 
