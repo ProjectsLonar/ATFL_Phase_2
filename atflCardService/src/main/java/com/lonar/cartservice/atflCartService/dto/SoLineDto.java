@@ -39,6 +39,16 @@ public class SoLineDto {
 	private String hsnCode;
 	private String productImage;
 	private String thumbnailImage;
+	
+	private String eimStatus;
+	
+	public String getEimStatus() {
+		return eimStatus;
+	}
+
+	public void setEimStatus(String eimStatus) {
+		this.eimStatus = eimStatus;
+	}
 
 	public String getLineId() {
 		return lineId;

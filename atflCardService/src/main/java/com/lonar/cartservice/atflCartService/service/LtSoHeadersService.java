@@ -19,4 +19,5 @@ public interface LtSoHeadersService {
 
 	// ATFL Phase 2 new development 
 	Status saveOrderV2(SoHeaderDto soHeaderDto) throws ServiceException, IOException;
+	Status getOrderV2(RequestDto requestDto) throws ServiceException, IOException;
 }

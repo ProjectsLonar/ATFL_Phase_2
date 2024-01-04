@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -14,11 +15,13 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 @Table(name = "lt_mast_outlets_v")
 @JsonInclude(Include.NON_NULL)
-public class LtMastOutles extends BaseClass {
+public class LtMastOutles extends BaseClass1 {
 
 	@Id
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_MAST_OUTLETS_V_S")
+	@SequenceGenerator(name = "LT_MAST_OUTLETS_V_S", sequenceName = "LT_MAST_OUTLETS_V_S", allocationSize = 1)
 	@Column(name = "outlet_id")
 	//Long outletId;
 	String outletId;
@@ -83,11 +86,11 @@ public class LtMastOutles extends BaseClass {
 	@Column(name = "outlet_gstn")
 	String outletGstn;
 
-	@Column(name = "outlet_pan")
-	String outletPan;
+//	@Column(name = "outlet_pan")
+//	String outletPan;
 
-	@Column(name = "licence_no")
-	String licenceNo;
+//	@Column(name = "licence_no")
+//	String licenceNo;
 
 	@Column(name = "positions_id")
 //	Long positionsId;
@@ -303,21 +306,21 @@ public class LtMastOutles extends BaseClass {
 		this.outletGstn = outletGstn;
 	}
 
-	public String getOutletPan() {
-		return outletPan;
-	}
+//	public String getOutletPan() {
+//		return outletPan;
+//	}
+//
+//	public void setOutletPan(String outletPan) {
+//		this.outletPan = outletPan;
+//	}
 
-	public void setOutletPan(String outletPan) {
-		this.outletPan = outletPan;
-	}
-
-	public String getLicenceNo() {
-		return licenceNo;
-	}
-
-	public void setLicenceNo(String licenceNo) {
-		this.licenceNo = licenceNo;
-	}
+//	public String getLicenceNo() {
+//		return licenceNo;
+//	}
+//
+//	public void setLicenceNo(String licenceNo) {
+//		this.licenceNo = licenceNo;
+//	}
 
 	public String getPositionsId() {
 		return positionsId;
@@ -402,9 +405,7 @@ public class LtMastOutles extends BaseClass {
 				+ ", proprietorName=" + proprietorName + ", address1=" + address1 + ", address2=" + address2
 				+ ", address3=" + address3 + ", address4=" + address4 + ", landmark=" + landmark + ", country="
 				+ country + ", state=" + state + ", city=" + city + ", pin_code=" + pin_code + ", region=" + region
-				+ ", area=" + area + ", territory=" + territory + ", outletGstn=" + outletGstn + ", outletPan="
-				+ outletPan + ", licenceNo=" + licenceNo + ", positionsId=" + positionsId + ", phone=" + phone
-				+ ", email=" + email + ", primaryMobile=" + primaryMobile + ", distributorCode=" + distributorCode
+				+ ", area=" + area + ", territory=" + territory + ", outletGstn=" + outletGstn + ",  email=" + email + ", primaryMobile=" + primaryMobile + ", distributorCode=" + distributorCode
 				+ ", distributorStatus=" + distributorStatus + ", distributorName=" + distributorName + ", employeeId="
 				+ employeeId + ", empName=" + empName + ", employeeCode=" + employeeCode + "]";
 	}
