@@ -119,6 +119,15 @@ public class LtMastDistributors extends BaseClass {
 	@Transient
 	String distributorOperator;
 	
+	@Transient
+	String templateProductCount;
+	
+	@Transient
+	String templateHeaderId;
+	
+	@Transient
+	String templateCreationDate;
+	
 	
 	public String getDistributorId() {
 		return distributorId;
@@ -391,6 +400,32 @@ public class LtMastDistributors extends BaseClass {
 	public void setDistributorCrmCode(String distributorCrmCode) {
 		this.distributorCrmCode = distributorCrmCode;
 	}
+	
+	
+
+	public String getTemplateProductCount() {
+		return templateProductCount;
+	}
+
+	public void setTemplateProductCount(String templateProductCount) {
+		this.templateProductCount = templateProductCount;
+	}
+
+	public String getTemplateHeaderId() {
+		return templateHeaderId;
+	}
+
+	public void setTemplateHeaderId(String templateHeaderId) {
+		this.templateHeaderId = templateHeaderId;
+	}
+
+	public String getTemplateCreationDate() {
+		return templateCreationDate;
+	}
+
+	public void setTemplateCreationDate(String templateCreationDate) {
+		this.templateCreationDate = templateCreationDate;
+	}
 
 	@Override
 	public String toString() {
@@ -405,7 +440,8 @@ public class LtMastDistributors extends BaseClass {
 				+ ", employeeCode=" + employeeCode + ", userName=" + userName + ", employeeId=" + employeeId
 				+ ", positionName=" + positionName + ", position=" + position + ", positionId=" + positionId
 				+ ", positionStatus=" + positionStatus + ", empStatus=" + empStatus + ", distributorOperator="
-				+ distributorOperator + "]";
+				+ distributorOperator + ", templateProductCount=" + templateProductCount + ", templateHeaderId="
+				+ templateHeaderId + ", templateCreationDate=" + templateCreationDate + "]";
 	}
 
 }

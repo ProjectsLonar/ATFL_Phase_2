@@ -73,4 +73,16 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 		}
 		return null;
 	}
+	
+	@Override
+	public List<LtMastDistributors> getAllDistributorAgainstAreahead(String userId)throws ServiceException{
+		String query = env.getProperty("getAllDistributorAgainstAreahead");
+		List<LtMastDistributors> ltMastDistributorsList = jdbcTemplate.query(query,
+				new Object[] { userId},
+				new BeanPropertyRowMapper<LtMastDistributors>(LtMastDistributors.class));
+		if (!ltMastDistributorsList.isEmpty()) {
+			return ltMastDistributorsList;
+		}
+		return null;
+	}
 }
