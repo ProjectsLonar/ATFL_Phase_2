@@ -1,5 +1,6 @@
 package com.lonar.cartservice.atflCartService.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,9 +11,9 @@ import com.lonar.cartservice.atflCartService.model.LtTemplateLines;
 public class LtTemplateDto {
 	private Long templateHeaderId;
 	private String distributorId;
-	private String creationDate;
+	private Date creationDate;
 	private String createdBy;
-	private String lastUpdatedDate;
+	private Date lastUpdatedDate;
 	private String lastUpdatedBy;
 	private String lastUpdatedLogin;
 	private String status;
@@ -30,22 +31,24 @@ public class LtTemplateDto {
 	public void setDistributorId(String distributorId) {
 		this.distributorId = distributorId;
 	}
-	public String getCreationDate() {
-		return creationDate;
-	}
-	public void setCreationDate(String creationDate) {
-		this.creationDate = creationDate;
-	}
+	
 	public String getCreatedBy() {
 		return createdBy;
 	}
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-	public String getLastUpdatedDate() {
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+	public Date getLastUpdatedDate() {
 		return lastUpdatedDate;
 	}
-	public void setLastUpdatedDate(String lastUpdatedDate) {
+	public void setLastUpdatedDate(Date lastUpdatedDate) {
 		this.lastUpdatedDate = lastUpdatedDate;
 	}
 	public String getLastUpdatedBy() {

@@ -195,6 +195,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				 .antMatchers("/cart" + "/ltsoheaders" + "/getAllInprocessOrder/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				 
 				 .antMatchers("/cart" + "/ltsoheaders" + "/getOrderCancellationReason/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
+				 .antMatchers("/cart" + "/lttemplatecontroller" + "/getTemplateAgainstDistributor/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				 .antMatchers("/uam" + "/salepersons" + "/systemAdministrator/**").hasAnyRole("PREVERIFIED","SALES", "ADMIN", "SUPERADMIN")
 				 
 				// ANONYMOUS

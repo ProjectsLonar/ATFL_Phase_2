@@ -1,5 +1,7 @@
 package com.lonar.cartservice.atflCartService.model;
 
+import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,13 +30,13 @@ public class LtTemplateHeaders {
 	String distributorId;
 	
 	@Column(name = "CREATION_DATE")
-	String creationDate;
+	Date creationDate;
 	
 	@Column(name = "CREATED_BY")
 	String createdBy;
 	
 	@Column(name = "LAST_UPDATED_DATE")
-	String lastUpdatedDate;
+	Date lastUpdatedDate;
 	
 	@Column(name = "LAST_UPDATED_BY")
 	String lastUpdatedBy;
@@ -70,15 +72,6 @@ public class LtTemplateHeaders {
 	}
 
 
-	public String getCreationDate() {
-		return creationDate;
-	}
-
-
-	public void setCreationDate(String creationDate) {
-		this.creationDate = creationDate;
-	}
-
 
 	public String getCreatedBy() {
 		return createdBy;
@@ -90,12 +83,23 @@ public class LtTemplateHeaders {
 	}
 
 
-	public String getLastUpdatedDate() {
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+
+	public Date getLastUpdatedDate() {
 		return lastUpdatedDate;
 	}
 
 
-	public void setLastUpdatedDate(String lastUpdatedDate) {
+	public void setLastUpdatedDate(Date lastUpdatedDate) {
 		this.lastUpdatedDate = lastUpdatedDate;
 	}
 
@@ -149,9 +153,6 @@ public class LtTemplateHeaders {
 	}
 
 
-	public LtTemplateHeaders() {
-		
-		
-	}
+	
 	
 }
