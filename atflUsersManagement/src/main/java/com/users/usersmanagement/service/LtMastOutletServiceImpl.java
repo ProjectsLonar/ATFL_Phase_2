@@ -41,6 +41,7 @@ import com.users.usersmanagement.model.SiebelMessageRequest;
 import com.users.usersmanagement.model.Status;
 import com.users.usersmanagement.repository.LtMastOutletDumpRepository;
 import com.users.usersmanagement.repository.LtMastOutletRepository;
+import com.users.usersmanagement.repository.LtMastUsersRepository;
 
 @Service
 @PropertySource(value = "classpath:queries/userMasterQueries.properties", ignoreResourceNotFound = true)
@@ -63,6 +64,9 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 
 	@Autowired
 	LtMastOutletDumpRepository ltMastOutletDumpRepository;
+	
+	@Autowired
+	LtMastUsersRepository ltMastUsersRepository;
 
 	@Autowired
 	private Environment env;
@@ -421,8 +425,27 @@ try {
 		  // Print the response System.out.println("Response: " + response.toString());
 		  
 		  // Close the connection connection.disconnect(); 
-		  String outletCode = null;
-		  LtMastOutlets outletDetails =ltMastOutletDao.getOutletByOutletCode(outletCode); 
+		  String outletCode = null;   //once you got response add outlet code and pass it here.
+		  LtMastOutlets outletDetails =ltMastOutletDao.getOutletByOutletCode(outletCode);
+		  LtMastUsers ltMastUsers = new LtMastUsers();
+		  if(outletDetails !=null) {
+		
+		  ltMastUsers.setOrgId(outletDetails.getOrgId());
+		  ltMastUsers.setDistributorId(outletDetails.getDistributorId());
+		  ltMastUsers.setOutletId(outletDetails.getOutletId());
+		  ltMastUsers.setMobileNumber(outletDetails.getPrimaryMobile());
+		  ltMastUsers.setUserType("RETAILER");
+		  ltMastUsers.setUserName(outletDetails.getOutletName());
+		  ltMastUsers.setEmployeeCode(outletDetails.getPosition());
+		  ltMastUsers.setPositionId(outletDetails.getPositionsId());
+		  ltMastUsers.setAddress(outletDetails.getAddress1() + " "+outletDetails.getAddress2());
+		  ltMastUsers.setAddressDetails(outletDetails.getAddress1() + " "+outletDetails.getAddress2()
+		  +" "+outletDetails.getLandmark()+ " "+outletDetails.getArea() +" "+outletDetails.getCity()+" "+outletDetails.getState()
+		  +" "+outletDetails.getCountry() +" "+outletDetails.getPin_code());
+		  
+		  ltMastUsers = ltMastUsersRepository.save(ltMastUsers);
+		  }
+
 		  if(outletDetails !=null) {
 		  status.setCode(INSERT_SUCCESSFULLY); 
 		  status.setData(outletDetails);

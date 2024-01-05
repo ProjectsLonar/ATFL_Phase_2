@@ -1,6 +1,8 @@
 package com.users.usersmanagement.service;
 
+import java.rmi.ServerException;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -13,7 +15,9 @@ import com.users.usersmanagement.dao.LtMastDistributorsDao;
 import com.users.usersmanagement.dao.LtMastOrganisationsDao;
 import com.users.usersmanagement.model.CodeMaster;
 import com.users.usersmanagement.model.LtMastDistributors;
+import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
+import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.model.RoleMaster;
 import com.users.usersmanagement.model.Status;
 
@@ -223,4 +227,23 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 		return status;
 	}
 
+	
+	@Override
+	public Status getAllDistributorAgainstAreahead(String userId)throws ServerException, ServiceException{
+		Status status = new Status();
+		try {
+		List<LtMastDistributors> distributorList = ltMastDistributorsDao.getAllDistributorAgainstAreahead(userId);
+		if (distributorList != null) {
+			status.setCode(SUCCESS);
+			status.setMessage("RECORD FOUND SUCCESSFULLY");
+			status.setData(distributorList);
+		} else {
+			status.setCode(FAIL);
+			status.setMessage("RECORD NOT FOUND");
+		}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return status;	
+	}
 }

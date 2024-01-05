@@ -22,6 +22,7 @@ public class LtMastCategoryServiceImpl implements LtMastCategoryService, CodeMas
 	@Override
 	public Status getCategory(RequestDto requestDto) throws ServiceException, IOException {
 		Status status = new Status();
+		try {
 		List<LtMastProductCat> ltMastProdCat = ltMastProdCatDao.getCategory(requestDto);
 		Long prodCatCount = ltMastProdCatDao.getProdCatCount(requestDto);
 		status.setTotalCount(prodCatCount);
@@ -34,6 +35,10 @@ public class LtMastCategoryServiceImpl implements LtMastCategoryService, CodeMas
 			status.setCode(FAIL);
 			status.setMessage("FAIL");
 			status.setData(ltMastProdCat);
+		}
+		
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
 		return status;
 	}
