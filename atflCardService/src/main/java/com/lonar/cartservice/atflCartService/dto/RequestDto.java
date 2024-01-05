@@ -13,7 +13,7 @@ public class RequestDto {
 	private String orderNumber;
 	private String status;
 	private String details;
-	private String headerId;
+	private Long headerId;
 	private int limit;
 	private int offset;
 	private String searchField;
@@ -93,11 +93,11 @@ public class RequestDto {
 		this.offset = offset;
 	}
 
-	public String getHeaderId() {
+	public Long getHeaderId() {
 		return headerId;
 	}
 
-	public void setHeaderId(String headerId) {
+	public void setHeaderId(Long headerId) {
 		this.headerId = headerId;
 	}
 

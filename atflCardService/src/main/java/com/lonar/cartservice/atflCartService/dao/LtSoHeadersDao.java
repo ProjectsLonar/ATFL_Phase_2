@@ -17,9 +17,9 @@ public interface LtSoHeadersDao {
 
 	LtSoHeaders checkOrderStatus(String orderNumber) throws ServiceException, IOException;
 
-	void deleteLineDataByHeaderId(String heaaderId) throws ServiceException, IOException;
+	void deleteLineDataByHeaderId(Long heaaderId) throws ServiceException, IOException;
 	
-	int deleteLineDataByHeaderIdAndReturnStatus(String headerId) throws ServiceException, IOException;
+	int deleteLineDataByHeaderIdAndReturnStatus(Long headerId) throws ServiceException, IOException;
 
 	List<ResponseDto> getAllOrderInprocess() throws ServiceException, IOException;
 
@@ -35,9 +35,9 @@ public interface LtSoHeadersDao {
 
 	String getDistributorCode(String outletId) throws ServiceException, IOException;
 
-	List<LtMastUsers> getActiveDistUsersFromHeaderId(String headerId, String orderNumber) throws ServiceException, IOException;
+	List<LtMastUsers> getActiveDistUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException;
 
-	List<LtMastUsers> getActiveSalesUsersFromHeaderId(String headerId, String orderNumber) throws ServiceException, IOException;
+	List<LtMastUsers> getActiveSalesUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException;
 	
 	DistributorDetailsDto getDistributorDetailsByOutletId(String outletId) throws ServiceException, IOException;
 	

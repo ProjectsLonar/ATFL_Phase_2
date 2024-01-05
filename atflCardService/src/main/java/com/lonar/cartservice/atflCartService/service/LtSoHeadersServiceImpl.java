@@ -1,6 +1,7 @@
 package com.lonar.cartservice.atflCartService.service;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,6 +9,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -123,7 +125,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		ltSoHeadersRepository.deleteById(headerId);
 	}
 	
-	private Status updateSoHeadeLineInDraft(SoHeaderDto soHeaderDto, String headerId, Date creationDate, String createdBy)
+	private Status updateSoHeadeLineInDraft(SoHeaderDto soHeaderDto, Long headerId, Date creationDate, String createdBy)
 			throws ServiceException, IOException {
 		
 		int lineDeleteStatus = ltSoHeadersDao.deleteLineDataByHeaderIdAndReturnStatus(headerId);
@@ -944,13 +946,17 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			
 			StringBuffer strQuery1 =  new StringBuffer();
 			
-			strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
+	//		strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
 			
-			StringBuffer strQuery =  new StringBuffer();
+	//		StringBuffer strQuery =  new StringBuffer();
 			
 			for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
 				
 				SoLineDto soLineDto = (SoLineDto) iterator.next();
+				
+				strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,status,created_by,last_update_login,last_updated_by,ptr_price,eimstatus,delivery_date,creation_date,last_update_date) VALUES ");
+				
+				StringBuffer strQuery =  new StringBuffer();
 				
 				strQuery.append("(");
 
@@ -973,50 +979,59 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					//ltSoLines.setListPrice(soLineDto.getListPrice());
 					strQuery.append("'"+soLineDto.getListPrice()+"',");
 				}
-				if (soLineDto.getDeliveryDate() != null) {
-					//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
-					strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
-				}
 				strQuery.append("'"+DRAFT.toString()+"',");//Status
 				
-
 				if (soHeaderDto.getUserId() != null) {
 					//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
 					strQuery.append(soHeaderDto.getUserId()+",");
 				}
-				
-				strQuery.append("'"+new Date()+"',");//Created Date
-				
 				if (soHeaderDto.getUserId() != null) {
 					//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
 					strQuery.append(soHeaderDto.getUserId()+",");
 				}
-				
 				if (soHeaderDto.getUserId() != null) {
 					//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
 					strQuery.append(soHeaderDto.getUserId()+",");
 				}
-				
-				strQuery.append("'"+new Date()+"',");//Last update date
-				 
 				if (soLineDto.getPtrPrice() != null) {
 					//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
-					strQuery.append("'"+soLineDto.getPtrPrice()+"'");
+					strQuery.append("'"+soLineDto.getPtrPrice()+"',");
 				}else {
 					//ltSoLines.setPtrPrice(soLineDto.getListPrice());
-					strQuery.append("'"+soLineDto.getListPrice()+"'");
+					strQuery.append("'"+soLineDto.getListPrice()+"',");
 				}
+			//	if(soLineDto.getEimStatus()!= null) {
+				strQuery.append("'"+null+"',"); // eimstatus
+			//	} 		
+				if (soLineDto.getDeliveryDate() != null) {
+					//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
+					
+//					DateFormat df= new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+//					Date dt= df.parse(soLineDto.getDeliveryDate().toString());
+//					df.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+//					String fD = df.format(dt);
+//					strQuery.append("'"+fD+"',");
+//					System.out.print(fD);
+				 strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
+				}
+				
+				strQuery.append("'"+new Date()+"',");//Created Date
+				
+				strQuery.append("'"+new Date()+"'");//Last update date
+				 
 				
 				//ltSoLines.setStatus(DRAFT);
 				//ltSoLines.setLastUpdateDate(new Date());
 				//ltSoLines.setCreationDate(new Date());
-				strQuery.append("),");
+//				strQuery.append("),");
 				
+				strQuery.append(");");
+				strQuery1 = strQuery1.append(strQuery);
 				//ltSoLines = ltSoLinesRepository.save(ltSoLines);
-
+                  //break;
 			}
-			strQuery.deleteCharAt(strQuery.length()-1); 
-			strQuery1 = strQuery1.append(strQuery);
+	//		strQuery.deleteCharAt(strQuery.length()-1); 
+	//		strQuery1 = strQuery1.append(strQuery);
 			
 			String query = strQuery1.toString();
 			
@@ -1096,14 +1111,15 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				
 				StringBuffer strQuery1 =  new StringBuffer();
 				
-				strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
+		//		strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
 				
-				StringBuffer strQuery =  new StringBuffer();
+		//		StringBuffer strQuery =  new StringBuffer();
 				
 				for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
-					
-					SoLineDto soLineDto = (SoLineDto) iterator.next();
-					
+										
+					SoLineDto soLineDto = (SoLineDto) iterator.next();		
+					strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");				
+					StringBuffer strQuery =  new StringBuffer();
 					strQuery.append("(");
 
 					//LtSoLines ltSoLines = new LtSoLines();
@@ -1162,13 +1178,13 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					//ltSoLines.setStatus(DRAFT);
 					//ltSoLines.setLastUpdateDate(new Date());
 					//ltSoLines.setCreationDate(new Date());
-					strQuery.append("),");
-					
+					//strQuery.append("),");
+					strQuery.append(");");
 					//ltSoLines = ltSoLinesRepository.save(ltSoLines);
-
+					strQuery1 = strQuery1.append(strQuery);
 				}
-				strQuery.deleteCharAt(strQuery.length()-1); 
-				strQuery1 = strQuery1.append(strQuery);
+				//strQuery.deleteCharAt(strQuery.length()-1); 
+				//strQuery1 = strQuery1.append(strQuery);
 				
 				String query = strQuery1.toString();
 				
@@ -1196,7 +1212,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	}
 
 		
-	private Status updateSoHeadeLineInDraftV2(SoHeaderDto soHeaderDto, String headerId, Date creationDate, String createdBy)
+	private Status updateSoHeadeLineInDraftV2(SoHeaderDto soHeaderDto, Long headerId, Date creationDate, String createdBy)
 			throws ServiceException, IOException {
 		
 		int lineDeleteStatus = ltSoHeadersDao.deleteLineDataByHeaderIdAndReturnStatus(headerId);
