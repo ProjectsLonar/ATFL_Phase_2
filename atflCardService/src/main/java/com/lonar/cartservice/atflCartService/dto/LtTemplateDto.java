@@ -17,6 +17,7 @@ public class LtTemplateDto {
 	private String lastUpdatedBy;
 	private String lastUpdatedLogin;
 	private String status;
+	private String userId;
 	private List<LtTemplateLines> ltTemplateLines;
 	
 	public Long getTemplateHeaderId() {
@@ -77,12 +78,19 @@ public class LtTemplateDto {
 	public void setLtTemplateLines(List<LtTemplateLines> ltTemplateLines) {
 		this.ltTemplateLines = ltTemplateLines;
 	}
+	
+	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	@Override
 	public String toString() {
 		return "LtTemplateDto [templateHeaderId=" + templateHeaderId + ", distributorId=" + distributorId
 				+ ", creationDate=" + creationDate + ", createdBy=" + createdBy + ", lastUpdatedDate=" + lastUpdatedDate
 				+ ", lastUpdatedBy=" + lastUpdatedBy + ", lastUpdatedLogin=" + lastUpdatedLogin + ", status=" + status
-				+ ", ltTemplateLines=" + ltTemplateLines + "]";
-	}
-	
+				+ ", userId=" + userId + ", ltTemplateLines=" + ltTemplateLines + "]";
+	}	
 }

@@ -60,7 +60,7 @@ public class LtTemplateLines {
 	@Column(name = "LAST_UPDATED_BY")
 	String lastUpdatedBy;
 	
-	@Column(name = "LAST_UPDATE_LOGIN")
+	@Column(name = "LAST_UPDATED_LOGIN")
 	String lastUpdatedLogin;
 
 	public Long getTemplateLineId() {

@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -50,7 +51,10 @@ public class LtTemplateHeaders {
 	
 	
 	@Column(name = "PRODUCT_COUNT")
-	String productCount;
+	int productCount;
+	
+	@Transient
+	String userId;
 
 	public Long getTemplateHeaderId() {
 		return templateHeaderId;
@@ -134,13 +138,22 @@ public class LtTemplateHeaders {
 	}
 
 
-	public String getProductCount() {
+	public int getProductCount() {
 		return productCount;
 	}
 
 
-	public void setProductCount(String productCount) {
+	public void setProductCount(int productCount) {
 		this.productCount = productCount;
+	}
+	
+	public String getUserId() {
+		return userId;
+	}
+
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 
@@ -151,8 +164,4 @@ public class LtTemplateHeaders {
 				+ ", lastUpdatedBy=" + lastUpdatedBy + ", lastUpdatedLogin=" + lastUpdatedLogin + ", status=" + status
 				+ ", productCount=" + productCount + "]";
 	}
-
-
-	
-	
 }
