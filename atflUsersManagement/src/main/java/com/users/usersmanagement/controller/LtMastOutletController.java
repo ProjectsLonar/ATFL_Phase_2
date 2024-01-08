@@ -31,7 +31,7 @@ public class LtMastOutletController implements CodeMaster {
 	private LtMastOutletService ltMastOutletService;
 
 	@RequestMapping(value = "/getSelectedOutlet/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> getSelectedOutlet(@PathVariable("userId") String userId) throws ServiceException {
+	public ResponseEntity<Status> getSelectedOutlet(@PathVariable("userId") Long userId) throws ServiceException {
 		try {
 			return new ResponseEntity<Status>(ltMastOutletService.getAllUserDataByRecentId(userId), HttpStatus.OK);
 		} catch (Exception e) {
@@ -41,7 +41,7 @@ public class LtMastOutletController implements CodeMaster {
 
 	@RequestMapping(value = "/verifyOutlet/{ouletCode}/{distributorCrmCode}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> verifyOutlet(@PathVariable("ouletCode") String ouletCode,
-			@PathVariable("distributorCrmCode") String distributorCrmCode, @PathVariable("userId") String userId)
+			@PathVariable("distributorCrmCode") String distributorCrmCode, @PathVariable("userId") Long userId)
 			throws ServerException {
 		try {
 			return new ResponseEntity<Status>(ltMastOutletService.verifyOutlet(ouletCode, distributorCrmCode, userId),

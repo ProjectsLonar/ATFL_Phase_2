@@ -27,7 +27,7 @@ public class LtMastUsers{
 	@SequenceGenerator(name = "LT_MAST_USERS_S", sequenceName = "LT_MAST_USERS_S", allocationSize = 1)
 	@Basic(optional = false)
 	@Column(name = "USER_ID")
-	private String userId;
+	private Long userId;
 
 	@Column(name = "ORG_ID")
 	private Long orgId;
@@ -84,7 +84,7 @@ public class LtMastUsers{
 	private String addressDetails;
 	
 	@Column(name = "RECENT_SEARCH_ID")
-	private Long recentSerachId;
+	private String recentSerachId;
 	
 	@Transient
 	String distributorCode;
@@ -263,11 +263,11 @@ public class LtMastUsers{
 		this.sort = sort;
 	}
 	
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -419,11 +419,11 @@ public class LtMastUsers{
 		this.addressDetails = addressDetails;
 	}
 
-	public Long getRecentSerachId() {
+	public String getRecentSerachId() {
 		return recentSerachId;
 	}
 
-	public void setRecentSerachId(Long recentSerachId) {
+	public void setRecentSerachId(String recentSerachId) {
 		this.recentSerachId = recentSerachId;
 	}
 

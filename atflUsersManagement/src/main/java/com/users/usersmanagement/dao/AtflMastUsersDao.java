@@ -15,11 +15,11 @@ public interface AtflMastUsersDao {
 
 	LtMastUsers saveLtMastUsers(LtMastUsers ltMastUser) throws ServiceException;
 
-	LtMastLogins getLoginDetailsByUserId(String userId) throws ServiceException;
+	LtMastLogins getLoginDetailsByUserId(Long userId) throws ServiceException;
 
-	LtMastUsers getUserById(String userId) throws ServiceException;
+	LtMastUsers getUserById(Long userId) throws ServiceException;
 
-	LtMastUsers delete(String userId) throws ServiceException;
+	LtMastUsers delete(Long userId) throws ServiceException;
 
 	List<LtMastUsers> getUserByName(String name) throws ServiceException;
 
@@ -27,7 +27,7 @@ public interface AtflMastUsersDao {
 
 	List<LtMastUsers> getCustomerByName(String name) throws ServiceException;
 
-	List<LtMastUsers> getPenddingApprovalByDistributorId(Long distributorId, String userId) throws ServiceException;
+	List<LtMastUsers> getPenddingApprovalByDistributorId(Long distributorId, Long userId) throws ServiceException;
 
 	List<LtMastUsers> getDistributorUserByRoleAndId(Long distributorId) throws ServiceException;
 	
@@ -35,13 +35,13 @@ public interface AtflMastUsersDao {
 	
 	List<LtMastUsers> getAllUsersData() throws ServiceException;
 	
-	LtMastUsers getUserAllMasterDataById(String userId) throws ServiceException;
+	LtMastUsers getUserAllMasterDataById(Long userId) throws ServiceException;
 	
 	public List<LtMastUsers> getUsersList(RequestDto requestDto) throws IOException;
 	
 	List<LtMastUsers> getAllInactiveUsers() throws ServiceException;
 	
-	List<LtMastUsers> getActiveUsersDistByUserId(String userId)throws ServiceException;
+	List<LtMastUsers> getActiveUsersDistByUserId(Long userId)throws ServiceException;
 	
 	List<LtConfigurartion> getAllConfiguration() throws ServiceException;
 	

@@ -40,7 +40,7 @@ public class LtFileUploadDaoImpl implements LtFileUploadDao{
 
 	
 	@Override
-	public List<LtFileUpload> getAllUploadedFiles(String orgId, Long limit, Long offset, String userId)
+	public List<LtFileUpload> getAllUploadedFiles(String orgId, Long limit, Long offset, Long userId)
 			throws ServiceException {
 
 		String query = env.getProperty("getAllUploadedFiles");

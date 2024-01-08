@@ -62,9 +62,9 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 	}
 
 	@Override
-	public LtMastLogins getLoginDetailsByUserId(String userId) throws ServiceException {
+	public LtMastLogins getLoginDetailsByUserId(Long userId) throws ServiceException {
 		String query = env.getProperty("getLoginDetailsByUserId");
-		List<LtMastLogins> list = jdbcTemplate.query(query, new Object[] { userId.toString() },
+		List<LtMastLogins> list = jdbcTemplate.query(query, new Object[] { userId},
 				new BeanPropertyRowMapper<LtMastLogins>(LtMastLogins.class));
 		if (!list.isEmpty())
 			return list.get(0);
@@ -73,10 +73,10 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 	}
 
 	@Override
-	public LtMastUsers getUserById(String userId) throws ServiceException {
-		//System.out.println("in dao user id"+userId);
+	public LtMastUsers getUserById(Long userId) throws ServiceException {
+		System.out.println("in dao user id"+userId);
 		Optional<LtMastUsers> ltMastUsers = ltMastUsersRepository.findById(userId);
-	//	System.out.println("after repo execution user id"+ltMastUsers.get());
+		System.out.println("after repo execution user id"+ltMastUsers.get());
 		
 		if (ltMastUsers.isPresent()) {
 			return ltMastUsers.get();
@@ -86,7 +86,7 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 	}
 
 	@Override
-	public LtMastUsers delete(String userId) throws ServiceException {
+	public LtMastUsers delete(Long userId) throws ServiceException {
 		
 		ltMastUsersRepository.deleteById(userId);
 		if (ltMastUsersRepository.existsById(userId)) {
@@ -126,7 +126,7 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 	}
 
 	@Override
-	public List<LtMastUsers> getPenddingApprovalByDistributorId(Long distributorId, String userId)
+	public List<LtMastUsers> getPenddingApprovalByDistributorId(Long distributorId, Long userId)
 			throws ServiceException {
 		String query = env.getProperty("getPenddingApprovalByDistributorId");
 		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { distributorId, userId },
@@ -166,7 +166,7 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 	}
 
 	@Override
-	public LtMastUsers getUserAllMasterDataById(String userId) throws ServiceException {
+	public LtMastUsers getUserAllMasterDataById(Long userId) throws ServiceException {
 
 		String query = env.getProperty("getUserAllMasterDataById");
 		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { userId.toString() },
@@ -184,11 +184,11 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 		}
 		
-		String userId;
+		Long userId;
 		if(requestDto.getUserId() != null) {
 			userId = requestDto.getUserId();
 		}else {
-			userId = "0";
+			userId =0L;
 		}
 		System.out.println("USER ID :: "+userId);
 
@@ -227,7 +227,7 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 	}
 
 	@Override
-	public List<LtMastUsers> getActiveUsersDistByUserId(String userId) throws ServiceException {
+	public List<LtMastUsers> getActiveUsersDistByUserId(Long userId) throws ServiceException {
 		String query = env.getProperty("getDistributorsByUserId");
 		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] {userId.toString()},
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));

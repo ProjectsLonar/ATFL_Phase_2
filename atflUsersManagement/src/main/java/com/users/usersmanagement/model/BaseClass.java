@@ -23,16 +23,16 @@ public class BaseClass {
 	private Date endDate;*/
 	
 	@Column(name = "CREATED_BY")
-	private String createdBy;
+	private Long createdBy;
 	
 	@Column(name = "CREATION_DATE")
 	private Date creationDate;
 	
 	@Column(name = "LAST_UPDATE_LOGIN")
-	private String lastUpdateLogin;
+	private Long lastUpdateLogin;
 	
 	@Column(name = "LAST_UPDATED_BY")
-	private String lastUpdatedBy;
+	private Long lastUpdatedBy;
 	
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
@@ -63,14 +63,6 @@ public class BaseClass {
 		this.status = status;
 	}
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -79,20 +71,28 @@ public class BaseClass {
 		this.creationDate = creationDate;
 	}
 
-	public String getLastUpdateLogin() {
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Long getLastUpdateLogin() {
 		return lastUpdateLogin;
 	}
 
-	public void setLastUpdateLogin(String lastUpdateLogin) {
+	public void setLastUpdateLogin(Long lastUpdateLogin) {
 		this.lastUpdateLogin = lastUpdateLogin;
 	}
 
-	public String getLastUpdatedBy() {
+	public Long getLastUpdatedBy() {
 		return lastUpdatedBy;
 	}
 
-	public void setLastUpdatedBy(String userId) {
-		this.lastUpdatedBy = userId;
+	public void setLastUpdatedBy(Long lastUpdatedBy) {
+		this.lastUpdatedBy = lastUpdatedBy;
 	}
 
 	public Date getLastUpdateDate() {

@@ -53,7 +53,7 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 	}
 
 	@Override
-	public LtMastLogins getLoginDetailsByUserId(String userId) throws ServiceException {
+	public LtMastLogins getLoginDetailsByUserId(Long userId) throws ServiceException {
 		String query = env.getProperty("getLoginDetailsByUserId");
 		List<LtMastLogins> list = jdbcTemplate.query(query, new Object[] { userId },
 				new BeanPropertyRowMapper<LtMastLogins>(LtMastLogins.class));

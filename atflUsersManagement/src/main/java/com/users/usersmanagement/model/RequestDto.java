@@ -10,7 +10,7 @@ public class RequestDto {
 	private String searchField;
 	private String outletName;
 	private String salesPersonId;
-	private String userId;
+	private Long userId;
 	private String primaryMobile;
 	
 	//Added by Nikhil
@@ -109,11 +109,11 @@ public class RequestDto {
 		this.userName = userName;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

@@ -50,16 +50,16 @@ public class LtFileUpload {
 	private String status;
 	
 	@Column(name = "CREATED_BY")
-	private String createdBy;
+	private Long createdBy;
 	
 	@Column(name = "CREATION_DATE")
 	private Date creationDate;
 	
 	@Column(name = "LAST_UPDATE_LOGIN")
-	private String lastUpdateLogin;
+	private Long lastUpdateLogin;
 	
 	@Column(name = "LAST_UPDATED_BY")
-	private String lastUpdatedBy;
+	private Long lastUpdatedBy;
 	
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
@@ -136,11 +136,11 @@ public class LtFileUpload {
 		this.status = status;
 	}
 
-	public String getCreatedBy() {
+	public Long getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(Long createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -152,19 +152,19 @@ public class LtFileUpload {
 		this.creationDate = creationDate;
 	}
 
-	public String getLastUpdateLogin() {
+	public Long getLastUpdateLogin() {
 		return lastUpdateLogin;
 	}
 
-	public void setLastUpdateLogin(String lastUpdateLogin) {
+	public void setLastUpdateLogin(Long lastUpdateLogin) {
 		this.lastUpdateLogin = lastUpdateLogin;
 	}
 
-	public String getLastUpdatedBy() {
+	public Long getLastUpdatedBy() {
 		return lastUpdatedBy;
 	}
 
-	public void setLastUpdatedBy(String lastUpdatedBy) {
+	public void setLastUpdatedBy(Long lastUpdatedBy) {
 		this.lastUpdatedBy = lastUpdatedBy;
 	}
 

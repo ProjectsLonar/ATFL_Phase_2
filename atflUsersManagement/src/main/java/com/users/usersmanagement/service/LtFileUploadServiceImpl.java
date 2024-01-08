@@ -40,7 +40,7 @@ public class LtFileUploadServiceImpl implements LtFileUploadService, CodeMaster 
 	LtFileUploadDao ltFileUploadDao;
 
 	@Override
-	public Status uploadfile(MultipartFile file, String orgId, String userId) throws ServiceException, ParseException {
+	public Status uploadfile(MultipartFile file, String orgId, Long userId) throws ServiceException, ParseException {
 		Status status = new Status();
 
 		try {
@@ -104,7 +104,7 @@ public class LtFileUploadServiceImpl implements LtFileUploadService, CodeMaster 
 	}
 
 	@Override
-	public Status getUploadedFiles(String orgId, Long limit, Long offset, String userId) throws ServiceException {
+	public Status getUploadedFiles(String orgId, Long limit, Long offset, Long userId) throws ServiceException {
 		Status status = new Status();
 		List<LtFileUpload> fileUploadList = ltFileUploadDao.getAllUploadedFiles(orgId, limit, offset, userId);
 

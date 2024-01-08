@@ -14,7 +14,7 @@ public interface LtPromotionService {
 			String allTimeShowFlag, String orgId, String startDate, String endDate)
 			throws ServiceException, ParseException;
 
-	Status getPromotionDataV1(String orgId, Long limit, Long offset, String userId) throws ServiceException;
+	Status getPromotionDataV1(String orgId, Long limit, Long offset, Long userId) throws ServiceException;
 	
 	Status getPromotionData(String orgId, Long limit, Long offset) throws ServiceException;
 

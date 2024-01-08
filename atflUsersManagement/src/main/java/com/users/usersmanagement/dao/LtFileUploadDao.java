@@ -9,7 +9,7 @@ import com.users.usersmanagement.model.LtFileUpload;
 
 public interface LtFileUploadDao {
 	
-	List<LtFileUpload> getAllUploadedFiles(String orgId, Long limit, Long offset, String userId) throws ServiceException;
+	List<LtFileUpload> getAllUploadedFiles(String orgId, Long limit, Long offset, Long userId) throws ServiceException;
 	
 	LtFileUpload getfileByName(MultipartFile file)throws ServiceException;
 

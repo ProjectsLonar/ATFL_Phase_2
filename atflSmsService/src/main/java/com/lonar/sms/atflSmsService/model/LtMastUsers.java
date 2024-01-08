@@ -23,7 +23,7 @@ public class LtMastUsers extends BaseClass {
 	@SequenceGenerator(name = "LT_MAST_USERS_S", sequenceName = "LT_MAST_USERS_S", allocationSize = 1)
 	@Basic(optional = false)
 	@Column(name = "USER_ID")
-	private String userId;
+	private Long userId;
 
 	@Column(name = "ORG_ID")
 	private String orgId;
@@ -61,11 +61,11 @@ public class LtMastUsers extends BaseClass {
 	@Column(name = "ALTERNATE_NO")
 	private String alternateNo;
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

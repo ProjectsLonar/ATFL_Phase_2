@@ -10,7 +10,7 @@ public interface AtflMastUsersDao {
 
 	LtMastUsers getLtMastUsersByMobileNumber(String mobileNumber) throws ServiceException;
 
-	LtMastLogins getLoginDetailsByUserId(String userId) throws ServiceException;
+	LtMastLogins getLoginDetailsByUserId(Long userId) throws ServiceException;
 	
 	LtMastUsers saveLtMastUsers(LtMastUsers ltMastUser) throws ServiceException;
 	

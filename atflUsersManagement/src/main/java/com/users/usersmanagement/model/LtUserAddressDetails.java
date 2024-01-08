@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 public class LtUserAddressDetails {
 	
 	@NotNull(message="Please enter user id")
-	private String userId;
+	private Long userId;
 
 	@NotBlank(message="Please enter user Address")
 	private String Address;
@@ -20,11 +20,11 @@ public class LtUserAddressDetails {
 	@NotBlank(message="Please enter address details")
 	private String addressDetails;
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

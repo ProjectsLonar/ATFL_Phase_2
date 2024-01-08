@@ -29,7 +29,7 @@ public class LtMastDistributorsController implements CodeMaster {
 	@RequestMapping(value = "/verifyDistributor/{distributorCrmCode}/{positionCode}/{userCode}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> verifyDistributor(@PathVariable("distributorCrmCode") String distributorCrmCode,
 			@PathVariable("positionCode") String positionCode, @PathVariable("userCode") String userCode,
-			@PathVariable("userId") String userId) throws ServerException {
+			@PathVariable("userId") Long userId) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(
 					ltMastDistributorsService.verifyDistributor(distributorCrmCode, positionCode, userCode, userId),
@@ -42,7 +42,7 @@ public class LtMastDistributorsController implements CodeMaster {
 	@RequestMapping(value = "/verifyDistributor/{distributorCrmCode}/{distributorName}/{proprietorName}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v2.0")
 	public ResponseEntity<Status> verifyDistributorV1(@PathVariable("distributorCrmCode") String distributorCrmCode,
 			@PathVariable("distributorName") String distributorName, @PathVariable("proprietorName") String proprietorName,
-			@PathVariable("userId") String userId) throws ServerException {
+			@PathVariable("userId") Long userId) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(
 					ltMastDistributorsService.verifyDistributorV1(distributorCrmCode, distributorName, proprietorName, userId),
@@ -55,7 +55,7 @@ public class LtMastDistributorsController implements CodeMaster {
 
 
 	@GetMapping(value = "/getAllDistributorAgainstAreahead/{userId}", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> getAllDistributorAgainstAreahead(@PathVariable("userId") String userId) throws ServerException {
+	public ResponseEntity<Status> getAllDistributorAgainstAreahead(@PathVariable("userId") Long userId) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(
 					ltMastDistributorsService.getAllDistributorAgainstAreahead(userId),

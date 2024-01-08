@@ -75,7 +75,7 @@ public class AtflMastUsersController implements CodeMaster {
 	}
 
 	@RequestMapping(value = "/getUserById/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> getUserById(@PathVariable("userId") String userId) throws ServiceException {
+	public ResponseEntity<Status> getUserById(@PathVariable("userId") Long userId) throws ServiceException {
 
 		try {
 			String requestURL = "/getUserById/" + userId;
@@ -91,7 +91,7 @@ public class AtflMastUsersController implements CodeMaster {
 	}
 
 	@RequestMapping(value = "/delete/{userId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> delete(@PathVariable("userId") String userId) throws ServiceException {
+	public ResponseEntity<Status> delete(@PathVariable("userId") Long userId) throws ServiceException {
 		try {
 			String requestURL = "/delete/" + userId;
 			Logging.setRequestLog(null, "delete()", requestURL, "DELETE");
@@ -107,7 +107,7 @@ public class AtflMastUsersController implements CodeMaster {
 
 	@RequestMapping(value = "/getPenddingApprovalByDistributorId/{distributorId}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> getPenddingApprovalByDistributorId(@PathVariable("distributorId") Long distributorId,
-			@PathVariable("userId") String userId) throws ServiceException, IOException {
+			@PathVariable("userId") Long userId) throws ServiceException, IOException {
 
 		try {
 			String requestURL = "/getPenddingApprovalByDistributorId/" + distributorId + "/" + userId;
@@ -123,7 +123,7 @@ public class AtflMastUsersController implements CodeMaster {
 	}
 
 	@RequestMapping(value = "/changeUserStatus/{userId}/{status}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> changeUserStatus(@PathVariable("userId") String userId,
+	public ResponseEntity<Status> changeUserStatus(@PathVariable("userId") Long userId,
 			@PathVariable("status") String status) throws ServiceException, IOException {
 
 		try {
@@ -156,8 +156,8 @@ public class AtflMastUsersController implements CodeMaster {
 	}
 
 	@RequestMapping(value = "/setSelectedOutlet/{userId}/{searchId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> setSelectedOutlet(@PathVariable("userId") String userId,
-			@PathVariable("searchId") Long searchId) throws ServiceException, IOException {
+	public ResponseEntity<Status> setSelectedOutlet(@PathVariable("userId") Long userId,
+			@PathVariable("searchId") String searchId) throws ServiceException, IOException {
 
 		try {
 			String requestURL = "/setSelectedOutlet/" + userId + "/" + searchId;
@@ -174,7 +174,7 @@ public class AtflMastUsersController implements CodeMaster {
 	}
 
 	@RequestMapping(value = "/getPersonaldetailsById/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> getPersonaldetailsById(@PathVariable("userId") String userId)
+	public ResponseEntity<Status> getPersonaldetailsById(@PathVariable("userId") Long userId)
 			throws ServiceException, IOException {
 
 		try {
@@ -207,7 +207,7 @@ public class AtflMastUsersController implements CodeMaster {
 	}
 
 	@RequestMapping(value = "/getAddressDetailsById/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> getAddressDetailsById(@PathVariable("userId") String userId)
+	public ResponseEntity<Status> getAddressDetailsById(@PathVariable("userId") Long userId)
 			throws ServiceException, IOException {
 		try {
 			String requestURL = "/getAddressDetailsById/" + userId;
@@ -225,7 +225,7 @@ public class AtflMastUsersController implements CodeMaster {
 	}
 
 	@RequestMapping(value = "/activeProfile/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> activeProfile(@PathVariable("userId") String userId) throws ServerException {
+	public ResponseEntity<Status> activeProfile(@PathVariable("userId") Long userId) throws ServerException {
 		try {
 			String requestURL = "/activeProfile/" + userId;
 			Logging.setRequestLog(null, "activeProfile()", requestURL, "GET");
@@ -270,7 +270,7 @@ public class AtflMastUsersController implements CodeMaster {
 
 	@RequestMapping(value = "/uploadProfilePic", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> uploadProfilePic(@RequestParam("file") MultipartFile file,
-			@RequestParam("userId") String userId) throws ServerException {
+			@RequestParam("userId") Long userId) throws ServerException {
 		try {
 			String requestURL = "/uploadProfilePic/" + userId;
 			Logging.setRequestLog(null, "uploadProfilePic()", requestURL, "POST");
@@ -285,7 +285,7 @@ public class AtflMastUsersController implements CodeMaster {
 	}
 
 	@RequestMapping(value = "/getUserAllMasterDataById/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> getUserAllMasterDataById(@PathVariable("userId") String userId)
+	public ResponseEntity<Status> getUserAllMasterDataById(@PathVariable("userId") Long userId)
 			throws ServiceException {
 		try {
 			String requestURL = "/getUserAllMasterDataById/" + userId;

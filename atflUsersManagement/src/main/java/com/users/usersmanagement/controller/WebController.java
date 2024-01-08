@@ -80,7 +80,7 @@ public class WebController {
 	}
 
 	@Transactional
-	private void saveNotificationDetails(LtMastUsers ltMastUsers, String userId, JSONObject data,JSONObject notificationTitle) {
+	private void saveNotificationDetails(LtMastUsers ltMastUsers, Long userId, JSONObject data,JSONObject notificationTitle) {
 		NotificationDetails notification = new NotificationDetails();
 		notification.setReadFlag("N");
 		notification.setUserId(ltMastUsers.getUserId());  // Pass PENDINGAPPROVAL status user id

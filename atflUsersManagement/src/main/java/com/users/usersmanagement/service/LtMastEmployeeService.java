@@ -6,23 +6,23 @@ import com.users.usersmanagement.model.Status;
 
 public interface LtMastEmployeeService {
 
-	Status verifyEmployee(String employeeCode, String distributorCode, String positionCode, String userId)
+	Status verifyEmployee(String employeeCode, String distributorCode, String positionCode, Long userId)
 			throws ServiceException;
 
 	Status getSalesPersonsForDistributorV1(RequestDto requestDto) throws ServiceException;
 	
-	Status verifySalesOfficer(String primaryMobile,String emailId,String positionCode, String userId)
+	Status verifySalesOfficer(String primaryMobile,String emailId,String positionCode, Long userId)
 			throws ServiceException;
 	
-	Status verifySalesOfficerV1(String employeeCode,String userId,String userName)
+	Status verifySalesOfficerV1(String employeeCode,Long userId,String userName)
 			throws ServiceException;
 	
-	Status verifyAreaHead(String primaryMobile,String emailId,String positionCode, String userId)
+	Status verifyAreaHead(String primaryMobile,String emailId,String positionCode, Long userId)
 			throws ServiceException;
 	
-	Status verifyAreaHeadV1(String employeeCode,String userName, String userId)
+	Status verifyAreaHeadV1(String employeeCode, Long userId,String userName)
 			throws ServiceException;
 	
-	Status verifySystemAdministrator(String employeeCode,String userName, String userId)throws ServiceException;
+	Status verifySystemAdministrator(String employeeCode, Long userId,String userName)throws ServiceException;
 
 }

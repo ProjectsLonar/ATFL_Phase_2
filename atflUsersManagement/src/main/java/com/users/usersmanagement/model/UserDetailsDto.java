@@ -8,7 +8,7 @@ public class UserDetailsDto {
 
 	private String userType;
 	private String distributorId;
-	private String userId;
+	private Long userId;
 
 	public String getUserType() {
 		return userType;
@@ -26,11 +26,11 @@ public class UserDetailsDto {
 		this.distributorId = distributorId;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 }

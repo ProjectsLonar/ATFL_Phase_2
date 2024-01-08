@@ -7,8 +7,8 @@ import com.users.usersmanagement.model.Status;
 
 public interface LtMastSmsTokenService {
 
-	Status sendSms(String userId, String transId) throws ServiceException,IOException;
+	Status sendSms(Long userId, String transId) throws ServiceException,IOException;
 
-	Status getSmsBalance(String userId) throws ServiceException, IOException;
+	Status getSmsBalance(Long userId) throws ServiceException, IOException;
 
 }

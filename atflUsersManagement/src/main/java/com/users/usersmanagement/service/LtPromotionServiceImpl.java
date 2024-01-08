@@ -40,7 +40,7 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 	private Environment env;
 
 	@Override
-	public Status getPromotionDataV1(String orgId, Long limit, Long offset, String userId) throws ServiceException {
+	public Status getPromotionDataV1(String orgId, Long limit, Long offset, Long userId) throws ServiceException {
 		Status status = new Status();
 		List<LtPromotion> ltPromotionList = promotionDao.getPromotionDataV1(orgId, limit, offset, userId);
 

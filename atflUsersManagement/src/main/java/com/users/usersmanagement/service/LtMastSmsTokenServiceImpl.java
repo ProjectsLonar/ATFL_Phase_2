@@ -40,7 +40,7 @@ public class LtMastSmsTokenServiceImpl implements LtMastSmsTokenService, CodeMas
 	LtOrganisationSMSDAO ltOrganisationSMSDAO;
 
 	@Override
-	public Status sendSms(String userId, String transId) throws ServiceException, IOException {
+	public Status sendSms(Long userId, String transId) throws ServiceException, IOException {
 		Status status = new Status();
 		List<LtMastSmsToken> ltMastSmsTokenList = ltMastSmsTokenDao.getBySmsId(userId, transId);
 
@@ -101,7 +101,7 @@ public class LtMastSmsTokenServiceImpl implements LtMastSmsTokenService, CodeMas
 
 
 	@Override
-	public Status getSmsBalance(String supplierId) throws ServiceException, IOException {
+	public Status getSmsBalance(Long supplierId) throws ServiceException, IOException {
 		Status status = new Status();
 		/*
 		 * StringBuffer GET_URL = new StringBuffer(ltOrganisationSMS.getSmsUrl() +

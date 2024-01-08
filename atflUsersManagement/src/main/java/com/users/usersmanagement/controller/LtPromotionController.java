@@ -65,7 +65,7 @@ public class LtPromotionController implements CodeMaster {
 	
 	@RequestMapping(value = "/getPromotionDataV1/{orgId}/{limit}/{offset}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> getPromotionDataV1(@PathVariable("orgId") String orgId, @PathVariable("limit") Long limit,  @PathVariable("offset") Long offset,
-			@PathVariable("userId") String userId)
+			@PathVariable("userId") Long userId)
 			throws ServiceException, IOException {  
 		return new ResponseEntity<Status>(ltPromotionService.getPromotionDataV1(orgId, limit, offset, userId), HttpStatus.OK);
 	}

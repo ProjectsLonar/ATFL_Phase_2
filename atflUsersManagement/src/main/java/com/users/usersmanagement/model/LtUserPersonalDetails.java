@@ -8,7 +8,7 @@ import javax.validation.constraints.Pattern;
 public class LtUserPersonalDetails {
 	
 	@NotNull(message="Please enter user id")
-	private String userId;
+	private Long userId;
 
 	
 	@NotBlank(message="Please enter user name")
@@ -23,11 +23,11 @@ public class LtUserPersonalDetails {
 	@Email(message = "Email should be valid")
 	private String email;
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
