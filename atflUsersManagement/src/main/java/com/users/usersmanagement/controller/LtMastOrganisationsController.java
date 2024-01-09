@@ -25,7 +25,7 @@ public class LtMastOrganisationsController implements CodeMaster {
 
 	@RequestMapping(value = "/verifyOrganisation/{userCode}/{orgCode}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> verifyOrganisation(@PathVariable("userCode") String userCode,
-			@PathVariable("orgCode") String orgCode, @PathVariable("userId") String userId) throws ServerException {
+			@PathVariable("orgCode") String orgCode, @PathVariable("userId") Long userId) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(ltMastOrganisationsService.verifyOrganisation(userCode, orgCode, userId),
 					HttpStatus.OK);

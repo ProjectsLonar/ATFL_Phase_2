@@ -96,7 +96,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, CodeMaster {
 						ltMastUserInprocess.setLatitude(null);
 						ltMastUserInprocess.setLongitude(null);
 						ltMastUserInprocess.setAddressDetails(null);
-						ltMastUserInprocess.setRecentSerachId(0L);
+						ltMastUserInprocess.setRecentSerachId("0");
 						ltMastUserInprocess.setPositionId(null);
 
 						// end nikhil changes

@@ -8,9 +8,9 @@ import com.users.usersmanagement.model.LtMastSmsToken;
 
 public interface LtMastSmsTokenDao {
 
-	List<LtMastSmsToken> getBySmsId(String userId, String transId) throws ServiceException;
+	List<LtMastSmsToken> getBySmsId(Long userId, String transId) throws ServiceException;
 
-	int updateStatus(String status, String userId, String transId) throws ServiceException;
+	int updateStatus(String status, Long userId, String transId) throws ServiceException;
 
 	LtMastOrganisations getDefaultOrganisationByCode(String string) throws ServiceException;
 

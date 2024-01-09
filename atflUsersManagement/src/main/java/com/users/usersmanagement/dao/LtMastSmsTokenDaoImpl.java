@@ -36,7 +36,7 @@ public class LtMastSmsTokenDaoImpl implements LtMastSmsTokenDao {
 	}
 
 	@Override
-	public List<LtMastSmsToken> getBySmsId(String userId, String transId) throws ServiceException {
+	public List<LtMastSmsToken> getBySmsId(Long userId, String transId) throws ServiceException {
 		String query = "SELECT * FROM LT_MAST_SMS_TOKENS WHERE ( SMS_STATUS = 'SENDING' OR SMS_STATUS = 'FAIL TO SEND' ) "
 				+ " AND COALESCE(USER_ID,'xx') =  COALESCE(?,COALESCE(USER_ID,'xx'))  AND Transaction_id = ? ";
 
@@ -46,7 +46,7 @@ public class LtMastSmsTokenDaoImpl implements LtMastSmsTokenDao {
 	}
 
 	@Override
-	public int updateStatus(String status, String userId, String transId) throws ServiceException {
+	public int updateStatus(String status, Long userId, String transId) throws ServiceException {
 		int result = 0;
 		result = jdbcTemplate.update(" UPDATE LT_MAST_SMS_TOKENS SET SMS_STATUS = ?  " + "  WHERE   Transaction_id = ? ",
 				status.toUpperCase(), transId);

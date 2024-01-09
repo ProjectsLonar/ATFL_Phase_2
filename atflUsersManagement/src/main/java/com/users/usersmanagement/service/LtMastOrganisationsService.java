@@ -5,7 +5,7 @@ import com.users.usersmanagement.model.Status;
 
 public interface LtMastOrganisationsService {
 
-	Status verifyOrganisation(String userCode, String orgCode, String userId) throws ServiceException;
+	Status verifyOrganisation(String userCode, String orgCode, Long userId) throws ServiceException;
 
-	Status verifyOrganisationV2(String userCode, String orgCode, String userId) throws ServiceException;
+	Status verifyOrganisationV2(String userCode, String orgCode, Long userId) throws ServiceException;
 }

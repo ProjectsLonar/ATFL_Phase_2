@@ -24,7 +24,7 @@ public class LtMastUsers extends BaseClass {
 	@SequenceGenerator(name = "LT_MAST_USERS_S", sequenceName = "LT_MAST_USERS_S", allocationSize = 1)
 	@Basic(optional = false)
 	@Column(name = "USER_ID")
-	private String userId;
+	private Long userId;
 
 	@Column(name = "ORG_ID")
 	private String orgId;
@@ -81,7 +81,7 @@ public class LtMastUsers extends BaseClass {
 	private String addressDetails;
 	
 	@Column(name = "RECENT_SEARCH_ID")
-	private Long recentSerachId;
+	private String recentSerachId;
 	
 	@Column(name = "TOKEN_DATA")
 	private String token;
@@ -136,11 +136,12 @@ public class LtMastUsers extends BaseClass {
 	String position;
 	
 
-	public String getUserId() {
+
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -292,11 +293,11 @@ public class LtMastUsers extends BaseClass {
 		this.addressDetails = addressDetails;
 	}
 
-	public Long getRecentSerachId() {
+	public String getRecentSerachId() {
 		return recentSerachId;
 	}
 
-	public void setRecentSerachId(Long recentSerachId) {
+	public void setRecentSerachId(String recentSerachId) {
 		this.recentSerachId = recentSerachId;
 	}
 

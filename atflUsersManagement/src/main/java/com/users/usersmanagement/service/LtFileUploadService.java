@@ -9,9 +9,9 @@ import com.users.usersmanagement.model.Status;
 
 public interface LtFileUploadService {
 
-	Status uploadfile(MultipartFile file, String orgId, String userId) throws ServiceException, ParseException;
+	Status uploadfile(MultipartFile file, String orgId, Long userId) throws ServiceException, ParseException;
 
-	Status getUploadedFiles(String orgId, Long limit, Long offset, String userId) throws ServiceException;
+	Status getUploadedFiles(String orgId, Long limit, Long offset, Long userId) throws ServiceException;
 
 	Status deleteUplodedFile(Long fileuploadId) throws ServiceException;
 }

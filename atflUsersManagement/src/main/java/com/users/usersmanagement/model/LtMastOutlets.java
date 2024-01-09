@@ -129,7 +129,7 @@ public class LtMastOutlets extends BaseClass {
 	String outletAddress;
 	
 	@Transient
-	String userId;
+	Long userId;
 
 	public String getPosition() {
 		return position;
@@ -423,11 +423,11 @@ public class LtMastOutlets extends BaseClass {
 		this.priceList = priceList;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 	

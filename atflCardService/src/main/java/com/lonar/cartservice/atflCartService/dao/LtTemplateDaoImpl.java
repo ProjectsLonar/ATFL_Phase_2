@@ -1,5 +1,6 @@
 package com.lonar.cartservice.atflCartService.dao;
 
+import java.io.IOException;
 import java.rmi.ServerException;
 import java.util.List;
 
@@ -12,14 +13,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.model.CodeMaster;
 import com.lonar.cartservice.atflCartService.model.LtTemplateHeaders;
 import com.lonar.cartservice.atflCartService.model.LtTemplateLines;
+import com.lonar.cartservice.atflCartService.repository.LtTemplateHeadersRepository;
+import com.lonar.cartservice.atflCartService.repository.LtTemplateLinesRepository;
 
 
 
 @Repository
-@PropertySource(value = "classpath:queries/cartMasterQueries.properties", ignoreResourceNotFound = true)
+@PropertySource(value = "classpath:queries/cartmasterqueries.properties", ignoreResourceNotFound = true)
 @Transactional(propagation=Propagation.MANDATORY)
 public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 	@Autowired
@@ -30,6 +34,12 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 	public JdbcTemplate getJdbcTemplate() {
 		return jdbcTemplate;
 	}
+	
+	@Autowired
+	LtTemplateHeadersRepository ltTemplateHeadersRepository;
+	
+	@Autowired
+	LtTemplateLinesRepository ltTemplateLinesRepository;
 
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
@@ -47,7 +57,7 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 		
 		//LtTemplateHeaders templateHeader= jdbcTemplate.queryForObject(query, new Object[] {distributorId, templateHeaderId }, LtTemplateHeaders.class);
 	System.out.println("templateHeader"+templateHeader);
-	if (templateHeader !=null) {
+	if (!templateHeader.isEmpty()) {
 		return templateHeader.get(0);
 	}
 	}catch(Exception e) {
@@ -66,5 +76,25 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 			return templateproductlist;
 		}
 		return null;
+	}
+	
+	@Override
+	@Transactional
+	public void deletelinedetailsbytemplateid(Long templateHeaderId) throws ServiceException {
+		String query = env.getProperty("deletelinedetailsbytemplateid");
+		Object[] person = new Object[] { templateHeaderId };
+		jdbcTemplate.update(query, person);
+	}
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public LtTemplateHeaders saveheaderData(LtTemplateHeaders ltTemplateHeaders) throws ServiceException{
+		return ltTemplateHeadersRepository.save(ltTemplateHeaders);
+	}
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public LtTemplateLines saveLineData (LtTemplateLines ltTemplateLines)throws ServiceException{
+		return ltTemplateLinesRepository.save(ltTemplateLines);
 	}
 }

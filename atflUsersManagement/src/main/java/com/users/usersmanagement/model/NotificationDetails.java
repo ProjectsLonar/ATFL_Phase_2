@@ -29,7 +29,7 @@ public class NotificationDetails {
 	private Long transactionId;
 
 	@Column(name = "user_id")
-	private String userId;
+	private Long userId;
 
 	@Column(name = "NOTIFICATION_TITLE")
 	private String notificationTitle;
@@ -74,11 +74,11 @@ public class NotificationDetails {
 		this.transactionId = transactionId;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

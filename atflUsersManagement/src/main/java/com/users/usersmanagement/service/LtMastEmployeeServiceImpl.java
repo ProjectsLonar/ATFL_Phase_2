@@ -33,7 +33,7 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 	AtflMastUsersService ltMastUsersService;
 
 	@Override
-	public Status verifyEmployee(String employeeCode, String distributorCrmCode, String positionCode, String userId)
+	public Status verifyEmployee(String employeeCode, String distributorCrmCode, String positionCode, Long userId)
 			throws ServiceException {
 		Status status = new Status();
 		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
@@ -119,7 +119,7 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 	}
 
 	@Override
-	public Status verifySalesOfficer(String primaryMobile, String emailId, String positionCode, String userId)
+	public Status verifySalesOfficer(String primaryMobile, String emailId, String positionCode, Long userId)
 			throws ServiceException {
 
 		Status status = new Status();
@@ -170,7 +170,7 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 	}
 
 	@Override
-	public Status verifyAreaHead(String primaryMobile, String emailId, String positionCode, String userId)
+	public Status verifyAreaHead(String primaryMobile, String emailId, String positionCode, Long userId)
 			throws ServiceException {
 
 		Status status = new Status();
@@ -221,7 +221,7 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 	
 	
 	@Override
-	public Status verifyAreaHeadV1(String employeeCode,String userName, String userId)
+	public Status verifyAreaHeadV1(String employeeCode, Long userId,String userName)
 			throws ServiceException {
 
 		Status status = new Status();
@@ -272,7 +272,7 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 	
 	
 	@Override
-	public Status verifySalesOfficerV1(String employeeCode,String userId,String userName)
+	public Status verifySalesOfficerV1(String employeeCode,Long userId,String userName)
 			throws ServiceException {
 
 		Status status = new Status();
@@ -322,7 +322,7 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 	}
 	
 	@Override
-	public Status verifySystemAdministrator(String employeeCode,String userName, String userId)throws ServiceException {
+	public Status verifySystemAdministrator(String employeeCode, Long userId, String userName)throws ServiceException {
 
 		Status status = new Status();
 

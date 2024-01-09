@@ -5,7 +5,7 @@ public class ResponceEntity {
 	private Integer code;
 	private  String message;
 	private Object data;
-	private String userId;
+	private Long userId;
 	private String userName;
 	private String role;
 	private String status;
@@ -32,10 +32,10 @@ public class ResponceEntity {
 	public void setData(Object data) {
 		this.data = data;
 	}
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 	

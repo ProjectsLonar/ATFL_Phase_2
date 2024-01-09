@@ -22,8 +22,8 @@ public class LtMastUsers extends BaseClass {
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
 	@Column(name = "USER_ID")
-//	private Long userId;
-	private String userId;
+	private Long userId;
+	//private String userId;
 	
 	@Column(name = "ORG_ID")
 //	private Long orgId;
@@ -131,11 +131,11 @@ public class LtMastUsers extends BaseClass {
 	String position;
 	
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

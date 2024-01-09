@@ -30,7 +30,7 @@ public class LtMastOrganisationsServiceImpl implements LtMastOrganisationsServic
 	AtflMastUsersService ltMastUsersService;
 
 	@Override
-	public Status verifyOrganisation(String userCode, String orgCode, String userId) throws ServiceException {
+	public Status verifyOrganisation(String userCode, String orgCode, Long userId) throws ServiceException {
 
 		Status status = new Status();
 
@@ -80,7 +80,7 @@ public class LtMastOrganisationsServiceImpl implements LtMastOrganisationsServic
 	}
 
 	@Override
-	public Status verifyOrganisationV2(String userCode, String orgCode, String userId) throws ServiceException {
+	public Status verifyOrganisationV2(String userCode, String orgCode, Long userId) throws ServiceException {
 
 		Status status = new Status();
 

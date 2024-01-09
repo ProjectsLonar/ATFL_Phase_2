@@ -38,7 +38,7 @@ public class LtMasterSalePersonController implements CodeMaster {
 	@RequestMapping(value = "/verifyEmployee/{employeeCode}/{distributorCrmCode}/{positionCode}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> verifyEmployee(@PathVariable("employeeCode") String employeeCode,
 			@PathVariable("distributorCrmCode") String distributorCrmCode, @PathVariable("positionCode") String positionCode,
-			@PathVariable("userId") String userId) throws ServerException {
+			@PathVariable("userId") Long userId) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(
 					ltMastEmployeeService.verifyEmployee(employeeCode, distributorCrmCode, positionCode, userId),
@@ -50,7 +50,7 @@ public class LtMasterSalePersonController implements CodeMaster {
 	
 	@RequestMapping(value = "/verifySalesOfficer/{primaryMobile}/{emailId}/{positionCode}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> verifySalesOfficer(@PathVariable("primaryMobile") String primaryMobile,@PathVariable("emailId") String emailId, @PathVariable("positionCode") String positionCode,
-			@PathVariable("userId") String userId) throws ServerException {
+			@PathVariable("userId") Long userId) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(ltMastEmployeeService.verifySalesOfficer(primaryMobile,emailId,positionCode,userId),HttpStatus.OK);
 		} catch (Exception e) {
@@ -59,7 +59,7 @@ public class LtMasterSalePersonController implements CodeMaster {
 	}
 	
 	@RequestMapping(value = "/verifySalesOfficer/{employeeCode}/{userId}/{userName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v2.0")
-	public ResponseEntity<Status> verifySalesOfficerV1(@PathVariable("employeeCode") String employeeCode,@PathVariable("userId") String userId,@PathVariable("userName") String userName) throws ServerException {
+	public ResponseEntity<Status> verifySalesOfficerV1(@PathVariable("employeeCode") String employeeCode,@PathVariable("userId") Long userId,@PathVariable("userName") String userName) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(ltMastEmployeeService.verifySalesOfficerV1(employeeCode,userId,userName),HttpStatus.OK);
 		} catch (Exception e) {
@@ -69,7 +69,7 @@ public class LtMasterSalePersonController implements CodeMaster {
 	
 	@RequestMapping(value = "/verifyAreaHead/{primaryMobile}/{emailId}/{positionCode}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> verifyAreaHead(@PathVariable("primaryMobile") String primaryMobile,@PathVariable("emailId") String emailId,@PathVariable("positionCode") String positionCode,
-			@PathVariable("userId") String userId) throws ServerException {
+			@PathVariable("userId") Long userId) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(ltMastEmployeeService.verifyAreaHead(primaryMobile,emailId,positionCode,userId),HttpStatus.OK);
 		} catch (Exception e) {
@@ -78,7 +78,7 @@ public class LtMasterSalePersonController implements CodeMaster {
 	}
 	
 	@RequestMapping(value = "/verifyAreaHead/{employeeCode}/{userId}/{userName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v2.0")
-	public ResponseEntity<Status> verifyAreaHeadV1(@PathVariable("employeeCode") String employeeCode,@PathVariable("userId") String userId,@PathVariable("userName") String userName) throws ServerException {
+	public ResponseEntity<Status> verifyAreaHeadV1(@PathVariable("employeeCode") String employeeCode,@PathVariable("userId") Long userId,@PathVariable("userName") String userName) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(ltMastEmployeeService.verifyAreaHeadV1(employeeCode,userId,userName),HttpStatus.OK);
 		} catch (Exception e) {
@@ -87,7 +87,7 @@ public class LtMasterSalePersonController implements CodeMaster {
 	}
 	
 	@RequestMapping(value = "/systemAdministrator/{employeeCode}/{userId}/{userName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> verifySystemAdministrator(@PathVariable("employeeCode") String employeeCode,@PathVariable("userId") String userId,@PathVariable("userName") String userName) throws ServerException {
+	public ResponseEntity<Status> verifySystemAdministrator(@PathVariable("employeeCode") String employeeCode,@PathVariable("userId") Long userId,@PathVariable("userName") String userName) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(ltMastEmployeeService.verifySystemAdministrator(employeeCode,userId,userName),HttpStatus.OK);
 		} catch (Exception e) {

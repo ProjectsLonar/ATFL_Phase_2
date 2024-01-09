@@ -26,7 +26,7 @@ public class LtMastLogins {
 	private Long loginId;
 
 	@Column(name = "USER_ID")
-	private String userId;
+	private Long userId;
 
 	@Column(name = "LOGIN_DATE")
 	private Date loginDate;
@@ -66,11 +66,11 @@ public class LtMastLogins {
 		this.loginId = loginId;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

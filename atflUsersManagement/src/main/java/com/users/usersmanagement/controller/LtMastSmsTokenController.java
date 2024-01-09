@@ -31,7 +31,7 @@ public class LtMastSmsTokenController {
 	}
 	
 	@RequestMapping(value = "/sendSms/{transId}/{userId}", method= RequestMethod.GET)
-	public ResponseEntity<Status> sendSms(@PathVariable("transId") String transId,@PathVariable("userId") String userId) throws ServiceException, ParseException, JsonParseException, JsonMappingException, IOException, InterruptedException
+	public ResponseEntity<Status> sendSms(@PathVariable("transId") String transId,@PathVariable("userId") Long userId) throws ServiceException, ParseException, JsonParseException, JsonMappingException, IOException, InterruptedException
 	{
 		try {
 			Status status =  ltMastSmsTokenService.sendSms(userId,transId);
@@ -55,7 +55,7 @@ public class LtMastSmsTokenController {
 	}
 	
 	@RequestMapping(value = "/getSmsBalance/{userId}/{logTime}", method= RequestMethod.GET)
-	public ResponseEntity<Status> getSmsBalance(@PathVariable("userId") String userId,@PathVariable("logTime") Long logTime) throws ServiceException, ParseException, JsonParseException, JsonMappingException, IOException, InterruptedException
+	public ResponseEntity<Status> getSmsBalance(@PathVariable("userId") Long userId,@PathVariable("logTime") Long logTime) throws ServiceException, ParseException, JsonParseException, JsonMappingException, IOException, InterruptedException
 	{
 		try {
 			Status status =  ltMastSmsTokenService.getSmsBalance(userId);

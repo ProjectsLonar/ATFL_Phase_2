@@ -7,8 +7,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -75,7 +78,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 	private WebController webController;
 	
 	@Override
-	public Status verifyOutlet(String outletCode, String distributorCrmCode, String userId)
+	public Status verifyOutlet(String outletCode, String distributorCrmCode, Long userId)
 			throws ServiceException, IOException {
 		Status status = new Status();
 		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
@@ -145,7 +148,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 	}
 
 	@Override
-	public Status getAllUserDataByRecentId(String userId) throws ServiceException {
+	public Status getAllUserDataByRecentId(Long userId) throws ServiceException {
 
 		Status status = new Status();
 
@@ -333,53 +336,112 @@ try {
 		  LtMastOrganisations ltMastOrganisations =
 		  ltMastOutletDao.getOrganisationDetailsById(ltMastOutletsDump.getOrgId());
 		  System.out.println("ltMastOrganisations"+ltMastOrganisations);
-		  RelatedOrganization relatedOrganizationDetails = new RelatedOrganization();
-		  relatedOrganizationDetails.setIsPrimaryMVG("Y");
-		  relatedOrganizationDetails.setOrganization(ltMastOrganisations.
-		  getOrganisationName());
+			/*
+			 * RelatedOrganization relatedOrganizationDetails = new RelatedOrganization();
+			 * relatedOrganizationDetails.setIsPrimaryMVG("Y");
+			 * relatedOrganizationDetails.setOrganization(ltMastOrganisations.
+			 * getOrganisationName());
+			 * 
+			 * ListOfRelatedOrganization listOfRelatedOrganization = new
+			 * ListOfRelatedOrganization();
+			 * listOfRelatedOrganization.setRelatedOrganization(relatedOrganizationDetails);
+			 */
 		  
-		  ListOfRelatedOrganization listOfRelatedOrganization = new
-		  ListOfRelatedOrganization();
-		  listOfRelatedOrganization.setRelatedOrganization(relatedOrganizationDetails);
+			/*
+			 * BusinessAddress businessAddress = new BusinessAddress();
+			 * businessAddress.setAddressId("1");
+			 * businessAddress.setStreetAddress(ltMastOutletsDump.getAddress1());
+			 * businessAddress.setStreetAddress2(ltMastOutletsDump.getAddress2());
+			 * businessAddress.setCounty(""); businessAddress.setCounty("INDIA");
+			 * businessAddress.setCity(ltMastOutletsDump.getCity());
+			 * businessAddress.setState(ltMastOutletsDump.getState());
+			 * businessAddress.setPostalCode(ltMastOutletsDump.getPin_code());
+			 * businessAddress.setProvince(""); businessAddress.setIsPrimaryMVG("Y");
+			 */
 		  
-		  BusinessAddress businessAddress = new BusinessAddress();
-		  businessAddress.setAddressId("1");
-		  businessAddress.setStreetAddress(ltMastOutletsDump.getAddress1());
-		  businessAddress.setStreetAddress2(ltMastOutletsDump.getAddress2());
-		  businessAddress.setCounty("");
-		  businessAddress.setCounty("INDIA");
-		  businessAddress.setCity(ltMastOutletsDump.getCity());
-		  businessAddress.setState(ltMastOutletsDump.getState());
-		  businessAddress.setPostalCode(ltMastOutletsDump.getPin_code());
-		  businessAddress.setProvince("");
-		  businessAddress.setIsPrimaryMVG("Y");
+			/*
+			 * ListOfBusinessAddress listOfBusinessAddress = new ListOfBusinessAddress();
+			 * listOfBusinessAddress.setListOfBusinessAddress(businessAddress);
+			 */
 		  
-		  ListOfBusinessAddress listOfBusinessAddress = new ListOfBusinessAddress();
-		  listOfBusinessAddress.setListOfBusinessAddress(businessAddress);
+			/*
+			 * Account account = new Account();
+			 * 
+			 * account.setAccountStatus("NEW");
+			 * account.setType(ltMastOutletsDump.getOutletType());
+			 * account.setAccountId("1");
+			 * account.setRuleAttribute2(ltMastOutletsDump.getOutletChannel());
+			 * account.setName(ltMastOutletsDump.getOutletName());
+			 * account.setaTTerritory(ltMastOutletsDump.getTerritory());
+			 * account.setLocation("need to add");
+			 * account.setListOfBusinessAddress(listOfBusinessAddress);
+			 * account.setListOfRelatedOrganization(listOfRelatedOrganization);
+			 * 
+			 * ListOfOutletInterface listOfOutletInterface = new ListOfOutletInterface();
+			 * listOfOutletInterface.setAccount(account);
+			 * 
+			 * SiebelMessage siebelMessage = new SiebelMessage();
+			 * siebelMessage.setIntObjectFormat("Siebel Hierarchical");
+			 * siebelMessage.setIntObjectName("Outlet Interface");
+			 * siebelMessage.setMessageId("");
+			 * siebelMessage.setMessageType("Integration Object");
+			 * siebelMessage.setListOfOutletInterface(listOfOutletInterface);
+			 * 
+			 * SiebelMessageRequest SiebelMessageRequest = new SiebelMessageRequest();
+			 * SiebelMessageRequest.setSiebelMessage(siebelMessage);
+			 */
 		  
-		  Account account = new Account();
+		  JSONObject relatedOrganizationDetail = new JSONObject();
 		  
-		  account.setAccountStatus("NEW");
-		  account.setType(ltMastOutletsDump.getOutletType()); account.setAccountId("1");
-		  account.setRuleAttribute2(ltMastOutletsDump.getOutletChannel());
-		  account.setName(ltMastOutletsDump.getOutletName());
-		  account.setaTTerritory(ltMastOutletsDump.getTerritory());
-		  account.setLocation("need to add");
-		  account.setListOfBusinessAddress(listOfBusinessAddress);
-		  account.setListOfRelatedOrganization(listOfRelatedOrganization);
+		  relatedOrganizationDetail.put("IsPrimaryMVG","Y");
+		  relatedOrganizationDetail.put("Organization", ltMastOrganisations.getOrganisationName());
 		  
-		  ListOfOutletInterface listOfOutletInterface = new ListOfOutletInterface();
-		  listOfOutletInterface.setAccount(account);
 		  
-		  SiebelMessage siebelMessage = new SiebelMessage();
-		  siebelMessage.setIntObjectFormat("Siebel Hierarchical");
-		  siebelMessage.setIntObjectName("Outlet Interface");
-		  siebelMessage.setMessageId("");
-		  siebelMessage.setMessageType("Integration Object");
-		  siebelMessage.setListOfOutletInterface(listOfOutletInterface);
+		  JSONObject listOfRelatedOrganizations = new JSONObject();
 		  
-		  SiebelMessageRequest SiebelMessageRequest = new SiebelMessageRequest();
-		  SiebelMessageRequest.setSiebelMessage(siebelMessage);
+		  listOfRelatedOrganizations.put("Related Organization",relatedOrganizationDetail);
+		  
+		  JSONObject businessAddress = new JSONObject();
+		  businessAddress.put("Address Id", "1");
+		  businessAddress.put("Street Address", ltMastOutletsDump.getAddress1());
+		  businessAddress.put("County", "");
+		  businessAddress.put("Street Address 2",ltMastOutletsDump.getAddress2());
+		  businessAddress.put("City", ltMastOutletsDump.getCity());
+		  businessAddress.put("State", ltMastOutletsDump.getState());
+		  businessAddress.put("Country", "India");
+		  businessAddress.put("Postal Code", ltMastOutletsDump.getPin_code());
+		  businessAddress.put("Province", "");
+		  businessAddress.put("IsPrimaryMVG", "Y");
+		  
+		  JSONObject listOfBusinessAddres = new JSONObject();
+		  
+		  listOfBusinessAddres.put("Business Address", businessAddress);
+		  
+		  JSONObject accounts = new JSONObject();
+		  accounts.put("Account Status", "NEW");
+		  accounts.put("Type", ltMastOutletsDump.getOutletType());
+		  accounts.put("Account Id", "1");
+		  accounts.put("Rule Attribute 2", ltMastOutletsDump.getOutletChannel());
+		  accounts.put("Name", ltMastOutletsDump.getOutletName());
+		  accounts.put("AT Territory", ltMastOutletsDump.getTerritory());
+		  accounts.put("Location", "Baner");
+		  accounts.put("ListOfBusiness Address", listOfBusinessAddres);
+		  accounts.put("ListOfRelated Organization", listOfRelatedOrganizations);
+		  
+		  JSONObject listOfOutletInterfaces = new JSONObject();
+		  listOfOutletInterfaces.put("Account",accounts);
+		  
+		  JSONObject siebelMassage = new JSONObject();
+		  siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+		  siebelMassage.put("MessageId", "");
+		  siebelMassage.put("IntObjectName","Outlet Interface");
+		  siebelMassage.put("MessageType","Integration Object");
+		  siebelMassage.put("ListOfOutlet Interface", listOfOutletInterfaces);
+		  
+		  
+		  JSONObject siebelMassages = new JSONObject();
+		  
+		  siebelMassages.put("SiebelMessage", siebelMassage);
 		  
 		  String apiUrl = env.getProperty("SiebelCreateOutletApi");
 		  
@@ -394,13 +456,19 @@ try {
 		  connection.setRequestProperty("Authorization", "Basic_Auth"+credentials);
 		  
 		  
-		  ObjectMapper objectMapper = new ObjectMapper(); String jsonPayload =
-		  objectMapper.writeValueAsString(SiebelMessageRequest);
+		  //ObjectMapper objectMapper = new ObjectMapper(); 
+		  String jsonPayload =siebelMassages.toString();
 		  
-		  System.out.println("jsonPayload"+jsonPayload);
+		  //Map<String, Object> jsonData = objectMapper.readValue(jsonPayload, Map.class);
+		 
+		  //Map<String, Object> transformedData = transformKeys(jsonData);
+		  
+		 System.out.println("jsonPayload"+jsonPayload);
 		  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
 			  wr.writeBytes(jsonPayload);
 		  wr.flush(); }
+
+		  
 		  
 		  // Get the HTTP response code 
 		  int responseCode = connection.getResponseCode(); 
@@ -460,4 +528,39 @@ try {
 }
 	return status;	 
 	}
+	
+	private static Map<String, Object> transformKeys(Map<String, Object> originalData) {
+        Map<String, Object> transformedData = new HashMap<>();
+
+        for (Map.Entry<String, Object> entry : originalData.entrySet()) {
+            String originalKey = entry.getKey();
+            Object value = entry.getValue();
+
+            // Convert key to initcap with spaces
+            String transformedKey = convertToInitcapWithSpaces(originalKey);
+
+            // Add the transformed key-value pair to the new map
+            transformedData.put(transformedKey, value);
+        }
+
+        return transformedData;
+    }
+	
+	  private static String convertToInitcapWithSpaces(String originalKey) {
+	        StringBuilder result = new StringBuilder();
+	        boolean capitalizeNext = true;
+
+	        for (char ch : originalKey.toCharArray()) {
+	            if (Character.isSpaceChar(ch)) {
+	                capitalizeNext = true;
+	            } else if (capitalizeNext) {
+	                result.append(Character.toUpperCase(ch));
+	                capitalizeNext = false;
+	            } else {
+	                result.append(Character.toLowerCase(ch));
+	            }
+	        }
+
+	        return result.toString();
+	    }
 }

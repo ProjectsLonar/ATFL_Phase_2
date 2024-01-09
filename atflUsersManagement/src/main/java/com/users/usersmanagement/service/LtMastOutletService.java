@@ -12,9 +12,9 @@ public interface LtMastOutletService {
 
 	Status getOutlet(RequestDto requestDto) throws ServiceException, IOException;
 
-	Status getAllUserDataByRecentId(String userId) throws ServiceException;
+	Status getAllUserDataByRecentId(Long userId) throws ServiceException;
 
-	Status verifyOutlet(String outletCode, String distributorCrmCode, String userId) throws ServiceException, IOException;
+	Status verifyOutlet(String outletCode, String distributorCrmCode, Long userId) throws ServiceException, IOException;
 	
 	Status getAllOutletType() throws ServiceException, IOException;
 	

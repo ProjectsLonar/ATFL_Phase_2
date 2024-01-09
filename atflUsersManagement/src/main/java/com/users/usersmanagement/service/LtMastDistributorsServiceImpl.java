@@ -44,7 +44,7 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 	private Environment env;
 
 	@Override
-	public Status verifyDistributor(String distributorCrmCode, String positionCode, String userCode, String userId)
+	public Status verifyDistributor(String distributorCrmCode, String positionCode, String userCode, Long userId)
 			throws ServiceException {
 
 		Status status = new Status();
@@ -136,7 +136,7 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 	}
 	
 	@Override
-	public Status verifyDistributorV1(String distributorCrmCode,String distributorName,String proprietorName,String userId)
+	public Status verifyDistributorV1(String distributorCrmCode,String distributorName,String proprietorName,Long userId)
 			throws ServiceException {
 
 		Status status = new Status();
@@ -229,7 +229,7 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 
 	
 	@Override
-	public Status getAllDistributorAgainstAreahead(String userId)throws ServerException, ServiceException{
+	public Status getAllDistributorAgainstAreahead(Long userId)throws ServerException, ServiceException{
 		Status status = new Status();
 		try {
 		List<LtMastDistributors> distributorList = ltMastDistributorsDao.getAllDistributorAgainstAreahead(userId);

@@ -35,7 +35,7 @@ public class LtPromotionDaoImpl implements LtPromotionDao, CodeMaster {
 	}
 
 	@Override
-	public List<LtPromotion> getPromotionDataV1(String orgId, Long limit, Long offset, String userId)
+	public List<LtPromotion> getPromotionDataV1(String orgId, Long limit, Long offset, Long userId)
 			throws ServiceException {
 		String defaultLimit = env.getProperty("limit_value");
 		List<LtPromotion> list;
@@ -78,7 +78,7 @@ public class LtPromotionDaoImpl implements LtPromotionDao, CodeMaster {
 		return list;
 	}
 
-	private UserDetailsDto getUserTypeAndDisId(String userId) throws ServiceException {
+	private UserDetailsDto getUserTypeAndDisId(Long userId) throws ServiceException {
 		String query = env.getProperty("getUserTypeAndDisId");
 		List<UserDetailsDto> list = jdbcTemplate.query(query, new Object[] { userId },
 				new BeanPropertyRowMapper<UserDetailsDto>(UserDetailsDto.class));

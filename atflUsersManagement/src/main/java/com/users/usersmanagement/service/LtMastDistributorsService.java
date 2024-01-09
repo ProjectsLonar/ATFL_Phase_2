@@ -8,12 +8,12 @@ import com.users.usersmanagement.model.Status;
 
 public interface LtMastDistributorsService {
 
-	Status verifyDistributor(String distributorCrmCode,String positionCode,String userCode,String userId)
+	Status verifyDistributor(String distributorCrmCode,String positionCode,String userCode,Long userId)
 			throws ServiceException;
 	
-	Status verifyDistributorV1(String distributorCrmCode,String distributorName,String proprietorName,String userId)
+	Status verifyDistributorV1(String distributorCrmCode,String distributorName,String proprietorName,Long userId)
 			throws ServiceException;
 	
-	Status getAllDistributorAgainstAreahead(String userId)throws ServerException, ServiceException;
+	Status getAllDistributorAgainstAreahead(Long userId)throws ServerException, ServiceException;
 
 }

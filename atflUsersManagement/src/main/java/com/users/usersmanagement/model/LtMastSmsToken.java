@@ -21,7 +21,7 @@ public class LtMastSmsToken {
 	private Long smsTokenId;
 	
 	@Column(name = "USER_ID")
-	private String userId;
+	private Long userId;
 	
 	@Column(name = "TRANSACTION_ID")
 	private String transactionId;
@@ -58,11 +58,11 @@ public class LtMastSmsToken {
 		this.smsTokenId = smsTokenId;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

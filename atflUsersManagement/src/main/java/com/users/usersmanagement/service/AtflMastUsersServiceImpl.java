@@ -278,11 +278,11 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 				ltMastUser.setMobileNumber(mobileNumber);
 				ltMastUser.setStatus(INPROCESS);
 
-				ltMastUser.setCreatedBy("-1");
+				ltMastUser.setCreatedBy(-1L);
 				ltMastUser.setCreationDate(Validation.getCurrentDateTime());
 				ltMastUser.setLastUpdateDate(Validation.getCurrentDateTime());
-				ltMastUser.setLastUpdatedBy("-1");
-				ltMastUser.setLastUpdateLogin("-1");
+				ltMastUser.setLastUpdatedBy(-1L);
+				ltMastUser.setLastUpdateLogin(-1L);
 				ltMastUser.setDistributorId("0");
 				ltMastUser.setUserType("");
 				ltMastUser.setEmployeeCode("");
@@ -416,7 +416,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	}
 
 	@Override
-	public Status getUserById(String userId) throws ServiceException {
+	public Status getUserById(Long userId) throws ServiceException {
 
 		Status status = new Status();
 		try {
@@ -440,7 +440,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	}
 
 	@Override
-	public Status delete(String userId) throws ServiceException {
+	public Status delete(Long userId) throws ServiceException {
 		Status status = new Status();
 
 		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
@@ -502,11 +502,11 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	}
 
 	@Override
-	public Status getPenddingApprovalByDistributorId(Long distributorId, String userId)
+	public Status getPenddingApprovalByDistributorId(Long distributorId, Long userId)
 			throws ServiceException, IOException {
 		Status status = new Status();
 		// List<LtMastUsers> ltMastUserList = null;
-		List<LtMastUsers> ltMastUsersList = ltMastUsersDao.getPenddingApprovalByDistributorId(distributorId, userId.toString());
+		List<LtMastUsers> ltMastUsersList = ltMastUsersDao.getPenddingApprovalByDistributorId(distributorId, userId);
 
 		if (!ltMastUsersList.isEmpty()) {
 			status = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
@@ -520,9 +520,9 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	}
 
 	@Override
-	public Status changeUserStatus(String userId, String userStatus) throws ServiceException, IOException {
+	public Status changeUserStatus(Long userId, String userStatus) throws ServiceException, IOException {
 		Status status = new Status();
-		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId.toString());
+		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
 
 		if (ltMastUsers != null) {
 
@@ -692,7 +692,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 
 		if (ltUserPersonalDetails != null) {
 
-			LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(ltUserPersonalDetails.getUserId().toString());
+			LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(ltUserPersonalDetails.getUserId());
 
 			if (ltMastUsers != null) {
 
@@ -735,7 +735,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 
 		if (ltUserAddressDetails != null) {
 
-			LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(ltUserAddressDetails.getUserId().toString());
+			LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(ltUserAddressDetails.getUserId());
 			if (ltMastUsers != null) {
 
 				if (ltMastUsers.getUserName().length() > 0 && ltMastUsers.getUserName() != ""
@@ -780,7 +780,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 
 		if (ltUserAddressDetails != null) {
 
-			LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(ltUserAddressDetails.getUserId().toString());
+			LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(ltUserAddressDetails.getUserId());
 			if (ltMastUsers != null) {
 				ltMastUsers.setAddress(ltUserAddressDetails.getAddress());
 				ltMastUsers.setLatitude(ltUserAddressDetails.getLatitude());
@@ -806,7 +806,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	}
 
 	@Override
-	public Status getPersonaldetailsById(String userId) throws ServiceException {
+	public Status getPersonaldetailsById(Long userId) throws ServiceException {
 		Status status = new Status();
 		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
 		if (ltMastUsers != null) {
@@ -829,7 +829,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	}
 
 	@Override
-	public Status getAddressDetailsById(String userId) throws ServiceException {
+	public Status getAddressDetailsById(Long userId) throws ServiceException {
 		Status status = new Status();
 		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
 		if (ltMastUsers != null) {
@@ -859,7 +859,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	}
 
 	@Override
-	public Status saveUserOrganisationDetails(String userId) throws ServiceException, IOException {
+	public Status saveUserOrganisationDetails(Long userId) throws ServiceException, IOException {
 		Status status = new Status();
 
 		status = getPersonaldetailsById(userId);
@@ -927,7 +927,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	}
 
 	@Override
-	public Status saveRecentSearchId(String userId, Long serachId) throws ServiceException {
+	public Status saveRecentSearchId(Long userId, String serachId) throws ServiceException {
 		Status status = new Status();
 
 		LtMastUsers ltMastUser = ltMastUsersDao.getUserById(userId);
@@ -969,7 +969,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	}
 
 	@Override
-	public Status getUserAllMasterDataById(String userId) throws ServiceException {
+	public Status getUserAllMasterDataById(Long userId) throws ServiceException {
 
 		Status status = new Status();
 
@@ -1074,7 +1074,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	}
 
 	@Override
-	public Status uploadProfilePic(MultipartFile mFile, String userId) throws ServiceException {
+	public Status uploadProfilePic(MultipartFile mFile, Long userId) throws ServiceException {
 		Status status = new Status();
 		String fileName = null;
 		try {

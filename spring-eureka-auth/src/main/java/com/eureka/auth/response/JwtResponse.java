@@ -8,7 +8,7 @@ public class JwtResponse {
 	private String mobileNumber;
 	private List<String> roles;
 	private String status;
-	private String userId;
+	private Long userId;
 	private String userType;
 	private String employeeCode;
 	private String orgId;
@@ -29,7 +29,7 @@ public class JwtResponse {
 		super();
 	}
 
-	public JwtResponse(String token, String type, String mobileNumber, List<String> roles, String status, String userId,
+	public JwtResponse(String token, String type, String mobileNumber, List<String> roles, String status, Long userId,
 			String userType, String employeeCode, String orgId, String userName, String distributorId, String outletId,
 			String designation, String positionId, String notifyToken,String outletName,String distributorCode,String distributorName,
 			String proprietorName,String position) {
@@ -138,11 +138,11 @@ public class JwtResponse {
 		this.designation = designation;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

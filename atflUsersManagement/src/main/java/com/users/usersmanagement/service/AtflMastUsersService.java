@@ -26,13 +26,13 @@ public interface AtflMastUsersService {
 
 	Status update(LtMastUsers ltMastUsers) throws ServiceException, IOException;
 
-	Status getUserById(String userId) throws ServiceException;
+	Status getUserById(Long userId) throws ServiceException;
 
-	Status delete(String userId) throws ServiceException;
+	Status delete(Long userId) throws ServiceException;
 
-	Status getPenddingApprovalByDistributorId(Long distributorId, String userId) throws ServiceException, IOException;
+	Status getPenddingApprovalByDistributorId(Long distributorId, Long userId) throws ServiceException, IOException;
 
-	Status changeUserStatus(String userId, String status) throws ServiceException, IOException;
+	Status changeUserStatus(Long userId, String status) throws ServiceException, IOException;
 
 	LtMastUsers userResponce(LtMastUsers ltMastUsers) throws ServiceException;
 
@@ -40,21 +40,21 @@ public interface AtflMastUsersService {
 
 	Status saveAddress(LtUserAddressDetails ltUserAddressDetails) throws ServiceException;
 
-	Status getPersonaldetailsById(String userId) throws ServiceException;
+	Status getPersonaldetailsById(Long userId) throws ServiceException;
 
-	Status getAddressDetailsById(String userId) throws ServiceException;
+	Status getAddressDetailsById(Long userId) throws ServiceException;
 
-	Status saveUserOrganisationDetails(String userId) throws ServiceException, IOException;
+	Status saveUserOrganisationDetails(Long userId) throws ServiceException, IOException;
 
 	Status getAllUserByDistributorId(Long distributorId) throws ServiceException;
 
-	Status uploadProfilePic(MultipartFile file, String userId) throws ServiceException;
+	Status uploadProfilePic(MultipartFile file, Long userId) throws ServiceException;
 	
-	Status saveRecentSearchId(String userId,Long serachId) throws ServiceException;
+	Status saveRecentSearchId(Long userId,String serachId) throws ServiceException;
 	
 	Status getAllUsersData() throws ServiceException;
 	
-	Status getUserAllMasterDataById(String userId) throws ServiceException;
+	Status getUserAllMasterDataById(Long userId) throws ServiceException;
 	
 	Status getUsersList(RequestDto requestDto) throws IOException;
 	
