@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 @Table(name = "LT_MAST_POSITIONS_v")
 @JsonInclude(Include.NON_NULL)
-public class LtMastPositions extends BaseClass{
+public class LtMastPositions extends BaseClassForSiebelModel{
 
 	private static final long serialVersionUID = 1L;
 	@Id

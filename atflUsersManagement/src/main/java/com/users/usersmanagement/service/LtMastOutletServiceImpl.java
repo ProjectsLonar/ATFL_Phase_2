@@ -11,23 +11,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.controller.WebController;
 import com.users.usersmanagement.dao.AtflMastUsersDao;
 import com.users.usersmanagement.dao.LtMastOutletDao;
-import com.users.usersmanagement.model.Account;
-import com.users.usersmanagement.model.BusinessAddress;
 import com.users.usersmanagement.model.CodeMaster;
-import com.users.usersmanagement.model.ListOfBusinessAddress;
-import com.users.usersmanagement.model.ListOfOutletInterface;
-import com.users.usersmanagement.model.ListOfRelatedOrganization;
 import com.users.usersmanagement.model.LtMastOrganisations;
 //import com.users.usersmanagement.model.LtMastOutlets;
 import com.users.usersmanagement.model.LtMastOutlets;
@@ -36,11 +31,8 @@ import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastOutletsType;
 import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
-import com.users.usersmanagement.model.RelatedOrganization;
 import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.model.RoleMaster;
-import com.users.usersmanagement.model.SiebelMessage;
-import com.users.usersmanagement.model.SiebelMessageRequest;
 import com.users.usersmanagement.model.Status;
 import com.users.usersmanagement.repository.LtMastOutletDumpRepository;
 import com.users.usersmanagement.repository.LtMastOutletRepository;
@@ -135,7 +127,9 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 	@Override
 	public Status getOutlet(RequestDto requestDto) throws ServiceException, IOException {
 		Status status = new Status();
+		System.out.println("requestDto"+requestDto);
 		List<LtMastOutlets> list = ltMastOutletDao.getOutlet(requestDto);
+		System.out.println("list"+list);
 		if (list != null) {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
@@ -403,27 +397,41 @@ try {
 		  
 		  JSONObject businessAddress = new JSONObject();
 		  businessAddress.put("Address Id", "1");
-		  businessAddress.put("Street Address", ltMastOutletsDump.getAddress1());
+		 // businessAddress.put("Street Address", ltMastOutletsDump.getAddress1());
+		  businessAddress.put("Street Address","South primary");
 		  businessAddress.put("County", "");
-		  businessAddress.put("Street Address 2",ltMastOutletsDump.getAddress2());
-		  businessAddress.put("City", ltMastOutletsDump.getCity());
-		  businessAddress.put("State", ltMastOutletsDump.getState());
+		 // businessAddress.put("Street Address 2",ltMastOutletsDump.getAddress2());
+		  businessAddress.put("Street Address 2","kalupurr");
+		 // businessAddress.put("City", ltMastOutletsDump.getCity());
+		  businessAddress.put("City","Ahmadabad" );
+		 // businessAddress.put("State", ltMastOutletsDump.getState());
+		  businessAddress.put("State", "Maharashtra");
 		  businessAddress.put("Country", "India");
-		  businessAddress.put("Postal Code", ltMastOutletsDump.getPin_code());
+		  //businessAddress.put("Postal Code", ltMastOutletsDump.getPin_code());
+		  businessAddress.put("Postal Code","380708");
 		  businessAddress.put("Province", "");
 		  businessAddress.put("IsPrimaryMVG", "Y");
 		  
+		  
+		  JSONArray businessAddres = new JSONArray();
+			businessAddres.put(businessAddress);
+		 
 		  JSONObject listOfBusinessAddres = new JSONObject();
 		  
-		  listOfBusinessAddres.put("Business Address", businessAddress);
+		  listOfBusinessAddres.put("Business Address", businessAddres);
+		  
+		  
 		  
 		  JSONObject accounts = new JSONObject();
 		  accounts.put("Account Status", "NEW");
-		  accounts.put("Type", ltMastOutletsDump.getOutletType());
+		 // accounts.put("Type", ltMastOutletsDump.getOutletType());
+		  accounts.put("Type", "Retailer");
 		  accounts.put("Account Id", "1");
-		  accounts.put("Rule Attribute 2", ltMastOutletsDump.getOutletChannel());
-		  accounts.put("Name", ltMastOutletsDump.getOutletName());
-		  accounts.put("AT Territory", ltMastOutletsDump.getTerritory());
+		  //accounts.put("Rule Attribute 2", ltMastOutletsDump.getOutletChannel());
+		  accounts.put("Rule Attribute 2", "Whole Sellers");
+		  //accounts.put("Name", ltMastOutletsDump.getOutletName());
+		  accounts.put("Name", "Sardar Traders");
+		  accounts.put("AT Territory","30801:AMDAVAD RURAl");
 		  accounts.put("Location", "Baner");
 		  accounts.put("ListOfBusiness Address", listOfBusinessAddres);
 		  accounts.put("ListOfRelated Organization", listOfRelatedOrganizations);

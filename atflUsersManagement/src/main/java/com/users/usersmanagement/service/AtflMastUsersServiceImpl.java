@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.users.usersmanagement.common.DateTimeClass;
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.common.Validation;
 import com.users.usersmanagement.controller.WebController;
@@ -601,7 +602,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	public LtMastUsers userResponce(LtMastUsers ltMastUsers) throws ServiceException {
 
 		LtMastUsers ltMastUserDto = new LtMastUsers();
-
+try {
 		if (ltMastUsers != null) {
 
 			ltMastUserDto.setUserId(ltMastUsers.getUserId());
@@ -648,6 +649,9 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 			ltMastUserDto.setPosition(ltMastUsers.getPosition());
 
 		}
+}catch(Exception e) {
+	e.printStackTrace();
+}
 
 		return ltMastUserDto;
 	}
@@ -931,11 +935,13 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 		Status status = new Status();
 
 		LtMastUsers ltMastUser = ltMastUsersDao.getUserById(userId);
+		System.out.println("ltMastUser"+ltMastUser);
 		if (ltMastUser != null) {
 
 			ltMastUser.setLastUpdatedBy(userId);
 			ltMastUser.setLastUpdateLogin(userId);
-			ltMastUser.setLastUpdateDate(new Date());
+			ltMastUser.setLastUpdateDate(DateTimeClass.getCurrentDateTime());
+			System.out.println("DateTimeClass.getCurrentDateTime()");
 			ltMastUser.setRecentSerachId(serachId);
 			ltMastUser = ltMastUsersDao.saveLtMastUsers(ltMastUser);
 			status = ltMastCommonMessageService.getCodeAndMessage(INSERT_SUCCESSFULLY);
