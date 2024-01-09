@@ -53,16 +53,16 @@ public class LtSoLines  extends BaseClass{
 	@Transient
 	String outletId;
 
-//	@Column(name= "eimStatus")
-//	String eimStatus;
-//	
-//	public String getEimStatus() {
-//		return eimStatus;
-//	}
-//
-//	public void setEimStatus(String eimStatus) {
-//		this.eimStatus = eimStatus;
-//	}
+	@Column(name= "eimStatus")
+	String eimStatus;
+	
+	public String getEimStatus() {
+		return eimStatus;
+	}
+
+	public void setEimStatus(String eimStatus) {
+		this.eimStatus = eimStatus;
+	}
 
 	public String getLineId() {
 		return lineId;

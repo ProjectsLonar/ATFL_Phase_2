@@ -60,4 +60,6 @@ public interface LtSoHeadersDao {
 	
 	List<LtOrderCancellationReason> getOrderCancellationReport() throws ServiceException, IOException;
 	
+	List<LtMastUsers> getActiveAreaHeadeUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException;
+	
 }
