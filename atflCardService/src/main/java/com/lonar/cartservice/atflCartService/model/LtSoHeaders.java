@@ -28,8 +28,8 @@ public class LtSoHeaders extends BaseClass{
 	@SequenceGenerator(name = "LT_SO_HEADERS_S", sequenceName = "LT_SO_HEADERS_S", allocationSize = 1)
 	@Basic(optional = false)
 	@Column(name = "HEADER_ID")
-	//Long headerId;
-	String headerId;
+	Long headerId;
+	//String headerId;
 	
 	@Column(name = "ORDER_NUMBER")
 	String orderNumber;
@@ -72,11 +72,11 @@ public class LtSoHeaders extends BaseClass{
 	@Transient
 	String priceList;
 	
-	public String getHeaderId() {
+	public Long getHeaderId() {
 		return headerId;
 	}
 
-	public void setHeaderId(String headerId) {
+	public void setHeaderId(Long headerId) {
 		this.headerId = headerId;
 	}
 

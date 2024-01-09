@@ -23,6 +23,8 @@ import com.lonar.cartservice.atflCartService.model.CodeMaster;
 import com.lonar.cartservice.atflCartService.model.LtMastUsers;
 import com.lonar.cartservice.atflCartService.model.LtOrderCancellationReason;
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
+import com.lonar.cartservice.atflCartService.model.LtSoLines;
+import com.lonar.cartservice.atflCartService.repository.LtSoLinesRepository;
 
 
 @Repository
@@ -32,6 +34,9 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	LtSoLinesRepository  ltSoLinesRepository;
 
 	private JdbcTemplate jdbcTemplate;
 
@@ -61,7 +66,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 
 	@Override
 	@Transactional
-	public void deleteLineDataByHeaderId(String header_id) throws ServiceException, IOException {
+	public void deleteLineDataByHeaderId(Long header_id) throws ServiceException, IOException {
 		String query = env.getProperty("deleteLineDataByHeaderId");
 		Object[] person = new Object[] { header_id };
 		jdbcTemplate.update(query, person);
@@ -357,7 +362,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	}
 
 	@Override
-	public List<LtMastUsers> getActiveDistUsersFromHeaderId(String headerId, String orderNumber) throws ServiceException, IOException {
+	public List<LtMastUsers> getActiveDistUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException {
 		String query = env.getProperty("getActiveDistUsersFromHeaderId");
 		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
@@ -365,7 +370,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	}
 
 	@Override
-	public List<LtMastUsers> getActiveSalesUsersFromHeaderId(String headerId, String orderNumber) throws ServiceException, IOException {
+	public List<LtMastUsers> getActiveSalesUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException {
 		String query = env.getProperty("getActiveSalesUsersFromHeaderId");
 		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
@@ -645,7 +650,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	}
 
 	@Override
-	public int deleteLineDataByHeaderIdAndReturnStatus(String heaaderId) throws ServiceException, IOException {
+	public int deleteLineDataByHeaderIdAndReturnStatus(Long heaaderId) throws ServiceException, IOException {
 		String query = env.getProperty("deleteLineDataByHeaderId");
 		Object[] person = new Object[] { heaaderId };
 		int status = jdbcTemplate.update(query, person);
@@ -654,7 +659,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	
 	@Override
 	public int insertLine(String query) throws ServiceException, IOException {
-		return jdbcTemplate.update(query);
+		  return jdbcTemplate.update(query);
 	}
 	
 	@Override
@@ -671,6 +676,14 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 		}
 
 		return null;
+	}
+	
+	@Override
+	public List<LtMastUsers> getActiveAreaHeadeUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException {
+		String query = env.getProperty("getActiveAreaHeadUsersFromHeaderId");
+		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		return userList;
 	}
 
 }

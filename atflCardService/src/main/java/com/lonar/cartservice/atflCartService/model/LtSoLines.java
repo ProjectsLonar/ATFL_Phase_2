@@ -28,8 +28,8 @@ public class LtSoLines  extends BaseClass{
 	String lineId;
 	
 	@Column(name = "Header_id")
-//	Long headerId;
-	String headerId;
+	Long headerId;
+//  String headerId;
 	
 	@Column(name = "Product_Id")
 //	Long productId;
@@ -53,16 +53,16 @@ public class LtSoLines  extends BaseClass{
 	@Transient
 	String outletId;
 
-//	@Column(name= "eimStatus")
-//	String eimStatus;
-//	
-//	public String getEimStatus() {
-//		return eimStatus;
-//	}
-//
-//	public void setEimStatus(String eimStatus) {
-//		this.eimStatus = eimStatus;
-//	}
+	@Column(name= "eimStatus")
+	String eimStatus;
+	
+	public String getEimStatus() {
+		return eimStatus;
+	}
+
+	public void setEimStatus(String eimStatus) {
+		this.eimStatus = eimStatus;
+	}
 
 	public String getLineId() {
 		return lineId;
@@ -72,11 +72,11 @@ public class LtSoLines  extends BaseClass{
 		this.lineId = lineId;
 	}
 
-	public String getHeaderId() {
+	public Long getHeaderId() {
 		return headerId;
 	}
 
-	public void setHeaderId(String headerId) {
+	public void setHeaderId(Long headerId) {
 		this.headerId = headerId;
 	}
 
