@@ -56,6 +56,7 @@ public class LtMastOutletDaoImpl implements LtMastOutletDao, CodeMaster {
 	@Override
 	public List<LtMastOutlets> getOutlet(RequestDto requestDto) throws ServiceException, IOException {
 		String query = env.getProperty("getOutlet");
+		try {
 		if (requestDto.getLimit() == 0) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 		}
@@ -69,11 +70,13 @@ public class LtMastOutletDaoImpl implements LtMastOutletDao, CodeMaster {
 				new Object[] { requestDto.getDistributorId(), requestDto.getSalesPersonId(), requestDto.getOrgId(),
 						searchField, requestDto.getLimit(), requestDto.getOffset() },
 				new BeanPropertyRowMapper<LtMastOutlets>(LtMastOutlets.class));
-
+		System.out.println("ltMastOutletslist"+ltMastOutletslist);
 		if (!ltMastOutletslist.isEmpty()) {
 			return ltMastOutletslist;
 		}
-
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

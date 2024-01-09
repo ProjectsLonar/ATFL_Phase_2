@@ -26,8 +26,12 @@ public class DateTimeClass {
 		ZonedDateTime jpTime = instant.atZone(ZoneId.of("Asia/Calcutta"));
 		try {
 			Calendar calendar = new GregorianCalendar();
-			calendar.set(jpTime.getYear(), jpTime.getMonthValue() - 1, jpTime.getDayOfMonth(), jpTime.getHour(),
-					jpTime.getMinute(), jpTime.getSecond());
+			/*
+			 * calendar.set(jpTime.getYear(), jpTime.getMonthValue() - 1,
+			 * jpTime.getDayOfMonth(), jpTime.getHour(), jpTime.getMinute(),
+			 * jpTime.getSecond());
+			 */
+			calendar.set(jpTime.getYear(), jpTime.getMonthValue() - 1,jpTime.getDayOfMonth());
 			return calendar.getTime();
 		} catch (Exception e1) {
 			e1.printStackTrace();

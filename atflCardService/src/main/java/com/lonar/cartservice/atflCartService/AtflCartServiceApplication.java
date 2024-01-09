@@ -1,5 +1,11 @@
 package com.lonar.cartservice.atflCartService;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +17,16 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.client.RestTemplate;
+
+import com.lonar.cartservice.atflCartService.model.LtMastSysVariables;
 
 @EnableDiscoveryClient
 @SpringBootApplication
@@ -39,6 +49,14 @@ public class AtflCartServiceApplication extends SpringBootServletInitializer{
 	      return new RestTemplate();
 	 }
 	
+		/*
+		 * @Lazy
+		 * 
+		 * @Autowired private LtMastSysVariablesService ltMastSysVariablesService;
+		 */
+
+	public static Map<Long, Map<String, String>> configMap = new HashMap<Long, Map<String, String>>();
+	
 	
 	@LoadBalanced
 	@Bean("datasource")
@@ -50,5 +68,34 @@ public class AtflCartServiceApplication extends SpringBootServletInitializer{
 		dataSource.setPassword(env.getProperty("db.password"));
 		return dataSource;
 	}
+
+	
+	/*
+	 * @LoadBalanced
+	 * 
+	 * @Bean
+	 * 
+	 * @DependsOn({ "datasource", "resttemplate" }) public Map getAllConfiguration()
+	 * { try {
+	 * 
+	 * List<LtMastSysVariables> ltMastSysVariablesList =
+	 * ltMastSysVariablesService.loadAllConfiguration();
+	 * Iterator<LtMastSysVariables> itr = ltMastSysVariablesList.iterator(); while
+	 * (itr.hasNext()) { LtMastSysVariables ltMastSysVariables = itr.next();
+	 * Set<Long> set = configMap.keySet(); if
+	 * (set.contains(ltMastSysVariables.getOrgId())) { Map<String, String> myMap =
+	 * configMap.get(ltMastSysVariables.getOrgId()); Set<String> variableNameSet =
+	 * myMap.keySet(); if
+	 * (!variableNameSet.contains(ltMastSysVariables.getVariableName())) {
+	 * myMap.put(ltMastSysVariables.getVariableName(),
+	 * ltMastSysVariables.getSystemValue());
+	 * configMap.put(ltMastSysVariables.getOrgId(), myMap); } } else { Map<String,
+	 * String> myMap = new HashMap<String, String>();
+	 * myMap.put(ltMastSysVariables.getVariableName(),
+	 * ltMastSysVariables.getSystemValue());
+	 * configMap.put(ltMastSysVariables.getOrgId(), myMap);
+	 * 
+	 * } } } catch (Exception e) { e.printStackTrace(); } return configMap; }
+	 */
 
 }
