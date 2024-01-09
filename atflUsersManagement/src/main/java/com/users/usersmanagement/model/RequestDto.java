@@ -124,6 +124,14 @@ public class RequestDto {
 	public void setPrimaryMobile(String primaryMobile) {
 		this.primaryMobile = primaryMobile;
 	}
+
+	@Override
+	public String toString() {
+		return "RequestDto [orgId=" + orgId + ", distributorId=" + distributorId + ", outletId=" + outletId + ", limit="
+				+ limit + ", offset=" + offset + ", searchField=" + searchField + ", outletName=" + outletName
+				+ ", salesPersonId=" + salesPersonId + ", userId=" + userId + ", primaryMobile=" + primaryMobile
+				+ ", userType=" + userType + ", status=" + status + ", userName=" + userName + "]";
+	}
 	
 	
 

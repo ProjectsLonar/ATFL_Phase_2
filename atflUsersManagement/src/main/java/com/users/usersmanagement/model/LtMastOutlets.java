@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 @Table(name = "lt_mast_outlets_v")
 @JsonInclude(Include.NON_NULL)
-public class LtMastOutlets extends BaseClass {
+public class LtMastOutlets extends BaseClassForSiebelModel {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
