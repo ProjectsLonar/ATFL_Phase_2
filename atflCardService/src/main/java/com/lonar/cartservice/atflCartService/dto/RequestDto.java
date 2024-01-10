@@ -18,7 +18,7 @@ public class RequestDto {
 	private int offset;
 	private String searchField;
 	private Long customerId;
-	private String userId;
+	private Long userId;
 
 	public String getOrgId() {
 		return orgId;
@@ -117,11 +117,11 @@ public class RequestDto {
 		this.customerId = customerId;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

@@ -48,7 +48,7 @@ public class LtSoLines  extends BaseClass{
 	Date deliveryDate;
 	
 	@Transient
-	String userId;
+	Long userId;
 	
 	@Transient
 	String outletId;
@@ -113,11 +113,11 @@ public class LtSoLines  extends BaseClass{
 		this.deliveryDate = deliveryDate;
 	}
 	
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

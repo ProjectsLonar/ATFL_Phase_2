@@ -48,8 +48,8 @@ public class AtflCartServiceApplication extends SpringBootServletInitializer{
 	   public RestTemplate getRestTemplate() {
 	      return new RestTemplate();
 	 }
-	
 		/*
+		 * 
 		 * @Lazy
 		 * 
 		 * @Autowired private LtMastSysVariablesService ltMastSysVariablesService;
@@ -70,32 +70,32 @@ public class AtflCartServiceApplication extends SpringBootServletInitializer{
 	}
 
 	
-	/*
-	 * @LoadBalanced
-	 * 
-	 * @Bean
-	 * 
-	 * @DependsOn({ "datasource", "resttemplate" }) public Map getAllConfiguration()
-	 * { try {
-	 * 
-	 * List<LtMastSysVariables> ltMastSysVariablesList =
-	 * ltMastSysVariablesService.loadAllConfiguration();
-	 * Iterator<LtMastSysVariables> itr = ltMastSysVariablesList.iterator(); while
-	 * (itr.hasNext()) { LtMastSysVariables ltMastSysVariables = itr.next();
-	 * Set<Long> set = configMap.keySet(); if
-	 * (set.contains(ltMastSysVariables.getOrgId())) { Map<String, String> myMap =
-	 * configMap.get(ltMastSysVariables.getOrgId()); Set<String> variableNameSet =
-	 * myMap.keySet(); if
-	 * (!variableNameSet.contains(ltMastSysVariables.getVariableName())) {
-	 * myMap.put(ltMastSysVariables.getVariableName(),
-	 * ltMastSysVariables.getSystemValue());
-	 * configMap.put(ltMastSysVariables.getOrgId(), myMap); } } else { Map<String,
-	 * String> myMap = new HashMap<String, String>();
-	 * myMap.put(ltMastSysVariables.getVariableName(),
-	 * ltMastSysVariables.getSystemValue());
-	 * configMap.put(ltMastSysVariables.getOrgId(), myMap);
-	 * 
-	 * } } } catch (Exception e) { e.printStackTrace(); } return configMap; }
-	 */
+	
+	 // @LoadBalanced
+	  
+	 // @Bean
+	  
+	/*  @DependsOn({ "datasource", "resttemplate" }) public Map getAllConfiguration()
+	  { try {
+	  
+	  List<LtMastSysVariables> ltMastSysVariablesList =
+	  ltMastSysVariablesService.loadAllConfiguration();
+	  Iterator<LtMastSysVariables> itr = ltMastSysVariablesList.iterator(); while
+	  (itr.hasNext()) { LtMastSysVariables ltMastSysVariables = itr.next();
+	  Set<Long> set = configMap.keySet(); if
+	  (set.contains(ltMastSysVariables.getOrgId())) { Map<String, String> myMap =
+	  configMap.get(ltMastSysVariables.getOrgId()); Set<String> variableNameSet =
+	  myMap.keySet(); if
+	  (!variableNameSet.contains(ltMastSysVariables.getVariableName())) {
+	  myMap.put(ltMastSysVariables.getVariableName(),
+	  ltMastSysVariables.getSystemValue());
+	  configMap.put(ltMastSysVariables.getOrgId(), myMap); } } else { Map<String,
+	  String> myMap = new HashMap<String, String>();
+	  myMap.put(ltMastSysVariables.getVariableName(),
+	  ltMastSysVariables.getSystemValue());
+	  configMap.put(ltMastSysVariables.getOrgId(), myMap);
+	  
+	  } } } catch (Exception e) { e.printStackTrace(); } return configMap; }*/
+	 
 
 }

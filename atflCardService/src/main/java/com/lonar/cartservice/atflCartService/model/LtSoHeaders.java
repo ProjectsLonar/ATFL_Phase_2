@@ -60,17 +60,18 @@ public class LtSoHeaders extends BaseClass{
 	private Long customerId;
 	
 	@Transient
-//	Long userId;
-	String userId;
+	Long userId;
+	//String userId;
 	
 // ATFL Phase2 new development
 	@Column(name= "INSTOCK_FLAG")
     private String inStockFlag;	
     
-	@Transient
-	String beatId;
-	@Transient
-	String priceList;
+	@Column(name= "BEAT_ID")
+	private String beatId;
+	
+	@Column(name= "PRICE_LIST")
+	private String priceList;
 	
 	public Long getHeaderId() {
 		return headerId;
@@ -139,11 +140,13 @@ public class LtSoHeaders extends BaseClass{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	public String getUserId() {
+
+
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

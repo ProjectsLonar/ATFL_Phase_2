@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -19,14 +20,15 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class LtSoLines  extends BaseClass{
 	
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_SO_LINES_S")
+	@SequenceGenerator(name = "LT_SO_LINES_S", sequenceName = "LT_SO_LINES_S", allocationSize = 1)
 	@Column(name = "Line_Id")
-//	Long lineId;
-	String lineId;
+	Long lineId;
+	//String lineId;
 	
 	@Column(name = "Header_id")
-//	Long headerId;
-	String headerId;
+Long headerId;
+	//String headerId;
 	
 	@Column(name = "Product_Id")
 //	Long productId;
@@ -45,7 +47,7 @@ public class LtSoLines  extends BaseClass{
 	Date deliveryDate;
 	
 	@Transient
-	String userId;
+	Long userId;
 	
 	@Transient
 	String outletId;

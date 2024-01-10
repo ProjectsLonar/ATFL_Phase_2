@@ -34,17 +34,17 @@ public class LtTemplateHeaders {
 	Date creationDate;
 	
 	@Column(name = "CREATED_BY")
-	String createdBy;
+	Long createdBy;
 	
 	@Column(name = "LAST_UPDATED_DATE")
 	Date lastUpdatedDate;
 	
 	@Column(name = "LAST_UPDATED_BY")
-	String lastUpdatedBy;
+	Long lastUpdatedBy;
 	
 	
 	@Column(name = "LAST_UPDATE_LOGIN")
-	String lastUpdatedLogin;
+	Long lastUpdatedLogin;
 	
 	@Column(name = "STATUS")
 	String status;
@@ -54,7 +54,7 @@ public class LtTemplateHeaders {
 	int productCount;
 	
 	@Transient
-	String userId;
+	Long userId;
 
 	public Long getTemplateHeaderId() {
 		return templateHeaderId;
@@ -77,12 +77,12 @@ public class LtTemplateHeaders {
 
 
 
-	public String getCreatedBy() {
+	public Long getCreatedBy() {
 		return createdBy;
 	}
 
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(Long createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -108,22 +108,22 @@ public class LtTemplateHeaders {
 	}
 
 
-	public String getLastUpdatedBy() {
+	public Long getLastUpdatedBy() {
 		return lastUpdatedBy;
 	}
 
 
-	public void setLastUpdatedBy(String lastUpdatedBy) {
+	public void setLastUpdatedBy(Long lastUpdatedBy) {
 		this.lastUpdatedBy = lastUpdatedBy;
 	}
 
 
-	public String getLastUpdatedLogin() {
+	public Long getLastUpdatedLogin() {
 		return lastUpdatedLogin;
 	}
 
 
-	public void setLastUpdatedLogin(String lastUpdatedLogin) {
+	public void setLastUpdatedLogin(Long lastUpdatedLogin) {
 		this.lastUpdatedLogin = lastUpdatedLogin;
 	}
 
@@ -147,12 +147,12 @@ public class LtTemplateHeaders {
 		this.productCount = productCount;
 	}
 	
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

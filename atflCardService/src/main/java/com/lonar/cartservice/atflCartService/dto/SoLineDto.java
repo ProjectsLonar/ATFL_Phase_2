@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
 public class SoLineDto {
-	private String lineId;
+	private Long lineId;
 	private String productId;
 	private Long quantity;
 	private String productCode;
@@ -50,11 +50,11 @@ public class SoLineDto {
 		this.eimStatus = eimStatus;
 	}
 
-	public String getLineId() {
+	public Long getLineId() {
 		return lineId;
 	}
 
-	public void setLineId(String lineId) {
+	public void setLineId(Long lineId) {
 		this.lineId = lineId;
 	}
 

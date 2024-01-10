@@ -18,7 +18,7 @@ public class ResponseDto {
 	private String latitude;
 	private String longitude;
 	private String remark;
-	private String userId;
+	private Long userId;
 	private String address1;
 	private String city;
 	private String outletAddress;
@@ -29,7 +29,7 @@ public class ResponseDto {
 	private String headerPriceList;
 	
 	// Line Data
-	private String lineId;
+	private Long lineId;
 	private String productId;
 	private Long quantity;
 	private String productCode;
@@ -118,10 +118,10 @@ public class ResponseDto {
 	public void setOutletCode(String outletCode) {
 		this.outletCode = outletCode;
 	}
-	public String getLineId() {
+	public Long getLineId() {
 		return lineId;
 	}
-	public void setLineId(String lineId) {
+	public void setLineId(Long lineId) {
 		this.lineId = lineId;
 	}
 	public String getProductId() {
@@ -276,10 +276,10 @@ public class ResponseDto {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 	public String getPtrPrice() {

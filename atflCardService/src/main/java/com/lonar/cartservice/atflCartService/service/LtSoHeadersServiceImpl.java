@@ -127,7 +127,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		ltSoHeadersRepository.deleteById(headerId);
 	}
 	
-	private Status updateSoHeadeLineInDraft(SoHeaderDto soHeaderDto, Long headerId, Date creationDate, String createdBy)
+	private Status updateSoHeadeLineInDraft(SoHeaderDto soHeaderDto, Long headerId, Date creationDate, Long createdBy)
 			throws ServiceException, IOException {
 		
 		int lineDeleteStatus = ltSoHeadersDao.deleteLineDataByHeaderIdAndReturnStatus(headerId);
@@ -585,7 +585,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		try {
 			Status status = new Status();
 			
-			List<String> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
+			List<Long> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
 			Long recordCount = ltSoHeadersDao.getRecordCount(requestDto);
 			//Long recordCount = (long) headerIdsList.size() + 1;
 			
@@ -1258,7 +1258,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	}
 
 		
-	private Status updateSoHeadeLineInDraftV2(SoHeaderDto soHeaderDto, Long headerId, Date creationDate, String createdBy)
+	private Status updateSoHeadeLineInDraftV2(SoHeaderDto soHeaderDto, Long headerId, Date creationDate, Long createdBy)
 			throws ServiceException, IOException {
 		
 		int lineDeleteStatus = ltSoHeadersDao.deleteLineDataByHeaderIdAndReturnStatus(headerId);
@@ -1450,7 +1450,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		try {
 			Status status = new Status();
 			
-			List<String> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
+			List<Long> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
 			Long recordCount = ltSoHeadersDao.getRecordCount(requestDto);
 			//Long recordCount = (long) headerIdsList.size() + 1;
 			
