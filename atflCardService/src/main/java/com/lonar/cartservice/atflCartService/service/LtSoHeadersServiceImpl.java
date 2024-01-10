@@ -1100,7 +1100,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				requestDto.setOffset(0);
 				status = getOrderV2(requestDto);
 				
-				//sending data to siebel
+				///// push the save order data into siebel  
 				
 				SoLineDto soLineDto = new SoLineDto();
 				
@@ -1357,6 +1357,98 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					requestDto.setHeaderId(ltSoHeader.getHeaderId());
 					requestDto.setOffset(0);
 					status = getOrderV2(requestDto);
+					
+					if(ltSoHeader.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
+						/// push the order into siebel and update the order status to NEW 
+						SoLineDto soLineDto = new SoLineDto();
+						
+						JSONObject lineItemObject = new JSONObject();
+						lineItemObject.put("Id", "1");
+						lineItemObject.put("Product Id", soLineDto.getProductId());
+						lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
+						lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
+						lineItemObject.put("Action Code", "New");
+						lineItemObject.put("Name", soLineDto.getProductName());
+						lineItemObject.put("Quantity", soLineDto.getQuantity());
+						
+						JSONArray lineItemArray = new JSONArray();
+						for (int i =0; i<lineItemObject.length(); i++) {
+							lineItemArray.put(lineItemObject);	
+						}
+						
+						JSONObject listOfLineItem = new JSONObject();
+						listOfLineItem.put("Line Item", lineItemObject);
+						
+						SoHeaderDto soHeaders = new SoHeaderDto();
+						
+						JSONObject header = new JSONObject();
+						header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
+						header.put("Order Type Id", "0-D14G");
+						header.put("Account Id", soHeaderDto.getOutletId());
+						header.put("Status", "New");
+						header.put("Order Type", "Service Order");
+						header.put("Account", soHeaderDto.getOutletName());
+						header.put("Currency Code", "INR");
+						header.put("Order Number", soHeaderDto.getOrderNumber());
+						header.put("Source Inventory Id", "1-2C7QNZG");
+						header.put("ListOfLine Item", listOfLineItem);
+						
+						JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
+						ListOfATOrdersIntegrationIO.put("Header", header);
+						
+						JSONObject siebelMassage = new JSONObject();
+						siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+						siebelMassage.put("MessageId", "");
+						siebelMassage.put("IntObjectName", "AT Orders Integration IO");
+						siebelMassage.put("MessageType", "Integration Object");
+						siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
+						
+						JSONObject siebelMassages = new JSONObject();
+						siebelMassages.put("SubmitFlag", "Y");
+						siebelMassages.put("InvoiceFlag", "Y");
+						siebelMassages.put("SiebelMessage" , siebelMassage);
+						
+						String apiUrl = env.getProperty("SiebelCreateOrderApi");
+						URL url = new URL(apiUrl);
+						String UserName="Lonar_Test";
+						String Password="Lonar123";
+						String credential = UserName +":"+ Password;
+						
+						HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+						connection.setRequestMethod("POST");
+						connection.setDoOutput(true);
+						connection.setRequestProperty("Content-Type", "application/json");
+						connection.setRequestProperty("Authorization", "Basic_Auth"+credential);
+						
+						String jsonPayload =siebelMassages.toString();
+						
+						System.out.println("jsonPayload"+jsonPayload);
+						  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) 
+						  {
+							  wr.writeBytes(jsonPayload);
+						      wr.flush(); 
+						  }
+						
+						  int responseCode = connection.getResponseCode(); 
+						  System.out.println("Response Code: " + responseCode);
+						  
+						  BufferedReader reader; 
+						  if (responseCode ==  HttpURLConnection.HTTP_OK) {
+							  reader = new BufferedReader(new
+						  InputStreamReader(connection.getInputStream())); 
+							  } else { 
+								  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
+						  
+						  String line; 
+						  StringBuilder response = new
+						  StringBuilder();
+						  
+						  while ((line = reader.readLine()) != null) { response.append(line); }
+						  reader.close();
+						
+						
+					}
+					
 					status.setCode(INSERT_SUCCESSFULLY);
 					status.setMessage("Insert Successfully");
 
