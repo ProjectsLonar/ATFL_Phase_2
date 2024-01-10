@@ -1,6 +1,11 @@
 package com.lonar.cartservice.atflCartService.service;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,9 +19,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
 
+import org.json.JSONObject;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +71,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	
 	@Autowired
 	WebController webController;
+
+	@Autowired
+	private Environment env;
 	
 	private static final Logger logger = LoggerFactory.getLogger(LtSoHeadersServiceImpl.class);
 
@@ -327,17 +338,28 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				}
 			}
 		
-			// send salesOrder approval notification to areHead in order is outOfStock
+			// send salesOrder approval notification to areHead if order is outOfStock
 			if(!areaHeadUserList.isEmpty() && ltSoHeader.getInStockFlag()=="N" && 
-					ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null) {
-				
-				for(Iterator iterator = areaHeadUserList.iterator(); iterator.hasNext();) {
-					LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
-					if(ltMastUsers.getToken() != null) {
-						webController.send(ltMastUsers, ltSoHeader, outletCode, outletName);
+					ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null) 
+			{	
+					for(Iterator iterator = areaHeadUserList.iterator(); iterator.hasNext();) {
+						LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
+						if(ltMastUsers.getToken() != null) {
+							webController.send(ltMastUsers, ltSoHeader, outletCode, outletName);
+						}
 					}
-				}
-			} 
+			}// send salesOrder approval notification to areHead if order is inOfStock & priceList is not default
+			// here considering ALL_INDIA_RDS as default price list
+			else if(!areaHeadUserList.isEmpty() && ltSoHeader.getInStockFlag()=="Y" && ltSoHeader.getStatus()=="DRAFT" 
+					&& ltSoHeader.getOrderNumber()!= null && ltSoHeader.getPriceList() != "ALL_INDIA_RDS") 
+			      {			
+						for(Iterator iterator = areaHeadUserList.iterator(); iterator.hasNext();) {
+							LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
+							if(ltMastUsers.getToken() != null) {
+								webController.send(ltMastUsers, ltSoHeader, outletCode, outletName);
+							}
+						}
+			}
 			else {
 		                if(!distUsersList.isEmpty()) {
 			
@@ -950,26 +972,28 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			if(soHeaderDto.getInStockFlag()!= null) {
 				ltSoHeader.setInStockFlag(soHeaderDto.getInStockFlag());
 			}
-//			if(soHeaderDto.getPriceList()!= null) {
-//				ltSoHeader.setPriceList(soHeaderDto.getPriceList());
-//			}
+		//	considering ALL_INDIA_RDS as default priceList
+			if(soHeaderDto.getPriceList()!= null && soHeaderDto.getPriceList() == "ALL_INDIA_RDS") {
+		 	          ltSoHeader.setStatus("APPROVED");
+			}else {
+				ltSoHeader.setPriceList(soHeaderDto.getPriceList());
+			}
 //			if(soHeaderDto.getBeatId()!= null) {
 //				ltSoHeader.setBeatId(soHeaderDto.getBeatId());
 //			}
 			
 			ltSoHeader = updateSoHeader(ltSoHeader);
 			
-			if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus().equalsIgnoreCase(DRAFT) && 
+			if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus()== "APPROVED" && 
 					ltSoHeader.getInStockFlag()== "Y" && ltSoHeader.getPriceList() == "ALL_INDIA_RDS") {
 				// considering ALL_INDIA_RDS as default priceList
+				// need to send this reqBody to siebel
+				
+			}else {
 				// inStock order with different priceList need to send for approval to areHead
 				sendNotifications(ltSoHeader);
-			}else {
-				ltSoHeader.setStatus("APPROVED");
-				
-				// need to send this reqBody to siebel
-			}
-
+			}		
+			
 			List<SoLineDto> soLineDtoList = soHeaderDto.getSoLineDtoList();
 			
 			StringBuffer strQuery1 =  new StringBuffer();
@@ -1075,6 +1099,97 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				requestDto.setHeaderId(ltSoHeader.getHeaderId());
 				requestDto.setOffset(0);
 				status = getOrderV2(requestDto);
+				
+				//sending data to siebel
+				
+				SoLineDto soLineDto = new SoLineDto();
+				
+				JSONObject lineItemObject = new JSONObject();
+				lineItemObject.put("Id", "1");
+				lineItemObject.put("Product Id", soLineDto.getProductId());
+				lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
+				lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
+				lineItemObject.put("Action Code", "New");
+				lineItemObject.put("Name", soLineDto.getProductName());
+				lineItemObject.put("Quantity", soLineDto.getQuantity());
+				
+				JSONArray lineItemArray = new JSONArray();
+				for (int i =0; i<lineItemObject.length(); i++) {
+					lineItemArray.put(lineItemObject);	
+				}
+				
+				JSONObject listOfLineItem = new JSONObject();
+				listOfLineItem.put("Line Item", lineItemObject);
+				
+				SoHeaderDto soHeaders = new SoHeaderDto();
+				
+				JSONObject header = new JSONObject();
+				header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
+				header.put("Order Type Id", "0-D14G");
+				header.put("Account Id", soHeaderDto.getOutletId());
+				header.put("Status", "New");
+				header.put("Order Type", "Service Order");
+				header.put("Account", soHeaderDto.getOutletName());
+				header.put("Currency Code", "INR");
+				header.put("Order Number", soHeaderDto.getOrderNumber());
+				header.put("Source Inventory Id", "1-2C7QNZG");
+				header.put("ListOfLine Item", listOfLineItem);
+				
+				JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
+				ListOfATOrdersIntegrationIO.put("Header", header);
+				
+				JSONObject siebelMassage = new JSONObject();
+				siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+				siebelMassage.put("MessageId", "");
+				siebelMassage.put("IntObjectName", "AT Orders Integration IO");
+				siebelMassage.put("MessageType", "Integration Object");
+				siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
+				
+				JSONObject siebelMassages = new JSONObject();
+				siebelMassages.put("SubmitFlag", "Y");
+				siebelMassages.put("InvoiceFlag", "Y");
+				siebelMassages.put("SiebelMessage" , siebelMassage);
+				
+				String apiUrl = env.getProperty("SiebelCreateOrderApi");
+				URL url = new URL(apiUrl);
+				String UserName="Lonar_Test";
+				String Password="Lonar123";
+				String credential = UserName +":"+ Password;
+				
+				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				connection.setRequestMethod("POST");
+				connection.setDoOutput(true);
+				connection.setRequestProperty("Content-Type", "application/json");
+				connection.setRequestProperty("Authorization", "Basic_Auth"+credential);
+				
+				String jsonPayload =siebelMassages.toString();
+				
+				System.out.println("jsonPayload"+jsonPayload);
+				  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) 
+				  {
+					  wr.writeBytes(jsonPayload);
+				      wr.flush(); 
+				  }
+				
+				  int responseCode = connection.getResponseCode(); 
+				  System.out.println("Response Code: " + responseCode);
+				  
+				  BufferedReader reader; 
+				  if (responseCode ==  HttpURLConnection.HTTP_OK) {
+					  reader = new BufferedReader(new
+				  InputStreamReader(connection.getInputStream())); 
+					  } else { 
+						  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
+				  
+				  String line; 
+				  StringBuilder response = new
+				  StringBuilder();
+				  
+				  while ((line = reader.readLine()) != null) { response.append(line); }
+				  reader.close();
+				  
+				  
+				  
 				status.setCode(INSERT_SUCCESSFULLY);
 				status.setMessage("Insert Successfully");
 

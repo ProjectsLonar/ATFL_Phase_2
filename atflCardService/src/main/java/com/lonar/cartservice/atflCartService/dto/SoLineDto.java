@@ -41,7 +41,16 @@ public class SoLineDto {
 	private String thumbnailImage;
 	
 	private String eimStatus;
+	private String priceListId;
 	
+	public String getPriceListId() {
+		return priceListId;
+	}
+
+	public void setPriceListId(String priceListId) {
+		this.priceListId = priceListId;
+	}
+
 	public String getEimStatus() {
 		return eimStatus;
 	}
