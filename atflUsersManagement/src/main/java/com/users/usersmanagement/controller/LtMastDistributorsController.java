@@ -54,11 +54,11 @@ public class LtMastDistributorsController implements CodeMaster {
 	}
 
 
-	@GetMapping(value = "/getAllDistributorAgainstAreahead/{userId}", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> getAllDistributorAgainstAreahead(@PathVariable("userId") Long userId) throws ServerException {
+	@GetMapping(value = "/getAllDistributorAgainstAreahead/{userName}", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getAllDistributorAgainstAreahead(@PathVariable("userName") String userName) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(
-					ltMastDistributorsService.getAllDistributorAgainstAreahead(userId),
+					ltMastDistributorsService.getAllDistributorAgainstAreahead(userName),
 					HttpStatus.OK);
 		} catch (Exception e) {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);

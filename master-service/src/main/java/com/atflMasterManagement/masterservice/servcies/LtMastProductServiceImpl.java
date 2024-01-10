@@ -77,7 +77,7 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 	@Override
 	public Status getProductV2(RequestDto requestDto) throws ServiceException, IOException {
 		Status status = new Status();
-		
+		try {
 		String userType =  ltMastProductDao.getUserTypeByUserId(requestDto.getUserId());
 		
 		if(userType.equalsIgnoreCase(ADMIN)||userType.equalsIgnoreCase(SALESOFFICER)||userType.equalsIgnoreCase(AREAHEAD)) {
@@ -127,6 +127,9 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 			} else {
 				status.setCode(RECORD_NOT_FOUND);
 			}
+		}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
 		return status;
 	}

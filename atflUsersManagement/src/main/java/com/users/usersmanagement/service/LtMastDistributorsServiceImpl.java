@@ -229,10 +229,10 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 
 	
 	@Override
-	public Status getAllDistributorAgainstAreahead(Long userId)throws ServerException, ServiceException{
+	public Status getAllDistributorAgainstAreahead(String userName)throws ServerException, ServiceException{
 		Status status = new Status();
 		try {
-		List<LtMastDistributors> distributorList = ltMastDistributorsDao.getAllDistributorAgainstAreahead(userId);
+		List<LtMastDistributors> distributorList = ltMastDistributorsDao.getAllDistributorAgainstAreahead(userName);
 		if (distributorList != null) {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
