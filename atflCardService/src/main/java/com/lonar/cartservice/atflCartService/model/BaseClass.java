@@ -23,19 +23,19 @@ public class BaseClass {
 	private Date endDate;*/
 	
 	@Column(name = "CREATED_BY")
-//	private Long createdBy;
-	private String createdBy;
+	private Long createdBy;
+//	private String createdBy;
 	
 	@Column(name = "CREATION_DATE")
 	private Date creationDate;
 	
 	@Column(name = "LAST_UPDATE_LOGIN")
-//	private Long lastUpdateLogin;
-	private String lastUpdateLogin;
+	private Long lastUpdateLogin;
+	//private String lastUpdateLogin;
 	
 	@Column(name = "LAST_UPDATED_BY")
-//	private Long lastUpdatedBy;
-	private String lastUpdatedBy;
+	private Long lastUpdatedBy;
+	//private String lastUpdatedBy;
 	
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
@@ -66,36 +66,12 @@ public class BaseClass {
 		this.status = status;
 	}
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
 	public Date getCreationDate() {
 		return creationDate;
 	}
 
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
-	}
-
-	public String getLastUpdateLogin() {
-		return lastUpdateLogin;
-	}
-
-	public void setLastUpdateLogin(String lastUpdateLogin) {
-		this.lastUpdateLogin = lastUpdateLogin;
-	}
-
-	public String getLastUpdatedBy() {
-		return lastUpdatedBy;
-	}
-
-	public void setLastUpdatedBy(String lastUpdatedBy) {
-		this.lastUpdatedBy = lastUpdatedBy;
 	}
 
 	public Date getLastUpdateDate() {
@@ -152,6 +128,30 @@ public class BaseClass {
 
 	public void setSort(String sort) {
 		this.sort = sort;
+	}
+
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Long getLastUpdateLogin() {
+		return lastUpdateLogin;
+	}
+
+	public void setLastUpdateLogin(Long lastUpdateLogin) {
+		this.lastUpdateLogin = lastUpdateLogin;
+	}
+
+	public Long getLastUpdatedBy() {
+		return lastUpdatedBy;
+	}
+
+	public void setLastUpdatedBy(Long lastUpdatedBy) {
+		this.lastUpdatedBy = lastUpdatedBy;
 	}
 
 	@Override

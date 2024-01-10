@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -19,17 +20,18 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class NotificationDetails {
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_NOTIFICATION_S")
+	@SequenceGenerator(name = "LT_NOTIFICATION_S", sequenceName = "LT_NOTIFICATION_S", allocationSize = 1)
 	@Column(name = "NOTIFICATION_ID")
-//	private Long notificationId;
-	private String notificationId;
+	private Long notificationId;
+	//private String notificationId;
 	
 	@Column(name = "TRANSACTION_ID")
 	private Long transactionId;
 
 	@Column(name = "user_id")
-//	private Long userId;
-	private String userId;
+private Long userId;
+	//private String userId;
 	
 	@Column(name = "NOTIFICATION_TITLE")
 	private String notificationTitle;
@@ -59,11 +61,11 @@ public class NotificationDetails {
 	@Transient
 	private Integer length;
 
-	public String getNotificationId() {
+	public Long getNotificationId() {
 		return notificationId;
 	}
 
-	public void setNotificationId(String notificationId) {
+	public void setNotificationId(Long notificationId) {
 		this.notificationId = notificationId;
 	}
 
@@ -75,11 +77,11 @@ public class NotificationDetails {
 		this.transactionId = transactionId;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

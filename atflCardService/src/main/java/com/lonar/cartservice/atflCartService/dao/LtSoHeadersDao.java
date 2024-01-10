@@ -23,13 +23,13 @@ public interface LtSoHeadersDao {
 
 	List<ResponseDto> getAllOrderInprocess() throws ServiceException, IOException;
 
-	List<String> getSoHeader(RequestDto requestDto) throws ServiceException, IOException;
+	 List<Long> getSoHeader(RequestDto requestDto) throws ServiceException, IOException;
 	
 	Long getRecordCount(RequestDto requestDto) throws ServiceException, IOException;
 
-	List<ResponseDto> getOrderV1(List<String> headerIdList) throws ServiceException, IOException;
+	List<ResponseDto> getOrderV1(List<Long> headerIdList) throws ServiceException, IOException;
 
-	List<ResponseDto> getOrderV2(List<String> headerIdList) throws ServiceException, IOException;
+	List<ResponseDto> getOrderV2(List<Long> headerIdList) throws ServiceException, IOException;
 	
 	Long getSequancesValue() throws ServiceException, IOException;
 
@@ -43,9 +43,9 @@ public interface LtSoHeadersDao {
 	
 	void updateDistributorSequance(String distId, Long distSequance)throws ServiceException, IOException;
 	
-	String getMobileNumber(String userId)throws ServiceException, IOException;
+	String getMobileNumber(Long userId)throws ServiceException, IOException;
 	
-	String getPositionIdByUserId(String userId)throws ServiceException, IOException;
+	String getPositionIdByUserId(Long userId)throws ServiceException, IOException;
 	
 	int insertLine(String query)throws ServiceException, IOException;
 	

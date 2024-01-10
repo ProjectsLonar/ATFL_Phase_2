@@ -12,12 +12,12 @@ public class LtTemplateDto {
 	private Long templateHeaderId;
 	private String distributorId;
 	private Date creationDate;
-	private String createdBy;
+	private Long createdBy;
 	private Date lastUpdatedDate;
-	private String lastUpdatedBy;
-	private String lastUpdatedLogin;
+	private Long lastUpdatedBy;
+	private Long lastUpdatedLogin;
 	private String status;
-	private String userId;
+	private Long userId;
 	private List<LtTemplateLines> ltTemplateLines;
 	
 	public Long getTemplateHeaderId() {
@@ -33,13 +33,6 @@ public class LtTemplateDto {
 		this.distributorId = distributorId;
 	}
 	
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -52,18 +45,7 @@ public class LtTemplateDto {
 	public void setLastUpdatedDate(Date lastUpdatedDate) {
 		this.lastUpdatedDate = lastUpdatedDate;
 	}
-	public String getLastUpdatedBy() {
-		return lastUpdatedBy;
-	}
-	public void setLastUpdatedBy(String lastUpdatedBy) {
-		this.lastUpdatedBy = lastUpdatedBy;
-	}
-	public String getLastUpdatedLogin() {
-		return lastUpdatedLogin;
-	}
-	public void setLastUpdatedLogin(String lastUpdatedLogin) {
-		this.lastUpdatedLogin = lastUpdatedLogin;
-	}
+	
 	public String getStatus() {
 		return status;
 	}
@@ -78,12 +60,29 @@ public class LtTemplateDto {
 	public void setLtTemplateLines(List<LtTemplateLines> ltTemplateLines) {
 		this.ltTemplateLines = ltTemplateLines;
 	}
-	
-	
-	public String getUserId() {
+
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+	public Long getLastUpdatedBy() {
+		return lastUpdatedBy;
+	}
+	public void setLastUpdatedBy(Long lastUpdatedBy) {
+		this.lastUpdatedBy = lastUpdatedBy;
+	}
+	public Long getLastUpdatedLogin() {
+		return lastUpdatedLogin;
+	}
+	public void setLastUpdatedLogin(Long lastUpdatedLogin) {
+		this.lastUpdatedLogin = lastUpdatedLogin;
+	}
+	public Long getUserId() {
 		return userId;
 	}
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 	@Override

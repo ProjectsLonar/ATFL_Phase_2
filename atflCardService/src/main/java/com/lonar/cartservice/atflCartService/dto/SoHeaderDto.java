@@ -22,7 +22,7 @@ public class SoHeaderDto {
 	private Date deliveryDate;
 	private String latitude;
 	private String longitude;
-	private String userId;
+	private Long userId;
 	private String remark;
 	private String address1;
 	private String city;
@@ -134,11 +134,11 @@ public class SoHeaderDto {
 		this.longitude = longitude;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

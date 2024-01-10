@@ -101,7 +101,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	}
 
 	@Override
-	public List<String> getSoHeader(RequestDto requestDto) throws ServiceException, IOException {
+	public List<Long> getSoHeader(RequestDto requestDto) throws ServiceException, IOException {
 		String query = env.getProperty("getOrderHeaderV1");
 
 		if (requestDto.getLimit() == 0) {
@@ -263,7 +263,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 		}
 		System.out.println("searchField :: "+searchField);
 		
-		List<String> headerIdslist = null;
+		List<Long> headerIdslist = null;
 		UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
 		if (userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
 			//get userList by distributorID
@@ -275,7 +275,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			}else {
 				query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  where rownum<= ? ";
 			}
-			headerIdslist = jdbcTemplate.queryForList(query, String.class, requestDto.getStatus(),
+			headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
 					requestDto.getOrderNumber(),requestDto.getDistributorId(), requestDto.getHeaderId(), searchField,
 					requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset());
 
@@ -295,23 +295,32 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 //				query = query +" ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
 				query = query +" ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ?";
 			}
-			headerIdslist = jdbcTemplate.queryForList(query, String.class, requestDto.getStatus(),
+			headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
 					requestDto.getOrderNumber(), requestDto.getDistributorId(), requestDto.getHeaderId(), searchField,
 					requestDto.getLimit(), requestDto.getOffset());
 			return headerIdslist;
 			
 		}else {
 			query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
-			headerIdslist = jdbcTemplate.queryForList(query, String.class, requestDto.getStatus(),
+			/*
+			 * List<Long> headerIds = jdbcTemplate.queryForList(query, Long.class,
+			 * requestDto.getStatus(),
+			 * requestDto.getOrderNumber(),requestDto.getDistributorId(),
+			 * requestDto.getHeaderId(), searchField, requestDto.getOutletId(),
+			 * requestDto.getLimit(), requestDto.getOffset());
+			 */
+			
+			List<Long> headerIds = jdbcTemplate.query(query, new Object[] {requestDto.getStatus(),
 					requestDto.getOrderNumber(),requestDto.getDistributorId(), requestDto.getHeaderId(), searchField,
-					requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset());
-
-			return headerIdslist;
+					requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
+					new BeanPropertyRowMapper<Long>(Long.class));
+System.out.println("headerIds"+headerIds);
+			return headerIds;
 		}
 	}
 
 	@Override
-	public List<ResponseDto> getOrderV1(List<String> headerIdList) throws ServiceException, IOException {
+	public List<ResponseDto> getOrderV1(List<Long> headerIdList) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getOrderLineV1");
 			query = query + "  and lsh.header_id IN ( " + headerIdList.toString().replace("[", "").replace("]", "")
@@ -328,7 +337,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	}
 	
 	@Override
-	public List<ResponseDto> getOrderV2(List<String> headerIdList) throws ServiceException, IOException {
+	public List<ResponseDto> getOrderV2(List<Long> headerIdList) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getOrderLineV1");
 			query = query + "  and lsh.header_id IN ( " + headerIdList.toString().replace("[", "").replace("]", "")
@@ -606,14 +615,14 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	}
 
 	@Override
-	public String getMobileNumber(String userId) throws ServiceException, IOException {
+	public String getMobileNumber(Long userId) throws ServiceException, IOException {
 		String mobileNumber;
 		String sql = env.getProperty("getMobileNumber");
 		mobileNumber = jdbcTemplate.queryForObject(sql, new Object[] { userId }, String.class);
 		return mobileNumber;
 	}
 	
-	private UserDetailsDto getUserTypeAndDisId(String userId) throws ServiceException {
+	private UserDetailsDto getUserTypeAndDisId(Long userId) throws ServiceException {
 		String query = env.getProperty("getUserTypeAndDisId");
 		List<UserDetailsDto> list = jdbcTemplate.query(query, new Object[] { userId },
 				new BeanPropertyRowMapper<UserDetailsDto>(UserDetailsDto.class));
@@ -633,7 +642,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	}
 	
 	@Override
-	public String getPositionIdByUserId(String userId) throws ServiceException, IOException {
+	public String getPositionIdByUserId(Long userId) throws ServiceException, IOException {
 		String positionId;
 		String sql = env.getProperty("getPositionIdByUserId");
 		positionId = jdbcTemplate.queryForObject(sql, new Object[] { userId }, String.class);
