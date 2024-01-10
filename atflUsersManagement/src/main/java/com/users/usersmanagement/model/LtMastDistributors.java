@@ -1,5 +1,7 @@
 package com.users.usersmanagement.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 @Table(name = "LT_MAST_DISTRIBUTORS_v")
 @JsonInclude(Include.NON_NULL)
-public class LtMastDistributors extends BaseClass {
+public class LtMastDistributors extends BaseClassForSiebelModel {
 	@Id
 	@GeneratedValue(strategy= GenerationType.SEQUENCE)
 	@Column(name = "DISTRIBUTOR_ID")
@@ -120,13 +122,13 @@ public class LtMastDistributors extends BaseClass {
 	String distributorOperator;
 	
 	@Transient
-	String templateProductCount;
+	Long templateProductCount;
 	
 	@Transient
-	String templateHeaderId;
+	Long templateHeaderId;
 	
 	@Transient
-	String templateCreationDate;
+	Date templateCreationDate;
 	
 	
 	public String getDistributorId() {
@@ -402,28 +404,27 @@ public class LtMastDistributors extends BaseClass {
 	}
 	
 	
-
-	public String getTemplateProductCount() {
+	public Long getTemplateProductCount() {
 		return templateProductCount;
 	}
 
-	public void setTemplateProductCount(String templateProductCount) {
+	public void setTemplateProductCount(Long templateProductCount) {
 		this.templateProductCount = templateProductCount;
 	}
 
-	public String getTemplateHeaderId() {
+	public Long getTemplateHeaderId() {
 		return templateHeaderId;
 	}
 
-	public void setTemplateHeaderId(String templateHeaderId) {
+	public void setTemplateHeaderId(Long templateHeaderId) {
 		this.templateHeaderId = templateHeaderId;
 	}
 
-	public String getTemplateCreationDate() {
+	public Date getTemplateCreationDate() {
 		return templateCreationDate;
 	}
 
-	public void setTemplateCreationDate(String templateCreationDate) {
+	public void setTemplateCreationDate(Date templateCreationDate) {
 		this.templateCreationDate = templateCreationDate;
 	}
 

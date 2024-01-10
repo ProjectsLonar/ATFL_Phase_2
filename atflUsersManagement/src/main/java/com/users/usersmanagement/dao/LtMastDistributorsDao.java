@@ -15,5 +15,5 @@ public interface LtMastDistributorsDao {
 
 	LtMastDistributors getLtDistributorsById(Long distributorId) throws ServiceException;
 	
-	List<LtMastDistributors> getAllDistributorAgainstAreahead(Long userId)throws ServiceException;
+	List<LtMastDistributors> getAllDistributorAgainstAreahead(String userName)throws ServiceException;
 }

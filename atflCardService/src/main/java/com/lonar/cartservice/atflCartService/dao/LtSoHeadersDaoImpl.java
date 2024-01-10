@@ -29,7 +29,7 @@ import com.lonar.cartservice.atflCartService.repository.LtSoLinesRepository;
 
 @Repository
 @PropertySource(value = "classpath:queries/cartMasterQueries.properties", ignoreResourceNotFound = true)
-@Transactional(propagation=Propagation.MANDATORY)
+//@Transactional(propagation=Propagation.MANDATORY)
 public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 
 	@Autowired
@@ -310,12 +310,12 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			 * requestDto.getLimit(), requestDto.getOffset());
 			 */
 			
-			List<Long> headerIds = jdbcTemplate.query(query, new Object[] {requestDto.getStatus(),
+			 headerIdslist = jdbcTemplate.query(query, new Object[] {requestDto.getStatus(),
 					requestDto.getOrderNumber(),requestDto.getDistributorId(), requestDto.getHeaderId(), searchField,
 					requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
 					new BeanPropertyRowMapper<Long>(Long.class));
-System.out.println("headerIds"+headerIds);
-			return headerIds;
+System.out.println("headerIds"+headerIdslist);
+			return headerIdslist;
 		}
 	}
 

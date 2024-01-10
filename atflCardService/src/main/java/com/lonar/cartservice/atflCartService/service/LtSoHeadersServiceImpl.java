@@ -54,7 +54,6 @@ import com.lonar.cartservice.atflCartService.repository.LtSoHeadersRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSoLinesRepository;
 
 @Service
-@Transactional
 public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 
 	@Autowired
