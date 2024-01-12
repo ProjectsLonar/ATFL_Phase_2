@@ -29,7 +29,7 @@ public class BaseClass {
 	@Column(name = "CREATION_DATE")
 	private Date creationDate;
 	
-	@Column(name = "LAST_UPDATE_LOGIN")
+//	@Column(name = "LAST_UPDATE_LOGIN")
 	private Long lastUpdateLogin;
 	//private String lastUpdateLogin;
 	

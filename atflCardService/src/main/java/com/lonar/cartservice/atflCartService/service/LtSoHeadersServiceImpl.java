@@ -168,9 +168,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		if (soHeaderDto.getUserId() != null) {
 			ltSoHeader.setLastUpdatedBy(soHeaderDto.getUserId());
 		}
-		if (soHeaderDto.getUserId() != null) {
-			ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
-		}
+//		if (soHeaderDto.getUserId() != null) {
+//			ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
+//		}
 		if (soHeaderDto.getAddress() != null) {
 			ltSoHeader.setAddress(soHeaderDto.getAddress());
 		}
@@ -465,9 +465,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			if (soHeaderDto.getUserId() != null) {
 				ltSoHeader.setLastUpdatedBy(soHeaderDto.getUserId());
 			}
-			if (soHeaderDto.getUserId() != null) {
-				ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
-			}
+//			if (soHeaderDto.getUserId() != null) {
+//				ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
+//			}
 			if (soHeaderDto.getAddress() != null) {
 				ltSoHeader.setAddress(soHeaderDto.getAddress());
 			}
