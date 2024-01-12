@@ -25,11 +25,11 @@ public class LtSoLines  extends BaseClass{
 	@SequenceGenerator(name = "LT_SO_LINES_S", sequenceName = "LT_SO_LINES_S", allocationSize = 1)
 	@Column(name = "Line_Id")
 //	Long lineId;
-	String lineId;
+	Long lineId;
 	
-	@Column(name = "Header_id")
-	Long headerId;
-//  String headerId;
+	@Column(name = "HEADER_ID")
+	private Long headerId;
+
 	
 	@Column(name = "Product_Id")
 //	Long productId;
@@ -64,11 +64,11 @@ public class LtSoLines  extends BaseClass{
 		this.eimStatus = eimStatus;
 	}
 
-	public String getLineId() {
+	public Long getLineId() {
 		return lineId;
 	}
 
-	public void setLineId(String lineId) {
+	public void setLineId(Long lineId) {
 		this.lineId = lineId;
 	}
 

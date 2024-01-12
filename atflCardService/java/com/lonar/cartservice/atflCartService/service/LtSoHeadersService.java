@@ -14,5 +14,10 @@ public interface LtSoHeadersService {
 	Status getAllOrderInprocess() throws ServiceException, IOException;
 
 	Status getOrderV1(RequestDto requestDto) throws ServiceException, IOException;
+	
+	Status getOrderCancellationReport()throws ServiceException, IOException;
 
+	// ATFL Phase 2 new development 
+	Status saveOrderV2(SoHeaderDto soHeaderDto) throws ServiceException, IOException;
+	Status getOrderV2(RequestDto requestDto) throws ServiceException, IOException;
 }

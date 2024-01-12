@@ -6,6 +6,6 @@ import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
 
-public interface LtSoHeadersRepository extends DataTablesRepository<LtSoHeaders, Serializable>{
+public interface LtSoHeadersRepository extends DataTablesRepository<LtSoHeaders, Long>{
 
 }

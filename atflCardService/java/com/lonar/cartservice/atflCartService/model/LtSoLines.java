@@ -20,15 +20,16 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class LtSoLines  extends BaseClass{
 	
 	@Id
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_SO_LINES_S")
 	@SequenceGenerator(name = "LT_SO_LINES_S", sequenceName = "LT_SO_LINES_S", allocationSize = 1)
 	@Column(name = "Line_Id")
+//	Long lineId;
 	Long lineId;
-	//String lineId;
 	
-	@Column(name = "Header_id")
-Long headerId;
-	//String headerId;
+	@Column(name = "HEADER_ID")
+	private Long headerId;
+
 	
 	@Column(name = "Product_Id")
 //	Long productId;
@@ -52,19 +53,30 @@ Long headerId;
 	@Transient
 	String outletId;
 
-	public String getLineId() {
+	@Column(name= "eimStatus")
+	String eimStatus;
+	
+	public String getEimStatus() {
+		return eimStatus;
+	}
+
+	public void setEimStatus(String eimStatus) {
+		this.eimStatus = eimStatus;
+	}
+
+	public Long getLineId() {
 		return lineId;
 	}
 
-	public void setLineId(String lineId) {
+	public void setLineId(Long lineId) {
 		this.lineId = lineId;
 	}
 
-	public String getHeaderId() {
+	public Long getHeaderId() {
 		return headerId;
 	}
 
-	public void setHeaderId(String headerId) {
+	public void setHeaderId(Long headerId) {
 		this.headerId = headerId;
 	}
 
@@ -101,11 +113,11 @@ Long headerId;
 		this.deliveryDate = deliveryDate;
 	}
 	
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

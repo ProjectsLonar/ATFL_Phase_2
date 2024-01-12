@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -21,11 +22,11 @@ public class LtSoHeaders extends BaseClass{
 	
 	private static final long serialVersionUID = 1L;
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_SO_HEADERS_S")
+	@SequenceGenerator(name = "LT_SO_HEADERS_S", sequenceName = "LT_SO_HEADERS_S", allocationSize = 1)
 	@Basic(optional = false)
 	@Column(name = "HEADER_ID")
-//	Long headerId;
-	String headerId;
+	private Long headerId;
 	
 	@Column(name = "ORDER_NUMBER")
 	String orderNumber;
@@ -56,14 +57,24 @@ public class LtSoHeaders extends BaseClass{
 	private Long customerId;
 	
 	@Transient
-//	Long userId;
-	String userId;
-
-	public String getHeaderId() {
+	Long userId;
+	//String userId;
+	
+// ATFL Phase2 new development
+	@Column(name= "INSTOCK_FLAG")
+    private String inStockFlag;	
+    
+	@Column(name= "BEAT_ID")
+	private String beatId;
+	
+	@Column(name= "PRICE_LIST")
+	private String priceList;
+	
+	public Long getHeaderId() {
 		return headerId;
 	}
 
-	public void setHeaderId(String headerId) {
+	public void setHeaderId(Long headerId) {
 		this.headerId = headerId;
 	}
 
@@ -126,11 +137,13 @@ public class LtSoHeaders extends BaseClass{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	public String getUserId() {
+
+
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -148,6 +161,31 @@ public class LtSoHeaders extends BaseClass{
 
 	public void setCustomerId(Long customerId) {
 		this.customerId = customerId;
+	}
+	
+
+	public String getInStockFlag() {
+		return inStockFlag;
+	}
+
+	public void setInStockFlag(String inStockFlag) {
+		this.inStockFlag = inStockFlag;
+	}
+	
+	public String getBeatId() {
+		return beatId;
+	}
+
+	public void setBeatId(String beatId) {
+		this.beatId = beatId;
+	}
+
+	public String getPriceList() {
+		return priceList;
+	}
+
+	public void setPriceList(String priceList) {
+		this.priceList = priceList;
 	}
 
 	@Override

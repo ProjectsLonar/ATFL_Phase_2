@@ -15,13 +15,13 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 @Table(name = "lt_mast_outlets_v")
 @JsonInclude(Include.NON_NULL)
-public class LtMastOutles extends BaseClass {
+public class LtMastOutles extends BaseClass1{
 
 	@Id
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_MAST_OUTLETS_V_S")
-	@SequenceGenerator(name = "LT_MAST_OUTLETS_V_S", sequenceName = "LT_MAST_OUTLETS_V_S", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	//@SequenceGenerator(name = "LT_MAST_OUTLETS_V_S", sequenceName = "LT_MAST_OUTLETS_V_S", allocationSize = 1)
 	@Column(name = "outlet_id")
 	//Long outletId;
 	String outletId;
