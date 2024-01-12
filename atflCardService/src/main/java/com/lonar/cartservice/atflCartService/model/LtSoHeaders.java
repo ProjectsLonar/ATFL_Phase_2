@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 @Table(name = "lt_so_headers")
 @JsonInclude(Include.NON_NULL)
-public class LtSoHeaders extends BaseClass{
+public class LtSoHeaders extends BaseClass1{
 	
 	private static final long serialVersionUID = 1L;
 	@Id
