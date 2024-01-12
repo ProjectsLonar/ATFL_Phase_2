@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -94,4 +95,60 @@ public class LtSoHeadersController implements CodeMaster {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 		}
 	}
+	
+	@GetMapping(value = "/getOrderCancellationReason", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getOrderCancellationReport() throws ServerException {
+		try {
+			return new ResponseEntity<Status>(ltSoHeadersService.getOrderCancellationReport(), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+
+	}
+	
+	//ATFL Phase 2 new development 
+		@RequestMapping(value = "/saveOrderV2", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+		public ResponseEntity<Status> saveOrderV2(@RequestBody SoHeaderDto soHeaderDto) throws ServerException {
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				String json = mapper.writeValueAsString(soHeaderDto);
+				String requestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(soHeaderDto);
+				logger.info("Calling==> API Name : Save Order, Method : Post, JSON Request :"+ requestJson);
+				
+				Status status = ltSoHeadersService.saveOrderV2(soHeaderDto);
+				
+				ObjectMapper responceMapper = new ObjectMapper();
+				String jsonResponce = responceMapper.writeValueAsString(status);
+				String responeJson = responceMapper.writerWithDefaultPrettyPrinter().writeValueAsString(status);
+				logger.info("JSON Responce :"+ responeJson);
+				
+				return new ResponseEntity<Status>(status, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("Error Description :", e);
+				throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+			}
+		}
+		
+		@RequestMapping(value = "/getOrderV2", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+		public ResponseEntity<Status> getOrderV2(@RequestBody RequestDto requestDto) throws ServerException {
+			try {
+				ObjectMapper requestMapper = new ObjectMapper();
+				String json = requestMapper.writeValueAsString(requestDto);
+				String requestJson = requestMapper.writerWithDefaultPrettyPrinter().writeValueAsString(requestDto);
+				logger.info("Calling ==> API Name : get Order V1, Method Type : Post, JSON Request :"+ requestJson);
+				
+				Status status = ltSoHeadersService.getOrderV2(requestDto);
+				
+				ObjectMapper responceMapper = new ObjectMapper();
+				String jsonResponce = responceMapper.writeValueAsString(status);
+				String responeJson = responceMapper.writerWithDefaultPrettyPrinter().writeValueAsString(status);
+				logger.info("JSON Responce :"+ responeJson);
+				
+				return new ResponseEntity<Status>(status, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("Error Description :", e);
+				throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+			}
+		}
+	
 }

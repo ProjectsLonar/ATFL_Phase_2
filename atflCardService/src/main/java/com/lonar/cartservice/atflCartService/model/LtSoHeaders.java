@@ -22,14 +22,11 @@ public class LtSoHeaders extends BaseClass1{
 	
 	private static final long serialVersionUID = 1L;
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_SO_HEADERS_S")
 	@SequenceGenerator(name = "LT_SO_HEADERS_S", sequenceName = "LT_SO_HEADERS_S", allocationSize = 1)
 	@Basic(optional = false)
 	@Column(name = "HEADER_ID")
-	Long headerId;
-	//String headerId;
+	private Long headerId;
 	
 	@Column(name = "ORDER_NUMBER")
 	String orderNumber;

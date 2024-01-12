@@ -20,9 +20,9 @@ public class LtMastOutles extends BaseClass {
 	@Id
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_MAST_OUTLETS_V_S")
-	@SequenceGenerator(name = "LT_MAST_OUTLETS_V_S", sequenceName = "LT_MAST_OUTLETS_V_S", allocationSize = 1)
-	@Column(name = "OUTLET_ID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	//@SequenceGenerator(name = "LT_MAST_OUTLETS_V_S", sequenceName = "LT_MAST_OUTLETS_V_S", allocationSize = 1)
+	@Column(name = "outlet_id")
 	//Long outletId;
 	String outletId;
 

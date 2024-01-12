@@ -266,6 +266,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 		System.out.println("searchField :: "+searchField);
 		
 		List<Long> headerIdslist = null;
+		//Long headerId =0l;
 		UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
 		if (userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
 			//get userList by distributorID
@@ -304,18 +305,21 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			
 		}else {
 			query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
-			/*
-			 * List<Long> headerIds = jdbcTemplate.queryForList(query, Long.class,
-			 * requestDto.getStatus(),
-			 * requestDto.getOrderNumber(),requestDto.getDistributorId(),
-			 * requestDto.getHeaderId(), searchField, requestDto.getOutletId(),
-			 * requestDto.getLimit(), requestDto.getOffset());
-			 */
 			
-			 headerIdslist = jdbcTemplate.query(query, new Object[] {requestDto.getStatus(),
-					requestDto.getOrderNumber(),requestDto.getDistributorId(), requestDto.getHeaderId(), searchField,
-					requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
-					new BeanPropertyRowMapper<Long>(Long.class));
+			/*
+			 * if(requestDto.getHeaderId() !=null) { headerId = requestDto.getHeaderId();
+			 * }else { headerId = null; }
+			 */
+			//System.out.println("headerId"+requestDto.getHeaderId().toString());
+			   headerIdslist = jdbcTemplate.queryForList(query, Long.class,requestDto.getStatus(),
+						requestDto.getOrderNumber(), requestDto.getDistributorId(), requestDto.getHeaderId(),searchField,requestDto.getOutletId(),
+						requestDto.getLimit(), requestDto.getOffset());
+			 
+			
+			/*
+			 * headerIdslist = jdbcTemplate.query(query, new Object[] { }, new
+			 * BeanPropertyRowMapper<Long>(Long.class));
+			 */
 System.out.println("headerIds"+headerIdslist);
 			return headerIdslist;
 		}
@@ -557,9 +561,9 @@ System.out.println("headerIds"+headerIdslist);
 			
 			if(!userList.isEmpty() && userList != null) {
 				query = query + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") and lsh.outlet_id = COALESCE( ? ,lsh.outlet_id)";
+						+ ") and COALESCE (lsh.outlet_id, 'xx')= COALESCE( ? ,  COALESCE (lsh.outlet_id, 'xx'))";
 			}else {
-				query = query +" and lsh.outlet_id =  COALESCE( ? ,lsh.outlet_id) ";
+				query = query +" COALESCE (lsh.outlet_id, 'xx')= COALESCE( ? ,  COALESCE (lsh.outlet_id, 'xx')) ";
 			}
 			
 			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
@@ -585,7 +589,7 @@ System.out.println("headerIds"+headerIdslist);
 			}, Long.class);
 			return recordCount;
 		}else {
-			query = query +" and lsh.outlet_id = COALESCE( ? ,lsh.outlet_id)";
+			query = query +"and  COALESCE (lsh.outlet_id, 'xx')= COALESCE( ? ,  COALESCE (lsh.outlet_id, 'xx'))";
 			
 			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
 					requestDto.getStatus(), requestDto.getOrderNumber(),  
