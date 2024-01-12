@@ -42,6 +42,7 @@ import com.lonar.cartservice.atflCartService.dto.SoLineDto;
 import com.lonar.cartservice.atflCartService.model.CodeMaster;
 import com.lonar.cartservice.atflCartService.model.LtMastOutles;
 import com.lonar.cartservice.atflCartService.model.LtSoLines;
+import com.lonar.cartservice.atflCartService.model.LtTemplateLines;
 
 //import com.lonar.cartservice.atflCartService.model.LtMastOutlets;
 
@@ -321,13 +322,18 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		
 		List<LtMastUsers> areaHeadUserList = ltSoHeadersDao.getActiveAreaHeadeUsersFromHeaderId(ltSoHeader.getHeaderId(), ltSoHeader.getOrderNumber());
 		
-			Optional<LtMastOutles> outletsObj =ltMastOutletRepository.findById(ltSoHeader.getOutletId());
-
+		//	Optional<LtMastOutles> outletsObj =ltMastOutletRepository.findById(ltSoHeader.getOutletId());
+		//List<LtMastOutles> ltMastOutle = new ArrayList<LtMastOutles>();
+		List<LtMastOutles> ltMastOutle = ltSoHeadersDao.getOutletDetailsById(ltSoHeader.getOutletId());
+		
 			String outletCode = "";
 			String outletName = "";
-			if (outletsObj.isPresent()) {
-				LtMastOutles ltMastOutlets = outletsObj.get();
+			//if (outletsObj.isPresent()) {
+			if (!ltMastOutle.isEmpty()) {
+				//LtMastOutles ltMastOutlets = outletsObj.get();
 				
+				LtMastOutles ltMastOutlets = new LtMastOutles();
+						
 				if(ltMastOutlets.getOutletCode() != null) {
 					outletCode = ltMastOutlets.getOutletCode() ; 
 				}

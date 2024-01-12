@@ -15,75 +15,75 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 @Table(name = "lt_mast_outlets_v")
 @JsonInclude(Include.NON_NULL)
-public class LtMastOutles extends BaseClass1 {
+public class LtMastOutles extends BaseClass {
 
 	@Id
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_MAST_OUTLETS_V_S")
 	@SequenceGenerator(name = "LT_MAST_OUTLETS_V_S", sequenceName = "LT_MAST_OUTLETS_V_S", allocationSize = 1)
-	@Column(name = "outlet_id")
+	@Column(name = "OUTLET_ID")
 	//Long outletId;
 	String outletId;
 
 	
-	@Column(name = "org_id")
+	@Column(name = "ORG_ID")
 //	Long orgId;
 	String orgId;
 	
-	@Column(name = "outlet_code")
+	@Column(name = "OUTLET_CODE")
 	String outletCode;
 
-	@Column(name = "outlet_type")
+	@Column(name = "OUTLET_TYPE")
 	String outletType;
 
-	@Column(name = "outlet_name")
+	@Column(name = "OUTLET_NAME")
 	String outletName;
 
-	@Column(name = "distributor_id")
+	@Column(name = "DISTRIBUTOR_ID")
 //	Long distributorId;
 	String distributorId;
 
-	@Column(name = "proprietor_name")
+	@Column(name = "PROPRIETOR_NAME")
 	String proprietorName;
 
-	@Column(name = "address_1")
+	@Column(name = "ADDRESS_1")
 	String address1;
 
-	@Column(name = "address_2")
+	@Column(name = "ADDRESS_2")
 	String address2;
 
-	@Column(name = "address_3")
+	@Column(name = "ADDRESS_3")
 	String address3;
 
-	@Column(name = "address_4")
+	@Column(name = "ADDRESS_4")
 	String address4;
 
-	@Column(name = "landmark")
+	@Column(name = "LANDMARK")
 	String landmark;
 
-	@Column(name = "country")
+	@Column(name = "COUNTRY")
 	String country;
 
-	@Column(name = "state")
+	@Column(name = "STATE")
 	String state;
 
-	@Column(name = "city")
+	@Column(name = "CITY")
 	String city;
 
-	@Column(name = "pin_code")
+	@Column(name = "PIN_CODE")
 	String pin_code;
 
-	@Column(name = "region")
+	@Column(name = "REGION")
 	String region;
 
-	@Column(name = "area")
+	@Column(name = "AREA")
 	String area;
 
-	@Column(name = "territory")
+	@Column(name = "TERRITORY")
 	String territory;
 
-	@Column(name = "outlet_gstn")
+	@Column(name = "OUTLET_GSTN")
 	String outletGstn;
 
 //	@Column(name = "outlet_pan")
@@ -92,17 +92,17 @@ public class LtMastOutles extends BaseClass1 {
 //	@Column(name = "licence_no")
 //	String licenceNo;
 
-	@Column(name = "positions_id")
+	@Column(name = "POSITIONS_ID")
 //	Long positionsId;
 	String positionsId;
 	
-	@Column(name = "phone")
+	@Column(name = "PHONE")
 	String phone;
 
-	@Column(name = "email")
+	@Column(name = "EMAIL")
 	String email;
 
-	@Column(name = "primary_mobile")
+	@Column(name = "PRIMARY_MOBILE")
 	String primaryMobile;
 	
 	@Transient

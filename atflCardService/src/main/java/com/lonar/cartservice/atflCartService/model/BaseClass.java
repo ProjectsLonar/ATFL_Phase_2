@@ -30,7 +30,7 @@ public class BaseClass {
 	private Date creationDate;
 	
 //	@Column(name = "LAST_UPDATE_LOGIN")
-	private Long lastUpdateLogin;
+//	private Long lastUpdateLogin;
 	//private String lastUpdateLogin;
 	
 	@Column(name = "LAST_UPDATED_BY")
@@ -138,13 +138,13 @@ public class BaseClass {
 		this.createdBy = createdBy;
 	}
 
-	public Long getLastUpdateLogin() {
-		return lastUpdateLogin;
-	}
-
-	public void setLastUpdateLogin(Long lastUpdateLogin) {
-		this.lastUpdateLogin = lastUpdateLogin;
-	}
+//	public Long getLastUpdateLogin() {
+//		return lastUpdateLogin;
+//	}
+//
+//	public void setLastUpdateLogin(Long lastUpdateLogin) {
+//		this.lastUpdateLogin = lastUpdateLogin;
+//	}
 
 	public Long getLastUpdatedBy() {
 		return lastUpdatedBy;
@@ -157,7 +157,7 @@ public class BaseClass {
 	@Override
 	public String toString() {
 		return "BaseClass [status=" + status + ", createdBy=" + createdBy + ", creationDate=" + creationDate
-				+ ", lastUpdateLogin=" + lastUpdateLogin + ", lastUpdatedBy=" + lastUpdatedBy + ", lastUpdateDate="
+				+ ", lastUpdatedBy=" + lastUpdatedBy + ", lastUpdateDate="
 				+ lastUpdateDate + ", stDate=" + stDate + ", enDate=" + enDate + ", start=" + start + ", length="
 				+ length + ", columnNo=" + columnNo + ", sort=" + sort + "]";
 	}

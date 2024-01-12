@@ -2,6 +2,7 @@ package com.lonar.cartservice.atflCartService.dao;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.ResponseDto;
 import com.lonar.cartservice.atflCartService.dto.UserDetailsDto;
 import com.lonar.cartservice.atflCartService.model.CodeMaster;
+import com.lonar.cartservice.atflCartService.model.LtMastOutles;
 import com.lonar.cartservice.atflCartService.model.LtMastUsers;
 import com.lonar.cartservice.atflCartService.model.LtOrderCancellationReason;
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
@@ -693,6 +695,23 @@ System.out.println("headerIds"+headerIdslist);
 		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
 		return userList;
+	}
+
+	@Override
+	public List<LtMastOutles> getOutletDetailsById(String outletId) throws ServiceException, IOException {
+		String query = env.getProperty("getOutletDetailsByOutletId");
+		try {
+		List<LtMastOutles> outlet = jdbcTemplate.query(query, new Object[] {outletId}, 
+				new BeanPropertyRowMapper<LtMastOutles>(LtMastOutles.class));
+		
+		if(!outlet.isEmpty() ) {
+			return outlet;
+		}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+		//return Optional.empty();
 	}
 
 }

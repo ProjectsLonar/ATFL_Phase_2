@@ -2,11 +2,13 @@ package com.lonar.cartservice.atflCartService.dao;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.DistributorDetailsDto;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.ResponseDto;
+import com.lonar.cartservice.atflCartService.model.LtMastOutles;
 import com.lonar.cartservice.atflCartService.model.LtMastUsers;
 import com.lonar.cartservice.atflCartService.model.LtOrderCancellationReason;
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
@@ -61,5 +63,7 @@ public interface LtSoHeadersDao {
 	List<LtOrderCancellationReason> getOrderCancellationReport() throws ServiceException, IOException;
 	
 	List<LtMastUsers> getActiveAreaHeadeUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException;
+
+	List<LtMastOutles> getOutletDetailsById(String outletId)throws ServiceException, IOException;
 	
 }
