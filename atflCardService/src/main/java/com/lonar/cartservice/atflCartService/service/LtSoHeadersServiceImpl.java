@@ -1903,5 +1903,20 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			e.printStackTrace();
 		} return null;
 	}
+	
+	@Override
+	public Status locationSaveOnNoOrder(LtSoHeaders ltSoHeaders) throws ServiceException, IOException{
+		Status status = new Status();
+		LtSoHeaders list = ltSoHeadersDao.locationSaveOnNoOrder(ltSoHeaders);
+		if (list != null) {
+			status.setCode(SUCCESS);
+			status.setMessage("Location Saved Successfully.");
+			status.setData(list);
+		} else {
+			status.setCode(FAIL);
+			status.setMessage("Fail To Save.");
+		}
+		return status;
+	}
 
 }

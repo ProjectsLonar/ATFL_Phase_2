@@ -698,5 +698,18 @@ System.out.println("headerIds"+headerIdslist);
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
 		return userList;
 	}
+	
+	@Override
+	public LtSoHeaders locationSaveOnNoOrder(LtSoHeaders ltSoHeaders)throws ServiceException, IOException{
+		String query = env.getProperty("locationSaveOnNoOrder");
+		List<LtSoHeaders> noOrderDetails = jdbcTemplate.query(query, new Object[] { ltSoHeaders },
+				new BeanPropertyRowMapper<LtSoHeaders>(LtSoHeaders.class));
+		
+		if(noOrderDetails !=null) {
+		return noOrderDetails.get(0);
+		}else {
+			return null;
+		}
+	}
 
 }

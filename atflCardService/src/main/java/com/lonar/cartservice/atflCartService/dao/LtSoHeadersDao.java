@@ -62,4 +62,6 @@ public interface LtSoHeadersDao {
 	
 	List<LtMastUsers> getActiveAreaHeadeUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException;
 	
+	LtSoHeaders locationSaveOnNoOrder(LtSoHeaders ltSoHeaders)throws ServiceException, IOException;
+	
 }
