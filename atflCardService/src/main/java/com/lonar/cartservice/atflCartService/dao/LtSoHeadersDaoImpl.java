@@ -265,7 +265,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 		}
 		System.out.println("searchField :: "+searchField);
 		
-		List<Long> headerIdslist = null;
+		List<Long> headerIdslist = null;		
 		//Long headerId =0l;
 		UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
 		if (userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
@@ -311,11 +311,25 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			 * }else { headerId = null; }
 			 */
 			//System.out.println("headerId"+requestDto.getHeaderId().toString());
-			   headerIdslist = jdbcTemplate.queryForList(query, Long.class,requestDto.getStatus(),
-						requestDto.getOrderNumber(), requestDto.getDistributorId(), requestDto.getHeaderId(),searchField,requestDto.getOutletId(),
-						requestDto.getLimit(), requestDto.getOffset());
+//			System.out.println("output query is = " + query);
+//			System.out.println("Status is ="+ requestDto.getStatus());
+//			System.out.println("OrderNo is ="+ requestDto.getOrderNumber());
+//			System.out.println("Limit is ="+ requestDto.getLimit());
+//           System.out.println("offset is = "+ requestDto.getOffset());
+//           System.out.println("DistriBId is = "+ requestDto.getDistributorId());
+//           System.out.println("Headid is = "+ requestDto.getHeaderId());
+//           System.out.println("searchfeld is = "+ searchField);
+//           System.out.println("outletId is ="+ requestDto.getOutletId());
+//           
+//			   headerIdslist = jdbcTemplate.queryForList(query, Long.class,requestDto.getStatus(),
+//						requestDto.getOrderNumber(), requestDto.getDistributorId(), requestDto.getHeaderId(),searchField,requestDto.getOutletId(),
+//						requestDto.getLimit(), requestDto.getOffset());
 			 
-			
+           headerIdslist = jdbcTemplate.queryForList(query, Long.class,requestDto.getStatus(),
+					requestDto.getOrderNumber(), requestDto.getDistributorId(), requestDto.getHeaderId(),searchField,requestDto.getOutletId(),
+					requestDto.getLimit(), requestDto.getOffset());
+
+           
 			/*
 			 * headerIdslist = jdbcTemplate.query(query, new Object[] { }, new
 			 * BeanPropertyRowMapper<Long>(Long.class));
@@ -707,7 +721,7 @@ System.out.println("headerIds"+headerIdslist);
 		try {
 		List<LtMastOutles> outlet = jdbcTemplate.query(query, new Object[] {outletId}, 
 				new BeanPropertyRowMapper<LtMastOutles>(LtMastOutles.class));
-		
+		//System.out.print("outlet =" +outlet);
 		if(!outlet.isEmpty() ) {
 			return outlet;
 		}

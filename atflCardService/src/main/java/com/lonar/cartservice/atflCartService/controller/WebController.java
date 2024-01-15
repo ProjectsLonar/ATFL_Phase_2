@@ -38,7 +38,7 @@ public class WebController {
 		
 		JSONObject body = new JSONObject();
 		//body.put("to", "/topics/" + TOPIC);
-		body.put("to", ltMastUsers.getToken());
+		body.put("to", ltMastUsers.getTokenData());
 		body.put("collapse_key", "type_a");
 		//body.put("priority", "high");
 
@@ -82,7 +82,7 @@ public class WebController {
 		NotificationDetails notifictn  = new NotificationDetails();
 		notifictn.setReadFlag("N");
 		notifictn.setUserId(ltMastUsers.getUserId()); 
-		notifictn.setTokenId(ltMastUsers.getToken()); 
+		notifictn.setTokenId(ltMastUsers.getTokenData()); 
 		notifictn.setDistributorId(ltMastUsers.getDistributorId());
 		notifictn.setNotificationBody(data.toString());
 		notifictn.setNotificationTitle(notification.toString());

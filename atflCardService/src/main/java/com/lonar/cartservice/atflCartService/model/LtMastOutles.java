@@ -22,7 +22,7 @@ public class LtMastOutles extends BaseClass {
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	//@SequenceGenerator(name = "LT_MAST_OUTLETS_V_S", sequenceName = "LT_MAST_OUTLETS_V_S", allocationSize = 1)
-	@Column(name = "outlet_id")
+	@Column(name = "OUTLET_ID")
 	//Long outletId;
 	String outletId;
 
@@ -48,16 +48,16 @@ public class LtMastOutles extends BaseClass {
 	String proprietorName;
 
 	@Column(name = "ADDRESS_1")
-	String address1;
+	String address_1;
 
 	@Column(name = "ADDRESS_2")
-	String address2;
+	String address_2;
 
 	@Column(name = "ADDRESS_3")
-	String address3;
+	String address_3;
 
 	@Column(name = "ADDRESS_4")
-	String address4;
+	String address_4;
 
 	@Column(name = "LANDMARK")
 	String landmark;
@@ -203,35 +203,35 @@ public class LtMastOutles extends BaseClass {
 	}
 
 	public String getAddress1() {
-		return address1;
+		return address_1;
 	}
 
 	public void setAddress1(String address1) {
-		this.address1 = address1;
+		this.address_1 = address1;
 	}
 
 	public String getAddress2() {
-		return address2;
+		return address_2;
 	}
 
 	public void setAddress2(String address2) {
-		this.address2 = address2;
+		this.address_2 = address2;
 	}
 
 	public String getAddress3() {
-		return address3;
+		return address_3;
 	}
 
 	public void setAddress3(String address3) {
-		this.address3 = address3;
+		this.address_3 = address3;
 	}
 
 	public String getAddress4() {
-		return address4;
+		return address_4;
 	}
 
 	public void setAddress4(String address4) {
-		this.address4 = address4;
+		this.address_4 = address4;
 	}
 
 	public String getLandmark() {
@@ -402,8 +402,8 @@ public class LtMastOutles extends BaseClass {
 	public String toString() {
 		return "LtMastOutlets [outletId=" + outletId + ", orgId=" + orgId + ", outletCode=" + outletCode
 				+ ", outletType=" + outletType + ", outletName=" + outletName + ", distributorId=" + distributorId
-				+ ", proprietorName=" + proprietorName + ", address1=" + address1 + ", address2=" + address2
-				+ ", address3=" + address3 + ", address4=" + address4 + ", landmark=" + landmark + ", country="
+				+ ", proprietorName=" + proprietorName + ", address1=" + address_1 + ", address2=" + address_2
+				+ ", address3=" + address_3 + ", address4=" + address_4 + ", landmark=" + landmark + ", country="
 				+ country + ", state=" + state + ", city=" + city + ", pin_code=" + pin_code + ", region=" + region
 				+ ", area=" + area + ", territory=" + territory + ", outletGstn=" + outletGstn + ",  email=" + email + ", primaryMobile=" + primaryMobile + ", distributorCode=" + distributorCode
 				+ ", distributorStatus=" + distributorStatus + ", distributorName=" + distributorName + ", employeeId="

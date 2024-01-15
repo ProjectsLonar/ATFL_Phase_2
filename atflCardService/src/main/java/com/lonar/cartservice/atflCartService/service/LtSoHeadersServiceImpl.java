@@ -324,7 +324,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		
 		//	Optional<LtMastOutles> outletsObj =ltMastOutletRepository.findById(ltSoHeader.getOutletId());
 		//List<LtMastOutles> ltMastOutle = new ArrayList<LtMastOutles>();
-		List<LtMastOutles> ltMastOutle = ltSoHeadersDao.getOutletDetailsById(ltSoHeader.getOutletId());
+		List<LtMastOutles>ltMastOutle = ltSoHeadersDao.getOutletDetailsById(ltSoHeader.getOutletId());
 		
 			String outletCode = "";
 			String outletName = "";
@@ -343,24 +343,33 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				}
 			}
 		
+			if(!areaHeadUserList.isEmpty()) {System.out.println("THis is 1 if");}
+			if(ltSoHeader.getInStockFlag()=="N") {System.out.println("THis is 2 if");}
+			if(ltSoHeader.getStatus()=="DRAFT") {System.out.println("THis is 3 if");}
+			if(ltSoHeader.getOrderNumber()!= null) {System.out.println("THis is 4 if");}
+			
+			System.out.println("Thisss ISSSS ISSSUEEEE"+ ltSoHeader.getInStockFlag());
+			
 			// send salesOrder approval notification to areHead if order is outOfStock
-			if(!areaHeadUserList.isEmpty() && ltSoHeader.getInStockFlag()=="N" && 
+			if(!areaHeadUserList.isEmpty() && ltSoHeader.getInStockFlag()!="Y" && 
 					ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null) 
 			{	
 					for(Iterator iterator = areaHeadUserList.iterator(); iterator.hasNext();) {
 						LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
-						if(ltMastUsers.getToken() != null) {
+						System.out.print(ltMastUsers.getTokenData());
+						if(ltMastUsers.getTokenData() != null) {
 							webController.send(ltMastUsers, ltSoHeader, outletCode, outletName);
 						}
 					}
-			}// send salesOrder approval notification to areHead if order is inOfStock & priceList is not default
+			}// send salesOrder approval notification to areHead if order is inStock & priceList is not default
 			// here considering ALL_INDIA_RDS as default price list
-			else if(!areaHeadUserList.isEmpty() && ltSoHeader.getInStockFlag()=="Y" && ltSoHeader.getStatus()=="DRAFT" 
+			else if(!areaHeadUserList.isEmpty() && ltSoHeader.getInStockFlag()!="N" && ltSoHeader.getStatus()=="DRAFT" 
 					&& ltSoHeader.getOrderNumber()!= null && ltSoHeader.getPriceList() != "ALL_INDIA_RDS") 
 			      {			
 						for(Iterator iterator = areaHeadUserList.iterator(); iterator.hasNext();) {
 							LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
-							if(ltMastUsers.getToken() != null) {
+							System.out.print(ltMastUsers.getTokenData());
+							if(ltMastUsers.getTokenData() != null) {
 								webController.send(ltMastUsers, ltSoHeader, outletCode, outletName);
 							}
 						}
@@ -370,7 +379,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			
 			          for (Iterator iterator = distUsersList.iterator(); iterator.hasNext();) {
 				          LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
-				      if(ltMastUsers.getToken() != null) {
+				      if(ltMastUsers.getTokenData() != null) {
 					      webController.send(ltMastUsers, ltSoHeader, outletCode, outletName );
 				    }
 			     }
@@ -379,7 +388,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		               if(!salesUsersList.isEmpty()) {
 			               for (Iterator iterator = salesUsersList.iterator(); iterator.hasNext();) {
 				           LtMastUsers ltMastUsers2 = (LtMastUsers) iterator.next();
-				       if(ltMastUsers2.getToken() != null) {
+				       if(ltMastUsers2.getTokenData() != null) {
 					       webController.send(ltMastUsers2, ltSoHeader, outletCode, outletName);
 				    }
 			     }
@@ -977,11 +986,15 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			if(soHeaderDto.getInStockFlag()!= null) {
 				ltSoHeader.setInStockFlag(soHeaderDto.getInStockFlag());
 			}
-		//	considering ALL_INDIA_RDS as default priceList
-			if(soHeaderDto.getPriceList()!= null && soHeaderDto.getPriceList() == "ALL_INDIA_RDS") {
-		 	          ltSoHeader.setStatus("APPROVED");
-			}else {
+			if(soHeaderDto.getPriceList()!= null) {
 				ltSoHeader.setPriceList(soHeaderDto.getPriceList());
+			}
+			
+		//	considering ALL_INDIA_RDS as default priceList
+			if(!soHeaderDto.getPriceList().equals("ALL_INDIA_RDS")) {
+		 	          ltSoHeader.setStatus(DRAFT);
+			}else {
+				ltSoHeader.setStatus("APPROVED");
 			}
 //			if(soHeaderDto.getBeatId()!= null) {
 //				ltSoHeader.setBeatId(soHeaderDto.getBeatId());
@@ -989,8 +1002,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			
 			ltSoHeader = updateSoHeader(ltSoHeader);
 			
-			if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus()== "APPROVED" && 
-					ltSoHeader.getInStockFlag()== "Y" && ltSoHeader.getPriceList() == "ALL_INDIA_RDS") {
+			if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus().equals("APPROVED")  && 
+					ltSoHeader.getInStockFlag().equals("Y") && ltSoHeader.getPriceList().equals("ALL_INDIA_RDS")) {
 				// considering ALL_INDIA_RDS as default priceList
 				// need to send this reqBody to siebel
 				
@@ -1155,8 +1168,11 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				siebelMassages.put("InvoiceFlag", "Y");
 				siebelMassages.put("SiebelMessage" , siebelMassage);
 				
-				String apiUrl = env.getProperty("SiebelCreateOrderApi");
+			//	String apiUrl = env.getProperty("SiebelCreateOrderApi");
+				String apiUrl = env.getProperty("https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y");
 				URL url = new URL(apiUrl);
+				System.out.print(apiUrl);
+				System.out.print(url);
 				String UserName="Lonar_Test";
 				String Password="Lonar123";
 				String credential = UserName +":"+ Password;
@@ -1413,8 +1429,11 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						siebelMassages.put("InvoiceFlag", "Y");
 						siebelMassages.put("SiebelMessage" , siebelMassage);
 						
-						String apiUrl = env.getProperty("SiebelCreateOrderApi");
+					//	String apiUrl = env.getProperty("SiebelCreateOrderApi");
+						String apiUrl = env.getProperty("https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y");
 						URL url = new URL(apiUrl);
+						System.out.print(apiUrl);
+						System.out.print(url);
 						String UserName="Lonar_Test";
 						String Password="Lonar123";
 						String credential = UserName +":"+ Password;

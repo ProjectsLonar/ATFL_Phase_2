@@ -90,8 +90,8 @@ public class LtMastUsers extends BaseClass {
 //	private Long recentSerachId;
 	private String recentSerachId;
 	
-	@Column(name = "token")
-	private String token;
+	@Column(name = "TOKEN_DATA")
+	private String tokenData;
 	
 	@Transient
 	String distributorCode;
@@ -402,12 +402,13 @@ public class LtMastUsers extends BaseClass {
 		this.position = position;
 	}
 
-	public String getToken() {
-		return token;
+	public String getTokenData() {
+		return tokenData;
 	}
 
-	public void setToken(String token) {
-		this.token = token;
+	public void setTokenData(String tokenData) {
+		this.tokenData = tokenData;
 	}
+	
 	
 }
