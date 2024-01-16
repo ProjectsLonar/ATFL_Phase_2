@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lonar.cartservice.atflCartService.common.BusinessException;
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.controller.WebController;
 import com.lonar.cartservice.atflCartService.dao.LtSoHeadersDao;
@@ -1002,15 +1003,15 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			
 			ltSoHeader = updateSoHeader(ltSoHeader);
 			
-			if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus().equals("APPROVED")  && 
-					ltSoHeader.getInStockFlag().equals("Y") && ltSoHeader.getPriceList().equals("ALL_INDIA_RDS")) {
-				// considering ALL_INDIA_RDS as default priceList
-				// need to send this reqBody to siebel
-				
-			}else {
-				// inStock order with different priceList need to send for approval to areHead
-				sendNotifications(ltSoHeader);
-			}		
+//			if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus().equals("APPROVED")  && 
+//					ltSoHeader.getInStockFlag().equals("Y") && ltSoHeader.getPriceList().equals("ALL_INDIA_RDS")) {
+//				// considering ALL_INDIA_RDS as default priceList
+//				// need to send this reqBody to siebel
+//				
+//			}else {
+//				// inStock order with different priceList need to send for approval to areHead
+//				sendNotifications(ltSoHeader);
+//			}		
 			
 			List<SoLineDto> soLineDtoList = soHeaderDto.getSoLineDtoList();
 			
@@ -1113,105 +1114,215 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			
 			if (n > 0) {
 				System.out.println("Line insert successfully");
+				try {
+				if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus().equals("APPROVED")  && 
+						ltSoHeader.getInStockFlag().equals("Y") && ltSoHeader.getPriceList().equals("ALL_INDIA_RDS")) {
+					// considering ALL_INDIA_RDS as default priceList
+					// need to send this reqBody to siebel
+					
+				///// push the save order data into siebel  
+					
+					SoLineDto soLineDto = new SoLineDto();
+					
+					JSONObject lineItemObject = new JSONObject();
+					lineItemObject.put("Id", "1");
+					lineItemObject.put("Product Id", soLineDto.getProductId());
+					lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
+					lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
+					lineItemObject.put("Action Code", "New");
+					lineItemObject.put("Name", soLineDto.getProductName());
+					lineItemObject.put("Quantity", soLineDto.getQuantity());
+					
+					JSONArray lineItemArray = new JSONArray();
+					for (int i =0; i<lineItemObject.length(); i++) {
+						lineItemArray.put(lineItemObject);	
+					}
+					
+					JSONObject listOfLineItem = new JSONObject();
+					listOfLineItem.put("Line Item", lineItemObject);
+					
+					SoHeaderDto soHeaders = new SoHeaderDto();
+					
+					JSONObject header = new JSONObject();
+					header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
+					header.put("Order Type Id", "0-D14G");
+					header.put("Account Id", soHeaderDto.getOutletId());
+					header.put("Status", "New");
+					header.put("Order Type", "Service Order");
+					header.put("Account", soHeaderDto.getOutletName());
+					header.put("Currency Code", "INR");
+					header.put("Order Number", soHeaderDto.getOrderNumber());
+					header.put("Source Inventory Id", "1-2C7QNZG");
+					header.put("ListOfLine Item", listOfLineItem);
+					
+					JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
+					ListOfATOrdersIntegrationIO.put("Header", header);
+					
+					JSONObject siebelMassage = new JSONObject();
+					siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+					siebelMassage.put("MessageId", "");
+					siebelMassage.put("IntObjectName", "AT Orders Integration IO");
+					siebelMassage.put("MessageType", "Integration Object");
+					siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
+					
+					JSONObject siebelMassages = new JSONObject();
+					siebelMassages.put("SubmitFlag", "Y");
+					siebelMassages.put("InvoiceFlag", "Y");
+					siebelMassages.put("SiebelMessage" , siebelMassage);
+					
+					String apiUrl = env.getProperty("SiebelCreateOrderApi");
+					//String apiUrl = env.getProperty("https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y");
+					URL url = new URL(apiUrl);
+					System.out.print(apiUrl);
+					System.out.print(url);
+					String UserName="Lonar_Test";
+					String Password="Lonar123";
+					String credential = UserName +":"+ Password;
+					
+					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+					connection.setRequestMethod("POST");
+					connection.setDoOutput(true);
+					connection.setRequestProperty("Content-Type", "application/json");
+					connection.setRequestProperty("Authorization", "Basic_Auth"+credential);
+					
+					String jsonPayload =siebelMassages.toString();
+					
+					System.out.println("jsonPayload"+jsonPayload);
+					  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) 
+					  {
+						  wr.writeBytes(jsonPayload);
+					      wr.flush(); 
+					  }
+					
+					  int responseCode = connection.getResponseCode(); 
+					  System.out.println("Response Code: " + responseCode);
+					  
+					  BufferedReader reader; 
+					  if (responseCode ==  HttpURLConnection.HTTP_OK) {
+						  reader = new BufferedReader(new
+					  InputStreamReader(connection.getInputStream())); 
+						  } else { 
+							  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
+					  
+					  String line; 
+					  StringBuilder response = new
+					  StringBuilder();
+					  
+					  while ((line = reader.readLine()) != null) { response.append(line); }
+					  reader.close();
+					  
+					  System.out.println("Response: " + response.toString());
+
+					
+				}else {
+					
+					// inStock order with different priceList need to send for approval to areHead
+					sendNotifications(ltSoHeader);
+				
+				///// push the save order data into siebel  if order is approved
+					
+					SoLineDto soLineDto = new SoLineDto();
+					
+					JSONObject lineItemObject = new JSONObject();
+					lineItemObject.put("Id", "1");
+					lineItemObject.put("Product Id", soLineDto.getProductId());
+					lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
+					lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
+					lineItemObject.put("Action Code", "New");
+					lineItemObject.put("Name", soLineDto.getProductName());
+					lineItemObject.put("Quantity", soLineDto.getQuantity());
+					
+					JSONArray lineItemArray = new JSONArray();
+					for (int i =0; i<lineItemObject.length(); i++) {
+						lineItemArray.put(lineItemObject);	
+					}
+					
+					JSONObject listOfLineItem = new JSONObject();
+					listOfLineItem.put("Line Item", lineItemObject);
+					
+					SoHeaderDto soHeaders = new SoHeaderDto();
+					
+					JSONObject header = new JSONObject();
+					header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
+					header.put("Order Type Id", "0-D14G");
+					header.put("Account Id", soHeaderDto.getOutletId());
+					header.put("Status", "INPROCESS");
+					header.put("Order Type", "Service Order");
+					header.put("Account", soHeaderDto.getOutletName());
+					header.put("Currency Code", "INR");
+					header.put("Order Number", soHeaderDto.getOrderNumber());
+					header.put("Source Inventory Id", "1-2C7QNZG");
+					header.put("ListOfLine Item", listOfLineItem);
+					
+					JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
+					ListOfATOrdersIntegrationIO.put("Header", header);
+					
+					JSONObject siebelMassage = new JSONObject();
+					siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+					siebelMassage.put("MessageId", "");
+					siebelMassage.put("IntObjectName", "AT Orders Integration IO");
+					siebelMassage.put("MessageType", "Integration Object");
+					siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
+					
+					JSONObject siebelMassages = new JSONObject();
+					siebelMassages.put("SubmitFlag", "Y");
+					siebelMassages.put("InvoiceFlag", "Y");
+					siebelMassages.put("SiebelMessage" , siebelMassage);
+					
+				//	String apiUrl = env.getProperty("SiebelCreateOrderApi");
+					String apiUrl = env.getProperty("https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y");
+					URL url = new URL(apiUrl);
+					System.out.print(apiUrl);
+					System.out.print(url);
+					String UserName="Lonar_Test";
+					String Password="Lonar123";
+					String credential = UserName +":"+ Password;
+					
+					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+					connection.setRequestMethod("POST");
+					connection.setDoOutput(true);
+					connection.setRequestProperty("Content-Type", "application/json");
+					connection.setRequestProperty("Authorization", "Basic_Auth"+credential);
+					
+					String jsonPayload =siebelMassages.toString();
+					
+					System.out.println("jsonPayload"+jsonPayload);
+					  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) 
+					  {
+						  wr.writeBytes(jsonPayload);
+					      wr.flush(); 
+					  }
+					
+					  int responseCode = connection.getResponseCode(); 
+					  System.out.println("Response Code: " + responseCode);
+					  
+					  BufferedReader reader; 
+					  if (responseCode ==  HttpURLConnection.HTTP_OK) {
+						  reader = new BufferedReader(new
+					  InputStreamReader(connection.getInputStream())); 
+						  } else { 
+							  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
+					  
+					  String line; 
+					  StringBuilder response = new
+					  StringBuilder();
+					  
+					  while ((line = reader.readLine()) != null) { response.append(line); }
+					  reader.close();
+					  
+					  System.out.println("Response: " + response.toString());
+
+				}
+				
 				RequestDto requestDto = new RequestDto();
 				requestDto.setHeaderId(ltSoHeader.getHeaderId());
 				requestDto.setOffset(0);
 				status = getOrderV2(requestDto);
-				
-				///// push the save order data into siebel  
-				
-				SoLineDto soLineDto = new SoLineDto();
-				
-				JSONObject lineItemObject = new JSONObject();
-				lineItemObject.put("Id", "1");
-				lineItemObject.put("Product Id", soLineDto.getProductId());
-				lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
-				lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
-				lineItemObject.put("Action Code", "New");
-				lineItemObject.put("Name", soLineDto.getProductName());
-				lineItemObject.put("Quantity", soLineDto.getQuantity());
-				
-				JSONArray lineItemArray = new JSONArray();
-				for (int i =0; i<lineItemObject.length(); i++) {
-					lineItemArray.put(lineItemObject);	
 				}
-				
-				JSONObject listOfLineItem = new JSONObject();
-				listOfLineItem.put("Line Item", lineItemObject);
-				
-				SoHeaderDto soHeaders = new SoHeaderDto();
-				
-				JSONObject header = new JSONObject();
-				header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
-				header.put("Order Type Id", "0-D14G");
-				header.put("Account Id", soHeaderDto.getOutletId());
-				header.put("Status", "New");
-				header.put("Order Type", "Service Order");
-				header.put("Account", soHeaderDto.getOutletName());
-				header.put("Currency Code", "INR");
-				header.put("Order Number", soHeaderDto.getOrderNumber());
-				header.put("Source Inventory Id", "1-2C7QNZG");
-				header.put("ListOfLine Item", listOfLineItem);
-				
-				JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
-				ListOfATOrdersIntegrationIO.put("Header", header);
-				
-				JSONObject siebelMassage = new JSONObject();
-				siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
-				siebelMassage.put("MessageId", "");
-				siebelMassage.put("IntObjectName", "AT Orders Integration IO");
-				siebelMassage.put("MessageType", "Integration Object");
-				siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
-				
-				JSONObject siebelMassages = new JSONObject();
-				siebelMassages.put("SubmitFlag", "Y");
-				siebelMassages.put("InvoiceFlag", "Y");
-				siebelMassages.put("SiebelMessage" , siebelMassage);
-				
-			//	String apiUrl = env.getProperty("SiebelCreateOrderApi");
-				String apiUrl = env.getProperty("https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y");
-				URL url = new URL(apiUrl);
-				System.out.print(apiUrl);
-				System.out.print(url);
-				String UserName="Lonar_Test";
-				String Password="Lonar123";
-				String credential = UserName +":"+ Password;
-				
-				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-				connection.setRequestMethod("POST");
-				connection.setDoOutput(true);
-				connection.setRequestProperty("Content-Type", "application/json");
-				connection.setRequestProperty("Authorization", "Basic_Auth"+credential);
-				
-				String jsonPayload =siebelMassages.toString();
-				
-				System.out.println("jsonPayload"+jsonPayload);
-				  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) 
-				  {
-					  wr.writeBytes(jsonPayload);
-				      wr.flush(); 
-				  }
-				
-				  int responseCode = connection.getResponseCode(); 
-				  System.out.println("Response Code: " + responseCode);
-				  
-				  BufferedReader reader; 
-				  if (responseCode ==  HttpURLConnection.HTTP_OK) {
-					  reader = new BufferedReader(new
-				  InputStreamReader(connection.getInputStream())); 
-					  } else { 
-						  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
-				  
-				  String line; 
-				  StringBuilder response = new
-				  StringBuilder();
-				  
-				  while ((line = reader.readLine()) != null) { response.append(line); }
-				  reader.close();
-				  
-				  
-				  
-				status.setCode(INSERT_SUCCESSFULLY);
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+	            status.setCode(INSERT_SUCCESSFULLY);
 				status.setMessage("Insert Successfully");
 
 				return status;
@@ -1470,7 +1581,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						  while ((line = reader.readLine()) != null) { response.append(line); }
 						  reader.close();
 						
-						
+						  System.out.println("Response: " + response.toString());
 					}
 					
 					status.setCode(INSERT_SUCCESSFULLY);
