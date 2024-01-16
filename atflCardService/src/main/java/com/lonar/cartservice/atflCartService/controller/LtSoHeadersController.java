@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +22,7 @@ import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.SoHeaderDto;
 import com.lonar.cartservice.atflCartService.model.CodeMaster;
+import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
 import com.lonar.cartservice.atflCartService.model.Status;
 import com.lonar.cartservice.atflCartService.service.LtSoHeadersService;
 
@@ -149,6 +151,11 @@ public class LtSoHeadersController implements CodeMaster {
 				logger.error("Error Description :", e);
 				throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 			}
+		}
+		
+		@PostMapping(value = "/locationSaveOnNoOrder",consumes = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<Status> locationSaveOnNoOrder(@RequestBody LtSoHeaders ltSoHeaders) throws ServiceException, IOException {
+			return new ResponseEntity<Status>(ltSoHeadersService.locationSaveOnNoOrder(ltSoHeaders), HttpStatus.OK);
 		}
 	
 }

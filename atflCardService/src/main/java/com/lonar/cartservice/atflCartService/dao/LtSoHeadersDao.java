@@ -66,4 +66,6 @@ public interface LtSoHeadersDao {
 
 	List<LtMastOutles> getOutletDetailsById(String outletId)throws ServiceException, IOException;
 	
+	LtSoHeaders locationSaveOnNoOrder(LtSoHeaders ltSoHeaders)throws ServiceException, IOException;
+	
 }
