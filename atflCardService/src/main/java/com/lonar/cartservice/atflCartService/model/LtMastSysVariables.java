@@ -4,15 +4,25 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@Entity
+@Table(name = "LT_MAST_SYS_VARIABLES")
+@JsonInclude(Include.NON_NULL)
 public class LtMastSysVariables  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LT_MAST_SYS_VARIABLES_SEQ")
+	@SequenceGenerator(name = "LT_MAST_SYS_VARIABLES_SEQ", sequenceName = "LT_MAST_SYS_VARIABLES_SEQ", allocationSize = 1)
 	@Column(name = "VARIABLE_ID")
 	private Long variableId;
 	

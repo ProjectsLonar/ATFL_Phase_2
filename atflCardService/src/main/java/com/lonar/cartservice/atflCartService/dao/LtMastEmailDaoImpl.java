@@ -7,11 +7,13 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.model.LtMastEmail;
 import com.lonar.cartservice.atflCartService.repository.LtMastEmailRepository;
 
+@Repository
 public class LtMastEmailDaoImpl implements LtMastEmailDao{
 
 	private JdbcTemplate jdbcTemplate;

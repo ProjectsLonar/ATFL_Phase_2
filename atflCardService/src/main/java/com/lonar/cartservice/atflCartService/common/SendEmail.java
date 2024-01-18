@@ -9,7 +9,9 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
 
 import com.lonar.cartservice.atflCartService.AtflCartServiceApplication;
 import com.lonar.cartservice.atflCartService.dto.OrderDetailsDto;
@@ -19,6 +21,10 @@ import com.lonar.cartservice.atflCartService.model.CodeMaster;
 import com.lonar.cartservice.atflCartService.model.LtMastUsers;
 import com.lonar.cartservice.atflCartService.model.Mail;
 
+
+@Service
+@PropertySource(value = "classpath:queries/DefaultId.properties", ignoreResourceNotFound = true)
+@PropertySource(value = "classpath:queries/config.properties", ignoreResourceNotFound = true)
 public class SendEmail implements CodeMaster {
 
 	@Autowired

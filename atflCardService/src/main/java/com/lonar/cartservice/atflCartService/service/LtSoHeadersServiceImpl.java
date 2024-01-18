@@ -49,6 +49,7 @@ import com.lonar.cartservice.atflCartService.model.LtTemplateLines;
 
 import com.lonar.cartservice.atflCartService.model.LtMastUsers;
 import com.lonar.cartservice.atflCartService.model.LtOrderCancellationReason;
+import com.lonar.cartservice.atflCartService.model.LtSalesPersonLocation;
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
 import com.lonar.cartservice.atflCartService.model.Status;
 import com.lonar.cartservice.atflCartService.repository.LtMastOutletRepository;
@@ -2041,9 +2042,15 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	}
 	
 	@Override
-	public Status locationSaveOnNoOrder(LtSoHeaders ltSoHeaders) throws ServiceException, IOException{
+	public Status locationSaveOnNoOrder(LtSalesPersonLocation ltSalesPersonLocation) throws ServiceException, IOException{
 		Status status = new Status();
-		LtSoHeaders list = ltSoHeadersDao.locationSaveOnNoOrder(ltSoHeaders);
+		ltSalesPersonLocation.setCreatedBy(ltSalesPersonLocation.getUserId());
+		ltSalesPersonLocation.setCreationDate(new Date());
+		ltSalesPersonLocation.setLastUpdateDate(new Date());
+		ltSalesPersonLocation.setLastUpdatedBy(ltSalesPersonLocation.getUserId());
+		
+		
+		LtSalesPersonLocation list = ltSoHeadersDao.locationSaveOnNoOrder(ltSalesPersonLocation);
 		if (list != null) {
 			status.setCode(SUCCESS);
 			status.setMessage("Location Saved Successfully.");

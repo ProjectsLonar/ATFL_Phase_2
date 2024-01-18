@@ -5,17 +5,27 @@ import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@Entity
+@Table(name = "LT_MAST_EMAIL")
+@JsonInclude(Include.NON_NULL)
 public class LtMastEmail implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
 	@Id
 	@Basic(optional = false)
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "LT_MAST_EMAIL_SEQ")
+	@SequenceGenerator(name = "LT_MAST_EMAIL_SEQ", sequenceName = "LT_MAST_EMAIL_SEQ", allocationSize = 1)
 	@Column(name = "EMAIL_TOKEN_ID")
 	private Long emailTokenId;
 
