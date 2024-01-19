@@ -3,6 +3,7 @@ package com.users.usersmanagement.service;
 import java.io.IOException;
 
 import com.users.usersmanagement.common.ServiceException;
+import com.users.usersmanagement.model.BeatDetailsDto;
 import com.users.usersmanagement.model.LtMastOutlets;
 import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.RequestDto;
@@ -27,4 +28,8 @@ public interface LtMastOutletService {
 	Status getPendingAprrovalOutlet(RequestDto requestDto) throws ServiceException, IOException;
 	
 	Status approveOutlet(LtMastOutletsDump ltMastOutletsDump)throws ServiceException, IOException;
+
+	Status getBeatDetailsAgainsDistirbutorCodeAndBeatName(String distributorCode, String beatName)throws ServiceException, IOException;
+
+	Status updateBeatSequence(BeatDetailsDto beatDetailsDto) throws ServiceException, IOException;
 }

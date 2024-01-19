@@ -10,3 +10,4 @@ public interface LtMastEmailDao {
 
 	List<LtMastEmail> saveall(List<LtMastEmail> ltMastEmailToken) throws ServiceException;
 }
+

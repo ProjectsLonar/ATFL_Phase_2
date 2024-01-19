@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.users.usersmanagement.common.ServiceException;
+import com.users.usersmanagement.model.BeatDetailsDto;
 import com.users.usersmanagement.model.LtMastOrganisations;
 import com.users.usersmanagement.model.LtMastOutlets;
 import com.users.usersmanagement.model.LtMastOutletsChannel;
@@ -11,6 +12,7 @@ import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastOutletsType;
 import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
+import com.users.usersmanagement.model.OutletSequenceData;
 import com.users.usersmanagement.model.RequestDto;
 
 public interface LtMastOutletDao {
@@ -38,5 +40,12 @@ public interface LtMastOutletDao {
 	public LtMastUsers getSystemAdministartorDetails(String orgId) throws ServiceException, IOException;
 	
 	public List<LtMastUsers> getAllSalesOfficerAgainstDist(String distributorId,String orgId)throws ServiceException, IOException;
+
+	public BeatDetailsDto getBeatDetailsAgainsDistirbutorCodeAndBeatName(String distributorCode, String beatName)throws ServiceException, IOException;
+
+	public List<OutletSequenceData> getBeatDetailsAgainsDistirbutorCode(String distributorCode, String beatName)throws ServiceException, IOException;
+
+	void updateBeatSequence(int outletSeq, String distCode, String beatName, String outletCode)throws ServiceException, IOException ;
+
 
 }

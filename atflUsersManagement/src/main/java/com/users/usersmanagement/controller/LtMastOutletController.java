@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.users.usersmanagement.common.BusinessException;
 import com.users.usersmanagement.common.ServiceException;
+import com.users.usersmanagement.model.BeatDetailsDto;
 import com.users.usersmanagement.model.CodeMaster;
 import com.users.usersmanagement.model.LtMastOutlets;
 import com.users.usersmanagement.model.LtMastOutletsDump;
@@ -118,5 +119,24 @@ public class LtMastOutletController implements CodeMaster {
 	  throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
     }	
 	}
+	
+	@RequestMapping(value = "/getBeatDetailsAgainsDistirbutorCodeAndBeatName/{distributorCode}/{beatName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0")
+		public ResponseEntity<Status> getBeatDetailsAgainsDistirbutorCodeAndBeatName(@PathVariable("distributorCode") String distributorCode, 
+				                       @PathVariable("beatName") String beatName)throws ServerException{
+				try {
+						return new ResponseEntity<Status>(ltMastOutletService.getBeatDetailsAgainsDistirbutorCodeAndBeatName(distributorCode,beatName), HttpStatus.OK);
+					}catch(Exception e) {
+						throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+					}
+            }
 		
+	@RequestMapping(value = "/updateBeatSequence", method = RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_VALUE, headers="X-API-Version=1.0")
+	public ResponseEntity<Status> updateBeatSequence(@RequestBody BeatDetailsDto beatDetailsDto) throws ServerException{
+		try{
+               return new ResponseEntity<Status>(ltMastOutletService.updateBeatSequence(beatDetailsDto), HttpStatus.OK);			
+		   }catch(Exception e){
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		   }		
+	  }
+	
 }
