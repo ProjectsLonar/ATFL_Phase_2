@@ -153,7 +153,7 @@ public class LtSoHeadersController implements CodeMaster {
 			}
 		}
 		
-		@PostMapping(value = "/locationSaveOnNoOrder",consumes = MediaType.APPLICATION_JSON_VALUE)
+		@PostMapping(value = "/locationSaveOnNoOrder",consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 		public ResponseEntity<Status> locationSaveOnNoOrder(@RequestBody LtSalesPersonLocation ltSalesPersonLocation) throws ServiceException, IOException {
 			return new ResponseEntity<Status>(ltSoHeadersService.locationSaveOnNoOrder(ltSalesPersonLocation), HttpStatus.OK);
 		}
