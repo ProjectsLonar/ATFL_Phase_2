@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.users.usersmanagement.common.ServiceException;
+import com.users.usersmanagement.model.BeatDetailsDto;
 import com.users.usersmanagement.model.CodeMaster;
 import com.users.usersmanagement.model.LtMastOrganisations;
 import com.users.usersmanagement.model.LtMastOutlets;
@@ -21,6 +22,7 @@ import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastOutletsType;
 import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
+import com.users.usersmanagement.model.OutletSequenceData;
 import com.users.usersmanagement.model.RequestDto;
 
 @Repository
@@ -249,4 +251,35 @@ System.out.println("list"+list);
 			return null;
 		}
 	}
+
+	@Override
+	public BeatDetailsDto getBeatDetailsAgainsDistirbutorCodeAndBeatName(String distributorCode, String beatName)throws ServiceException, IOException {
+		String query = env.getProperty("getBeatDetailsAgainsDistirbutorCodeAndBeatName");
+	       List<BeatDetailsDto> list = jdbcTemplate.query(query, new Object[] {distributorCode, beatName}, 
+				new BeanPropertyRowMapper<BeatDetailsDto>(BeatDetailsDto.class));
+	               if(!list.isEmpty()) {
+				                         return list.get(0);
+			                           }
+				return null;
+			}
+
+	@Override
+	public List<OutletSequenceData> getBeatDetailsAgainsDistirbutorCode(String distributorCode, String beatName)throws ServiceException, IOException {
+		String query = env.getProperty("getBeatDetailsAgainsDistirbutorCodeAndBeat");
+	       List<OutletSequenceData> list = jdbcTemplate.query(query, new Object[] {distributorCode, beatName}, 
+				new BeanPropertyRowMapper<OutletSequenceData>(OutletSequenceData.class));
+	               if(!list.isEmpty()) {
+				                         return list;
+			                           }
+				return null;
+			}
+
+	@Override
+	public void updateBeatSequence(int outletSeq, String distCode, String beatName, String outletCode)throws ServiceException, IOException {
+		String query =  env.getProperty("updateBeatSequence");
+		//Object value = new Object[] {outletSeq, distCode, beatName, outletCode};
+		this.jdbcTemplate.update(query, outletSeq, distCode, beatName, outletCode);
+		//return status;
+	}
+	
 }

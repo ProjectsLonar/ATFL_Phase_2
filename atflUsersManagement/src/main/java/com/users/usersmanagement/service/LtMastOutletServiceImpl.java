@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,6 +23,8 @@ import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.controller.WebController;
 import com.users.usersmanagement.dao.AtflMastUsersDao;
 import com.users.usersmanagement.dao.LtMastOutletDao;
+import com.users.usersmanagement.model.BeatDetailsDto;
+import com.users.usersmanagement.model.OutletSequenceData;
 import com.users.usersmanagement.model.CodeMaster;
 import com.users.usersmanagement.model.LtMastOrganisations;
 //import com.users.usersmanagement.model.LtMastOutlets;
@@ -37,6 +40,8 @@ import com.users.usersmanagement.model.Status;
 import com.users.usersmanagement.repository.LtMastOutletDumpRepository;
 import com.users.usersmanagement.repository.LtMastOutletRepository;
 import com.users.usersmanagement.repository.LtMastUsersRepository;
+
+import javassist.bytecode.Descriptor.Iterator;
 
 @Service
 @PropertySource(value = "classpath:queries/userMasterQueries.properties", ignoreResourceNotFound = true)
@@ -571,4 +576,71 @@ try {
 
 	        return result.toString();
 	    }
+
+	@Override
+	public Status getBeatDetailsAgainsDistirbutorCodeAndBeatName(String distributorCode, String beatName) throws ServiceException, IOException {
+		try {   
+		Status status = new Status();
+		BeatDetailsDto beatDetailsDto = new BeatDetailsDto();
+		List<OutletSequenceData> outletSequenceData= new ArrayList<OutletSequenceData>();
+		  BeatDetailsDto headerlist = ltMastOutletDao.getBeatDetailsAgainsDistirbutorCodeAndBeatName(distributorCode, beatName);
+		    if(headerlist!= null) {
+		    	outletSequenceData = ltMastOutletDao.getBeatDetailsAgainsDistirbutorCode(distributorCode, beatName);
+		    	beatDetailsDto.setDistributorCode(headerlist.getDistributorCode());
+		    	beatDetailsDto.setDistributorName(headerlist.getDistributorName());
+		    	beatDetailsDto.setDistributorNumber(headerlist.getDistributorNumber());
+		    	
+		    	if(!outletSequenceData.isEmpty()) {
+		    		beatDetailsDto.setOutletSequenceData(outletSequenceData);
+		    	}else {
+					
+				}status.setCode(FAIL);
+				status.setMessage("RECORD NOT FOUND");
+		    }
+		  	  
+		  if(beatDetailsDto!= null) {
+		    	status.setCode(SUCCESS);
+		    	status.setMessage("RECORD FOUND SUCCESSFULLY");
+		    	status.setData(beatDetailsDto);
+		    	
+		    }else {
+		    	status.setCode(FAIL);
+		    	status.setMessage("RECORD NOT FOUND");
+		    }
+		    return status;
+	      }
+	 catch(Exception e) {
+		e.printStackTrace();
+		return null;
+	   }
+		
+	}
+
+	@Override
+	public Status updateBeatSequence(BeatDetailsDto beatDetailsDto) throws ServiceException, IOException {
+		try {
+			  Status status = new Status();	
+		//  System.out.print("Req data Isss === "+beatDetailsDto);
+               List<OutletSequenceData>	outletSequenceData = beatDetailsDto.getOutletSequenceData();
+              
+       //   System.out.print("Seq data Isss === "+outletSequenceData);
+              int a;
+               for(int i=0; i<outletSequenceData.size(); i++) {
+            	  int outletSeq = outletSequenceData.get(i).getOutletSequence();
+            	  String distCode =  beatDetailsDto.getDistributorCode();
+            	  String beatName = outletSequenceData.get(i).getBeatName();
+            	   String outletCode = outletSequenceData.get(i).getOutletCode();
+       //  	  System.out.print("Seq dataaa Is === "+outletSeq + distCode +beatName +outletCode );
+       //            	   outletSequenceData=  ltMastOutletDao.updateBeatSequence(outletSeq,distCode,beatName,outletCode);
+            	    ltMastOutletDao.updateBeatSequence(outletSeq,distCode,beatName,outletCode);
+               }
+                	     //System.out.print("Updated row value is =" +a);
+            	         status.setCode(SUCCESS);
+  			             status.setMessage("Record Update Successfully");
+  			           return status;
+              }	catch(Exception e) {
+			      e.printStackTrace(); 
+			      return null;
+			}		
+	}
 }
