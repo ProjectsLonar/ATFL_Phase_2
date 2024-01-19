@@ -25,7 +25,7 @@ public class SoHeaderDto {
 	private Long userId;
 	private String remark;
 	private String address1;
-	private String city;
+	private String city;	
 	
 	
 	private List<SoLineDto> soLineDtoList;

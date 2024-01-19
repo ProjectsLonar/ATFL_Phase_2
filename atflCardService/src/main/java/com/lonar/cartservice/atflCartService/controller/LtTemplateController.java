@@ -29,23 +29,8 @@ public class LtTemplateController implements CodeMaster {
 	@GetMapping(value = "/getTemplateAgainstDistributor/{distributorId}/{templateHeaderId}",produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> getTemplateAgainstDistributor(@PathVariable String distributorId,@PathVariable Long templateHeaderId ) throws ServerException {
 		try {
-			/*
-			 * ObjectMapper requestMapper = new ObjectMapper(); String json =
-			 * requestMapper.writeValueAsString(requestDto); String requestJson =
-			 * requestMapper.writerWithDefaultPrettyPrinter().writeValueAsString(requestDto)
-			 * ; logger.
-			 * info("Calling ==> API Name : get Order V1, Method Type : Post, JSON Request :"
-			 * + request	Json);
-			 */
 			
 			Status status = ltTemplateService.getTemplateAgainstDistributor(distributorId,templateHeaderId);
-			
-			/*
-			 * ObjectMapper responceMapper = new ObjectMapper(); String jsonResponce =
-			 * responceMapper.writeValueAsString(status); String responeJson =
-			 * responceMapper.writerWithDefaultPrettyPrinter().writeValueAsString(status);
-			 * logger.info("JSON Responce :"+ responeJson);
-			 */
 			
 			return new ResponseEntity<Status>(status, HttpStatus.OK);
 		} catch (Exception e) {

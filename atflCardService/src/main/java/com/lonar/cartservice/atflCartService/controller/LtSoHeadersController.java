@@ -22,7 +22,7 @@ import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.SoHeaderDto;
 import com.lonar.cartservice.atflCartService.model.CodeMaster;
-import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
+import com.lonar.cartservice.atflCartService.model.LtSalesPersonLocation;
 import com.lonar.cartservice.atflCartService.model.Status;
 import com.lonar.cartservice.atflCartService.service.LtSoHeadersService;
 
@@ -153,9 +153,9 @@ public class LtSoHeadersController implements CodeMaster {
 			}
 		}
 		
-		@PostMapping(value = "/locationSaveOnNoOrder",consumes = MediaType.APPLICATION_JSON_VALUE)
-		public ResponseEntity<Status> locationSaveOnNoOrder(@RequestBody LtSoHeaders ltSoHeaders) throws ServiceException, IOException {
-			return new ResponseEntity<Status>(ltSoHeadersService.locationSaveOnNoOrder(ltSoHeaders), HttpStatus.OK);
+		@PostMapping(value = "/locationSaveOnNoOrder",consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+		public ResponseEntity<Status> locationSaveOnNoOrder(@RequestBody LtSalesPersonLocation ltSalesPersonLocation) throws ServiceException, IOException {
+			return new ResponseEntity<Status>(ltSoHeadersService.locationSaveOnNoOrder(ltSalesPersonLocation), HttpStatus.OK);
 		}
 	
 }

@@ -2,7 +2,6 @@ package com.lonar.cartservice.atflCartService.dao;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lonar.cartservice.atflCartService.common.ServiceException;
@@ -24,8 +22,9 @@ import com.lonar.cartservice.atflCartService.model.CodeMaster;
 import com.lonar.cartservice.atflCartService.model.LtMastOutles;
 import com.lonar.cartservice.atflCartService.model.LtMastUsers;
 import com.lonar.cartservice.atflCartService.model.LtOrderCancellationReason;
+import com.lonar.cartservice.atflCartService.model.LtSalesPersonLocation;
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
-import com.lonar.cartservice.atflCartService.model.LtSoLines;
+import com.lonar.cartservice.atflCartService.repository.LtSalesPersonLocationRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSoLinesRepository;
 
 
@@ -39,6 +38,9 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	
 	@Autowired
 	LtSoLinesRepository  ltSoLinesRepository;
+	
+	@Autowired
+	LtSalesPersonLocationRepository ltSalesPersonLocationRepository;
 
 	private JdbcTemplate jdbcTemplate;
 
@@ -716,16 +718,17 @@ System.out.println("headerIds"+headerIdslist);
 	}
 	
 	@Override
-	public LtSoHeaders locationSaveOnNoOrder(LtSoHeaders ltSoHeaders)throws ServiceException, IOException{
-		String query = env.getProperty("locationSaveOnNoOrder");
-		List<LtSoHeaders> noOrderDetails = jdbcTemplate.query(query, new Object[] { ltSoHeaders },
-				new BeanPropertyRowMapper<LtSoHeaders>(LtSoHeaders.class));
-		
-		if(noOrderDetails !=null) {
-		return noOrderDetails.get(0);
-		}else {
-			return null;
-		}
+	public LtSalesPersonLocation locationSaveOnNoOrder(LtSalesPersonLocation ltSalesPersonLocation)throws ServiceException, IOException{
+		/*
+		 * String query = env.getProperty("locationSaveOnNoOrder");
+		 * List<LtSalesPersonLocation> noOrderDetails = jdbcTemplate.query(query, new
+		 * Object[] { ltSalesPersonLocation }, new
+		 * BeanPropertyRowMapper<LtSalesPersonLocation>(LtSalesPersonLocation.class));
+		 * 
+		 * if(noOrderDetails !=null) { return noOrderDetails.get(0); }else { return
+		 * null; }
+		 */
+		return ltSalesPersonLocationRepository.save(ltSalesPersonLocation);
 	}
 
 	@Override

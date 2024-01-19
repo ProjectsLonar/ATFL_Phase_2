@@ -11,6 +11,7 @@ import com.lonar.cartservice.atflCartService.dto.ResponseDto;
 import com.lonar.cartservice.atflCartService.model.LtMastOutles;
 import com.lonar.cartservice.atflCartService.model.LtMastUsers;
 import com.lonar.cartservice.atflCartService.model.LtOrderCancellationReason;
+import com.lonar.cartservice.atflCartService.model.LtSalesPersonLocation;
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
 
 public interface LtSoHeadersDao {
@@ -66,6 +67,6 @@ public interface LtSoHeadersDao {
 
 	List<LtMastOutles> getOutletDetailsById(String outletId)throws ServiceException, IOException;
 	
-	LtSoHeaders locationSaveOnNoOrder(LtSoHeaders ltSoHeaders)throws ServiceException, IOException;
+	LtSalesPersonLocation locationSaveOnNoOrder(LtSalesPersonLocation ltSalesPersonLocation)throws ServiceException, IOException;
 	
 }
