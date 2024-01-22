@@ -63,6 +63,19 @@ public class ResponseDto {
 	
 	private String distributorCode;
 	
+	private String salesReturnNumber;
+	private String invoiceNumber;
+	private String returnStatus;
+	private Long salesReturnHeaderId;
+	private String returnReason;
+	private Date salesReturnDate;
+	private Long salesReturnLineId;
+	private Long  shippedQuantity;
+	private String availability;
+	private Long  remainingQuantity;
+	private Long  returnQuantity;
+	private String location;
+	
 	public String getDistributorCode() {
 		return distributorCode;
 	}
@@ -355,7 +368,6 @@ public class ResponseDto {
 		this.inventoryQuantity = inventoryQuantity;
 	}
 	
-	
 	public String getBeatId() {
 		return BeatId;
 	}
@@ -367,6 +379,102 @@ public class ResponseDto {
 	}
 	public void setHeaderPriceList(String headerPriceList) {
 		this.headerPriceList = headerPriceList;
+	}
+	public String getSalesReturnNumber() {
+		return salesReturnNumber;
+	}
+	public void setSalesReturnNumber(String salesReturnNumber) {
+		this.salesReturnNumber = salesReturnNumber;
+	}
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+	public String getReturnStatus() {
+		return returnStatus;
+	}
+	public void setReturnStatus(String returnStatus) {
+		this.returnStatus = returnStatus;
+	}
+	public Long getSalesReturnHeaderId() {
+		return salesReturnHeaderId;
+	}
+	public void setSalesReturnHeaderId(Long salesReturnHeaderId) {
+		this.salesReturnHeaderId = salesReturnHeaderId;
+	}
+	public String getReturnReason() {
+		return returnReason;
+	}
+	public void setReturnReason(String returnReason) {
+		this.returnReason = returnReason;
+	}
+	public Date getSalesReturnDate() {
+		return salesReturnDate;
+	}
+	public void setSalesReturnDate(Date salesReturnDate) {
+		this.salesReturnDate = salesReturnDate;
+	}
+	public Long getSalesReturnLineId() {
+		return salesReturnLineId;
+	}
+	public void setSalesReturnLineId(Long salesReturnLineId) {
+		this.salesReturnLineId = salesReturnLineId;
+	}
+	public Long getShippedQuantity() {
+		return shippedQuantity;
+	}
+	public void setShippedQuantity(Long shippedQuantity) {
+		this.shippedQuantity = shippedQuantity;
+	}
+	public String getAvailability() {
+		return availability;
+	}
+	public void setAvailability(String availability) {
+		this.availability = availability;
+	}
+	public Long getRemainingQuantity() {
+		return remainingQuantity;
+	}
+	public void setRemainingQuantity(Long remainingQuantity) {
+		this.remainingQuantity = remainingQuantity;
+	}
+	public Long getReturnQuantity() {
+		return returnQuantity;
+	}
+	public void setReturnQuantity(Long returnQuantity) {
+		this.returnQuantity = returnQuantity;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	@Override
+	public String toString() {
+		return "ResponseDto [headerId=" + headerId + ", orderNumber=" + orderNumber + ", orderDate=" + orderDate
+				+ ", status=" + status + ", address=" + address + ", outletId=" + outletId + ", outletName="
+				+ outletName + ", outletCode=" + outletCode + ", latitude=" + latitude + ", longitude=" + longitude
+				+ ", remark=" + remark + ", userId=" + userId + ", address1=" + address1 + ", city=" + city
+				+ ", outletAddress=" + outletAddress + ", customerId=" + customerId + ", proprietorName="
+				+ proprietorName + ", BeatId=" + BeatId + ", headerPriceList=" + headerPriceList + ", lineId=" + lineId
+				+ ", productId=" + productId + ", quantity=" + quantity + ", productCode=" + productCode
+				+ ", productDesc=" + productDesc + ", productName=" + productName + ", listPrice=" + listPrice
+				+ ", priceList=" + priceList + ", ptrPrice=" + ptrPrice + ", deliveryDate=" + deliveryDate
+				+ ", ptrFlag=" + ptrFlag + ", linelistPrice=" + linelistPrice + ", linePtrPrice=" + linePtrPrice
+				+ ", inventoryQuantity=" + inventoryQuantity + ", orgId=" + orgId + ", categoryId=" + categoryId
+				+ ", productType=" + productType + ", category=" + category + ", subCategory=" + subCategory
+				+ ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom + ", secondaryUomValue="
+				+ secondaryUomValue + ", unitsPerCase=" + unitsPerCase + ", segment=" + segment + ", brand=" + brand
+				+ ", subBrand=" + subBrand + ", casePack=" + casePack + ", hsnCode=" + hsnCode + ", productImage="
+				+ productImage + ", thumbnailImage=" + thumbnailImage + ", distributorCode=" + distributorCode
+				+ ", salesReturnNumber=" + salesReturnNumber + ", invoiceNumber=" + invoiceNumber + ", returnStatus="
+				+ returnStatus + ", salesReturnHeaderId=" + salesReturnHeaderId + ", returnReason=" + returnReason
+				+ ", salesReturnDate=" + salesReturnDate + ", salesReturnLineId=" + salesReturnLineId
+				+ ", shippedQuantity=" + shippedQuantity + ", availability=" + availability + ", remainingQuantity="
+				+ remainingQuantity + ", returnQuantity=" + returnQuantity + ", location=" + location + "]";
 	}
 
 	

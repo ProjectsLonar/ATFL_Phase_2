@@ -393,7 +393,8 @@ try {
 		  JSONObject relatedOrganizationDetail = new JSONObject();
 		  
 		  relatedOrganizationDetail.put("IsPrimaryMVG","Y");
-		  relatedOrganizationDetail.put("Organization", ltMastOrganisations.getOrganisationName());
+		  //relatedOrganizationDetail.put("Organization", ltMastOrganisations.getOrganisationName());
+		  relatedOrganizationDetail.put("Organization", "Agro Tech Foods Limited");
 		  
 		  
 		  JSONObject listOfRelatedOrganizations = new JSONObject();
@@ -403,17 +404,17 @@ try {
 		  JSONObject businessAddress = new JSONObject();
 		  businessAddress.put("Address Id", "1");
 		 // businessAddress.put("Street Address", ltMastOutletsDump.getAddress1());
-		  businessAddress.put("Street Address","South primary");
+		  businessAddress.put("Street Address","West");
 		  businessAddress.put("County", "");
 		 // businessAddress.put("Street Address 2",ltMastOutletsDump.getAddress2());
-		  businessAddress.put("Street Address 2","kalupurr");
+		  businessAddress.put("Street Address 2","Amravati");
 		 // businessAddress.put("City", ltMastOutletsDump.getCity());
-		  businessAddress.put("City","Ahmadabad" );
+		  businessAddress.put("City","Aurangabad" );
 		 // businessAddress.put("State", ltMastOutletsDump.getState());
-		  businessAddress.put("State", "Maharashtra");
+		  businessAddress.put("State", "MH");
 		  businessAddress.put("Country", "India");
 		  //businessAddress.put("Postal Code", ltMastOutletsDump.getPin_code());
-		  businessAddress.put("Postal Code","380708");
+		  businessAddress.put("Postal Code","444603");
 		  businessAddress.put("Province", "");
 		  businessAddress.put("IsPrimaryMVG", "Y");
 		  
@@ -428,16 +429,16 @@ try {
 		  
 		  
 		  JSONObject accounts = new JSONObject();
-		  accounts.put("Account Status", "NEW");
+		  accounts.put("Account Status", "Active");
 		 // accounts.put("Type", ltMastOutletsDump.getOutletType());
 		  accounts.put("Type", "Retailer");
 		  accounts.put("Account Id", "1");
 		  //accounts.put("Rule Attribute 2", ltMastOutletsDump.getOutletChannel());
 		  accounts.put("Rule Attribute 2", "Whole Sellers");
 		  //accounts.put("Name", ltMastOutletsDump.getOutletName());
-		  accounts.put("Name", "Sardar Traders");
-		  accounts.put("AT Territory","30801:AMDAVAD RURAl");
-		  accounts.put("Location", "Baner");
+		  accounts.put("Name", "Dmart Traders");
+		  //accounts.put("AT Territory","30801:AMDAVAD RURAl");
+		  accounts.put("Location", "Pimpri");
 		  accounts.put("ListOfBusiness Address", listOfBusinessAddres);
 		  accounts.put("ListOfRelated Organization", listOfRelatedOrganizations);
 		  
@@ -463,8 +464,10 @@ try {
 		  String username = "Lonar_Test"; String password = "Lonar123"; String
 		  credentials = username + ":" + password;
 		  
-		  HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		  connection.setRequestMethod("POST"); connection.setDoOutput(true);
+		  HttpURLConnection connection = (HttpURLConnection) 
+		   url.openConnection();
+		  connection.setRequestMethod("POST"); 
+		  connection.setDoOutput(true);
 		  connection.setRequestProperty("Content-Type", "application/json");
 		  connection.setRequestProperty("Authorization", "Basic_Auth"+credentials);
 		  
