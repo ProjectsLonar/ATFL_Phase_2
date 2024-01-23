@@ -68,5 +68,7 @@ public interface LtSoHeadersDao {
 	List<LtMastOutles> getOutletDetailsById(String outletId)throws ServiceException, IOException;
 	
 	LtSalesPersonLocation locationSaveOnNoOrder(LtSalesPersonLocation ltSalesPersonLocation)throws ServiceException, IOException;
+
+    LtMastUsers getUserDetailsAgainsUserId(Long userId)throws ServiceException, IOException;
 	
 }

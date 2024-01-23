@@ -1,5 +1,5 @@
-package com.lonar.cartservice.atflCartService.dao;
-
-public interface LtSalesreturnDao {
-
-}
+//package com.lonar.cartservice.atflCartService.dao;
+//
+//public interface LtSalesreturnDao {
+//
+//}

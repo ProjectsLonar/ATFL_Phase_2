@@ -1,5 +1,9 @@
 package com.lonar.cartservice.atflCartService.service;
 
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,7 +28,9 @@ import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,10 +59,12 @@ import com.lonar.cartservice.atflCartService.model.LtSalesPersonLocation;
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
 import com.lonar.cartservice.atflCartService.model.Status;
 import com.lonar.cartservice.atflCartService.repository.LtMastOutletRepository;
+import com.lonar.cartservice.atflCartService.repository.LtSalesPersonLocationRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSoHeadersRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSoLinesRepository;
 
 @Service
+@PropertySource(value= "classpath:queries/cartMasterQueries.properties", ignoreResourceNotFound = true)
 public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 
 	@Autowired
@@ -70,6 +78,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	
 	@Autowired
 	LtMastOutletRepository ltMastOutletRepository;
+	
+    @Autowired
+    LtSalesPersonLocationRepository ltSalesPersonLocationRepository;
 	
 	@Autowired
 	WebController webController;
@@ -942,657 +953,885 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			// SaveOrderResponseDto saveOrderResponseDto = new SaveOrderResponseDto();
 			LtSoHeaders ltSoHeader = new LtSoHeaders();
 			
-			// for Instock products order
-			if(soHeaderDto.getInStockFlag().equals("Y")) {
-				
-			String orderNumber = genrateOrderNumber(soHeaderDto.getOutletId());
-			//System.out.println("orderNumber :: "+orderNumber);
+			  LtMastUsers user = ltSoHeadersDao.getUserDetailsAgainsUserId(soHeaderDto.getUserId());
 			
-			//Long orderNo = System.currentTimeMillis();
-			ltSoHeader.setOrderNumber(orderNumber);
-            
-			
-			if (soHeaderDto.getOutletId() != null) {
-				ltSoHeader.setOutletId(soHeaderDto.getOutletId());
-			}
-			if (soHeaderDto.getDeliveryDate() != null) {
-				ltSoHeader.setDeliveryDate(soHeaderDto.getDeliveryDate());
-			}
-			if (soHeaderDto.getLatitude() != null) {
-				ltSoHeader.setLatitude(soHeaderDto.getLatitude());
-			}
-			if (soHeaderDto.getLongitude() != null) {
-				ltSoHeader.setLongitude(soHeaderDto.getLongitude());
-			}
-			if (soHeaderDto.getUserId() != null) {
-				ltSoHeader.setCreatedBy(soHeaderDto.getUserId());
-			}
-			if (soHeaderDto.getUserId() != null) {
-				ltSoHeader.setLastUpdatedBy(soHeaderDto.getUserId());
-			}
-			if (soHeaderDto.getUserId() != null) {
-				ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
-			}
-			if (soHeaderDto.getAddress() != null) {
-				ltSoHeader.setAddress(soHeaderDto.getAddress());
-			}
-			if (soHeaderDto.getRemark() != null) {
-				ltSoHeader.setRemark(soHeaderDto.getRemark());
-			}
-
-			ltSoHeader.setOrderDate(new Date()); //new Date()
-			ltSoHeader.setLastUpdateDate(new Date()); // new Date()
-			ltSoHeader.setCreationDate(new Date()); // new Date()
-			ltSoHeader.setStatus(DRAFT);
-
-			if(soHeaderDto.getInStockFlag()!= null) {
-				ltSoHeader.setInStockFlag(soHeaderDto.getInStockFlag());
-			}
-			if(soHeaderDto.getPriceList()!= null) {
-				ltSoHeader.setPriceList(soHeaderDto.getPriceList());
-			}
-			
-		//	considering ALL_INDIA_RDS as default priceList
-			if(!soHeaderDto.getPriceList().equals("ALL_INDIA_RDS")) {
-		 	          ltSoHeader.setStatus(DRAFT);
-			}else {
-				ltSoHeader.setStatus("APPROVED");
-			}
-//			if(soHeaderDto.getBeatId()!= null) {
-//				ltSoHeader.setBeatId(soHeaderDto.getBeatId());
-//			}
-			
-			ltSoHeader = updateSoHeader(ltSoHeader);
-			
-//			if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus().equals("APPROVED")  && 
-//					ltSoHeader.getInStockFlag().equals("Y") && ltSoHeader.getPriceList().equals("ALL_INDIA_RDS")) {
-//				// considering ALL_INDIA_RDS as default priceList
-//				// need to send this reqBody to siebel
-//				
-//			}else {
-//				// inStock order with different priceList need to send for approval to areHead
-//				sendNotifications(ltSoHeader);
-//			}		
-			
-			List<SoLineDto> soLineDtoList = soHeaderDto.getSoLineDtoList();
-			
-			StringBuffer strQuery1 =  new StringBuffer();
-			
-	//		strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
-			
-	//		StringBuffer strQuery =  new StringBuffer();
-			
-			for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
-				
-				SoLineDto soLineDto = (SoLineDto) iterator.next();
-				
-				strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,status,created_by,last_update_login,last_updated_by,ptr_price,eimstatus,delivery_date,creation_date,last_update_date) VALUES ");
-				
-				StringBuffer strQuery =  new StringBuffer();
-				
-				strQuery.append("(");
-
-				//LtSoLines ltSoLines = new LtSoLines();
-				
-				if (ltSoHeader.getHeaderId() != null) {
-					//ltSoLines.setHeaderId(ltSoHeader.getHeaderId());
-					strQuery.append(ltSoHeader.getHeaderId()+",");
-					
-				}
-				if (soLineDto.getProductId() != null) {
-					//ltSoLines.setProductId(soLineDto.getProductId());
-					strQuery.append(soLineDto.getProductId()+",");
-				}
-				if (soLineDto.getQuantity() != null) {
-					//ltSoLines.setQuantity(soLineDto.getQuantity());
-					strQuery.append(soLineDto.getQuantity()+",");
-				}
-				if (soLineDto.getListPrice() != null) {
-					//ltSoLines.setListPrice(soLineDto.getListPrice());
-					strQuery.append("'"+soLineDto.getListPrice()+"',");
-				}
-				strQuery.append("'"+DRAFT.toString()+"',");//Status
-				
-				if (soHeaderDto.getUserId() != null) {
-					//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
-					strQuery.append(soHeaderDto.getUserId()+",");
-				}
-				if (soHeaderDto.getUserId() != null) {
-					//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
-					strQuery.append(soHeaderDto.getUserId()+",");
-				}
-				if (soHeaderDto.getUserId() != null) {
-					//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
-					strQuery.append(soHeaderDto.getUserId()+",");
-				}
-				if (soLineDto.getPtrPrice() != null) {
-					//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
-					strQuery.append("'"+soLineDto.getPtrPrice()+"',");
-				}else {
-					//ltSoLines.setPtrPrice(soLineDto.getListPrice());
-					strQuery.append("'"+soLineDto.getListPrice()+"',");
-				}
-			//	if(soLineDto.getEimStatus()!= null) {
-				strQuery.append("'"+null+"',"); // eimstatus
-			//	} 		
-				if (soLineDto.getDeliveryDate() != null) {
-					//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
-					
-//					DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
-//					Date date = (Date)formatter.parse(soLineDto.getDeliveryDate().toString());
-//					SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
-//					String deliveryDate =outputFormat.format(date);
-//				//	System.out.println("formatedDate : " + deliveryDate); 
-										
-				//	strQuery.append("'"+deliveryDate+"',");
-					strQuery.append("'"+"',");
-					
-				 //strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
-				}
-				
-				//strQuery.append("'"+new Date()+"',");//Created Date
-				strQuery.append("'"+"',");  // set null for demo
-				
-				//strQuery.append("'"+new Date()+"'");//Last update date
-				strQuery.append("'"+"'"); // set null for demo
-				
-				//ltSoLines.setStatus(DRAFT);
-				//ltSoLines.setLastUpdateDate(new Date());
-				//ltSoLines.setCreationDate(new Date());
-//				strQuery.append("),");
-				
-				strQuery.append(")");
-				strQuery1 = strQuery1.append(strQuery);
-				//ltSoLines = ltSoLinesRepository.save(ltSoLines);
-                 
-			}
-	//		strQuery.deleteCharAt(strQuery.length()-1); 
-	//		strQuery1 = strQuery1.append(strQuery);
-			
-			String query = strQuery1.toString();
+			  if(user.getUserType().equalsIgnoreCase("RETAILER")) 
+			  {
+				  // need to copy here old save order code
+				  try {				
 						
-			int n = ltSoHeadersDao.insertLine(query);
-			
-			if (n > 0) {
-				System.out.println("Line insert successfully");
-				try {
-				if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus().equals("APPROVED")  && 
-						ltSoHeader.getInStockFlag().equals("Y") && ltSoHeader.getPriceList().equals("ALL_INDIA_RDS")) {
-					// considering ALL_INDIA_RDS as default priceList
-					// need to send this reqBody to siebel
-					
-				///// push the save order data into siebel  
-					
-					SoLineDto soLineDto = new SoLineDto();
-					
-					JSONObject lineItemObject = new JSONObject();
-					lineItemObject.put("Id", "1");
-					lineItemObject.put("Product Id", soLineDto.getProductId());
-					lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
-					lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
-					lineItemObject.put("Action Code", "New");
-					lineItemObject.put("Name", soLineDto.getProductName());
-					lineItemObject.put("Quantity", soLineDto.getQuantity());
-					
-					JSONArray lineItemArray = new JSONArray();
-					for (int i =0; i<lineItemObject.length(); i++) {
-						lineItemArray.put(lineItemObject);	
-					}
-					
-					JSONObject listOfLineItem = new JSONObject();
-					listOfLineItem.put("Line Item", lineItemObject);
-					
-					SoHeaderDto soHeaders = new SoHeaderDto();
-					
-					JSONObject header = new JSONObject();
-					header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
-					header.put("Order Type Id", "0-D14G");
-					header.put("Account Id", soHeaderDto.getOutletId());
-					header.put("Status", "New");
-					header.put("Order Type", "Service Order");
-					header.put("Account", soHeaderDto.getOutletName());
-					header.put("Currency Code", "INR");
-					header.put("Order Number", soHeaderDto.getOrderNumber());
-					header.put("Source Inventory Id", "1-2C7QNZG");
-					header.put("ListOfLine Item", listOfLineItem);
-					
-					JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
-					ListOfATOrdersIntegrationIO.put("Header", header);
-					
-					JSONObject siebelMassage = new JSONObject();
-					siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
-					siebelMassage.put("MessageId", "");
-					siebelMassage.put("IntObjectName", "AT Orders Integration IO");
-					siebelMassage.put("MessageType", "Integration Object");
-					siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
-					
-					JSONObject siebelMassages = new JSONObject();
-					siebelMassages.put("SubmitFlag", "Y");
-					siebelMassages.put("InvoiceFlag", "Y");
-					siebelMassages.put("SiebelMessage" , siebelMassage);
-					
-					String apiUrl = env.getProperty("SiebelCreateOrderApi");
-					//String apiUrl = env.getProperty("https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y");
-					URL url = new URL(apiUrl);
-					System.out.print(apiUrl);
-					System.out.print(url);
-					String UserName="Lonar_Test";
-					String Password="Lonar123";
-					String credential = UserName +":"+ Password;
-					
-					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-					connection.setRequestMethod("POST");
-					connection.setDoOutput(true);
-					connection.setRequestProperty("Content-Type", "application/json");
-					connection.setRequestProperty("Authorization", "Basic_Auth"+credential);
-					
-					String jsonPayload =siebelMassages.toString();
-					
-					System.out.println("jsonPayload"+jsonPayload);
-					  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) 
-					  {
-						  wr.writeBytes(jsonPayload);
-					      wr.flush(); 
-					  }
-					
-					  int responseCode = connection.getResponseCode(); 
-					  System.out.println("Response Code: " + responseCode);
-					  
-					  BufferedReader reader; 
-					  if (responseCode ==  HttpURLConnection.HTTP_OK) {
-						  reader = new BufferedReader(new
-					  InputStreamReader(connection.getInputStream())); 
-						  } else { 
-							  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
-					  
-					  String line; 
-					  StringBuilder response = new
-					  StringBuilder();
-					  
-					  while ((line = reader.readLine()) != null) { response.append(line); }
-					  reader.close();
-					  
-					  System.out.println("Response: " + response.toString());
-
-					
-				}else {
-					
-					// inStock order with different priceList need to send for approval to areHead
-					sendNotifications(ltSoHeader);
-				
-				///// push the save order data into siebel  if order is approved
-					
-					SoLineDto soLineDto = new SoLineDto();
-					
-					JSONObject lineItemObject = new JSONObject();
-					lineItemObject.put("Id", "1");
-					lineItemObject.put("Product Id", soLineDto.getProductId());
-					lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
-					lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
-					lineItemObject.put("Action Code", "New");
-					lineItemObject.put("Name", soLineDto.getProductName());
-					lineItemObject.put("Quantity", soLineDto.getQuantity());
-					
-					JSONArray lineItemArray = new JSONArray();
-					for (int i =0; i<lineItemObject.length(); i++) {
-						lineItemArray.put(lineItemObject);	
-					}
-					
-					JSONObject listOfLineItem = new JSONObject();
-					listOfLineItem.put("Line Item", lineItemObject);
-					
-					SoHeaderDto soHeaders = new SoHeaderDto();
-					
-					JSONObject header = new JSONObject();
-					header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
-					header.put("Order Type Id", "0-D14G");
-					header.put("Account Id", soHeaderDto.getOutletId());
-					header.put("Status", "INPROCESS");
-					header.put("Order Type", "Service Order");
-					header.put("Account", soHeaderDto.getOutletName());
-					header.put("Currency Code", "INR");
-					header.put("Order Number", soHeaderDto.getOrderNumber());
-					header.put("Source Inventory Id", "1-2C7QNZG");
-					header.put("ListOfLine Item", listOfLineItem);
-					
-					JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
-					ListOfATOrdersIntegrationIO.put("Header", header);
-					
-					JSONObject siebelMassage = new JSONObject();
-					siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
-					siebelMassage.put("MessageId", "");
-					siebelMassage.put("IntObjectName", "AT Orders Integration IO");
-					siebelMassage.put("MessageType", "Integration Object");
-					siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
-					
-					JSONObject siebelMassages = new JSONObject();
-					siebelMassages.put("SubmitFlag", "Y");
-					siebelMassages.put("InvoiceFlag", "Y");
-					siebelMassages.put("SiebelMessage" , siebelMassage);
-					
-				//	String apiUrl = env.getProperty("SiebelCreateOrderApi");
-					String apiUrl = env.getProperty("https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y");
-					URL url = new URL(apiUrl);
-					System.out.print(apiUrl);
-					System.out.print(url);
-					String UserName="Lonar_Test";
-					String Password="Lonar123";
-					String credential = UserName +":"+ Password;
-					
-					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-					connection.setRequestMethod("POST");
-					connection.setDoOutput(true);
-					connection.setRequestProperty("Content-Type", "application/json");
-					connection.setRequestProperty("Authorization", "Basic_Auth"+credential);
-					
-					String jsonPayload =siebelMassages.toString();
-					
-					System.out.println("jsonPayload"+jsonPayload);
-					  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) 
-					  {
-						  wr.writeBytes(jsonPayload);
-					      wr.flush(); 
-					  }
-					
-					  int responseCode = connection.getResponseCode(); 
-					  System.out.println("Response Code: " + responseCode);
-					  
-					  BufferedReader reader; 
-					  if (responseCode ==  HttpURLConnection.HTTP_OK) {
-						  reader = new BufferedReader(new
-					  InputStreamReader(connection.getInputStream())); 
-						  } else { 
-							  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
-					  
-					  String line; 
-					  StringBuilder response = new
-					  StringBuilder();
-					  
-					  while ((line = reader.readLine()) != null) { response.append(line); }
-					  reader.close();
-					  
-					  System.out.println("Response: " + response.toString());
-
-				}
-				
-				RequestDto requestDto = new RequestDto();
-				requestDto.setHeaderId(ltSoHeader.getHeaderId());
-				requestDto.setOffset(0);
-				status = getOrderV2(requestDto);
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-	            status.setCode(INSERT_SUCCESSFULLY);
-				status.setMessage("Insert Successfully");
-
-				return status;
-			}
-			
-		} 
-		// for Out_Of_Stock Products order	i.e. isInstockFlag ="N"
-			else {
-				
-				String orderNumber = genrateOrderNumber(soHeaderDto.getOutletId());
-				//System.out.println("orderNumber :: "+orderNumber);
-				
-				//Long orderNo = System.currentTimeMillis();
-				ltSoHeader.setOrderNumber(orderNumber);
-	            
-				
-				if (soHeaderDto.getOutletId() != null) {
-					ltSoHeader.setOutletId(soHeaderDto.getOutletId());
-				}
-				if (soHeaderDto.getDeliveryDate() != null) {
-					ltSoHeader.setDeliveryDate(soHeaderDto.getDeliveryDate());
-				}
-				if (soHeaderDto.getLatitude() != null) {
-					ltSoHeader.setLatitude(soHeaderDto.getLatitude());
-				}
-				if (soHeaderDto.getLongitude() != null) {
-					ltSoHeader.setLongitude(soHeaderDto.getLongitude());
-				}
-				if (soHeaderDto.getUserId() != null) {
-					ltSoHeader.setCreatedBy(soHeaderDto.getUserId());
-				}
-				if (soHeaderDto.getUserId() != null) {
-					ltSoHeader.setLastUpdatedBy(soHeaderDto.getUserId());
-				}
-				if (soHeaderDto.getUserId() != null) {
-					ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
-				}
-				if (soHeaderDto.getAddress() != null) {
-					ltSoHeader.setAddress(soHeaderDto.getAddress());
-				}
-				if (soHeaderDto.getRemark() != null) {
-					ltSoHeader.setRemark(soHeaderDto.getRemark());
-				}
-
-				ltSoHeader.setOrderDate(new Date()); //new Date()
-				ltSoHeader.setLastUpdateDate(new Date()); // new Date()
-				ltSoHeader.setCreationDate(new Date()); // new Date()
-				ltSoHeader.setStatus(DRAFT);
-
-				if(soHeaderDto.getInStockFlag()!= null) {
-					ltSoHeader.setInStockFlag(soHeaderDto.getInStockFlag());
-				}
-//				if(soHeaderDto.getBeatId()!= null) {
-//					ltSoHeader.setBeatId(soHeaderDto.getBeatId());
-//				}if(soHeaderDto.getPriceList()!= null) {
-//					ltSoHeader.setPriceList(soHeaderDto.getPriceList());
-//				}
-				
-				ltSoHeader = updateSoHeader(ltSoHeader);
-					
-				// send OutofStock order for approval to areHead
-					sendNotifications(ltSoHeader);
-				
-				List<SoLineDto> soLineDtoList = soHeaderDto.getSoLineDtoList();
-				
-				StringBuffer strQuery1 =  new StringBuffer();
-				
-		//		strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
-				
-		//		StringBuffer strQuery =  new StringBuffer();
-				
-				for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
-										
-					SoLineDto soLineDto = (SoLineDto) iterator.next();		
-			//		strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");				
-					strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,status,created_by,last_update_login,last_updated_by,ptr_price,eimstatus,delivery_date,creation_date,last_update_date) VALUES ");
-					StringBuffer strQuery =  new StringBuffer();
-					strQuery.append("(");
-
-					//LtSoLines ltSoLines = new LtSoLines();
-					
-					if (ltSoHeader.getHeaderId() != null) {
-						//ltSoLines.setHeaderId(ltSoHeader.getHeaderId());
-						strQuery.append(ltSoHeader.getHeaderId()+",");
+						String orderNumber = genrateOrderNumber(soHeaderDto.getOutletId());
+						//System.out.println("orderNumber :: "+orderNumber);
 						
+						//Long orderNo = System.currentTimeMillis();
+						ltSoHeader.setOrderNumber(orderNumber);
+
+						if (soHeaderDto.getOutletId() != null) {
+							ltSoHeader.setOutletId(soHeaderDto.getOutletId());
+						}
+						if (soHeaderDto.getDeliveryDate() != null) {
+							ltSoHeader.setDeliveryDate(soHeaderDto.getDeliveryDate());
+						}
+						if (soHeaderDto.getLatitude() != null) {
+							ltSoHeader.setLatitude(soHeaderDto.getLatitude());
+						}
+						if (soHeaderDto.getLongitude() != null) {
+							ltSoHeader.setLongitude(soHeaderDto.getLongitude());
+						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setCreatedBy(soHeaderDto.getUserId());
+						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setLastUpdatedBy(soHeaderDto.getUserId());
+						}
+//						if (soHeaderDto.getUserId() != null) {
+//							ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
+//						}
+						if (soHeaderDto.getAddress() != null) {
+							ltSoHeader.setAddress(soHeaderDto.getAddress());
+						}
+						if (soHeaderDto.getRemark() != null) {
+							ltSoHeader.setRemark(soHeaderDto.getRemark());
+						}
+
+						ltSoHeader.setOrderDate(new Date()); //new Date()
+						ltSoHeader.setLastUpdateDate(new Date()); // new Date()
+						ltSoHeader.setCreationDate(new Date()); // new Date()
+						ltSoHeader.setStatus(DRAFT);
+
+						ltSoHeader = updateSoHeader(ltSoHeader);
+
+						List<SoLineDto> soLineDtoList = soHeaderDto.getSoLineDtoList();
+						
+					//	StringBuffer strQuery1 =  new StringBuffer();
+						
+					//	strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
+						
+					//	StringBuffer strQuery =  new StringBuffer();
+						
+						for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
+							
+							SoLineDto soLineDto = (SoLineDto) iterator.next();
+							StringBuffer strQuery =  new StringBuffer();
+							strQuery.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
+
+							strQuery.append("(");
+
+							//LtSoLines ltSoLines = new LtSoLines();
+							
+							if (ltSoHeader.getHeaderId() != null) {
+								//ltSoLines.setHeaderId(ltSoHeader.getHeaderId());
+								strQuery.append(ltSoHeader.getHeaderId()+",");
+								
+							}
+							if (soLineDto.getProductId() != null) {
+								//ltSoLines.setProductId(soLineDto.getProductId());
+								strQuery.append(soLineDto.getProductId()+",");
+							}
+							if (soLineDto.getQuantity() != null) {
+								//ltSoLines.setQuantity(soLineDto.getQuantity());
+								strQuery.append(soLineDto.getQuantity()+",");
+							}
+							if (soLineDto.getListPrice() != null) {
+								//ltSoLines.setListPrice(soLineDto.getListPrice());
+								strQuery.append("'"+soLineDto.getListPrice()+"',");
+							}
+							if (soLineDto.getDeliveryDate() != null) {
+								//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
+								strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
+							}
+							strQuery.append("'"+DRAFT.toString()+"',");//Status
+							
+
+							if (soHeaderDto.getUserId() != null) {
+								//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
+								strQuery.append(soHeaderDto.getUserId()+",");
+							}
+							
+							strQuery.append("'"+new Date()+"',");//Created Date
+							
+							if (soHeaderDto.getUserId() != null) {
+								//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
+								strQuery.append(soHeaderDto.getUserId()+",");
+							}
+							
+							if (soHeaderDto.getUserId() != null) {
+								//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
+								strQuery.append(soHeaderDto.getUserId()+",");
+							}
+							
+							strQuery.append("'"+new Date()+"',");//Last update date
+							 
+							if (soLineDto.getPtrPrice() != null) {
+								//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
+								strQuery.append("'"+soLineDto.getPtrPrice()+"'");
+							}else {
+								//ltSoLines.setPtrPrice(soLineDto.getListPrice());
+								strQuery.append("'"+soLineDto.getListPrice()+"'");
+							}
+							
+							//ltSoLines.setStatus(DRAFT);
+							//ltSoLines.setLastUpdateDate(new Date());
+							//ltSoLines.setCreationDate(new Date());
+							strQuery.append(")");
+							
+							//ltSoLines = ltSoLinesRepository.save(ltSoLines);
+														
+							String query = strQuery.toString();
+							
+							int n = ltSoHeadersDao.insertLine(query);
+
+						}
+				//		strQuery.deleteCharAt(strQuery.length()-1); 
+				//		strQuery1 = strQuery1.append(strQuery);
+						
+				//		String query = strQuery1.toString();
+						
+				//		int n = ltSoHeadersDao.insertLine(query);
+						
+				//		if (n > 0) {
+							System.out.println("Line insert successfully");
+							RequestDto requestDto = new RequestDto();
+							requestDto.setHeaderId(ltSoHeader.getHeaderId());
+							requestDto.setOffset(0);
+							status = getOrderV2(requestDto);
+							status.setCode(INSERT_SUCCESSFULLY);
+							status.setMessage("Insert Successfully");
+
+							return status;
+				//		}
+						
+					} catch (Exception e) {
+						logger.error("Error Description :", e);
+						e.printStackTrace();
 					}
-					if (soLineDto.getProductId() != null) {
-						//ltSoLines.setProductId(soLineDto.getProductId());
-						strQuery.append(soLineDto.getProductId()+",");
-					}
-					if (soLineDto.getQuantity() != null) {
-						//ltSoLines.setQuantity(soLineDto.getQuantity());
-						strQuery.append(soLineDto.getQuantity()+",");
-					}
-					if (soLineDto.getListPrice() != null) {
-						//ltSoLines.setListPrice(soLineDto.getListPrice());
-						strQuery.append("'"+soLineDto.getListPrice()+"',");
-					}
-					strQuery.append("'"+DRAFT.toString()+"',");//Status
+					return null;
+				  				  
+				  
+			  }else  if(user.getUserType().equalsIgnoreCase(SALES) || user.getUserType().equalsIgnoreCase(DISTRIBUTOR))
+			    {
+				// need to copy here below instock-outOfstock code 
+				// for Instock products order
+					if(soHeaderDto.getInStockFlag().equals("Y")) {
+						
+					String orderNumber = genrateOrderNumber(soHeaderDto.getOutletId());
+					//System.out.println("orderNumber :: "+orderNumber);
 					
-					if (soHeaderDto.getUserId() != null) {
-						//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
-						strQuery.append(soHeaderDto.getUserId()+",");
+					//Long orderNo = System.currentTimeMillis();
+					ltSoHeader.setOrderNumber(orderNumber);
+		            					
+					if (soHeaderDto.getOutletId() != null) {
+						ltSoHeader.setOutletId(soHeaderDto.getOutletId());
+					}
+					if (soHeaderDto.getDeliveryDate() != null) {
+						ltSoHeader.setDeliveryDate(soHeaderDto.getDeliveryDate());
+					}
+					if (soHeaderDto.getLatitude() != null) {
+						ltSoHeader.setLatitude(soHeaderDto.getLatitude());
+					}
+					if (soHeaderDto.getLongitude() != null) {
+						ltSoHeader.setLongitude(soHeaderDto.getLongitude());
 					}
 					if (soHeaderDto.getUserId() != null) {
-						//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
-						strQuery.append(soHeaderDto.getUserId()+",");
+						ltSoHeader.setCreatedBy(soHeaderDto.getUserId());
 					}
 					if (soHeaderDto.getUserId() != null) {
-						//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
-						strQuery.append(soHeaderDto.getUserId()+",");
+						ltSoHeader.setLastUpdatedBy(soHeaderDto.getUserId());
 					}
-					if (soLineDto.getPtrPrice() != null) {
-						//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
-						strQuery.append("'"+soLineDto.getPtrPrice()+"',");
+					if (soHeaderDto.getUserId() != null) {
+						ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
+					}
+					if (soHeaderDto.getAddress() != null) {
+						ltSoHeader.setAddress(soHeaderDto.getAddress());
+					}
+					if (soHeaderDto.getRemark() != null) {
+						ltSoHeader.setRemark(soHeaderDto.getRemark());
+					}
+
+					ltSoHeader.setOrderDate(new Date()); //new Date()
+					ltSoHeader.setLastUpdateDate(new Date()); // new Date()
+					ltSoHeader.setCreationDate(new Date()); // new Date()
+					ltSoHeader.setStatus(DRAFT);
+
+					if(soHeaderDto.getInStockFlag()!= null) {
+						ltSoHeader.setInStockFlag(soHeaderDto.getInStockFlag());
+					}
+					if(soHeaderDto.getPriceList()!= null) {
+						ltSoHeader.setPriceList(soHeaderDto.getPriceList());
+					}
+					
+				//	considering ALL_INDIA_RDS as default priceList
+					if(!soHeaderDto.getPriceList().equals("ALL_INDIA_RDS")) {
+				 	          ltSoHeader.setStatus(DRAFT);
 					}else {
-						//ltSoLines.setPtrPrice(soLineDto.getListPrice());
-						strQuery.append("'"+soLineDto.getListPrice()+"',");
+						ltSoHeader.setStatus("APPROVED");
 					}
-				//	if(soLineDto.getEimStatus()!= null) {
-					strQuery.append("'"+null+"',"); // eimstatus
-				//	} 		
-					if (soLineDto.getDeliveryDate() != null) {
-						//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
+//					if(soHeaderDto.getBeatId()!= null) {
+//						ltSoHeader.setBeatId(soHeaderDto.getBeatId());
+//					}
+					
+					ltSoHeader = updateSoHeader(ltSoHeader);
+					
+//					if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus().equals("APPROVED")  && 
+//							ltSoHeader.getInStockFlag().equals("Y") && ltSoHeader.getPriceList().equals("ALL_INDIA_RDS")) {
+//						// considering ALL_INDIA_RDS as default priceList
+//						// need to send this reqBody to siebel
+//						
+//					}else {
+//						// inStock order with different priceList need to send for approval to areHead
+//						sendNotifications(ltSoHeader);
+//					}		
+					
+					List<SoLineDto> soLineDtoList = soHeaderDto.getSoLineDtoList();
+					
+				//	StringBuffer strQuery1 =  new StringBuffer();
+					
+			//		strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
+					
+			//		StringBuffer strQuery =  new StringBuffer();
+					
+					for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
 						
-//						DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
-//						Date date = (Date)formatter.parse(soLineDto.getDeliveryDate().toString());
-//						SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
-//						String deliveryDate =outputFormat.format(date);
-//					//	System.out.println("formatedDate : " + deliveryDate); 
-											
-					//	strQuery.append("'"+deliveryDate+"',");
-						strQuery.append("'"+"',");
+						SoLineDto soLineDto = (SoLineDto) iterator.next();
+						StringBuffer strQuery =  new StringBuffer();
+						strQuery.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,status,created_by,last_update_login,last_updated_by,ptr_price,eimstatus,delivery_date,creation_date,last_update_date) VALUES ");
 						
-					 //strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
-					}
-					
-					//strQuery.append("'"+new Date()+"',");//Created Date
-					strQuery.append("'"+"',");  // set null for demo
-					
-					//strQuery.append("'"+new Date()+"'");//Last update date
-					strQuery.append("'"+"'"); // set null for demo
-					
-					//ltSoLines.setStatus(DRAFT);
-					//ltSoLines.setLastUpdateDate(new Date());
-					//ltSoLines.setCreationDate(new Date());
-//					strQuery.append("),");
-					
-					strQuery.append(")");
-					strQuery1 = strQuery1.append(strQuery);
-					//ltSoLines = ltSoLinesRepository.save(ltSoLines);
-	       				
-				}
-				//strQuery.deleteCharAt(strQuery.length()-1); 
-				//strQuery1 = strQuery1.append(strQuery);
-				
-				String query = strQuery1.toString();
-				
-				int n = ltSoHeadersDao.insertLine(query);
-				
-				if (n > 0) {
-					System.out.println("Line insert successfully");
-					RequestDto requestDto = new RequestDto();
-					requestDto.setHeaderId(ltSoHeader.getHeaderId());
-					requestDto.setOffset(0);
-					status = getOrderV2(requestDto);
-					
-					if(ltSoHeader.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
-						/// push the order into siebel and update the order status to NEW 
-						SoLineDto soLineDto = new SoLineDto();
+						strQuery.append("(");
+
+						//LtSoLines ltSoLines = new LtSoLines();
 						
-						JSONObject lineItemObject = new JSONObject();
-						lineItemObject.put("Id", "1");
-						lineItemObject.put("Product Id", soLineDto.getProductId());
-						lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
-						lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
-						lineItemObject.put("Action Code", "New");
-						lineItemObject.put("Name", soLineDto.getProductName());
-						lineItemObject.put("Quantity", soLineDto.getQuantity());
+						if (ltSoHeader.getHeaderId() != null) {
+							//ltSoLines.setHeaderId(ltSoHeader.getHeaderId());
+							strQuery.append(ltSoHeader.getHeaderId()+",");
+							
+						}
+						if (soLineDto.getProductId() != null) {
+							//ltSoLines.setProductId(soLineDto.getProductId());
+							strQuery.append(soLineDto.getProductId()+",");
+						}
+						if (soLineDto.getQuantity() != null) {
+							//ltSoLines.setQuantity(soLineDto.getQuantity());
+							strQuery.append(soLineDto.getQuantity()+",");
+						}
+						if (soLineDto.getListPrice() != null) {
+							//ltSoLines.setListPrice(soLineDto.getListPrice());
+							strQuery.append("'"+soLineDto.getListPrice()+"',");
+						}
+						strQuery.append("'"+DRAFT.toString()+"',");//Status
 						
-						JSONArray lineItemArray = new JSONArray();
-						for (int i =0; i<lineItemObject.length(); i++) {
-							lineItemArray.put(lineItemObject);	
+						if (soHeaderDto.getUserId() != null) {
+							//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
+							strQuery.append(soHeaderDto.getUserId()+",");
+						}
+						if (soHeaderDto.getUserId() != null) {
+							//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
+							strQuery.append(soHeaderDto.getUserId()+",");
+						}
+						if (soHeaderDto.getUserId() != null) {
+							//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
+							strQuery.append(soHeaderDto.getUserId()+",");
+						}
+						if (soLineDto.getPtrPrice() != null) {
+							//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
+							strQuery.append("'"+soLineDto.getPtrPrice()+"',");
+						}else {
+							//ltSoLines.setPtrPrice(soLineDto.getListPrice());
+							strQuery.append("'"+soLineDto.getListPrice()+"',");
+						}
+					//	if(soLineDto.getEimStatus()!= null) {
+						strQuery.append("'"+null+"',"); // eimstatus
+					//	} 		
+						if (soLineDto.getDeliveryDate() != null) {
+							//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
+							
+//							DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+//							Date date = (Date)formatter.parse(soLineDto.getDeliveryDate().toString());
+//							SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+//							String deliveryDate =outputFormat.format(date);
+//						//	System.out.println("formatedDate : " + deliveryDate); 
+												
+						//	strQuery.append("'"+deliveryDate+"',");
+							strQuery.append("'"+"',");
+							
+						 //strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
 						}
 						
-						JSONObject listOfLineItem = new JSONObject();
-						listOfLineItem.put("Line Item", lineItemObject);
+						//strQuery.append("'"+new Date()+"',");//Created Date
+						strQuery.append("'"+"',");  // set null for demo
 						
-						SoHeaderDto soHeaders = new SoHeaderDto();
+						//strQuery.append("'"+new Date()+"'");//Last update date
+						strQuery.append("'"+"'"); // set null for demo
 						
-						JSONObject header = new JSONObject();
-						header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
-						header.put("Order Type Id", "0-D14G");
-						header.put("Account Id", soHeaderDto.getOutletId());
-						header.put("Status", "New");
-						header.put("Order Type", "Service Order");
-						header.put("Account", soHeaderDto.getOutletName());
-						header.put("Currency Code", "INR");
-						header.put("Order Number", soHeaderDto.getOrderNumber());
-						header.put("Source Inventory Id", "1-2C7QNZG");
-						header.put("ListOfLine Item", listOfLineItem);
+						//ltSoLines.setStatus(DRAFT);
+						//ltSoLines.setLastUpdateDate(new Date());
+						//ltSoLines.setCreationDate(new Date());
+//						strQuery.append("),");
 						
-						JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
-						ListOfATOrdersIntegrationIO.put("Header", header);
-						
-						JSONObject siebelMassage = new JSONObject();
-						siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
-						siebelMassage.put("MessageId", "");
-						siebelMassage.put("IntObjectName", "AT Orders Integration IO");
-						siebelMassage.put("MessageType", "Integration Object");
-						siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
-						
-						JSONObject siebelMassages = new JSONObject();
-						siebelMassages.put("SubmitFlag", "Y");
-						siebelMassages.put("InvoiceFlag", "Y");
-						siebelMassages.put("SiebelMessage" , siebelMassage);
-						
-					//	String apiUrl = env.getProperty("SiebelCreateOrderApi");
-						String apiUrl = env.getProperty("https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y");
-						URL url = new URL(apiUrl);
-						System.out.print(apiUrl);
-						System.out.print(url);
-						String UserName="Lonar_Test";
-						String Password="Lonar123";
-						String credential = UserName +":"+ Password;
-						
-						HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-						connection.setRequestMethod("POST");
-						connection.setDoOutput(true);
-						connection.setRequestProperty("Content-Type", "application/json");
-						connection.setRequestProperty("Authorization", "Basic_Auth"+credential);
-						
-						String jsonPayload =siebelMassages.toString();
-						
-						System.out.println("jsonPayload"+jsonPayload);
-						  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) 
-						  {
-							  wr.writeBytes(jsonPayload);
-						      wr.flush(); 
-						  }
-						
-						  int responseCode = connection.getResponseCode(); 
-						  System.out.println("Response Code: " + responseCode);
-						  
-						  BufferedReader reader; 
-						  if (responseCode ==  HttpURLConnection.HTTP_OK) {
-							  reader = new BufferedReader(new
-						  InputStreamReader(connection.getInputStream())); 
-							  } else { 
-								  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
-						  
-						  String line; 
-						  StringBuilder response = new
-						  StringBuilder();
-						  
-						  while ((line = reader.readLine()) != null) { response.append(line); }
-						  reader.close();
-						
-						  System.out.println("Response: " + response.toString());
+						strQuery.append(")");
+						//strQuery1 = strQuery1.append(strQuery);
+						//ltSoLines = ltSoLinesRepository.save(ltSoLines);
+						String query = strQuery.toString();
+						int n = ltSoHeadersDao.insertLine(query);
 					}
+			//		strQuery.deleteCharAt(strQuery.length()-1); 
+			//		strQuery1 = strQuery1.append(strQuery);
 					
-					status.setCode(INSERT_SUCCESSFULLY);
-					status.setMessage("Insert Successfully");
+					//String query = strQuery.toString();
+								
+					//int n = ltSoHeadersDao.insertLine(query);
+					
+				//	if (n > 0) {
+						System.out.println("Line insert successfully");
+						try {
+						if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus().equals("APPROVED")  && 
+								ltSoHeader.getInStockFlag().equals("Y") && ltSoHeader.getPriceList().equals("ALL_INDIA_RDS")) {
+							// considering ALL_INDIA_RDS as default priceList
+							// need to send this reqBody to siebel
+							
+						///// push the save order data into siebel  
+							
+							SoLineDto soLineDto = new SoLineDto();
+							
+							sampleCode();
+							System.out.println("Sample Code method call done");
+							
+							JSONObject lineItemObject = new JSONObject();
+							lineItemObject.put("Id", "1");
+						//	lineItemObject.put("Product Id", soLineDto.getProductId());
+							lineItemObject.put("Product Id", "1-4XBK-2");
+						//	lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
+							lineItemObject.put("Due Date", "12/06/2023");
+						//	lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
+							lineItemObject.put("Item Price List Id", "1-475Z");
+							lineItemObject.put("Action Code", "New");
+						//	lineItemObject.put("Name", soLineDto.getProductName());
+							lineItemObject.put("Name", "P02IAPKP040");
+						//	lineItemObject.put("Quantity", soLineDto.getQuantity());
+							lineItemObject.put("Quantity", "1");
+							
+							JSONArray lineItemArray = new JSONArray();
+							for (int i =0; i<lineItemObject.length(); i++) {
+								lineItemArray.put(lineItemObject);	
+							}
+							
+							JSONObject listOfLineItem = new JSONObject();
+							listOfLineItem.put("Line Item", lineItemObject);
+							
+							SoHeaderDto soHeaders = new SoHeaderDto();
+							
+							JSONObject header = new JSONObject();
+					//		header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
+							header.put("Requested Ship Date", "12/06/2024");
+							header.put("Order Type Id", "0-D14G");
+					//		header.put("Account Id", soHeaderDto.getOutletId());
+							header.put("Account Id", "1-BRWN-27");
+							header.put("Status", "New");
+							header.put("Order Type", "Service Order");
+					//		header.put("Account", soHeaderDto.getOutletName());
+							header.put("Account", "SHREE MAHALAXMI KIRANA AND GENERAL STORE");
+							header.put("Currency Code", "INR");
+					//		header.put("Order Number", soHeaderDto.getOrderNumber());
+							header.put("Order Number", "MSO-53623-2324-11");
+							header.put("Source Inventory Id", "1-2FPGVLJ");       //"1-2C7QNZG");
+							header.put("ListOfLine Item", listOfLineItem);
+							
+							JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
+							ListOfATOrdersIntegrationIO.put("Header", header);
+							
+							JSONObject siebelMassage = new JSONObject();
+							siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+							siebelMassage.put("MessageId", "");
+							siebelMassage.put("IntObjectName", "AT Orders Integration IO");
+							siebelMassage.put("MessageType", "Integration Object");
+							siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
+							
+							JSONObject siebelMassages = new JSONObject();
+							siebelMassages.put("SubmitFlag", "");
+							siebelMassages.put("InvoiceFlag", "");
+							siebelMassages.put("SiebelMessage" , siebelMassage);
+							
+					//		String apiUrl = env.getProperty("SiebelCreateSaveOrderApi");
+					//		String apiUrl = env.getProperty("https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y");
+							String apiUrl = "https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y";
+							URL url = new URL(apiUrl);
+							
+							System.out.print(apiUrl);
+							System.out.print(url);
+							String UserName="Lonar_Test";
+							String Password="Lonar123";
+							String credential = UserName +":"+ Password;
+							
+							HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+							connection.setRequestMethod("POST");
+							connection.setDoOutput(true);
+							connection.setRequestProperty("Content-Type", "application/json");
+							connection.setRequestProperty("Authorization", "Basic_Auth"+credential);
+							
+							String jsonPayload =siebelMassages.toString();
+							
+							System.out.println("jsonPayload"+jsonPayload);
+							  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) 
+							  {
+								  wr.writeBytes(jsonPayload);
+							      wr.flush(); 
+							  }
+							
+							  int responseCode = connection.getResponseCode(); 
+							  System.out.println("Response Code: " + responseCode);
+							  
+							  BufferedReader reader; 
+							  if (responseCode ==  HttpURLConnection.HTTP_OK) {
+								  reader = new BufferedReader(new
+							  InputStreamReader(connection.getInputStream())); 
+								  } else { 
+									  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
+							  
+							  String line; 
+							  StringBuilder response = new
+							  StringBuilder();
+							  
+							  while ((line = reader.readLine()) != null) { response.append(line); }
+							  reader.close();
+							  
+							  System.out.println("Response: " + response.toString());
 
-					return status;
-				}
-				
-			} 
-			
+							
+						}else {
+							
+							// inStock order with different priceList need to send for approval to areHead
+							sendNotifications(ltSoHeader);
+						
+						///// push the save order data into siebel  if order is approved
+							
+							SoLineDto soLineDto = new SoLineDto();
+							
+							JSONObject lineItemObject = new JSONObject();
+							lineItemObject.put("Id", "1");
+					//		lineItemObject.put("Product Id", soLineDto.getProductId());
+							lineItemObject.put("Product Id", "1-4XBK-2");
+					//		lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
+							lineItemObject.put("Due Date", "12/06/2023");
+					//		lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
+							lineItemObject.put("Item Price List Id", "1-475Z");
+							lineItemObject.put("Action Code", "New");
+					//		lineItemObject.put("Name", soLineDto.getProductName());
+							lineItemObject.put("Name", "P02IAPKP040");
+					//		lineItemObject.put("Quantity", soLineDto.getQuantity());
+							lineItemObject.put("Quantity", "1");
+							
+							JSONArray lineItemArray = new JSONArray();
+							for (int i =0; i<lineItemObject.length(); i++) {
+								lineItemArray.put(lineItemObject);	
+							}
+							
+							JSONObject listOfLineItem = new JSONObject();
+							listOfLineItem.put("Line Item", lineItemObject);
+							
+							SoHeaderDto soHeaders = new SoHeaderDto();
+							
+							JSONObject header = new JSONObject();
+					//		header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
+							header.put("Requested Ship Date", "12/06/2024");
+							header.put("Order Type Id", "0-D14G");
+				//			header.put("Account Id", soHeaderDto.getOutletId());
+							header.put("Account Id", "1-BRWN-27");
+							header.put("Status", "New");
+							header.put("Order Type", "Service Order");
+				//			header.put("Account", soHeaderDto.getOutletName());
+							header.put("Account", "SHREE MAHALAXMI KIRANA AND GENERAL STORE");
+							header.put("Currency Code", "INR");
+				//			header.put("Order Number", soHeaderDto.getOrderNumber());
+							header.put("Order Number", "MSO-53623-2324-11");
+							header.put("Source Inventory Id", "1-2FPGVLJ");    //"1-2C7QNZG");
+							header.put("ListOfLine Item", listOfLineItem);
+							
+							JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
+							ListOfATOrdersIntegrationIO.put("Header", header);
+							
+							JSONObject siebelMassage = new JSONObject();
+							siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+							siebelMassage.put("MessageId", "");
+							siebelMassage.put("IntObjectName", "AT Orders Integration IO");
+							siebelMassage.put("MessageType", "Integration Object");
+							siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
+							
+							JSONObject siebelMassages = new JSONObject();
+							siebelMassages.put("SubmitFlag", "");
+							siebelMassages.put("InvoiceFlag", "");
+							siebelMassages.put("SiebelMessage" , siebelMassage);
+							
+							String apiUrl = env.getProperty("SiebelCreateOrderApi");
+						//	String apiUrl = env.getProperty("https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y");
+							URL url = new URL(apiUrl);
+							System.out.print(apiUrl);
+							System.out.print(url);
+							String UserName="Lonar_Test";
+							String Password="Lonar123";
+							String credential = UserName +":"+ Password;
+							
+							HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+							connection.setRequestMethod("POST");
+							connection.setDoOutput(true);
+							connection.setRequestProperty("Content-Type", "application/json");
+							connection.setRequestProperty("Authorization", "Basic_Auth"+credential);
+							
+							String jsonPayload =siebelMassages.toString();
+							
+							System.out.println("jsonPayload"+jsonPayload);
+							  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) 
+							  {
+								  wr.writeBytes(jsonPayload);
+							      wr.flush(); 
+							  }
+							
+							  int responseCode = connection.getResponseCode(); 
+							  System.out.println("Response Code: " + responseCode);
+							  
+							  BufferedReader reader; 
+							  if (responseCode ==  HttpURLConnection.HTTP_OK) {
+								  reader = new BufferedReader(new
+							  InputStreamReader(connection.getInputStream())); 
+								  } else { 
+									  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
+							  
+							  String line; 
+							  StringBuilder response = new
+							  StringBuilder();
+							  
+							  while ((line = reader.readLine()) != null) { response.append(line); }
+							  reader.close();
+							  
+							  System.out.println("Response: " + response.toString());
+
+						}
+						
+						RequestDto requestDto = new RequestDto();
+						requestDto.setHeaderId(ltSoHeader.getHeaderId());
+						requestDto.setOffset(0);
+						status = getOrderV2(requestDto);
+						
+						// saving salesPerson details in salesPersonLocation table
+						if(user.getUserType().equalsIgnoreCase(SALES)) {
+							
+							LtSalesPersonLocation ltSalesPersonLocation = new LtSalesPersonLocation();
+							
+							ltSalesPersonLocation.setBeatId(soHeaderDto.getBeatId());
+							ltSalesPersonLocation.setOutletId(soHeaderDto.getOutletId());
+							ltSalesPersonLocation.setOrderName(orderNumber);
+							ltSalesPersonLocation.setAddress(soHeaderDto.getAddress());
+							ltSalesPersonLocation.setLatitude(soHeaderDto.getLatitude());
+							ltSalesPersonLocation.setLongitude(soHeaderDto.getLongitude());
+							ltSalesPersonLocation.setCreatedBy(soHeaderDto.getUserId());
+							ltSalesPersonLocation.setLastUpdatedBy(soHeaderDto.getUserId());
+							ltSalesPersonLocation.setCreationDate(new Date());
+							ltSalesPersonLocation.setLastUpdateDate(new Date());
+							
+							ltSalesPersonLocationRepository.save(ltSalesPersonLocation);
+						}
+						
+						}
+						catch (Exception e) {
+							e.printStackTrace();
+						}
+			            status.setCode(INSERT_SUCCESSFULLY);
+						status.setMessage("Insert Successfully");
+
+						return status;
+					//}
+					
+				} 
+				// for Out_Of_Stock Products order	i.e. isInstockFlag ="N"
+					else {
+						
+						String orderNumber = genrateOrderNumber(soHeaderDto.getOutletId());
+						//System.out.println("orderNumber :: "+orderNumber);
+						
+						//Long orderNo = System.currentTimeMillis();
+						ltSoHeader.setOrderNumber(orderNumber);
+			            
+						
+						if (soHeaderDto.getOutletId() != null) {
+							ltSoHeader.setOutletId(soHeaderDto.getOutletId());
+						}
+						if (soHeaderDto.getDeliveryDate() != null) {
+							ltSoHeader.setDeliveryDate(soHeaderDto.getDeliveryDate());
+						}
+						if (soHeaderDto.getLatitude() != null) {
+							ltSoHeader.setLatitude(soHeaderDto.getLatitude());
+						}
+						if (soHeaderDto.getLongitude() != null) {
+							ltSoHeader.setLongitude(soHeaderDto.getLongitude());
+						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setCreatedBy(soHeaderDto.getUserId());
+						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setLastUpdatedBy(soHeaderDto.getUserId());
+						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
+						}
+						if (soHeaderDto.getAddress() != null) {
+							ltSoHeader.setAddress(soHeaderDto.getAddress());
+						}
+						if (soHeaderDto.getRemark() != null) {
+							ltSoHeader.setRemark(soHeaderDto.getRemark());
+						}
+
+						ltSoHeader.setOrderDate(new Date()); //new Date()
+						ltSoHeader.setLastUpdateDate(new Date()); // new Date()
+						ltSoHeader.setCreationDate(new Date()); // new Date()
+						ltSoHeader.setStatus(DRAFT);
+
+						if(soHeaderDto.getInStockFlag()!= null) {
+							ltSoHeader.setInStockFlag(soHeaderDto.getInStockFlag());
+						}
+//						if(soHeaderDto.getBeatId()!= null) {
+//							ltSoHeader.setBeatId(soHeaderDto.getBeatId());
+//						}if(soHeaderDto.getPriceList()!= null) {
+//							ltSoHeader.setPriceList(soHeaderDto.getPriceList());
+//						}
+						
+						ltSoHeader = updateSoHeader(ltSoHeader);
+							
+						// send OutofStock order for approval to areHead
+							sendNotifications(ltSoHeader);
+						
+						List<SoLineDto> soLineDtoList = soHeaderDto.getSoLineDtoList();
+						
+						StringBuffer strQuery1 =  new StringBuffer();
+						
+				//		strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
+						
+				//		StringBuffer strQuery =  new StringBuffer();
+						
+						for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
+												
+							SoLineDto soLineDto = (SoLineDto) iterator.next();		
+					//		strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");				
+							strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,status,created_by,last_update_login,last_updated_by,ptr_price,eimstatus,delivery_date,creation_date,last_update_date) VALUES ");
+							StringBuffer strQuery =  new StringBuffer();
+							strQuery.append("(");
+
+							//LtSoLines ltSoLines = new LtSoLines();
+							
+							if (ltSoHeader.getHeaderId() != null) {
+								//ltSoLines.setHeaderId(ltSoHeader.getHeaderId());
+								strQuery.append(ltSoHeader.getHeaderId()+",");
+								
+							}
+							if (soLineDto.getProductId() != null) {
+								//ltSoLines.setProductId(soLineDto.getProductId());
+								strQuery.append(soLineDto.getProductId()+",");
+							}
+							if (soLineDto.getQuantity() != null) {
+								//ltSoLines.setQuantity(soLineDto.getQuantity());
+								strQuery.append(soLineDto.getQuantity()+",");
+							}
+							if (soLineDto.getListPrice() != null) {
+								//ltSoLines.setListPrice(soLineDto.getListPrice());
+								strQuery.append("'"+soLineDto.getListPrice()+"',");
+							}
+							strQuery.append("'"+DRAFT.toString()+"',");//Status
+							
+							if (soHeaderDto.getUserId() != null) {
+								//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
+								strQuery.append(soHeaderDto.getUserId()+",");
+							}
+							if (soHeaderDto.getUserId() != null) {
+								//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
+								strQuery.append(soHeaderDto.getUserId()+",");
+							}
+							if (soHeaderDto.getUserId() != null) {
+								//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
+								strQuery.append(soHeaderDto.getUserId()+",");
+							}
+							if (soLineDto.getPtrPrice() != null) {
+								//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
+								strQuery.append("'"+soLineDto.getPtrPrice()+"',");
+							}else {
+								//ltSoLines.setPtrPrice(soLineDto.getListPrice());
+								strQuery.append("'"+soLineDto.getListPrice()+"',");
+							}
+						//	if(soLineDto.getEimStatus()!= null) {
+							strQuery.append("'"+null+"',"); // eimstatus
+						//	} 		
+							if (soLineDto.getDeliveryDate() != null) {
+								//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
+								
+//								DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+//								Date date = (Date)formatter.parse(soLineDto.getDeliveryDate().toString());
+//								SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+//								String deliveryDate =outputFormat.format(date);
+//							//	System.out.println("formatedDate : " + deliveryDate); 
+													
+							//	strQuery.append("'"+deliveryDate+"',");
+								strQuery.append("'"+"',");
+								
+							 //strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
+							}
+							
+							//strQuery.append("'"+new Date()+"',");//Created Date
+							strQuery.append("'"+"',");  // set null for demo
+							
+							//strQuery.append("'"+new Date()+"'");//Last update date
+							strQuery.append("'"+"'"); // set null for demo
+							
+							//ltSoLines.setStatus(DRAFT);
+							//ltSoLines.setLastUpdateDate(new Date());
+							//ltSoLines.setCreationDate(new Date());
+//							strQuery.append("),");
+							
+							strQuery.append(")");
+							strQuery1 = strQuery1.append(strQuery);
+							//ltSoLines = ltSoLinesRepository.save(ltSoLines);
+			       				
+						}
+						//strQuery.deleteCharAt(strQuery.length()-1); 
+						//strQuery1 = strQuery1.append(strQuery);
+						
+						String query = strQuery1.toString();
+						
+						int n = ltSoHeadersDao.insertLine(query);
+						
+						if (n > 0) {
+							System.out.println("Line insert successfully");
+							RequestDto requestDto = new RequestDto();
+							requestDto.setHeaderId(ltSoHeader.getHeaderId());
+							requestDto.setOffset(0);
+							status = getOrderV2(requestDto);
+							
+							if(user.getUserType().equalsIgnoreCase(SALES)) {
+								
+								LtSalesPersonLocation ltSalesPersonLocation = new LtSalesPersonLocation();
+								
+								ltSalesPersonLocation.setBeatId(ltSoHeader.getBeatId());
+								ltSalesPersonLocation.setOutletId(user.getOutletId());
+								ltSalesPersonLocation.setOrderName(ltSoHeader.getOrderNumber());
+								ltSalesPersonLocation.setAddress(user.getAddress());
+								ltSalesPersonLocation.setLatitude(user.getLatitude());
+								ltSalesPersonLocation.setLongitude(user.getLongitude());
+								ltSalesPersonLocation.setCreatedBy(user.getUserId());
+								ltSalesPersonLocation.setLastUpdatedBy(user.getUserId());
+								ltSalesPersonLocation.setCreationDate(new Date());
+								ltSalesPersonLocation.setLastUpdateDate(new Date());
+								
+								ltSalesPersonLocationRepository.save(ltSalesPersonLocation);
+							}
+							
+							if(ltSoHeader.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
+								/// push the order into siebel and update the order status to NEW 
+								SoLineDto soLineDto = new SoLineDto();
+								
+								JSONObject lineItemObject = new JSONObject();
+								lineItemObject.put("Id", "1");
+						//		lineItemObject.put("Product Id", soLineDto.getProductId());
+								lineItemObject.put("Product Id", "1-4XBK-2");
+						//		lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
+								lineItemObject.put("Due Date", "12/06/2023");
+						//		lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
+								lineItemObject.put("Item Price List Id", "1-475Z");
+								lineItemObject.put("Action Code", "New");
+						//		lineItemObject.put("Name", soLineDto.getProductName());
+								lineItemObject.put("Name", "P02IAPKP040");
+						//		lineItemObject.put("Quantity", soLineDto.getQuantity());
+								lineItemObject.put("Quantity", "1");
+								
+								JSONArray lineItemArray = new JSONArray();
+								for (int i =0; i<lineItemObject.length(); i++) {
+									lineItemArray.put(lineItemObject);	
+								}
+								
+								JSONObject listOfLineItem = new JSONObject();
+								listOfLineItem.put("Line Item", lineItemObject);
+								
+								SoHeaderDto soHeaders = new SoHeaderDto();
+								
+								JSONObject header = new JSONObject();
+					//			header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
+								header.put("Requested Ship Date", "12/06/2024");
+								header.put("Order Type Id", "0-D14G");
+				//				header.put("Account Id", soHeaderDto.getOutletId());
+								header.put("Account Id", "1-BRWN-27");
+								header.put("Status", "New");
+								header.put("Order Type", "Service Order");
+					//			header.put("Account", soHeaderDto.getOutletName());
+								header.put("Account", "SHREE MAHALAXMI KIRANA AND GENERAL STORE");
+								header.put("Currency Code", "INR");
+					//			header.put("Order Number", soHeaderDto.getOrderNumber());
+								header.put("Order Number", "MSO-53623-2324-11");
+								header.put("Source Inventory Id", "1-2FPGVLJ");   /// "1-2C7QNZG");
+								header.put("ListOfLine Item", listOfLineItem);
+								
+								JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
+								ListOfATOrdersIntegrationIO.put("Header", header);
+								
+								JSONObject siebelMassage = new JSONObject();
+								siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+								siebelMassage.put("MessageId", "");
+								siebelMassage.put("IntObjectName", "AT Orders Integration IO");
+								siebelMassage.put("MessageType", "Integration Object");
+								siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
+								
+								JSONObject siebelMassages = new JSONObject();
+								siebelMassages.put("SubmitFlag", "");
+								siebelMassages.put("InvoiceFlag", "");
+								siebelMassages.put("SiebelMessage" , siebelMassage);
+								
+							//	String apiUrl = env.getProperty("SiebelCreateOrderApi");
+								String apiUrl = env.getProperty("https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y");
+								URL url = new URL(apiUrl);
+								System.out.print(apiUrl);
+								System.out.print(url);
+								String UserName="Lonar_Test";
+								String Password="Lonar123";
+								String credential = UserName +":"+ Password;
+								
+								HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+								connection.setRequestMethod("POST");
+								connection.setDoOutput(true);
+								connection.setRequestProperty("Content-Type", "application/json");
+								connection.setRequestProperty("Authorization", "Basic_Auth"+credential);
+								
+								String jsonPayload =siebelMassages.toString();
+								
+								System.out.println("jsonPayload"+jsonPayload);
+								  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) 
+								  {
+									  wr.writeBytes(jsonPayload);
+								      wr.flush(); 
+								  }
+								
+								  int responseCode = connection.getResponseCode(); 
+								  System.out.println("Response Code: " + responseCode);
+								  
+								  BufferedReader reader; 
+								  if (responseCode ==  HttpURLConnection.HTTP_OK) {
+									  reader = new BufferedReader(new
+								  InputStreamReader(connection.getInputStream())); 
+									  } else { 
+										  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
+								  
+								  String line; 
+								  StringBuilder response = new
+								  StringBuilder();
+								  
+								  while ((line = reader.readLine()) != null) { response.append(line); }
+								  reader.close();
+								
+								  System.out.println("Response: " + response.toString());
+							}
+							
+							status.setCode(INSERT_SUCCESSFULLY);
+							status.setMessage("Insert Successfully");
+
+							return status;
+						}
+						
+					} 		  
+				  
+			  }
+						
 		}catch (Exception e) {
 			logger.error("Error Description :", e);
 			e.printStackTrace();
@@ -1600,6 +1839,85 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		return null; 
 	}
 
+	private void sampleCode(){
+		String apiUrl = "https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y";
+		
+		HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        
+        String username = "LONAR_TEST";
+        String password = "Lonar123";
+       String credentials = username + ":" + password;
+        //String base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
+        headers.add("Authorization", "Basic " + credentials);
+	
+        //String requestBody = "{\"key\": \"value\"}";
+        JSONObject lineItemObject = new JSONObject();
+		lineItemObject.put("Id", "1");
+	//	lineItemObject.put("Product Id", soLineDto.getProductId());
+		lineItemObject.put("Product Id", "1-4XBK-2");
+	//	lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
+		lineItemObject.put("Due Date", "12/06/2023");
+	//	lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
+		lineItemObject.put("Item Price List Id", "1-475Z");
+		lineItemObject.put("Action Code", "New");
+	//	lineItemObject.put("Name", soLineDto.getProductName());
+		lineItemObject.put("Name", "P02IAPKP040");
+	//	lineItemObject.put("Quantity", soLineDto.getQuantity());
+		lineItemObject.put("Quantity", "1");
+		
+		JSONArray lineItemArray = new JSONArray();
+		for (int i =0; i<lineItemObject.length(); i++) {
+			lineItemArray.put(lineItemObject);	
+		}
+		
+		JSONObject listOfLineItem = new JSONObject();
+		listOfLineItem.put("Line Item", lineItemObject);
+		
+		SoHeaderDto soHeaders = new SoHeaderDto();
+		
+		JSONObject header = new JSONObject();
+//		header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
+		header.put("Requested Ship Date", "12/06/2024");
+		header.put("Order Type Id", "0-D14G");
+//		header.put("Account Id", soHeaderDto.getOutletId());
+		header.put("Account Id", "1-BRWN-27");
+		header.put("Status", "New");
+		header.put("Order Type", "Service Order");
+//		header.put("Account", soHeaderDto.getOutletName());
+		header.put("Account", "SHREE MAHALAXMI KIRANA AND GENERAL STORE");
+		header.put("Currency Code", "INR");
+//		header.put("Order Number", soHeaderDto.getOrderNumber());
+		header.put("Order Number", "MSO-53623-2324-11");
+		header.put("Source Inventory Id", "1-2FPGVLJ");       //"1-2C7QNZG");
+		header.put("ListOfLine Item", listOfLineItem);
+		
+		JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
+		ListOfATOrdersIntegrationIO.put("Header", header);
+		
+		JSONObject siebelMassage = new JSONObject();
+		siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+		siebelMassage.put("MessageId", "");
+		siebelMassage.put("IntObjectName", "AT Orders Integration IO");
+		siebelMassage.put("MessageType", "Integration Object");
+		siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
+		
+		JSONObject siebelMassages = new JSONObject();
+		siebelMassages.put("SubmitFlag", "");
+		siebelMassages.put("InvoiceFlag", "");
+		siebelMassages.put("SiebelMessage" , siebelMassage);
+		
+        HttpEntity<String> requestEntity = new HttpEntity<>(siebelMassages.toString(), headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        
+        ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
+        
+        String responseBody = responseEntity.getBody();
+        System.out.println("Response: " + responseBody);
+                
+	}
+	
 		
 	private Status updateSoHeadeLineInDraftV2(SoHeaderDto soHeaderDto, Long headerId, Date creationDate, Long createdBy)
 			throws ServiceException, IOException {
@@ -1794,6 +2112,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			Status status = new Status();
 			
 			List<Long> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
+			System.out.print("headerIdsList is ====" +headerIdsList);
 			Long recordCount = ltSoHeadersDao.getRecordCount(requestDto);
 			//Long recordCount = (long) headerIdsList.size() + 1;
 			

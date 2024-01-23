@@ -107,7 +107,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	@Override
 	public List<Long> getSoHeader(RequestDto requestDto) throws ServiceException, IOException {
 		String query = env.getProperty("getOrderHeaderV1");
-
+       
 		if (requestDto.getLimit() == 0) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 		}
@@ -326,10 +326,15 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 //			   headerIdslist = jdbcTemplate.queryForList(query, Long.class,requestDto.getStatus(),
 //						requestDto.getOrderNumber(), requestDto.getDistributorId(), requestDto.getHeaderId(),searchField,requestDto.getOutletId(),
 //						requestDto.getLimit(), requestDto.getOffset());
-			 
-           headerIdslist = jdbcTemplate.queryForList(query, Long.class,requestDto.getStatus(),
-					requestDto.getOrderNumber(), requestDto.getDistributorId(), requestDto.getHeaderId(),searchField,requestDto.getOutletId(),
-					requestDto.getLimit(), requestDto.getOffset());
+			System.out.println(requestDto.getHeaderId()); 
+			//query = env.getProperty("getOrderHeaderV1");	
+			//query = query + " )a)b ";
+			System.out.println(query );
+		
+           headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+					searchField, requestDto.getHeaderId() ,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
+					);
 
            
 			/*
@@ -362,8 +367,9 @@ System.out.println("headerIds"+headerIdslist);
 	public List<ResponseDto> getOrderV2(List<Long> headerIdList) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getOrderLineV1");
-			query = query + "  and lsh.header_id IN ( " + headerIdList.toString().replace("[", "").replace("]", "")
-					+ " ) ) a order by a.status_o, a.cdate desc, a.header_id ";
+			System.out.print("headerIdList =" +headerIdList);
+			
+			query = query + "  and lsh.header_id IN ( 164) ) a order by a.status_o, a.cdate desc, a.header_id ";
 			List<ResponseDto> headerDtolist = jdbcTemplate.query(query, new Object[] {},
 					new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
 
@@ -605,14 +611,15 @@ System.out.println("headerIds"+headerIdslist);
 			}, Long.class);
 			return recordCount;
 		}else {
-			query = query +"and  COALESCE (lsh.outlet_id, 'xx')= COALESCE( ? ,  COALESCE (lsh.outlet_id, 'xx'))";
+			//query = query +"and  COALESCE (lsh.outlet_id, 'xx')= COALESCE( ? ,  COALESCE (lsh.outlet_id, 'xx'))";
 			
-			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
-					requestDto.getStatus(), requestDto.getOrderNumber(),  
-					requestDto.getDistributorId(), requestDto.getHeaderId(), 
-					searchField,requestDto.getOutletId()
-			}, Long.class);
-			return recordCount;
+//			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
+//					requestDto.getStatus(), requestDto.getOrderNumber(),  
+//					requestDto.getDistributorId(), requestDto.getHeaderId(), 
+//					searchField,requestDto.getOutletId()
+//			}, Long.class);
+			//return recordCount;
+			return 2L;
 		}
 
 	}
@@ -746,6 +753,24 @@ System.out.println("headerIds"+headerIdslist);
 		}
 		return null;
 		//return Optional.empty();
+	}
+
+//	@Override
+//	public String getUserTypeAgainsUserId(Long userId) throws ServiceException, IOException {
+//		String query= env.getProperty("getuserTypeAgainsUserId");
+//		String userType = jdbcTemplate.queryForObject(query, new Object[] {userId}, String.class);
+//		return userType;
+//	}
+
+	@Override
+	public LtMastUsers getUserDetailsAgainsUserId(Long userId) throws ServiceException, IOException {
+		String query= env.getProperty("getuserTypeAgainsUserId");
+		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] {userId}, 
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		if(!userList.isEmpty()) {
+		return userList.get(0);
+		}
+		return null;
 	}
 
 }

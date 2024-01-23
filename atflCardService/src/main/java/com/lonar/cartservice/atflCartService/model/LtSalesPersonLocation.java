@@ -24,7 +24,7 @@ public class LtSalesPersonLocation extends BaseClass{
 	Long salesPersonLocationId;
 	
 	@Column (name = "BEAT_ID")
-	Long beatId;
+	String beatId;
 	
 	@Column(name = "OUTLET_ID")
 	String outletId;
@@ -52,11 +52,11 @@ public class LtSalesPersonLocation extends BaseClass{
 		this.salesPersonLocationId = salesPersonLocationId;
 	}
 
-	public Long getBeatId() {
+	public String getBeatId() {
 		return beatId;
 	}
 
-	public void setBeatId(Long beatId) {
+	public void setBeatId(String beatId) {
 		this.beatId = beatId;
 	}
 
