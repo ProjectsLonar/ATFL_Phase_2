@@ -19,6 +19,9 @@ public class RequestDto {
 	private String searchField;
 	private Long customerId;
 	private Long userId;
+	private String invoiceNumber;
+	private String returnStatus;
+	private Long salesReturnHeaderId;
 
 	public String getOrgId() {
 		return orgId;
@@ -125,4 +128,38 @@ public class RequestDto {
 		this.userId = userId;
 	}
 
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+
+	public String getReturnStatus() {
+		return returnStatus;
+	}
+
+	public void setReturnStatus(String returnStatus) {
+		this.returnStatus = returnStatus;
+	}
+
+	public Long getSalesReturnHeaderId() {
+		return salesReturnHeaderId;
+	}
+
+	public void setSalesReturnHeaderId(Long salesReturnHeaderId) {
+		this.salesReturnHeaderId = salesReturnHeaderId;
+	}
+
+	@Override
+	public String toString() {
+		return "RequestDto [orgId=" + orgId + ", distributorId=" + distributorId + ", salesPersonId=" + salesPersonId
+				+ ", outletId=" + outletId + ", orderNumber=" + orderNumber + ", status=" + status + ", details="
+				+ details + ", headerId=" + headerId + ", limit=" + limit + ", offset=" + offset + ", searchField="
+				+ searchField + ", customerId=" + customerId + ", userId=" + userId + ", invoiceNumber=" + invoiceNumber
+				+ ", returnStatus=" + returnStatus + ", salesReturnHeaderId=" + salesReturnHeaderId + "]";
+	}
+
+	
 }

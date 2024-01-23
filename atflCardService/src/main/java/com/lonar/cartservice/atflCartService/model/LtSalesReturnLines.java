@@ -32,8 +32,11 @@ public class LtSalesReturnLines extends BaseClass {
 	@Column(name = "SHIPPED_QUANTITY")
 	Long  shippedQuantity;
 	
-	@Column(name = "QUANTITY")
-	Long  quantity;
+	@Column(name = "RETURN_QUANTITY")
+	Long  returnQuantity;
+	
+	@Column(name = "REMAINING_QUANTITY")
+	Long  remainingQuantity;
 	
 	@Column(name = "AVAILABILITY")
 	String availability;
@@ -73,12 +76,22 @@ public class LtSalesReturnLines extends BaseClass {
 		this.shippedQuantity = shippedQuantity;
 	}
 
-	public Long getQuantity() {
-		return quantity;
+	
+
+	public Long getReturnQuantity() {
+		return returnQuantity;
 	}
 
-	public void setQuantity(Long quantity) {
-		this.quantity = quantity;
+	public void setReturnQuantity(Long returnQuantity) {
+		this.returnQuantity = returnQuantity;
+	}
+
+	public Long getRemainingQuantity() {
+		return remainingQuantity;
+	}
+
+	public void setRemainingQuantity(Long remainingQuantity) {
+		this.remainingQuantity = remainingQuantity;
 	}
 
 	public String getAvailability() {
@@ -101,8 +114,11 @@ public class LtSalesReturnLines extends BaseClass {
 	public String toString() {
 		return "LtSalesReturnLines [salesReturnLineId=" + salesReturnLineId + ", salesReturnHeaderId="
 				+ salesReturnHeaderId + ", productId=" + productId + ", shippedQuantity=" + shippedQuantity
-				+ ", quantity=" + quantity + ", availability=" + availability + ", location=" + location + "]";
+				+ ", returnQuantity=" + returnQuantity + ", remainingQuantity=" + remainingQuantity + ", availability="
+				+ availability + ", location=" + location + "]";
 	}
+
+	
 	
 	
 }
