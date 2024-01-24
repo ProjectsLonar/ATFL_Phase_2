@@ -46,6 +46,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 	
 	@Override
 	public Status saveSalesReturn(LtSalesReturnDto ltSalesReturnDto) throws ServerException{
+		try {
 		Status status = new Status();
 		LtSalesReturnHeader ltSalesReturnHeader = new LtSalesReturnHeader();
 		if(ltSalesReturnDto !=null) {
@@ -204,8 +205,21 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 			requestDto.setOffset(2);
 			
 			status = getSalesReturn(requestDto);
+			if(status.getData() !=null) {
+				status.setCode(SUCCESS);
+				status.setMessage("Done");
+				status.setData(status.getData());
+				return status;
+			}else {
+				status.setCode(FAIL);
+				status.setMessage("RECORD NOT FOUND");
+				return status;
+			}
 		}
 		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
@@ -293,10 +307,10 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 	public Status getSalesReturn(RequestDto requestDto) throws ServerException{
 		try {
 		Status status = new Status();
-		
+		System.out.println("requestDto"+requestDto);
 		List<Long> IdsList = ltSalesreturnDao.getSalesReturnHeader(requestDto);
 		Long recordCount = ltSalesreturnDao.getSalesReturnRecordCount(requestDto);
-		
+		System.out.println("IdsList"+IdsList +" "+recordCount);
 		status.setTotalCount(recordCount);
 		status.setRecordCount(recordCount);
 		if(IdsList.isEmpty()) {
