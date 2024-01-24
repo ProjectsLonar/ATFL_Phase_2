@@ -3,9 +3,12 @@ package com.lonar.cartservice.atflCartService.dao;
 import java.rmi.ServerException;
 import java.util.List;
 
+import com.lonar.cartservice.atflCartService.dto.LtInvoiceDetailsResponseDto;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.ResponseDto;
 import com.lonar.cartservice.atflCartService.model.LtSalesReturnAvailability;
+import com.lonar.cartservice.atflCartService.model.LtSalesReturnHeader;
+import com.lonar.cartservice.atflCartService.model.LtSalesReturnLines;
 import com.lonar.cartservice.atflCartService.model.LtSalesReturnStatus;
 
 public interface LtSalesreturnDao {
@@ -21,4 +24,12 @@ public interface LtSalesreturnDao {
 	Long getSalesReturnRecordCount(RequestDto requestDto)throws ServerException; 
 	
 	List<ResponseDto> getSalesReturn(List<Long> IdsList) throws ServerException;
+	
+	void deleteSalesReturnLinesByHeaderId(Long HeaderId)throws ServerException;
+	
+	LtSalesReturnHeader updateSalesReturnHeader(LtSalesReturnHeader ltSalesreturnHeader)throws ServerException;
+	
+	LtSalesReturnLines updateLines(LtSalesReturnLines ltSalesreturnlines) throws ServerException;
+	
+	List<LtInvoiceDetailsResponseDto> getInvoiceDetails( RequestDto requestDto) throws ServerException;
 }

@@ -19,6 +19,10 @@ public class LtSalesReturnDto {
 	private String longitude;
 	private String returnReason;
 	private Date salesReturnDate;
+	private String outletName;
+	private String outletCode;
+	private Long userId;
+	
 	
 	List<LtSalesReturnLines> ltSalesReturnLines;
 
@@ -109,16 +113,40 @@ public class LtSalesReturnDto {
 	public void setLtSalesReturnLines(List<LtSalesReturnLines> ltSalesReturnLines) {
 		this.ltSalesReturnLines = ltSalesReturnLines;
 	}
+	
+	public String getOutletName() {
+		return outletName;
+	}
+
+	public void setOutletName(String outletName) {
+		this.outletName = outletName;
+	}
+
+	public String getOutletCode() {
+		return outletCode;
+	}
+
+	public void setOutletCode(String outletCode) {
+		this.outletCode = outletCode;
+	}
+
+	
+	
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
 	@Override
 	public String toString() {
 		return "LtSalesReturnDto [salesReturnHeaderId=" + salesReturnHeaderId + ", salesReturnNumber="
 				+ salesReturnNumber + ", invoiceNumber=" + invoiceNumber + ", outletId=" + outletId + ", returnStatus="
 				+ returnStatus + ", address=" + address + ", latitude=" + latitude + ", longitude=" + longitude
-				+ ", returnReason=" + returnReason + ", salesReturnDate=" + salesReturnDate + ", ltSalesReturnLines="
-				+ ltSalesReturnLines + "]";
+				+ ", returnReason=" + returnReason + ", salesReturnDate=" + salesReturnDate + ", outletName="
+				+ outletName + ", outletCode=" + outletCode + ", ltSalesReturnLines=" + ltSalesReturnLines + "]";
 	}
-	
-	
 
 }

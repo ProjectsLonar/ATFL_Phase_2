@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -51,6 +52,13 @@ public class LtSalesReturnHeader extends BaseClass {
 	
 	@Column(name = "SALES_RETURN_DATE")
 	Date salesReturnDate;
+	
+	@Transient
+	private String outletName;
+	
+	@Transient
+	private String outletCode;
+	
 
 	public Long getSalesReturnHeaderId() {
 		return salesReturnHeaderId;
@@ -132,13 +140,32 @@ public class LtSalesReturnHeader extends BaseClass {
 		this.salesReturnDate = salesReturnDate;
 	}
 
+	
+	public String getOutletName() {
+		return outletName;
+	}
+
+	public void setOutletName(String outletName) {
+		this.outletName = outletName;
+	}
+
+	public String getOutletCode() {
+		return outletCode;
+	}
+
+	public void setOutletCode(String outletCode) {
+		this.outletCode = outletCode;
+	}
+
 	@Override
 	public String toString() {
 		return "LtSalesReturnHeader [salesReturnHeaderId=" + salesReturnHeaderId + ", salesReturnNumber="
 				+ salesReturnNumber + ", invoiceNumber=" + invoiceNumber + ", outletId=" + outletId + ", returnStatus="
 				+ returnStatus + ", address=" + address + ", latitude=" + latitude + ", longitude=" + longitude
-				+ ", returnReason=" + returnReason + ", salesReturnDate=" + salesReturnDate + "]";
+				+ ", returnReason=" + returnReason + ", salesReturnDate=" + salesReturnDate + ", outletName="
+				+ outletName + ", outletCode=" + outletCode + "]";
 	}
+
 	
 	
 }
