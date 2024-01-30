@@ -6,11 +6,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,7 +26,6 @@ import com.users.usersmanagement.controller.WebController;
 import com.users.usersmanagement.dao.AtflMastUsersDao;
 import com.users.usersmanagement.dao.LtMastOutletDao;
 import com.users.usersmanagement.model.BeatDetailsDto;
-import com.users.usersmanagement.model.OutletSequenceData;
 import com.users.usersmanagement.model.CodeMaster;
 import com.users.usersmanagement.model.LtMastOrganisations;
 //import com.users.usersmanagement.model.LtMastOutlets;
@@ -34,6 +35,7 @@ import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastOutletsType;
 import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
+import com.users.usersmanagement.model.OutletSequenceData;
 import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.model.RoleMaster;
 import com.users.usersmanagement.model.Status;
@@ -41,7 +43,6 @@ import com.users.usersmanagement.repository.LtMastOutletDumpRepository;
 import com.users.usersmanagement.repository.LtMastOutletRepository;
 import com.users.usersmanagement.repository.LtMastUsersRepository;
 
-import javassist.bytecode.Descriptor.Iterator;
 
 @Service
 @PropertySource(value = "classpath:queries/userMasterQueries.properties", ignoreResourceNotFound = true)
@@ -289,9 +290,10 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 	}
 
 	@Override
-	public Status getPriceListAgainstDistributor(String outletId) throws ServiceException, IOException {
+	public Status getPriceListAgainstDistributor(String distributorId) throws ServiceException, IOException {
 		Status status = new Status();
-		List<LtMastPricelist> list = ltMastOutletDao.getPriceListAgainstDistributor(outletId);
+		try {
+		List<LtMastPricelist> list = ltMastOutletDao.getPriceListAgainstDistributor(distributorId);
 		if (list != null) {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
@@ -300,6 +302,11 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			status.setCode(FAIL);
 			status.setMessage("RECORD NOT FOUND");
 		}
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		return status;
 	}
 
@@ -404,17 +411,17 @@ try {
 		  JSONObject businessAddress = new JSONObject();
 		  businessAddress.put("Address Id", "1");
 		 // businessAddress.put("Street Address", ltMastOutletsDump.getAddress1());
-		  businessAddress.put("Street Address","West");
+		  businessAddress.put("Street Address","South East");
 		  businessAddress.put("County", "");
 		 // businessAddress.put("Street Address 2",ltMastOutletsDump.getAddress2());
-		  businessAddress.put("Street Address 2","Amravati");
+		  businessAddress.put("Street Address 2","Pune");
 		 // businessAddress.put("City", ltMastOutletsDump.getCity());
 		  businessAddress.put("City","Aurangabad" );
 		 // businessAddress.put("State", ltMastOutletsDump.getState());
 		  businessAddress.put("State", "MH");
 		  businessAddress.put("Country", "India");
 		  //businessAddress.put("Postal Code", ltMastOutletsDump.getPin_code());
-		  businessAddress.put("Postal Code","444603");
+		  businessAddress.put("Postal Code","411045");
 		  businessAddress.put("Province", "");
 		  businessAddress.put("IsPrimaryMVG", "Y");
 		  
@@ -436,7 +443,7 @@ try {
 		  //accounts.put("Rule Attribute 2", ltMastOutletsDump.getOutletChannel());
 		  accounts.put("Rule Attribute 2", "Whole Sellers");
 		  //accounts.put("Name", ltMastOutletsDump.getOutletName());
-		  accounts.put("Name", "Dmart Traders");
+		  accounts.put("Name", "Up South");
 		  //accounts.put("AT Territory","30801:AMDAVAD RURAl");
 		  accounts.put("Location", "Pimpri");
 		  accounts.put("ListOfBusiness Address", listOfBusinessAddres);
@@ -461,23 +468,21 @@ try {
 		  
 		  URL url = new URL(apiUrl);
 		  
-		  String username = "Lonar_Test"; String password = "Lonar123"; String
-		  credentials = username + ":" + password;
+		  String username = "Lonar_Test"; 
+		  String password = "Lonar123"; 
+		  String credentials = username + ":" + password;
+		  
+		  String authHeaderValue = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
 		  
 		  HttpURLConnection connection = (HttpURLConnection) 
 		   url.openConnection();
 		  connection.setRequestMethod("POST"); 
 		  connection.setDoOutput(true);
 		  connection.setRequestProperty("Content-Type", "application/json");
-		  connection.setRequestProperty("Authorization", "Basic_Auth"+credentials);
+		  connection.setRequestProperty("Authorization", authHeaderValue);
 		  
 		  
-		  //ObjectMapper objectMapper = new ObjectMapper(); 
 		  String jsonPayload =siebelMassages.toString();
-		  
-		  //Map<String, Object> jsonData = objectMapper.readValue(jsonPayload, Map.class);
-		 
-		  //Map<String, Object> transformedData = transformKeys(jsonData);
 		  
 		 System.out.println("jsonPayload"+jsonPayload);
 		  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
@@ -646,4 +651,6 @@ try {
 			      return null;
 			}		
 	}
+	
+	
 }

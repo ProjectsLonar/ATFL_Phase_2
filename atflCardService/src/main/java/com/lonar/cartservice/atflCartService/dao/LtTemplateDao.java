@@ -9,6 +9,8 @@ import com.lonar.cartservice.atflCartService.model.LtTemplateLines;
 
 public interface LtTemplateDao {
 
+	LtTemplateHeaders getTemplateAgainstDistributors(String distributorId)throws ServerException;
+	
 	LtTemplateHeaders getTemplateAgainstDistributor(String distributorId,Long templateHeaderId)throws ServerException;
 	
 	List<LtTemplateLines> getProductDetailsAgainstheaderId(Long templateHeaderId)throws ServerException;

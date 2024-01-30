@@ -10,5 +10,7 @@ public interface LtTemplateService {
 
 	Status getTemplateAgainstDistributor (String distributorId, Long templateHeaderId)throws ServerException;
 	
+	Status getTemplateAgainstDistributors (String distributorId)throws ServerException;
+	
 	Status createTemplate(LtTemplateDto ltTemplateDto)throws ServerException, ServiceException;
 }

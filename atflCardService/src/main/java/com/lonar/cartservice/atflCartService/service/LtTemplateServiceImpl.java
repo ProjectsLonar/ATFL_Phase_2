@@ -136,4 +136,47 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 		}
 		return status;
 	}
+	
+	@Override
+	@Transactional
+	public Status getTemplateAgainstDistributors (String distributorId)throws ServerException{
+
+		Status status = new Status();
+		try {
+		LtTemplateHeaders templateHeaders = ltTemplateDao.getTemplateAgainstDistributors(distributorId);
+		List<LtTemplateLines> templateLineDetails = new ArrayList<LtTemplateLines>();
+		LtTemplateDto ltTemplateDto = new LtTemplateDto();
+		if(templateHeaders !=null) {
+			templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId(templateHeaders.getTemplateHeaderId());
+			ltTemplateDto.setTemplateHeaderId(templateHeaders.getTemplateHeaderId());
+			ltTemplateDto.setDistributorId(templateHeaders.getDistributorId());
+			ltTemplateDto.setStatus(templateHeaders.getStatus());
+			ltTemplateDto.setCreatedBy(templateHeaders.getCreatedBy());
+			ltTemplateDto.setCreationDate(templateHeaders.getCreationDate());
+			ltTemplateDto.setLastUpdatedBy(templateHeaders.getLastUpdatedBy());
+			ltTemplateDto.setLastUpdatedLogin(templateHeaders.getLastUpdatedLogin());
+			ltTemplateDto.setLastUpdatedDate(templateHeaders.getLastUpdatedDate());
+			
+			if(!templateLineDetails.isEmpty()) {
+				ltTemplateDto.setLtTemplateLines(templateLineDetails);
+			}else {
+				
+			}status.setCode(FAIL);
+			status.setMessage("RECORD NOT FOUND");
+		}
+	
+		if (ltTemplateDto != null) {
+			status.setCode(SUCCESS);
+			status.setMessage("RECORD FOUND SUCCESSFULLY");
+			status.setData(ltTemplateDto);
+		} else {
+			status.setCode(FAIL);
+			status.setMessage("RECORD NOT FOUND");
+		}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return status;	
+	
+	}
 }

@@ -26,11 +26,11 @@ public class LtTemplateController implements CodeMaster {
 	@Autowired
 	LtTemplateService ltTemplateService;
 
-	@GetMapping(value = "/getTemplateAgainstDistributor/{distributorId}/{templateHeaderId}",produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> getTemplateAgainstDistributor(@PathVariable String distributorId,@PathVariable Long templateHeaderId ) throws ServerException {
+	@GetMapping(value = "/getTemplateAgainstDistributor/{distributorId}",produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getTemplateAgainstDistributor(@PathVariable String distributorId) throws ServerException {
 		try {
 			
-			Status status = ltTemplateService.getTemplateAgainstDistributor(distributorId,templateHeaderId);
+			Status status = ltTemplateService.getTemplateAgainstDistributors(distributorId);
 			
 			return new ResponseEntity<Status>(status, HttpStatus.OK);
 		} catch (Exception e) {

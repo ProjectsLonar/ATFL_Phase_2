@@ -164,6 +164,20 @@
 			</exclusions>
 		</dependency>
 		
+		
+		<dependency>
+    <groupId>org.apache.httpcomponents</groupId>
+    <artifactId>httpclient</artifactId>
+    <version>4.5.13</version> <!-- Use the latest version available -->
+</dependency>
+
+<dependency>
+    <groupId>com.squareup.okhttp3</groupId>
+    <artifactId>okhttp</artifactId>
+    <version>4.9.1</version> <!-- Use the latest version available -->
+</dependency>
+		
+		
 	</dependencies>
 	
 	<dependencyManagement>
