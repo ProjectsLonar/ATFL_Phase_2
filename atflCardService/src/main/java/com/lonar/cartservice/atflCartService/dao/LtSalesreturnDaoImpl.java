@@ -15,12 +15,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lonar.cartservice.atflCartService.dto.LtInvoiceDetailsResponseDto;
 import com.lonar.cartservice.atflCartService.dto.LtSalesReturnDto;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.ResponseDto;
 import com.lonar.cartservice.atflCartService.model.CodeMaster;
 import com.lonar.cartservice.atflCartService.model.LtSalesReturnAvailability;
+import com.lonar.cartservice.atflCartService.model.LtSalesReturnHeader;
+import com.lonar.cartservice.atflCartService.model.LtSalesReturnLines;
 import com.lonar.cartservice.atflCartService.model.LtSalesReturnStatus;
+import com.lonar.cartservice.atflCartService.repository.LtSalesRetrunLinesRepository;
+import com.lonar.cartservice.atflCartService.repository.LtSalesReturnRepository;
 
 
 @Repository
@@ -43,6 +48,12 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		return jdbcTemplate;
 	}
 
+	@Autowired
+	LtSalesReturnRepository ltSalesReturnRepository;
+	
+	@Autowired
+	LtSalesRetrunLinesRepository ltSalesRetrunLinesRepository;
+	
 
 	@Override
 	public List<LtSalesReturnStatus> getStatusForSalesReturn() throws ServerException{
@@ -117,10 +128,9 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		String query = env.getProperty("getSalesReturnHeader");
 		
 
-		List<Long> list = jdbcTemplate.query(query,
+		List<Long> list = jdbcTemplate.queryForList(query,
 				new Object[] { requestDto.getReturnStatus(), requestDto.getInvoiceNumber(), requestDto.getSalesReturnHeaderId(),
-						requestDto.getLimit(), requestDto.getOffset()},
-				new BeanPropertyRowMapper<Long>(Long.class));
+						requestDto.getLimit(), requestDto.getOffset()},Long.class);
 
 		if (!list.isEmpty()) {
 			return list;
@@ -141,8 +151,7 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		
 
 		Long count = jdbcTemplate.queryForObject(query,
-				new Object[] { requestDto.getReturnStatus(), requestDto.getInvoiceNumber(), requestDto.getSalesReturnHeaderId()},
-				new BeanPropertyRowMapper<Long>(Long.class));
+				new Object[] { requestDto.getReturnStatus(), requestDto.getInvoiceNumber(), requestDto.getSalesReturnHeaderId()},Long.class);
 
 		return count;
 
@@ -170,5 +179,52 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	@Override
+	@Transactional
+	public void deleteSalesReturnLinesByHeaderId(Long HeaderId)throws ServerException{
+		String query = env.getProperty("deleteSalesReturnLinesByHeaderId");
+		Object[] person = new Object[] { HeaderId };
+		jdbcTemplate.update(query, person);
+	}
+	
+	@Override
+	public LtSalesReturnHeader updateSalesReturnHeader(LtSalesReturnHeader ltSalesreturnHeader)throws ServerException{
+		if (ltSalesreturnHeader != null) {
+			return ltSalesReturnRepository.save(ltSalesreturnHeader);
+		}
+		return null;
+	}
+	
+	@Override
+	public LtSalesReturnLines updateLines(LtSalesReturnLines ltSalesreturnlines) throws ServerException{
+		if(ltSalesreturnlines !=null) {
+			return ltSalesRetrunLinesRepository.save(ltSalesreturnlines);
+		}
+		return null;
+	}
+	
+	@Override
+	public List<LtInvoiceDetailsResponseDto> getInvoiceDetails( RequestDto requestDto) throws ServerException{
+		try {
+			String query = env.getProperty("getInvoiceDetails");
+			
+
+			List<LtInvoiceDetailsResponseDto> list = jdbcTemplate.query(query,
+					new Object[] { requestDto.getDistributorId(), requestDto.getInvoiceNumber(),requestDto.getSearchField(),
+							requestDto.getLimit(), requestDto.getOffset()},
+					new BeanPropertyRowMapper<LtInvoiceDetailsResponseDto>(LtInvoiceDetailsResponseDto.class));
+
+			if (!list.isEmpty()) {
+				return list;
+			}
+
+		
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			return null;
 	}
 }

@@ -65,6 +65,28 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 	}
 	return null;
 	}
+	
+	
+	@Override
+	public LtTemplateHeaders getTemplateAgainstDistributors(String distributorId)throws ServerException{
+	String query = env.getProperty("getTemplateAgainstDistributors");
+	try {
+		
+		List<LtTemplateHeaders> templateHeader = jdbcTemplate.query(query,
+				new Object[] { distributorId },
+				new BeanPropertyRowMapper<LtTemplateHeaders>(LtTemplateHeaders.class));
+		 
+		
+		//LtTemplateHeaders templateHeader= jdbcTemplate.queryForObject(query, new Object[] {distributorId, templateHeaderId }, LtTemplateHeaders.class);
+	System.out.println("templateHeader"+templateHeader);
+	if (!templateHeader.isEmpty()) {
+		return templateHeader.get(0);
+	}
+	}catch(Exception e) {
+		e.printStackTrace();
+	}
+	return null;
+	}
 
 	@Override
 	public List<LtTemplateLines> getProductDetailsAgainstheaderId(Long templateHeaderId)throws ServerException{

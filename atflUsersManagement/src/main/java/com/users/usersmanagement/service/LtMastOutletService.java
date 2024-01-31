@@ -23,7 +23,7 @@ public interface LtMastOutletService {
 	
 	Status createOutlet(LtMastOutlets ltMastOutlets) throws ServiceException, IOException;
 	
-	Status getPriceListAgainstDistributor(String outletCode )throws ServiceException, IOException;
+	Status getPriceListAgainstDistributor(String distributorId )throws ServiceException, IOException;
 	
 	Status getPendingAprrovalOutlet(RequestDto requestDto) throws ServiceException, IOException;
 	

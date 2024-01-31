@@ -31,7 +31,7 @@ public class SendEmail implements CodeMaster {
 	@Autowired
 	private Environment env;
 
-	public Mail getMailDetailsforOutlet(OrderDetailsDto orderDetailsDto, String filePath, LtMastUsers ltMastUser) {
+	public Mail getMailDetailsforOutlet(OrderDetailsDto orderDetailsDto) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, yyyy");
 
 		String mailSubject = "";
@@ -49,9 +49,9 @@ public class SendEmail implements CodeMaster {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			if (ltMastUser.getEmail() == null || ltMastUser.getEmail().isEmpty()) {
-				return null;
-			} else {
+			//if (ltMastUser.getEmail() == null || ltMastUser.getEmail().isEmpty()) {
+			//	return null;
+			//} else {
 				mail.setMailTo(emailUserName);
 				mail.setMailCc(env.getProperty("saleCC"));
 				
@@ -87,8 +87,8 @@ public class SendEmail implements CodeMaster {
 						 * soHeaderDtolist.get(0).getUserName()); }
 						 */
 						mailBody = mailBody.replace("${outletName}", soHeaderDtolist.get(0).getOutletName());
-						mailBody = mailBody.replace("${mobileNumber}", ltMastUser.getMobileNumber());
-						mailBody = mailBody.replace("${userMailId}", ltMastUser.getEmail());
+						//mailBody = mailBody.replace("${mobileNumber}", ltMastUser.getMobileNumber());
+						//mailBody = mailBody.replace("${userMailId}", ltMastUser.getEmail());
 
 						String tablHtml = new String();
 						List<SoLineDto> soLineDtoList = soHeaderDtolist.get(0).getSoLineDtoList();
@@ -126,7 +126,7 @@ public class SendEmail implements CodeMaster {
 					e.printStackTrace();
 				}
 				return null;
-			}
+			//}
 		}
 		return null;
 
