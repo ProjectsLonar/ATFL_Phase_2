@@ -1,7 +1,14 @@
 package com.lonar.cartservice.atflCartService.service;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.rmi.ServerException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -9,7 +16,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +44,7 @@ import com.lonar.cartservice.atflCartService.repository.LtSalesRetrunLinesReposi
 import com.lonar.cartservice.atflCartService.repository.LtSalesReturnRepository;
 
 @Service
+@PropertySource(value = "classpath:queries/cartmasterqueries.properties", ignoreResourceNotFound = true)
 public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster {
 
 	@Autowired
@@ -43,6 +55,9 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 	
 	@Autowired
 	LtSalesRetrunLinesRepository ltSalesRetrunLinesRepository;
+	
+	@Autowired
+	private Environment env;
 	
 	@Override
 	public Status saveSalesReturn(LtSalesReturnDto ltSalesReturnDto) throws ServerException{
@@ -197,6 +212,105 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				
 				
 			}
+			///siebel json creation
+			JSONObject salesReturnDetail = new JSONObject();
+			JSONObject SiebelMessage = new JSONObject();
+			JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
+			JSONObject Header = new JSONObject();
+			JSONObject ListOfLineItem = new JSONObject();
+			JSONArray LineItem = new JSONArray();
+			JSONObject lineData = new JSONObject();
+			JSONObject ListOfXA = new JSONObject();
+			JSONObject XA = new JSONObject();
+			
+			salesReturnDetail.put("InvoiceNumber","INV-29686-2223-000218");
+			salesReturnDetail.put("ReturnReason", "SHORT RECEIVED BY CUSTOMER");  
+			salesReturnDetail.put("SiebelMessage", SiebelMessage);
+			
+			
+			SiebelMessage.put("IntObjectFormat", "Siebel Hierarchical");
+			SiebelMessage.put("MessageId", "");
+			SiebelMessage.put("IntObjectName", "AT Orders Integration IO");
+			SiebelMessage.put("MessageType", "Integration Object");
+			SiebelMessage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
+			
+			ListOfATOrdersIntegrationIO.put("Header", Header);
+			
+			Header.put("Account Id", "1-EEWE-478");
+			Header.put("Account", "3M CAR CARE");
+			Header.put("Order Number", "RMA-29686-2223-000078");
+			Header.put("Source Inventory Id", "1-2C7QNZG");
+			Header.put("ListOfLine Item", ListOfLineItem);
+			
+			ListOfLineItem.put("Line Item", LineItem);
+			
+			lineData.put("Product Id", "1-MZZR-1");
+			lineData.put("Name", "P02IAPKP040");
+			lineData.put("Quantity", "10");
+			lineData.put("ListOfXA", ListOfXA);
+			
+			ListOfXA.put("XA", XA);
+			
+			XA.put("Qty", "10");
+			XA.put("Location", "20602-29686-HFS");
+			XA.put("Availability", "On Hand");
+			XA.put("Status", "Good");
+			XA.put("Lot Number", "");
+			
+			
+			String apiUrl = env.getProperty("SiebelCreateSalesReturnApi");
+			  
+			  URL url = new URL(apiUrl);
+			  
+			  String username = "Lonar_Test"; 
+			  String password = "Lonar123"; 
+			  String credentials = username + ":" + password;
+			  
+			  String authHeaderValue = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
+			  
+			  HttpURLConnection connection = (HttpURLConnection) 
+			   url.openConnection();
+			  connection.setRequestMethod("POST"); 
+			  connection.setDoOutput(true);
+			  connection.setRequestProperty("Content-Type", "application/json");
+			  connection.setRequestProperty("Authorization", authHeaderValue);
+			  
+			  
+			  String jsonPayload =salesReturnDetail.toString();
+			  
+			 System.out.println("jsonPayload"+jsonPayload);
+			  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
+				  wr.writeBytes(jsonPayload);
+			  wr.flush(); }
+
+			  
+			  
+			  // Get the HTTP response code 
+			  int responseCode = connection.getResponseCode(); 
+			  System.out.println("Response Code: " + responseCode);
+			  
+			  // Read the response 
+			  BufferedReader reader; 
+			  if (responseCode ==  HttpURLConnection.HTTP_OK) {
+				  reader = new BufferedReader(new
+			  InputStreamReader(connection.getInputStream())); 
+				  } else { 
+					  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
+			  
+			  // Read the response 
+			  String line; 
+			  StringBuilder response = new
+			  StringBuilder();
+			  
+			  while ((line = reader.readLine()) != null) { response.append(line); }
+			  reader.close();
+			  
+			  // Print the response System.out.println("Response: " + response.toString());
+			  
+			  // Close the connection connection.disconnect()
+			
+			
+			
 			
 			//get sales return response
 			RequestDto requestDto = new RequestDto();
