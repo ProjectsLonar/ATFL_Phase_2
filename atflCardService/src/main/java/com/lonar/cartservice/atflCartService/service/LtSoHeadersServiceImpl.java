@@ -1299,11 +1299,11 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						///// push the save order data into siebel  
 							
 							SoLineDto soLineDto = new SoLineDto();
-							
-							sampleCode();
+							//LtSoHeaders ltSoHeaders = new LtSoHeaders();
+							sampleCode(ltSoHeader, soHeaderDto);
 							System.out.println("Sample Code method call done");
 							
-							saveOutlet();
+							//saveOutlet();
 							System.out.println("Save outlet Code method call done");
 							
 //							JSONObject lineItemObject = new JSONObject();
@@ -1980,20 +1980,14 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		return null; 
 	}
 
-	private void sampleCode(){
-//		String apiUrl = "https://10.245.4.70:9014/siebel/v1.0/service/AT New Order Creation REST BS/CreateOrder?matchrequestformat=y";
-//		
-//		HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        
-//        String username = "LONAR_TEST";
-//        String password = "Lonar123";
-//       String credentials = username + ":" + password;
-//        //String base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
-//        headers.add("Authorization", "Basic " + credentials);
-//	
-//        //String requestBody = "{\"key\": \"value\"}";
-//        JSONObject lineItemObject = new JSONObject();
+	private void sampleCode(LtSoHeaders ltSoHeader, SoHeaderDto soHeaderDto){
+		try {
+        String url = "https://10.245.4.70:9014/siebel/v1.0/service/AT%20New%20Order%20Creation%20REST%20BS/CreateOrder?matchrequestformat=y";
+        String method = "POST";
+        String contentType = "Content-Type: application/json";
+        String authorization = "Authorization: Basic TE9OQVJfVEVTVDpMb25hcjEyMw==";
+		
+        JSONObject lineItemObject = new JSONObject();
 //		lineItemObject.put("Id", "1");
 //	//	lineItemObject.put("Product Id", soLineDto.getProductId());
 //		lineItemObject.put("Product Id", "1-4XBK-2");
@@ -2007,139 +2001,343 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 //	//	lineItemObject.put("Quantity", soLineDto.getQuantity());
 //		lineItemObject.put("Quantity", "1");
 //		
-//		JSONArray lineItemArray = new JSONArray();
+		JSONArray lineItemArray = new JSONArray();
 //		for (int i =0; i<lineItemObject.length(); i++) {
 //			lineItemArray.put(lineItemObject);	
 //		}
-//		
-//		JSONObject listOfLineItem = new JSONObject();
-//		listOfLineItem.put("Line Item", lineItemObject);
-//		
-//		SoHeaderDto soHeaders = new SoHeaderDto();
-//		
-//		JSONObject header = new JSONObject();
-////		header.put("Requested Ship Date", soHeaderDto.getDeliveryDate());
-//		header.put("Requested Ship Date", "12/06/2024");
-//		header.put("Order Type Id", "0-D14G");
-////		header.put("Account Id", soHeaderDto.getOutletId());
-//		header.put("Account Id", "1-BRWN-27");
-//		header.put("Status", "New");
-//		header.put("Order Type", "Service Order");
-////		header.put("Account", soHeaderDto.getOutletName());
-//		header.put("Account", "SHREE MAHALAXMI KIRANA AND GENERAL STORE");
-//		header.put("Currency Code", "INR");
-////		header.put("Order Number", soHeaderDto.getOrderNumber());
-//		header.put("Order Number", "MSO-53623-2324-11");
-//		header.put("Source Inventory Id", "1-2FPGVLJ");       //"1-2C7QNZG");
-//		header.put("ListOfLine Item", listOfLineItem);
-//		
-//		JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
-//		ListOfATOrdersIntegrationIO.put("Header", header);
-//		
-//		JSONObject siebelMassage = new JSONObject();
-//		siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
-//		siebelMassage.put("MessageId", "");
-//		siebelMassage.put("IntObjectName", "AT Orders Integration IO");
-//		siebelMassage.put("MessageType", "Integration Object");
-//		siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
-//		
-//		JSONObject siebelMassages = new JSONObject();
-//		siebelMassages.put("SubmitFlag", "");
-//		siebelMassages.put("InvoiceFlag", "");
-//		siebelMassages.put("SiebelMessage" , siebelMassage);
-//		
-//        HttpEntity<String> requestEntity = new HttpEntity<>(siebelMassages.toString(), headers);
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//        
-//        ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
-//        
-//        String responseBody = responseEntity.getBody();
-//        System.out.println("Response: " + responseBody);
-
-//		try {
-//            String apiUrl = "https://10.245.4.70:9014/siebel/v1.0/service/AT%20New%20Order%20Creation%20REST%20BS/CreateOrder?matchrequestformat=y";
-//            URL url = new URL(apiUrl);
-//
-//            // Open a connection
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//
-//            // Set the request method to POST
-//            connection.setRequestMethod("POST");
-//
-//            // Enable input/output streams
-//            connection.setDoOutput(true);
-//
-//            // Set request headers if needed
-//            connection.setRequestProperty("Content-Type", "application/json");
-//            connection.setRequestProperty("Accept", "application/json");
-//
-//            // Create the JSON request body
-//            String jsonInputString = "{\n" +
-//                    "    \"SubmitFlag\": \"\",\n" +
-//                    "    \"InvoiceFlag\": \"\",\n" +
-//                    "    \"SiebelMessage\": {\n" +
-//                    "        \"IntObjectName\": \"AT Orders Integration IO\",\n" +
-//                    "        \"ListOfAT Orders Integration IO\": {\n" +
-//                    "            \"Header\": {\n" +
-//                    "                \"Status\": \"New\",\n" +
-//                    "                \"Source Inventory Id\": \"1-2FPGVLJ\",\n" +
-//                    "                \"Account Id\": \"1-BRWN-27\",\n" +
-//                    "                \"Account\": \"SHREE MAHALAXMI KIRANA AND GENERAL STORE\",\n" +
-//                    "                \"Currency Code\": \"INR\",\n" +
-//                    "                \"Order Type Id\": \"0-D14G\",\n" +
-//                    "                \"Requested Ship Date\": \"12/06/2024\",\n" +
-//                    "                \"Order Type\": \"Service Order\",\n" +
-//                    "                \"Order Number\": \"MSO-53623-2324-11\",\n" +
-//                    "                \"ListOfLine Item\": {\n" +
-//                    "                    \"Line Item\": {\n" +
-//                    "                        \"Product Id\": \"1-4XBK-2\",\n" +
-//                    "                        \"Item Price List Id\": \"1-475Z\",\n" +
-//                    "                        \"Action Code\": \"New\",\n" +
-//                    "                        \"Quantity\": \"1\",\n" +
-//                    "                        \"Id\": \"1\",\n" +
-//                    "                        \"Due Date\": \"12/06/2023\",\n" +
-//                    "                        \"Name\": \"P02IAPKP040\"\n" +
-//                    "                    }\n" +
-//                    "                }\n" +
-//                    "            }\n" +
-//                    "        },\n" +
-//                    "        \"IntObjectFormat\": \"Siebel Hierarchical\",\n" +
-//                    "        \"MessageType\": \"Integration Object\",\n" +
-//                    "        \"MessageId\": \"\"\n" +
-//                    "    }\n" +
-//                    "}";
-//
-//            // Set the request body
-//            try (OutputStream os = connection.getOutputStream()) {
-//                byte[] input = jsonInputString.getBytes("utf-8");
-//                os.write(input, 0, input.length);
-//            }
-//
-//            // Get the response code
-//            int responseCode = connection.getResponseCode();
-//            System.out.println("Response Code: " + responseCode);
-//
-//            // Read the response
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//            String line;
-//            StringBuilder response = new StringBuilder();
-//
-//            while ((line = reader.readLine()) != null) {
-//                response.append(line);
-//            }
-//
-//            // Close the connection
-//            connection.disconnect();
-//
-//            // Print the response
-//            System.out.println("Response: " + response.toString());
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 		
-	}
+		List<SoLineDto> lineItem = soHeaderDto.getSoLineDtoList();
+        for (int i =0; i<lineItem.size(); i++) {
+        	 SoLineDto soLineList = new SoLineDto();
+        	 String id = Integer.toString(i+1);   
+        	 String prodId=  lineItem.get(i).getProductId();
+        	 //String deliDate=  lineItem.get(i).getDeliveryDate().toString();
+        	 DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+				Date date = (Date)formatter.parse(lineItem.get(i).getDeliveryDate().toString());
+				SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+				String deliDate =outputFormat.format(date);
+			//	System.out.println("formatedDate : " + deliveryDate);
+        	 String prilst=  lineItem.get(i).getPriceListId();
+        	 //String ActionCode= "New"; 
+        	 String prodName=  lineItem.get(i).getProductName();
+        	 String qty=  Long.toString(lineItem.get(i).getQuantity());
+        	   
+        	 //lineItem.add(soLineList);
+        	 lineItemObject.put("Id",id);
+        	 lineItemObject.put("Product Id",prodId);
+        	 lineItemObject.put("Due Date",deliDate);
+        	 lineItemObject.put("Item Price List Id",prilst);
+        	 lineItemObject.put("Action Code","New");
+        	 lineItemObject.put("Name",prodName);
+        	 lineItemObject.put("Quantity",qty);
+        	 
+        	 lineItemArray.put(lineItemObject);
+            }
+		
+		
+		JSONObject listOfLineItem = new JSONObject();
+		listOfLineItem.put("Line Item", lineItemObject);
+		
+		SoHeaderDto soHeaders = new SoHeaderDto();
+		
+		JSONObject header = new JSONObject();
+		
+		DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+		Date date = (Date)formatter.parse(soHeaderDto.getDeliveryDate().toString());
+		SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		String deliDate =outputFormat.format(date);
+		System.out.println("formatedDate : " + deliDate);
+	
+		header.put("Requested Ship Date", deliDate);
+//		header.put("Requested Ship Date", "12/06/2024");
+		header.put("Order Type Id", "0-D14G");
+		header.put("Account Id", soHeaderDto.getOutletId());
+//		header.put("Account Id", "1-BRWN-27");
+		header.put("Status", "New");
+		header.put("Order Type", "Service Order");
+		header.put("Account", soHeaderDto.getOutletName());
+//		header.put("Account", "SHREE MAHALAXMI KIRANA AND GENERAL STORE");
+		header.put("Currency Code", "INR");
+		header.put("Order Number", ltSoHeader.getOrderNumber());
+//		header.put("Order Number", "MSO-53623-2324-11");
+		header.put("Source Inventory Id", "1-2FPGVLJ");       //"1-2C7QNZG");
+		header.put("ListOfLine Item", listOfLineItem);
+		
+		JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
+		ListOfATOrdersIntegrationIO.put("Header", header);
+		
+		JSONObject siebelMassage = new JSONObject();
+		siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+		siebelMassage.put("MessageId", "");
+		siebelMassage.put("IntObjectName", "AT Orders Integration IO");
+		siebelMassage.put("MessageType", "Integration Object");
+		siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
+		
+		JSONObject siebelMassages = new JSONObject();
+		siebelMassages.put("SubmitFlag", "");
+		siebelMassages.put("InvoiceFlag", "");
+		siebelMassages.put("SiebelMessage" , siebelMassage);
+		
+		String jsonPayload =siebelMassages.toString();
+
+        System.out.println(jsonPayload);     //(requestBody);
+        // Create URL object
+        URL obj = new URL(url);
+        System.out.println("url is..... = "+ url);
+        // Add this line before opening the connection
+        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+            new javax.net.ssl.HostnameVerifier(){
+                public boolean verify(String hostname,
+                        javax.net.ssl.SSLSession sslSession) {
+                    return true;
+                }
+            });
+
+        TrustManager[] trustAllCertificates = new TrustManager[]{
+        	    new X509TrustManager() {
+        	        public X509Certificate[] getAcceptedIssuers() {
+        	            return null;
+        	        }
+        	        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+        	        }
+        	        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+        	        }
+        	    }
+        	};
+
+        	SSLContext sslContext = SSLContext.getInstance("SSL");
+        	sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
+        	HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+
+        
+        // Create HttpURLConnection object
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        // Set request method
+        con.setRequestMethod(method);
+        // Set request headers
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpMb25hcjEyMw==");
+
+        // Enable output and set request body
+        con.setDoOutput(true);
+        try (OutputStream os = con.getOutputStream()) {
+            byte[] input = jsonPayload.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+        
+     // Get response code
+        int responseCode = con.getResponseCode();
+        String msg = con.getResponseMessage();
+        System.out.println("Response Code : " + responseCode);
+        System.out.println("Response Message : " + msg);
+        
+     // Read the response body
+        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            response.append(line);
+        }
+        reader.close();
+
+        // Show the response
+        System.out.println("Response Body: " + response.toString());
+
+	} catch (Exception e) {
+        e.printStackTrace();
+    }
+
+//		
+//		try {	
+		// URL
+//        String url = "https://10.245.4.70:9014/siebel/v1.0/service/AT%20New%20Order%20Creation%20REST%20BS/CreateOrder?matchrequestformat=y";
+        
+//        String method = "POST";
+        // Request headers
+//        String contentType = "Content-Type: application/json";
+//        String authorization = "Authorization: Basic TE9OQVJfVEVTVDpMb25hcjEyMw==";
+        
+        //String requestBody = "{\"SiebelMessage\":{\"IntObjectFormat\":\"Siebel Hierarchical\",\"MessageId\":\"\",\"IntObjectName\":\"Outlet Interface\",\"MessageType\":\"Integration Object\",\"ListOfOutlet Interface\":{\"Account\":{\"Account Status\":\"Active\",\"Type\":\"Retailer\",\"Account Id\":\"13\",\"Rule Attribute 2\":\"Whole Sellers\",\"Name\":\"RAVAN TRADERS\",\"AT Territory\":\"30801: AMDAVAD RURAL\",\"Location\":\"DINESHBHAI\",\"ListOfBusiness Address\":{\"Business Address\":{\"Address Id\":\"1\",\"Street Address\":\"SOUTH WEST PRIMARY STREET\",\"County\":\"\",\"Street Address 2\":\"JAMSHEDAPUR\",\"City\":\"PUNE\",\"State\":\"MH\",\"Country\":\"India\",\"Postal Code\":\"380708\",\"Province\":\"\",\"IsPrimaryMVG\":\"Y\"}},\"ListOfRelated Organization\":{\"Related Organization\":{\"IsPrimaryMVG\":\"Y\",\"Organization\":\"JSB AGENCIES\"}}}}}}";
+//        String requestBody = "{\n" +
+//        	    "  \"SubmitFlag\": \"Y\",\n" +
+//        	    "  \"InvoiceFlag\": \"Y\",\n" +
+//        	    "  \"SiebelMessage\": {\n" +
+//        	    "    \"IntObjectFormat\": \"Siebel Hierarchical\",\n" +
+//        	    "    \"MessageId\": \"\",\n" +
+//        	    "    \"IntObjectName\": \"AT Orders Integration IO\",\n" +
+//        	    "    \"MessageType\": \"Integration Object\",\n" +
+//        	    "    \"ListOfAT Orders Integration IO\": {\n" +
+//        	    "      \"Header\": {\n" +
+//        	    "        \"Requested Ship Date\": \"12/06/2023 18:50:01\",\n" +
+//        	    "        \"Order Type Id\": \"0-D14G\",\n" +
+//        	    "        \"Account Id\": \"1-BRWN-27\",\n" +
+//        	    "        \"Status\": \"New\",\n" +
+//        	    "        \"Order Type\": \"Service Order\",\n" +
+//        	    "        \"Account\": \"SHREE MAHALAXMI KIRANA AND GENERAL STORE\",\n" +
+//        	    "        \"Currency Code\": \"INR\",\n" +
+//        	    "        \"Order Number\": \"MSO-24370-2324-16\",\n" +
+//        	    "        \"Source Inventory Id\": \"1-2GR1JJ1\",\n" +
+//        	    "        \"ListOfLine Item\": {\n" +
+//        	    "          \"Line Item\": [\n" +
+//        	    "            {\n" +
+//        	    "              \"Id\": \"1\",\n" +
+//        	    "              \"Product Id\": \"1-4XBK-8\",\n" +
+//        	    "              \"Due Date\": \"12/06/2023 18:50:01\",\n" +
+//        	    "              \"Item Price List Id\": \"1-475Z\",\n" +
+//        	    "              \"Action Code\": \"New\",\n" +
+//        	    "              \"Name\": \"P02IAPKP040\",\n" +
+//        	    "              \"Quantity\": \"1\"\n" +
+//        	    "            },\n" +
+//        	    "            {\n" +
+//        	    "              \"Id\": \"2\",\n" +
+//        	    "              \"Product Id\": \"1-4XBK-8\",\n" +
+//        	    "              \"Due Date\": \"12/06/2023 18:50:01\",\n" +
+//        	    "              \"Item Price List Id\": \"1-475Z\",\n" +
+//        	    "              \"Action Code\": \"New\",\n" +
+//        	    "              \"Name\": \"P02INPKP040\",\n" +
+//        	    "              \"Quantity\": \"1\"\n" +
+//        	    "            }\n" +
+//        	    "          ]\n" +
+//        	    "        }\n" +
+//        	    "      }\n" +
+//        	    "    }\n" +
+//        	    "  }\n" +
+//        	    "}";
+
+            
+//            String requestedShipDate = new Date().toString();
+//            System.out.println("requestedShipDateIs =" + requestedShipDate);
+            
+//            String accountId = soHeaderDto.getOutletId();
+//            String account = soHeaderDto.getOutletName();
+//            String orderNumber = ltSoHeader.getOrderNumber();
+                                         
+//            List<SoLineDto> lineItem = soHeaderDto.getSoLineDtoList();
+//            for (int i =0; i<lineItem.size(); i++) {
+//            	 SoLineDto soLineList = new SoLineDto();
+//            	 String id = Integer.toString(i+1);   
+//            	 String prodId=  lineItem.get(i).getProductId();
+//            	 String deliDate=  lineItem.get(i).getDeliveryDate().toString();
+//            	 String prilst=  lineItem.get(i).getPriceListId();
+//            	 String ActionCode= "New"; 
+//            	 String prodName=  lineItem.get(i).getProductName();
+//            	 String qty=  Long.toString(lineItem.get(i).getQuantity());
+//            	   
+//            	   lineItem.add(soLineList);
+//                }
+            
+//        String requestBody = "{\n" +
+//        	    "  \"SubmitFlag\": \"Y\",\n" +
+//        	    "  \"InvoiceFlag\": \"Y\",\n" +
+//        	    "  \"SiebelMessage\": {\n" +
+//        	    "    \"IntObjectFormat\": \"Siebel Hierarchical\",\n" +
+//        	    "    \"MessageId\": \"\",\n" +
+//        	    "    \"IntObjectName\": \"AT Orders Integration IO\",\n" +
+//        	    "    \"MessageType\": \"Integration Object\",\n" +
+//        	    "    \"ListOfAT Orders Integration IO\": {\n" +
+//        	    "      \"Header\": {\n" +
+//        	    "        \"Requested Ship Date\":  "+ requestedShipDate+",\n"  +
+//        	    //"        \"Requested Ship Date\": +requestedShipDate,\n" +
+//        	    "        \"Order Type Id\": \"0-D14G\",\n" +
+//        	    "        \"Account Id\": "+accountId+",\n" +
+//        	    "        \"Status\": \"New\",\n" +
+//        	    "        \"Order Type\": \"Service Order\",\n" +
+//        	    "        \"Account\": "+account+",\n" +
+//        	    "        \"Currency Code\": \"INR\",\n" +
+//        	    "        \"Order Number\": "+orderNumber+",\n" +
+//        	    "        \"Source Inventory Id\": \"1-2GR1JJ1\",\n" +
+////        	    "        \"ListOfLine Item\": {\n" +
+////        	    "          \"Line Item\": [\n" +
+////        	             //JSONArray lineItemArray = new JSONArray();
+////      		    "         for (int i =0; i<soHeaderDto.getSoLineDtoList().size(); i++) {\n"+
+////      			        //lineItemArray.put(lineItemObject);	
+////      		            	"            {\n" +
+////      		        	    "              \"Id\": \"1\",\n" +
+////      		        	    "              \"Product Id\": "+productId+",\n" +
+////      		        	    "              \"Due Date\": "+dueDate+",\n" +
+////      		        	    "              \"Item Price List Id\": "+itemPriceListId+",\n" +
+////      		        	    "              \"Action Code\": \"New\",\n" +
+////      		        	    "              \"Name\": "+name+",\n" +
+////      		        	    "              \"Quantity\": "+quantity+"\n" +
+////      		        	    "            },\n" +
+////      		    "         }\n"+
+////        	    "          ]\n" +
+////        	    "        }\n" +
+//        	    "      }\n" +
+//        	    "    }\n" +
+//        	    "  }\n" +
+//        	    "}";
+//
+        
+//        System.out.println(requestBody);
+//        // Create URL object
+//        URL obj = new URL(url);
+//        System.out.println("url is..... = "+ url);
+//        // Add this line before opening the connection
+//        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+//            new javax.net.ssl.HostnameVerifier(){
+//                public boolean verify(String hostname,
+//                        javax.net.ssl.SSLSession sslSession) {
+//                    return true;
+//                }
+//            });
+
+//        TrustManager[] trustAllCertificates = new TrustManager[]{
+//        	    new X509TrustManager() {
+//        	        public X509Certificate[] getAcceptedIssuers() {
+//        	            return null;
+//        	        }
+//        	        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+//        	        }
+//        	        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+//        	        }
+//        	    }
+//        	};
+//
+//        	SSLContext sslContext = SSLContext.getInstance("SSL");
+//        	sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
+//        	HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+//
+//        
+//        // Create HttpURLConnection object
+//        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+//        // Set request method
+//        con.setRequestMethod(method);
+//        // Set request headers
+//        con.setRequestProperty("Content-Type", "application/json");
+//        con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpMb25hcjEyMw==");
+//
+//        // Enable output and set request body
+//        con.setDoOutput(true);
+//        try (OutputStream os = con.getOutputStream()) {
+//            byte[] input = requestBody.getBytes("utf-8");
+//            os.write(input, 0, input.length);
+//        }
+
+        // Get response code
+//        int responseCode = con.getResponseCode();
+//        String msg = con.getResponseMessage();
+//        System.out.println("Response Code : " + responseCode);
+//        System.out.println("Response Message : " + msg);
+//        
+//     // Read the response body
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//        StringBuilder response = new StringBuilder();
+//        String line;
+//        while ((line = reader.readLine()) != null) {
+//            response.append(line);
+//        }
+//        reader.close();
+//
+//        // Show the response
+//        System.out.println("Response Body: " + response.toString());
+        
+        
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//    }
+		
+}
 	
 	public void saveOutlet() {
 		try {
