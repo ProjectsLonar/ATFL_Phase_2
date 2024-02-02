@@ -1990,7 +1990,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         JSONObject lineItemObject = new JSONObject();
 //		lineItemObject.put("Id", "1");
 //	//	lineItemObject.put("Product Id", soLineDto.getProductId());
-//		lineItemObject.put("Product Id", "1-4XBK-2");
+//		lineItemObject.put("Product Id", "1-4XBK-8");
 //	//	lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
 //		lineItemObject.put("Due Date", "12/06/2023");
 //	//	lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
@@ -2060,7 +2060,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		header.put("Currency Code", "INR");
 		header.put("Order Number", ltSoHeader.getOrderNumber());
 //		header.put("Order Number", "MSO-53623-2324-11");
-		header.put("Source Inventory Id", "1-2FPGVLJ");       //"1-2C7QNZG");
+		header.put("Source Inventory Id", "1-2GR1JJ1");            //"1-2FPGVLJ");       //"1-2C7QNZG");
 		header.put("ListOfLine Item", listOfLineItem);
 		
 		JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
@@ -2147,15 +2147,6 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         e.printStackTrace();
     }
 
-//		
-//		try {	
-		// URL
-//        String url = "https://10.245.4.70:9014/siebel/v1.0/service/AT%20New%20Order%20Creation%20REST%20BS/CreateOrder?matchrequestformat=y";
-        
-//        String method = "POST";
-        // Request headers
-//        String contentType = "Content-Type: application/json";
-//        String authorization = "Authorization: Basic TE9OQVJfVEVTVDpMb25hcjEyMw==";
         
         //String requestBody = "{\"SiebelMessage\":{\"IntObjectFormat\":\"Siebel Hierarchical\",\"MessageId\":\"\",\"IntObjectName\":\"Outlet Interface\",\"MessageType\":\"Integration Object\",\"ListOfOutlet Interface\":{\"Account\":{\"Account Status\":\"Active\",\"Type\":\"Retailer\",\"Account Id\":\"13\",\"Rule Attribute 2\":\"Whole Sellers\",\"Name\":\"RAVAN TRADERS\",\"AT Territory\":\"30801: AMDAVAD RURAL\",\"Location\":\"DINESHBHAI\",\"ListOfBusiness Address\":{\"Business Address\":{\"Address Id\":\"1\",\"Street Address\":\"SOUTH WEST PRIMARY STREET\",\"County\":\"\",\"Street Address 2\":\"JAMSHEDAPUR\",\"City\":\"PUNE\",\"State\":\"MH\",\"Country\":\"India\",\"Postal Code\":\"380708\",\"Province\":\"\",\"IsPrimaryMVG\":\"Y\"}},\"ListOfRelated Organization\":{\"Related Organization\":{\"IsPrimaryMVG\":\"Y\",\"Organization\":\"JSB AGENCIES\"}}}}}}";
 //        String requestBody = "{\n" +
@@ -2205,26 +2196,6 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 //        	    "}";
 
             
-//            String requestedShipDate = new Date().toString();
-//            System.out.println("requestedShipDateIs =" + requestedShipDate);
-            
-//            String accountId = soHeaderDto.getOutletId();
-//            String account = soHeaderDto.getOutletName();
-//            String orderNumber = ltSoHeader.getOrderNumber();
-                                         
-//            List<SoLineDto> lineItem = soHeaderDto.getSoLineDtoList();
-//            for (int i =0; i<lineItem.size(); i++) {
-//            	 SoLineDto soLineList = new SoLineDto();
-//            	 String id = Integer.toString(i+1);   
-//            	 String prodId=  lineItem.get(i).getProductId();
-//            	 String deliDate=  lineItem.get(i).getDeliveryDate().toString();
-//            	 String prilst=  lineItem.get(i).getPriceListId();
-//            	 String ActionCode= "New"; 
-//            	 String prodName=  lineItem.get(i).getProductName();
-//            	 String qty=  Long.toString(lineItem.get(i).getQuantity());
-//            	   
-//            	   lineItem.add(soLineList);
-//                }
             
 //        String requestBody = "{\n" +
 //        	    "  \"SubmitFlag\": \"Y\",\n" +
@@ -2268,74 +2239,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 //        	    "  }\n" +
 //        	    "}";
 //
-        
-//        System.out.println(requestBody);
-//        // Create URL object
-//        URL obj = new URL(url);
-//        System.out.println("url is..... = "+ url);
-//        // Add this line before opening the connection
-//        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
-//            new javax.net.ssl.HostnameVerifier(){
-//                public boolean verify(String hostname,
-//                        javax.net.ssl.SSLSession sslSession) {
-//                    return true;
-//                }
-//            });
-
-//        TrustManager[] trustAllCertificates = new TrustManager[]{
-//        	    new X509TrustManager() {
-//        	        public X509Certificate[] getAcceptedIssuers() {
-//        	            return null;
-//        	        }
-//        	        public void checkClientTrusted(X509Certificate[] certs, String authType) {
-//        	        }
-//        	        public void checkServerTrusted(X509Certificate[] certs, String authType) {
-//        	        }
-//        	    }
-//        	};
-//
-//        	SSLContext sslContext = SSLContext.getInstance("SSL");
-//        	sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
-//        	HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-//
-//        
-//        // Create HttpURLConnection object
-//        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-//        // Set request method
-//        con.setRequestMethod(method);
-//        // Set request headers
-//        con.setRequestProperty("Content-Type", "application/json");
-//        con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpMb25hcjEyMw==");
-//
-//        // Enable output and set request body
-//        con.setDoOutput(true);
-//        try (OutputStream os = con.getOutputStream()) {
-//            byte[] input = requestBody.getBytes("utf-8");
-//            os.write(input, 0, input.length);
-//        }
-
-        // Get response code
-//        int responseCode = con.getResponseCode();
-//        String msg = con.getResponseMessage();
-//        System.out.println("Response Code : " + responseCode);
-//        System.out.println("Response Message : " + msg);
-//        
-//     // Read the response body
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//        StringBuilder response = new StringBuilder();
-//        String line;
-//        while ((line = reader.readLine()) != null) {
-//            response.append(line);
-//        }
-//        reader.close();
-//
-//        // Show the response
-//        System.out.println("Response Body: " + response.toString());
-        
-        
-//    } catch (Exception e) {
-//        e.printStackTrace();
-//    }
+       
 		
 }
 	

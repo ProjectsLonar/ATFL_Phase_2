@@ -339,7 +339,7 @@ try {
 		//bring object from databse, change status, lastupdatedby,lastupdatedlogin and date  n save
 		LtMastOutletsDump ltMastOutletsDump = ltMastOutletDao.getOutletToChangeStatus(ltMastOutletsDumps.getDistributorId(),
 				ltMastOutletsDumps.getOrgId(),ltMastOutletsDumps.getPrimaryMobile(),ltMastOutletsDumps.getOutletName());
-		
+		System.out.println("ltMastOutletsDump is ---"+ltMastOutletsDump);
 		ltMastOutletsDump.setStatus(ltMastOutletsDumps.getStatus());
 		ltMastOutletsDump.setLastUpdatedBy(ltMastOutletsDumps.getUserId());
 		ltMastOutletsDump.setLastUpdateLogin(ltMastOutletsDumps.getUserId());
@@ -349,213 +349,82 @@ try {
 		  LtMastOrganisations ltMastOrganisations =
 		  ltMastOutletDao.getOrganisationDetailsById(ltMastOutletsDump.getOrgId());
 		  System.out.println("ltMastOrganisations"+ltMastOrganisations);
-			/*
-			 * RelatedOrganization relatedOrganizationDetails = new RelatedOrganization();
-			 * relatedOrganizationDetails.setIsPrimaryMVG("Y");
-			 * relatedOrganizationDetails.setOrganization(ltMastOrganisations.
-			 * getOrganisationName());
-			 * 
-			 * ListOfRelatedOrganization listOfRelatedOrganization = new
-			 * ListOfRelatedOrganization();
-			 * listOfRelatedOrganization.setRelatedOrganization(relatedOrganizationDetails);
-			 */
-		  
-			/*
-			 * BusinessAddress businessAddress = new BusinessAddress();
-			 * businessAddress.setAddressId("1");
-			 * businessAddress.setStreetAddress(ltMastOutletsDump.getAddress1());
-			 * businessAddress.setStreetAddress2(ltMastOutletsDump.getAddress2());
-			 * businessAddress.setCounty(""); businessAddress.setCounty("INDIA");
-			 * businessAddress.setCity(ltMastOutletsDump.getCity());
-			 * businessAddress.setState(ltMastOutletsDump.getState());
-			 * businessAddress.setPostalCode(ltMastOutletsDump.getPin_code());
-			 * businessAddress.setProvince(""); businessAddress.setIsPrimaryMVG("Y");
-			 */
-		  
-			/*
-			 * ListOfBusinessAddress listOfBusinessAddress = new ListOfBusinessAddress();
-			 * listOfBusinessAddress.setListOfBusinessAddress(businessAddress);
-			 */
-		  
-			/*
-			 * Account account = new Account();
-			 * 
-			 * account.setAccountStatus("NEW");
-			 * account.setType(ltMastOutletsDump.getOutletType());
-			 * account.setAccountId("1");
-			 * account.setRuleAttribute2(ltMastOutletsDump.getOutletChannel());
-			 * account.setName(ltMastOutletsDump.getOutletName());
-			 * account.setaTTerritory(ltMastOutletsDump.getTerritory());
-			 * account.setLocation("need to add");
-			 * account.setListOfBusinessAddress(listOfBusinessAddress);
-			 * account.setListOfRelatedOrganization(listOfRelatedOrganization);
-			 * 
-			 * ListOfOutletInterface listOfOutletInterface = new ListOfOutletInterface();
-			 * listOfOutletInterface.setAccount(account);
-			 * 
-			 * SiebelMessage siebelMessage = new SiebelMessage();
-			 * siebelMessage.setIntObjectFormat("Siebel Hierarchical");
-			 * siebelMessage.setIntObjectName("Outlet Interface");
-			 * siebelMessage.setMessageId("");
-			 * siebelMessage.setMessageType("Integration Object");
-			 * siebelMessage.setListOfOutletInterface(listOfOutletInterface);
-			 * 
-			 * SiebelMessageRequest SiebelMessageRequest = new SiebelMessageRequest();
-			 * SiebelMessageRequest.setSiebelMessage(siebelMessage);
-			 */
-		  
-//		  JSONObject relatedOrganizationDetail = new JSONObject();
-//		  
-//		  relatedOrganizationDetail.put("IsPrimaryMVG","Y");
-//		  //relatedOrganizationDetail.put("Organization", ltMastOrganisations.getOrganisationName());
-//		  relatedOrganizationDetail.put("Organization", "Agro Tech Foods Limited");
-//		  
-//		  
-//		  JSONObject listOfRelatedOrganizations = new JSONObject();
-//		  
-//		  listOfRelatedOrganizations.put("Related Organization",relatedOrganizationDetail);
-//		  
-//		  JSONObject businessAddress = new JSONObject();
-//		  businessAddress.put("Address Id", "1");
-//		 // businessAddress.put("Street Address", ltMastOutletsDump.getAddress1());
-//		  businessAddress.put("Street Address","South East");
-//		  businessAddress.put("County", "");
-//		 // businessAddress.put("Street Address 2",ltMastOutletsDump.getAddress2());
-//		  businessAddress.put("Street Address 2","Pune");
-//		 // businessAddress.put("City", ltMastOutletsDump.getCity());
-//		  businessAddress.put("City","Aurangabad" );
-//		 // businessAddress.put("State", ltMastOutletsDump.getState());
-//		  businessAddress.put("State", "MH");
-//		  businessAddress.put("Country", "India");
-//		  //businessAddress.put("Postal Code", ltMastOutletsDump.getPin_code());
-//		  businessAddress.put("Postal Code","411045");
-//		  businessAddress.put("Province", "");
-//		  businessAddress.put("IsPrimaryMVG", "Y");
-//		  
-//		  
-//		  JSONArray businessAddres = new JSONArray();
-//			businessAddres.put(businessAddress);
-//		 
-//		  JSONObject listOfBusinessAddres = new JSONObject();
-//		  
-//		  listOfBusinessAddres.put("Business Address", businessAddres);
-//		  
-//		  
-//		  
-//		  JSONObject accounts = new JSONObject();
-//		  accounts.put("Account Status", "Active");
-//		 // accounts.put("Type", ltMastOutletsDump.getOutletType());
-//		  accounts.put("Type", "Retailer");
-//		  accounts.put("Account Id", "1");
-//		  //accounts.put("Rule Attribute 2", ltMastOutletsDump.getOutletChannel());
-//		  accounts.put("Rule Attribute 2", "Whole Sellers");
-//		  //accounts.put("Name", ltMastOutletsDump.getOutletName());
-//		  accounts.put("Name", "Up South");
-//		  //accounts.put("AT Territory","30801:AMDAVAD RURAl");
-//		  accounts.put("Location", "Pimpri");
-//		  accounts.put("ListOfBusiness Address", listOfBusinessAddres);
-//		  accounts.put("ListOfRelated Organization", listOfRelatedOrganizations);
-//		  
-//		  JSONObject listOfOutletInterfaces = new JSONObject();
-//		  listOfOutletInterfaces.put("Account",accounts);
-//		  
-//		  JSONObject siebelMassage = new JSONObject();
-//		  siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
-//		  siebelMassage.put("MessageId", "");
-//		  siebelMassage.put("IntObjectName","Outlet Interface");
-//		  siebelMassage.put("MessageType","Integration Object");
-//		  siebelMassage.put("ListOfOutlet Interface", listOfOutletInterfaces);
-//		  
-//		  
-//		  JSONObject siebelMassages = new JSONObject();
-//		  
-//		  siebelMassages.put("SiebelMessage", siebelMassage);
-//		  
-//		  String apiUrl = env.getProperty("SiebelCreateOutletApi");
-//		  
-//		  URL url = new URL(apiUrl);
-//		  
-//		  String username = "Lonar_Test"; 
-//		  String password = "Lonar123"; 
-//		  String credentials = username + ":" + password;
-//		  
-//		  String authHeaderValue = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
-//		  
-//		  HttpURLConnection connection = (HttpURLConnection) 
-//		   url.openConnection();
-//		  connection.setRequestMethod("POST"); 
-//		  connection.setDoOutput(true);
-//		  connection.setRequestProperty("Content-Type", "application/json");
-//		  connection.setRequestProperty("Authorization", authHeaderValue);
-//		  
-//		  
-//		  String jsonPayload =siebelMassages.toString();
-//		  
-//		 System.out.println("jsonPayload"+jsonPayload);
-//		  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
-//			  wr.writeBytes(jsonPayload);
-//		  wr.flush(); }
-//
-//		  
-//		  
-//		  // Get the HTTP response code 
-//		  int responseCode = connection.getResponseCode(); 
-//		  System.out.println("Response Code: " + responseCode);
-//		  
-//		  // Read the response 
-//		  BufferedReader reader; 
-//		  if (responseCode ==  HttpURLConnection.HTTP_OK) {
-//			  reader = new BufferedReader(new
-//		  InputStreamReader(connection.getInputStream())); 
-//			  } else { 
-//				  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
-//		  
-//		  // Read the response 
-//		  String line; 
-//		  StringBuilder response = new
-//		  StringBuilder();
-//		  
-//		  while ((line = reader.readLine()) != null) { response.append(line); }
-//		  reader.close();
-//		  
-//		  // Print the response System.out.println("Response: " + response.toString());
-//		  
-//		  // Close the connection connection.disconnect();
 
 		  
 		  String url = "https://10.245.4.70:9014/siebel/v1.0/service/Siebel%20Outlet%20Integration/InsertOrUpdate?matchrequestformat=y";
-          String method = "POST";
+         System.out.println("Url is---" + url);
+		  String method = "POST";
           String contentType = "Content-Type: application/json";
           String authorization = "Authorization: Basic TE9OQVJfVEVTVDpMb25hcjEyMw==";
 
-         // String requestBody = "{\"SiebelMessage\":{\"IntObjectFormat\":\"Siebel Hierarchical\",\"MessageId\":\"\",\"IntObjectName\":\"Outlet Interface\",\"MessageType\":\"Integration Object\",\"ListOfOutlet Interface\":{\"Account\":{\"Account Status\":\"Active\",\"Type\":\"Retailer\",\"Account Id\":\"13\",\"Rule Attribute 2\":\"Whole Sellers\",\"Name\":\"RAVAN TRADERS\",\"AT Territory\":\"30801: AMDAVAD RURAL\",\"Location\":\"DINESHBHAI\",\"ListOfBusiness Address\":{\"Business Address\":{\"Address Id\":\"1\",\"Street Address\":\"SOUTH WEST PRIMARY STREET\",\"County\":\"\",\"Street Address 2\":\"JAMSHEDAPUR\",\"City\":\"PUNE\",\"State\":\"MH\",\"Country\":\"India\",\"Postal Code\":\"380708\",\"Province\":\"\",\"IsPrimaryMVG\":\"Y\"}},\"ListOfRelated Organization\":{\"Related Organization\":{\"IsPrimaryMVG\":\"Y\",\"Organization\":\"JSB AGENCIES\"}}}}}}";
-          String requestBody = "{\"SiebelMessage\":{\"IntObjectFormat\":\"Siebel Hierarchical\","
-          		+ "\"MessageId\":\"\","
-          		+ "\"IntObjectName\":\"Outlet Interface\","
-          		+ "\"MessageType\":\"Integration Object\","
-          		+ "\"ListOfOutlet Interface\":{\"Account\":{\"Account Status\":\"Active\","
-          		+ "\"Type\":\"ltMastOutletsDump.getOutletType()\","
-          		+ "\"Account Id\":\"13\","
-          		+ "\"Rule Attribute 2\":\"ltMastOutletsDump.getOutletChannel()\","
-          		+ "\"Name\":\"ltMastOutletsDump.getOutletName()\","
-          		+ "\"AT Territory\":\"30801: AMDAVAD RURAL\","
-          		+ "\"Location\":\"DINESHBHAI\","
-          		+ "\"ListOfBusiness Address\":{\"Business Address\":{\"Address Id\":\"1\","
-          		+ "\"Street Address\":\"ltMastOutletsDump.getAddress1()\","
-          		+ "\"County\":\"\","
-          		+ "\"Street Address 2\":\"ltMastOutletsDump.getAddress2()\","
-          		+ "\"City\":\"ltMastOutletsDump.getCity()\","
-          		+ "\"State\":\"ltMastOutletsDump.getState()\","
-          		+ "\"Country\":\"India\","
-          		+ "\"Postal Code\":\"ltMastOutletsDump.getPin_code()\","
-          		+ "\"Province\":\"\","
-          		+ "\"IsPrimaryMVG\":\"Y\"}},"
-          		+ "\"ListOfRelated Organization\":{\"Related Organization\":{\"IsPrimaryMVG\":\"Y\","
-          		+ "\"Organization\":\"ltMastOrganisations.getOrganisationName()\"}}}}}}";
-          
-          //System.out.println(requestBody);
-          
-          URL obj = new URL(url);
+		  
+		  JSONObject relatedOrganizationDetail = new JSONObject();
+		  
+		  relatedOrganizationDetail.put("IsPrimaryMVG","Y");
+//		  relatedOrganizationDetail.put("Organization", ltMastOrganisations.getOrganisationName());
+		  relatedOrganizationDetail.put("Organization", "JSB AGENCIES");
+		  
+		  
+		  JSONObject listOfRelatedOrganizations = new JSONObject();
+		  
+		  listOfRelatedOrganizations.put("Related Organization",relatedOrganizationDetail);
+		  
+		  JSONObject businessAddress = new JSONObject();
+		  businessAddress.put("Address Id", "1");
+		  businessAddress.put("Street Address", ltMastOutletsDump.getAddress1());
+//		  businessAddress.put("Street Address","South East");
+		  businessAddress.put("County", "");
+		  businessAddress.put("Street Address 2",ltMastOutletsDump.getAddress2());
+//		  businessAddress.put("Street Address 2","Pune");
+		  businessAddress.put("City", ltMastOutletsDump.getCity());
+//		  businessAddress.put("City","Aurangabad" );
+		  businessAddress.put("State", ltMastOutletsDump.getState());
+//		  businessAddress.put("State", "MH");
+		  businessAddress.put("Country", "India");
+		  businessAddress.put("Postal Code", ltMastOutletsDump.getPin_code());
+//		  businessAddress.put("Postal Code","411045");
+		  businessAddress.put("Province", "");
+		  businessAddress.put("IsPrimaryMVG", "Y");
+		  		  		 
+		  JSONObject listOfBusinessAddress = new JSONObject();
+		  
+		  listOfBusinessAddress.put("Business Address", businessAddress);  
+//		  listOfBusinessAddres.put("ListOfRelated Organization", listOfRelatedOrganizations);
+		  
+		  JSONObject accounts = new JSONObject();
+		  accounts.put("Account Status", "Active");
+		  accounts.put("Type", ltMastOutletsDump.getOutletType());
+//		  accounts.put("Type", "Retailer");
+		  accounts.put("Account Id", "1");
+		  accounts.put("Rule Attribute 2", ltMastOutletsDump.getOutletChannel());
+//		  accounts.put("Rule Attribute 2", "Whole Sellers");
+		  accounts.put("Name", ltMastOutletsDump.getOutletName());
+//		  accounts.put("Name", "Up South");
+//		  accounts.put("AT Territory","30801:AMDAVAD RURAl");
+		  accounts.put("Location", "Pimpri");
+		  accounts.put("ListOfBusiness Address", listOfBusinessAddress);
+		  accounts.put("ListOfRelated Organization", listOfRelatedOrganizations);
+		  
+		  JSONObject listOfOutletInterfaces = new JSONObject();
+		  listOfOutletInterfaces.put("Account",accounts);
+		  
+		  JSONObject siebelMassage = new JSONObject();
+		  siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+		  siebelMassage.put("MessageId", "");
+		  siebelMassage.put("IntObjectName","Outlet Interface");
+		  siebelMassage.put("MessageType","Integration Object");
+		  siebelMassage.put("ListOfOutlet Interface", listOfOutletInterfaces);
+		  
+		  JSONObject siebelMassages = new JSONObject();
+		  siebelMassages.put("SiebelMessage", siebelMassage);
+		            
+		  String jsonPayload = siebelMassages.toString();
+		  System.out.println("JsonPayload is ===" +jsonPayload);
+		  
+		  //String apiUrl = env.getProperty("SiebelCreateOutletApi");
+		  
+		  URL obj = new URL(url);
+		  System.out.println("UrlOBj is---" + obj);
 
           javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
               new javax.net.ssl.HostnameVerifier(){
@@ -577,31 +446,27 @@ try {
           	    }
           	};
 
-          	SSLContext sslContext = SSLContext.getInstance("SSL");
-          	sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
-          	HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+          SSLContext sslContext = SSLContext.getInstance("SSL");
+        	sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
+        	HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 
-          
-          HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-           con.setRequestMethod(method);
-           con.setRequestProperty("Content-Type", "application/json");
-           con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpMb25hcjEyMw==");
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+         con.setRequestMethod(method);
+         con.setRequestProperty("Content-Type", "application/json");
+         con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpMb25hcjEyMw==");
 
-          // Enable output and set request body
-          con.setDoOutput(true);
-          try (OutputStream os = con.getOutputStream()) {
-              byte[] input = requestBody.getBytes("utf-8");
-              os.write(input, 0, input.length);
-          }
-          
-          int responseCode = con.getResponseCode();
-          String msg = con.getResponseMessage();
-          System.out.println("Response Code : " + responseCode);
-          System.out.println("Response Message : " + msg);
-//      } catch (Exception e) {
-//          e.printStackTrace();
-//      }
-
+        // Enable output and set request body
+        con.setDoOutput(true);
+        try (OutputStream os = con.getOutputStream()) {
+            byte[] input = jsonPayload.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+        
+        int responseCode = con.getResponseCode();
+        String msg = con.getResponseMessage();
+        System.out.println("Response Code : " + responseCode);
+        System.out.println("Response Message : " + msg);
 		  
 		  String outletCode = null;   //once you got response add outlet code and pass it here.
 		  LtMastOutlets outletDetails =ltMastOutletDao.getOutletByOutletCode(outletCode);
