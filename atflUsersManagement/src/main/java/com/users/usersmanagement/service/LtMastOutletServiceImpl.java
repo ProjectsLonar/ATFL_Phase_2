@@ -338,7 +338,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 try {
 		//bring object from databse, change status, lastupdatedby,lastupdatedlogin and date  n save
 		LtMastOutletsDump ltMastOutletsDump = ltMastOutletDao.getOutletToChangeStatus(ltMastOutletsDumps.getDistributorId(),
-				ltMastOutletsDumps.getOrgId(),ltMastOutletsDumps.getPrimaryMobile(),ltMastOutletsDumps.getOutletName());
+				ltMastOutletsDumps.getOrgId(),ltMastOutletsDumps.getPrimaryMobile());
 		System.out.println("ltMastOutletsDump is ---"+ltMastOutletsDump);
 		ltMastOutletsDump.setStatus(ltMastOutletsDumps.getStatus());
 		ltMastOutletsDump.setLastUpdatedBy(ltMastOutletsDumps.getUserId());
@@ -464,23 +464,68 @@ try {
         }
         
         int responseCode = con.getResponseCode();
-        String msg = con.getResponseMessage();
+        String msg = con.getResponseMessage(); 
         System.out.println("Response Code : " + responseCode);
-        System.out.println("Response Message : " + msg);
+        System.out.println("Response Message : " + msg); 
+        
+        String responseBody = null;
+        if (responseCode >= 200 && responseCode < 300) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = in.readLine()) != null) {
+                    response.append(line);
+                }
+
+                responseBody = response.toString();
+                System.out.println("Response body: " + responseBody);
+            }
+        } else {
+            // Handle error responses if needed
+            System.out.println("Error response: " + responseCode + " - " + msg);
+        }
+        
+        
+        
+        // Parse JSON response
+        JSONObject jsonObject = new JSONObject(responseBody);
+
+        // Navigate through the structure to get the Account Id
+        JSONArray accountArray = jsonObject.getJSONObject("SiebelMessage")
+                .getJSONObject("ListOfOutlet Interface")
+                .getJSONArray("Account");
+
+        // Assuming there is only one account in the array
+        String accountId = accountArray.getJSONObject(0).getString("Account Id");
+
+        // Print the result //ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
+
+        System.out.println("Account Id: " + accountId);
 		  
-		  String outletCode = null;   //once you got response add outlet code and pass it here.
+		  String outletCode = accountId;   //once you got response add outlet code and pass it here.
 		  LtMastOutlets outletDetails =ltMastOutletDao.getOutletByOutletCode(outletCode);
+		  
+		  
+		  ltMastOutletsDump.setOutletCode(outletCode);
+		  ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
+		  
 		  LtMastUsers ltMastUsers = new LtMastUsers();
-		  if(outletDetails !=null) {
-		
+		  if(outletDetails !=null) {	
 		  ltMastUsers.setOrgId(outletDetails.getOrgId());
 		  ltMastUsers.setDistributorId(outletDetails.getDistributorId());
 		  ltMastUsers.setOutletId(outletDetails.getOutletId());
-		  ltMastUsers.setMobileNumber(outletDetails.getPrimaryMobile());
+		  ltMastUsers.setMobileNumber(ltMastOutletsDump.getPrimaryMobile());
 		  ltMastUsers.setUserType("RETAILER");
 		  ltMastUsers.setUserName(outletDetails.getOutletName());
-		  ltMastUsers.setEmployeeCode(outletDetails.getPosition());
-		  ltMastUsers.setPositionId(outletDetails.getPositionsId());
+		  ltMastUsers.setStatus("ACTIVE");
+		  ltMastUsers.setCreatedBy(ltMastOutletsDump.getCreatedBy());
+		  ltMastUsers.setCreationDate(new Date());
+		  ltMastUsers.setLastUpdateDate(new Date());
+		  ltMastUsers.setLastUpdatedBy(ltMastOutletsDump.getLastUpdatedBy());
+		  ltMastUsers.setLastUpdateLogin(ltMastOutletsDump.getLastUpdateLogin());
+		 // ltMastUsers.setEmployeeCode(outletDetails.getPosition());
+		  //ltMastUsers.setPositionId(outletDetails.getPositionsId());
 		  ltMastUsers.setAddress(outletDetails.getAddress1() + " "+outletDetails.getAddress2());
 		  ltMastUsers.setAddressDetails(outletDetails.getAddress1() + " "+outletDetails.getAddress2()
 		  +" "+outletDetails.getLandmark()+ " "+outletDetails.getArea() +" "+outletDetails.getCity()+" "+outletDetails.getState()

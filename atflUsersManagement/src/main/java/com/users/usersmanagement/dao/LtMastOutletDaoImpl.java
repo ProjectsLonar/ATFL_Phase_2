@@ -210,10 +210,10 @@ System.out.println("list"+list);
 	
 	
 	@Override
-	public LtMastOutletsDump getOutletToChangeStatus(String distributorId,String orgId,String primaryMobile,String outletName)throws ServiceException, IOException{
+	public LtMastOutletsDump getOutletToChangeStatus(String distributorId,String orgId,String primaryMobile)throws ServiceException, IOException{
 		String query = env.getProperty("getOutletToChangeStatus");
 		List<LtMastOutletsDump> ltMastOutletslist = jdbcTemplate.query(query,
-				new Object[] { distributorId,orgId,primaryMobile,outletName},
+				new Object[] { distributorId,orgId,primaryMobile},
 				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
 
 		if (!ltMastOutletslist.isEmpty()) {
