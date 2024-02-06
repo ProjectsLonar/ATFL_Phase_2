@@ -130,7 +130,8 @@ public class LtMastOutletController implements CodeMaster {
 					}
             }
 		
-	@RequestMapping(value = "/updateBeatSequence", method = RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_VALUE, headers="X-API-Version=1.0")
+	
+	@PostMapping(value = "/updateBeatSequence", consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> updateBeatSequence(@RequestBody BeatDetailsDto beatDetailsDto) throws ServerException{
 		try{
                return new ResponseEntity<Status>(ltMastOutletService.updateBeatSequence(beatDetailsDto), HttpStatus.OK);			
@@ -139,4 +140,5 @@ public class LtMastOutletController implements CodeMaster {
 		   }		
 	  }
 	
+
 }
