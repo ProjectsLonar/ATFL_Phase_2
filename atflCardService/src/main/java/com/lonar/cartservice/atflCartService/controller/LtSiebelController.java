@@ -83,7 +83,7 @@ public class LtSiebelController {
 	            HttpEntity entity = response.getEntity();
 	            String responseBody = EntityUtils.toString(entity);
 	            System.out.println("Response Code: " + response.getStatusLine().getStatusCode());
-	            System.out.println("Response Body: " + responseBody);
+	               System.out.println("Response Body: " + responseBody);
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
