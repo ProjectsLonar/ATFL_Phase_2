@@ -3,10 +3,12 @@ package com.lonar.cartservice.atflCartService.service;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.rmi.ServerException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
@@ -15,6 +17,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -213,6 +220,13 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				
 			}
 			///siebel json creation
+			
+			String url = "https://10.245.4.70:9014/siebel/v1.0/service/AT%20New%20Order%20Creation%20REST%20BS/CreateReturnOrder?matchrequestformat=y";
+	        String method = "POST";
+	        String contentType = "Content-Type: application/json";
+	        String authorization = "Authorization: Basic TE9OQVJfVEVTVDpMb25hcjEyMw==";
+			
+	        
 			JSONObject salesReturnDetail = new JSONObject();
 			JSONObject SiebelMessage = new JSONObject();
 			JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
@@ -257,60 +271,106 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 			XA.put("Status", "Good");
 			XA.put("Lot Number", "");
 			
+			List<LtSalesReturnLines>lineItem= ltSalesReturnDto.getLtSalesReturnLines();
+     		    for(int i=0; i<=lineItem.size(); i++) 
+     		    {
+     			  //  LtSalesReturnLines ltSalesReturnLines= new LtSalesReturnLines();
+     			    String prodId= lineItem.get(i).getProductId();
+     			    String prodName= lineItem.get(i).getProductName();
+     			    String qty=   Long.toString(lineItem.get(i).getReturnQuantity());    			   
+     			    
+     			    //data for listOfXA
+     			    String qty1 = Long.toString(lineItem.get(i).getReturnQuantity()); 
+     			    String location = lineItem.get(i).getLocation();
+     			    String availability = lineItem.get(i).getAvailability();
+     			    String status1= lineItem.get(i).getStatus();
+     			    String lotNo= lineItem.get(i).getLotNumber();
+     			    
+     			 //  lineItem.add(ltSalesReturnLines);
+     			
+     			    lineData.put("Product Id", prodId);
+     			    lineData.put("Name", prodName );
+     			    lineData.put("Quantity", qty);
+     			
+     			    XA.put("Qty", qty1);
+     			    XA.put("Location",location);
+     			    XA.put("Availability", availability);
+     			    XA.put("Status",status1);
+     			    XA.put("Lot Number",lotNo);
+     			    
+     			   ListOfXA.put("XA", XA);
+     			   lineData.put("ListOfXA", ListOfXA);
+     			   LineItem.put(lineData);
+     					
+     		}
+     		
 			
-			String apiUrl = env.getProperty("SiebelCreateSalesReturnApi");
-			  
-			  URL url = new URL(apiUrl);
-			  
-			  String username = "Lonar_Test"; 
-			  String password = "Lonar123"; 
-			  String credentials = username + ":" + password;
-			  
-			  String authHeaderValue = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
-			  
-			  HttpURLConnection connection = (HttpURLConnection) 
-			   url.openConnection();
-			  connection.setRequestMethod("POST"); 
-			  connection.setDoOutput(true);
-			  connection.setRequestProperty("Content-Type", "application/json");
-			  connection.setRequestProperty("Authorization", authHeaderValue);
-			  
-			  
 			  String jsonPayload =salesReturnDetail.toString();
-			  
-			 System.out.println("jsonPayload"+jsonPayload);
-			  try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
-				  wr.writeBytes(jsonPayload);
-			  wr.flush(); }
 
-			  
-			  
-			  // Get the HTTP response code 
-			  int responseCode = connection.getResponseCode(); 
-			  System.out.println("Response Code: " + responseCode);
-			  
-			  // Read the response 
-			  BufferedReader reader; 
-			  if (responseCode ==  HttpURLConnection.HTTP_OK) {
-				  reader = new BufferedReader(new
-			  InputStreamReader(connection.getInputStream())); 
-				  } else { 
-					  reader = new BufferedReader(new InputStreamReader(connection.getErrorStream())); }
-			  
-			  // Read the response 
-			  String line; 
-			  StringBuilder response = new
-			  StringBuilder();
-			  
-			  while ((line = reader.readLine()) != null) { response.append(line); }
-			  reader.close();
-			  
-			  // Print the response System.out.println("Response: " + response.toString());
-			  
-			  // Close the connection connection.disconnect()
-			
-			
-			
+		        System.out.println(jsonPayload);     //(requestBody);
+		        // Create URL object
+		        URL obj = new URL(url);
+		        System.out.println("url is..... = "+ url);
+		        // Add this line before opening the connection
+		        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+		            new javax.net.ssl.HostnameVerifier(){
+		                public boolean verify(String hostname,
+		                        javax.net.ssl.SSLSession sslSession) {
+		                    return true;
+		                }
+		            });
+
+		        TrustManager[] trustAllCertificates = new TrustManager[]{
+		        	    new X509TrustManager() {
+		        	        public X509Certificate[] getAcceptedIssuers() {
+		        	            return null;
+		        	        }
+		        	        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+		        	        }
+		        	        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+		        	        }
+		        	    }
+		        	};
+
+		        	SSLContext sslContext = SSLContext.getInstance("SSL");
+		        	sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
+		        	HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+
+		        
+		        // Create HttpURLConnection object
+		        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+		        // Set request method
+		        con.setRequestMethod(method);
+		        // Set request headers
+		        con.setRequestProperty("Content-Type", "application/json");
+		        con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpMb25hcjEyMw==");
+
+		        // Enable output and set request body
+		        con.setDoOutput(true);
+		        try (OutputStream os = con.getOutputStream()) {
+		            byte[] input = jsonPayload.getBytes("utf-8");
+		            os.write(input, 0, input.length);
+		        }
+		        
+		     // Get response code
+		        int responseCode = con.getResponseCode();
+		        String msg = con.getResponseMessage();
+		        System.out.println("Response Code : " + responseCode);
+		        System.out.println("Response Message : " + msg);
+		        
+		     // Read the response body
+		        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		        StringBuilder response = new StringBuilder();
+		        String line;
+		        while ((line = reader.readLine()) != null) {
+		            response.append(line);
+		        }
+		        reader.close();
+
+		        // Show the response
+		        System.out.println("Response Body: " + response.toString());
+
+			  			
 			
 			//get sales return response
 			RequestDto requestDto = new RequestDto();

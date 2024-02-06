@@ -11,6 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lonar.cartservice.atflCartService.common.ServiceException;
@@ -314,7 +315,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			 */
 			
 			System.out.println(requestDto.getHeaderId()); 
-			System.out.println(query );
+			System.out.println(query);  
 		
            headerIdslist = jdbcTemplate.queryForList(query, Long.class,
 					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
@@ -325,7 +326,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			 * headerIdslist = jdbcTemplate.query(query, new Object[] { }, new
 			 * BeanPropertyRowMapper<Long>(Long.class));
 			 */
-System.out.println("headerIds"+headerIdslist);
+System.out.println("headerIdsSSSS "+headerIdslist);
 			return headerIdslist;
 		}
 	}
@@ -348,6 +349,7 @@ System.out.println("headerIds"+headerIdslist);
 	}
 	
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<ResponseDto> getOrderV2(List<Long> headerIdList) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getOrderLineV1");
@@ -759,4 +761,19 @@ System.out.println("headerIds"+headerIdslist);
 		return null;
 	}
 
+	@Override
+	public String getDefaultPriceListAgainstOutletId(String outletId) throws ServiceException, IOException {
+		String query= env.getProperty("getDefaultPriceListAgainstOutletId");
+		String priceList= jdbcTemplate.queryForObject(query, new Object[] {outletId}, String.class);
+		return priceList;
+	}
+
+
+	@Override
+	public String getOrderSequence() throws ServiceException, IOException {
+		String query= env.getProperty("getOrderSequence");
+		String sequenceNumber= jdbcTemplate.queryForObject(query, new Object[] {}, String.class);
+		return sequenceNumber;
+	}
+	
 }

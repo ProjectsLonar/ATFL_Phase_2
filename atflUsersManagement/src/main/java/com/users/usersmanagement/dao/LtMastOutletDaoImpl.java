@@ -281,5 +281,20 @@ System.out.println("list"+list);
 		this.jdbcTemplate.update(query, outletSeq, distCode, beatName, outletCode);
 		//return status;
 	}
+
+	@Override
+	public BeatDetailsDto getUpdatedBeatSequence(String distCode, String beatName, String outletCode)
+			throws ServiceException, IOException {
+		String query= env.getProperty("getUpdatedBeatSequence");
+		List<BeatDetailsDto> list = jdbcTemplate.query(query, new Object[] {distCode, beatName, outletCode},
+				new BeanPropertyRowMapper<BeatDetailsDto>(BeatDetailsDto.class));
+		System.out.print("beat2 data is ="+distCode+"," +beatName+"," +outletCode);
+		System.out.print(query);
+		if(!list.isEmpty()) {
+			System.out.print("updatedBeat data is=" +list);
+			return list.get(0);
+		}
+		return null;
+	}
 	
 }

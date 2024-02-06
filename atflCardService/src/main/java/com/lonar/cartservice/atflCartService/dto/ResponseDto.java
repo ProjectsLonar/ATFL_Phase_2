@@ -11,6 +11,9 @@ public class ResponseDto {
 	private String orderNumber;
 	private Date orderDate;
 	private String status;
+	private String status1;
+	private String status2;
+	private String status3;
 	private String address; 
 	private String outletId;
 	private String outletName;
@@ -26,6 +29,7 @@ public class ResponseDto {
 	private String proprietorName;
 
 	private String BeatId;
+	private String instockFlag;
 	private String headerPriceList;
 	
 	// Line Data
@@ -38,6 +42,7 @@ public class ResponseDto {
 	private String listPrice;
 	private String priceList;
 	private String ptrPrice;
+	private String PTR_PRICE;
 	private Date deliveryDate;
 	private String ptrFlag;
 	private String linelistPrice;
@@ -75,7 +80,13 @@ public class ResponseDto {
 	private Long  remainingQuantity;
 	private Long  returnQuantity;
 	private String location;
-	
+		
+	public String getPTR_PRICE() {
+		return PTR_PRICE;
+	}
+	public void setPTR_PRICE(String pTR_PRICE) {
+		PTR_PRICE = pTR_PRICE;
+	}
 	public String getDistributorCode() {
 		return distributorCode;
 	}
@@ -452,30 +463,58 @@ public class ResponseDto {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+		
+	public String getStatus1() {
+		return status1;
+	}
+	public void setStatus1(String status1) {
+		this.status1 = status1;
+	}
+	public String getStatus2() {
+		return status2;
+	}
+	public void setStatus2(String status2) {
+		this.status2 = status2;
+	}
+	public String getStatus3() {
+		return status3;
+	}
+	public void setStatus3(String status3) {
+		this.status3 = status3;
+	}
+		
+	public String getInstockFlag() {
+		return instockFlag;
+	}
+	public void setInstockFlag(String instockFlag) {
+		this.instockFlag = instockFlag;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "ResponseDto [headerId=" + headerId + ", orderNumber=" + orderNumber + ", orderDate=" + orderDate
-				+ ", status=" + status + ", address=" + address + ", outletId=" + outletId + ", outletName="
-				+ outletName + ", outletCode=" + outletCode + ", latitude=" + latitude + ", longitude=" + longitude
-				+ ", remark=" + remark + ", userId=" + userId + ", address1=" + address1 + ", city=" + city
-				+ ", outletAddress=" + outletAddress + ", customerId=" + customerId + ", proprietorName="
-				+ proprietorName + ", BeatId=" + BeatId + ", headerPriceList=" + headerPriceList + ", lineId=" + lineId
-				+ ", productId=" + productId + ", quantity=" + quantity + ", productCode=" + productCode
-				+ ", productDesc=" + productDesc + ", productName=" + productName + ", listPrice=" + listPrice
-				+ ", priceList=" + priceList + ", ptrPrice=" + ptrPrice + ", deliveryDate=" + deliveryDate
-				+ ", ptrFlag=" + ptrFlag + ", linelistPrice=" + linelistPrice + ", linePtrPrice=" + linePtrPrice
-				+ ", inventoryQuantity=" + inventoryQuantity + ", orgId=" + orgId + ", categoryId=" + categoryId
-				+ ", productType=" + productType + ", category=" + category + ", subCategory=" + subCategory
-				+ ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom + ", secondaryUomValue="
-				+ secondaryUomValue + ", unitsPerCase=" + unitsPerCase + ", segment=" + segment + ", brand=" + brand
-				+ ", subBrand=" + subBrand + ", casePack=" + casePack + ", hsnCode=" + hsnCode + ", productImage="
-				+ productImage + ", thumbnailImage=" + thumbnailImage + ", distributorCode=" + distributorCode
-				+ ", salesReturnNumber=" + salesReturnNumber + ", invoiceNumber=" + invoiceNumber + ", returnStatus="
-				+ returnStatus + ", salesReturnHeaderId=" + salesReturnHeaderId + ", returnReason=" + returnReason
-				+ ", salesReturnDate=" + salesReturnDate + ", salesReturnLineId=" + salesReturnLineId
-				+ ", shippedQuantity=" + shippedQuantity + ", availability=" + availability + ", remainingQuantity="
-				+ remainingQuantity + ", returnQuantity=" + returnQuantity + ", location=" + location + "]";
+				+ ", status=" + status + ", status1=" + status1 + ", status2=" + status2 + ", status3=" + status3
+				+ ", address=" + address + ", outletId=" + outletId + ", outletName=" + outletName + ", outletCode="
+				+ outletCode + ", latitude=" + latitude + ", longitude=" + longitude + ", remark=" + remark
+				+ ", userId=" + userId + ", address1=" + address1 + ", city=" + city + ", outletAddress="
+				+ outletAddress + ", customerId=" + customerId + ", proprietorName=" + proprietorName + ", BeatId="
+				+ BeatId + ", headerPriceList=" + headerPriceList + ", lineId=" + lineId + ", productId=" + productId
+				+ ", quantity=" + quantity + ", productCode=" + productCode + ", productDesc=" + productDesc
+				+ ", productName=" + productName + ", listPrice=" + listPrice + ", priceList=" + priceList
+				+ ", ptrPrice=" + ptrPrice + ", deliveryDate=" + deliveryDate + ", ptrFlag=" + ptrFlag
+				+ ", linelistPrice=" + linelistPrice + ", linePtrPrice=" + linePtrPrice + ", inventoryQuantity="
+				+ inventoryQuantity + ", orgId=" + orgId + ", categoryId=" + categoryId + ", productType=" + productType
+				+ ", category=" + category + ", subCategory=" + subCategory + ", primaryUom=" + primaryUom
+				+ ", secondaryUom=" + secondaryUom + ", secondaryUomValue=" + secondaryUomValue + ", unitsPerCase="
+				+ unitsPerCase + ", segment=" + segment + ", brand=" + brand + ", subBrand=" + subBrand + ", casePack="
+				+ casePack + ", hsnCode=" + hsnCode + ", productImage=" + productImage + ", thumbnailImage="
+				+ thumbnailImage + ", distributorCode=" + distributorCode + ", salesReturnNumber=" + salesReturnNumber
+				+ ", invoiceNumber=" + invoiceNumber + ", returnStatus=" + returnStatus + ", salesReturnHeaderId="
+				+ salesReturnHeaderId + ", returnReason=" + returnReason + ", salesReturnDate=" + salesReturnDate
+				+ ", salesReturnLineId=" + salesReturnLineId + ", shippedQuantity=" + shippedQuantity
+				+ ", availability=" + availability + ", remainingQuantity=" + remainingQuantity + ", returnQuantity="
+				+ returnQuantity + ", location=" + location + "]";
 	}
-
-	
+		
 }

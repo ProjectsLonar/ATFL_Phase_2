@@ -47,5 +47,7 @@ public interface LtMastOutletDao {
 
 	void updateBeatSequence(int outletSeq, String distCode, String beatName, String outletCode)throws ServiceException, IOException ;
 
+	public BeatDetailsDto getUpdatedBeatSequence(String distCode, String beatName, String outletCode)throws ServiceException, IOException;
+
 
 }

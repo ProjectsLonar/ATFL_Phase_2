@@ -192,6 +192,9 @@ public class LtSoHeaders extends BaseClass1{
 	public String toString() {
 		return "LtSoHeaders [headerId=" + headerId + ", orderNumber=" + orderNumber + ", orderDate=" + orderDate
 				+ ", outletId=" + outletId + ", deliveryDate=" + deliveryDate + ", Address=" + Address + ", latitude="
-				+ latitude + ", longitude=" + longitude + ", userId=" + userId + "]";
+				+ latitude + ", longitude=" + longitude + ", remark=" + remark + ", customerId=" + customerId
+				+ ", userId=" + userId + ", inStockFlag=" + inStockFlag + ", beatId=" + beatId + ", priceList="
+				+ priceList + "]";
 	}
+	
 }

@@ -584,7 +584,8 @@ try {
 			  Status status = new Status();	
 		//  System.out.print("Req data Isss === "+beatDetailsDto);
                List<OutletSequenceData>	outletSequenceData = beatDetailsDto.getOutletSequenceData();
-              
+              // List<BeatDetailsDto> list = new ArrayList<BeatDetailsDto>();
+               //BeatDetailsDto beatDetailsDto1 = new BeatDetailsDto();
        //   System.out.print("Seq data Isss === "+outletSequenceData);
               int a;
                for(int i=0; i<outletSequenceData.size(); i++) {
@@ -595,10 +596,14 @@ try {
        //  	  System.out.print("Seq dataaa Is === "+outletSeq + distCode +beatName +outletCode );
        //            	   outletSequenceData=  ltMastOutletDao.updateBeatSequence(outletSeq,distCode,beatName,outletCode);
             	    ltMastOutletDao.updateBeatSequence(outletSeq,distCode,beatName,outletCode);
+            	    beatDetailsDto = ltMastOutletDao.getUpdatedBeatSequence(distCode,beatName,outletCode);
+            	  System.out.print("beat data is =" +outletSeq+ ","+distCode+"," +beatName+"," +outletCode);
                }
-                	     //System.out.print("Updated row value is =" +a);
+               
+                         System.out.print("Updated data is =" +beatDetailsDto);
             	         status.setCode(SUCCESS);
   			             status.setMessage("Record Update Successfully");
+  			             status.setData(beatDetailsDto);
   			           return status;
               }	catch(Exception e) {
 			      e.printStackTrace(); 

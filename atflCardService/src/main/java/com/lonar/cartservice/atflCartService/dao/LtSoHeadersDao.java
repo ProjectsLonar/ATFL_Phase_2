@@ -70,5 +70,9 @@ public interface LtSoHeadersDao {
 	LtSalesPersonLocation locationSaveOnNoOrder(LtSalesPersonLocation ltSalesPersonLocation)throws ServiceException, IOException;
 
     LtMastUsers getUserDetailsAgainsUserId(Long userId)throws ServiceException, IOException;
+
+	String getDefaultPriceListAgainstOutletId(String outletId)throws ServiceException, IOException;
+
+	String getOrderSequence()throws ServiceException, IOException;
 	
 }
