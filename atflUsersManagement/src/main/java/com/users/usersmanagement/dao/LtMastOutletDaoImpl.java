@@ -22,6 +22,7 @@ import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastOutletsType;
 import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
+import com.users.usersmanagement.model.NotificationDetails;
 import com.users.usersmanagement.model.OutletSequenceData;
 import com.users.usersmanagement.model.RequestDto;
 
@@ -329,6 +330,30 @@ System.out.println("list"+list);
 				}catch(Exception e) {
 					e.printStackTrace();
 				}
+		return null;
+	}
+	
+	@Override
+	 public List<BeatDetailsDto> getOutletAgainstBeat(BeatDetailsDto beatDetailsDto)throws ServiceException, IOException{
+		if (beatDetailsDto.getLimit() == 0) {
+			beatDetailsDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+
+		String searchField = null;
+		if (beatDetailsDto.getSearchField() != null) {
+			searchField = "%" + beatDetailsDto.getSearchField().toUpperCase() + "%";
+		}
+		//System.out.println("requestDto" + requestDto);
+		
+		
+		String query = env.getProperty("getOutletAgainstBeat");
+		List<BeatDetailsDto> List = jdbcTemplate.query(query,
+				new Object[] {beatDetailsDto.getBU_ID(), searchField, beatDetailsDto.getRULE_ATTRIB1(),
+						beatDetailsDto.getLimit(), beatDetailsDto.getOffset()},
+				new BeanPropertyRowMapper<BeatDetailsDto>(BeatDetailsDto.class));
+		if (!List.isEmpty()) {
+			return List;
+		}
 		return null;
 	}
 	

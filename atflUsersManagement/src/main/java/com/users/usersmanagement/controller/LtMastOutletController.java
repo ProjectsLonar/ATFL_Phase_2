@@ -139,17 +139,28 @@ public class LtMastOutletController implements CodeMaster {
 		   }		
 	  }
 	
-    @RequestMapping(value="/getOutletAgainstBeat", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0") 
-	public ResponseEntity<Status> getOutletagainstBeat(@RequestBody BeatDetailsDto beatDetailsDto)throws ServerException
-    {
-    	try {
-    		System.out.println("In controller");
-    		return new ResponseEntity<Status>(ltMastOutletService.getOutletagainstBeat(beatDetailsDto), HttpStatus.OK);
-    		//System.out.println("In controller");
-    	}catch(Exception e) {
-    		throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
-    	}
-		
-	}
+		/*
+		 * @RequestMapping(value="/getOutletAgainstBeat", method= RequestMethod.POST,
+		 * consumes = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0")
+		 * public ResponseEntity<Status> getOutletagainstBeat(@RequestBody
+		 * BeatDetailsDto beatDetailsDto)throws ServerException { try {
+		 * System.out.println("In controller"); return new
+		 * ResponseEntity<Status>(ltMastOutletService.getOutletagainstBeat(
+		 * beatDetailsDto), HttpStatus.OK); //System.out.println("In controller");
+		 * }catch(Exception e) { throw new BusinessException(INTERNAL_SERVER_ERROR,
+		 * null, e); }
+		 * 
+		 * }
+		 */
+    
+	@PostMapping(value = "/getOutletAgainstBeat", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getOutletAgainstBeat(@RequestBody BeatDetailsDto beatDetailsDto) throws ServerException {
+		try {
+			return new ResponseEntity<Status>(ltMastOutletService.getOutletAgainstBeat(beatDetailsDto),HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+}
+	
 	
 }

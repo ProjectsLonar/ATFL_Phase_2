@@ -1,6 +1,7 @@
 package com.users.usersmanagement.service;
 
 import java.io.IOException;
+import java.rmi.ServerException;
 
 import org.springframework.http.HttpStatus;
 
@@ -38,4 +39,6 @@ public interface LtMastOutletService {
 	Status updateBeatSequence(BeatDetailsDto beatDetailsDto) throws ServiceException, IOException;
 
 	Status getOutletagainstBeat(BeatDetailsDto beatDetailsDto) throws ServiceException, IOException;
+	
+	Status getOutletAgainstBeat(BeatDetailsDto beatDetailsDto) throws ServerException;
 }

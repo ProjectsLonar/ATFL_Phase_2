@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.rmi.ServerException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -42,6 +43,7 @@ import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastOutletsType;
 import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
+import com.users.usersmanagement.model.NotificationDetails;
 import com.users.usersmanagement.model.OutletSequenceData;
 import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.model.RoleMaster;
@@ -682,5 +684,25 @@ try {
 		return null;
 	}
 	
+	
+	@Override
+	public Status getOutletAgainstBeat(BeatDetailsDto beatDetailsDto) throws ServerException{
+		Status status = new Status();
+		try {
+			List<BeatDetailsDto> List  = ltMastOutletDao.getOutletAgainstBeat(beatDetailsDto);
+			if(List != null) {
+				status.setCode(SUCCESS);
+				status.setMessage("RECORD FOUND SUCCESSFULLY");
+				status.setData(List);
+			}else {
+				status.setCode(FAIL);
+				status.setMessage("RECORD NOT FOUND");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return status;
+	}
 	
 }

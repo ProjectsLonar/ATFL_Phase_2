@@ -14,6 +14,12 @@ public class BeatDetailsDto {
 	
 	private List<OutletSequenceData> outletSequenceData;
 	
+	
+	private String outletName;
+	private String outletCode;
+	private String beatName;
+	private int outletSequence;
+	private String address;
 	private String NAME;
 	private int STORE_SIZE;
 	private String MASTER_OU_ID;
@@ -136,15 +142,47 @@ public List<OutletSequenceData> getOutletSequenceData() {
 //	public void setAddress(String addr) {
 //		this.address = address;
 //	}
+
 	
-	
+	public String getOutletName() {
+		return outletName;
+	}
+	public void setOutletName(String outletName) {
+		this.outletName = outletName;
+	}
+	public String getOutletCode() {
+		return outletCode;
+	}
+	public void setOutletCode(String outletCode) {
+		this.outletCode = outletCode;
+	}
+	public String getBeatName() {
+		return beatName;
+	}
+	public void setBeatName(String beatName) {
+		this.beatName = beatName;
+	}
+	public int getOutletSequence() {
+		return outletSequence;
+	}
+	public void setOutletSequence(int outletSequence) {
+		this.outletSequence = outletSequence;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
 	@Override
 	public String toString() {
 		return "BeatDetailsDto [distributorNumber=" + distributorNumber + ", distributorName=" + distributorName
-				+ ", distributorCode=" + distributorCode + ", outletSequenceData=" + outletSequenceData + ", NAME="
-				+ NAME + ", STORE_SIZE=" + STORE_SIZE + ", MASTER_OU_ID=" + MASTER_OU_ID + ", OU_TYPE_CD=" + OU_TYPE_CD
-				+ ", BU_ID=" + BU_ID + ", RULE_ATTRIB1=" + RULE_ATTRIB1 + ", searchField=" + searchField + ", limit="
-				+ limit + ", offset=" + offset + "]";
+				+ ", distributorCode=" + distributorCode + ", outletSequenceData=" + outletSequenceData
+				+ ", outletName=" + outletName + ", outletCode=" + outletCode + ", beatName=" + beatName
+				+ ", outletSequence=" + outletSequence + ", address=" + address + ", NAME=" + NAME + ", STORE_SIZE="
+				+ STORE_SIZE + ", MASTER_OU_ID=" + MASTER_OU_ID + ", OU_TYPE_CD=" + OU_TYPE_CD + ", BU_ID=" + BU_ID
+				+ ", RULE_ATTRIB1=" + RULE_ATTRIB1 + ", searchField=" + searchField + ", limit=" + limit + ", offset="
+				+ offset + "]";
 	}	
 	
 	
