@@ -120,14 +120,17 @@ public class LtMastOutletController implements CodeMaster {
     }	
 	}
 	
-	@RequestMapping(value = "/getBeatDetailsAgainsDistirbutorCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0")
-	public ResponseEntity<Status> getBeatDetailsAgainsDistirbutorCode(@RequestBody BeatDetailsDto beatDetailsDto)throws ServerException{
-				try {
-						return new ResponseEntity<Status>(ltMastOutletService.getBeatDetailsAgainsDistirbutorCode(beatDetailsDto), HttpStatus.OK);
-					}catch(Exception e) {
-						throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
-					}
-            }
+	/*
+	 * @RequestMapping(value = "/getBeatDetailsAgainsDistirbutorCode", method =
+	 * RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, headers=
+	 * "X-API-Version=v1.0") public ResponseEntity<Status>
+	 * getBeatDetailsAgainsDistirbutorCode(@RequestBody BeatDetailsDto
+	 * beatDetailsDto)throws ServerException{ try { return new
+	 * ResponseEntity<Status>(ltMastOutletService.
+	 * getBeatDetailsAgainsDistirbutorCode(beatDetailsDto), HttpStatus.OK);
+	 * }catch(Exception e) { throw new BusinessException(INTERNAL_SERVER_ERROR,
+	 * null, e); } }
+	 */
 		
 	
 	@PostMapping(value = "/updateBeatSequence", consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
@@ -162,5 +165,15 @@ public class LtMastOutletController implements CodeMaster {
 		}
 }
 	
+	
+	//@RequestMapping(value = "/getBeatDetailsAgainsDistirbutorCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0")
+	@PostMapping(value = "/getBeatDetailsAgainsDistirbutorCode", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getBeatDetailsAgainsDistirbutorCode(@RequestBody BeatDetailsDto beatDetailsDto)throws ServerException{
+				try {
+						return new ResponseEntity<Status>(ltMastOutletService.getBeatDetailsAgainsDistirbutorCode(beatDetailsDto), HttpStatus.OK);
+					}catch(Exception e) {
+						throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+					}
+            }
 	
 }
