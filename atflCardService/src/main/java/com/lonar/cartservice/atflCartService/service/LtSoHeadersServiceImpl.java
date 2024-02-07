@@ -1626,8 +1626,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
 		
 		JSONObject siebelMassages = new JSONObject();
-		siebelMassages.put("SubmitFlag", "");
-		siebelMassages.put("InvoiceFlag", "");
+		siebelMassages.put("SubmitFlag", "Y");
+		siebelMassages.put("InvoiceFlag", "Y");
 		siebelMassages.put("SiebelMessage" , siebelMassage);
 		
 		String jsonPayload =siebelMassages.toString();
@@ -1696,6 +1696,13 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         // Show the response
         System.out.println("Response Body: " + response.toString());
 
+        //getting invoice number from siebel response         
+        //JSONObject jsonObject = new JSONObject(response);
+        
+       // String invoiceNumber = jsonObject.getJSONObject(0);
+        
+        
+        
 	} catch (Exception e) {
         e.printStackTrace();
     }
