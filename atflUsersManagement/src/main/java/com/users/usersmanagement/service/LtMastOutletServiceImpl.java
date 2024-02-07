@@ -336,6 +336,8 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 	public Status approveOutlet(LtMastOutletsDump ltMastOutletsDumps) throws ServiceException, IOException {
 		Status status = new Status();
 try {
+	
+	if(ltMastOutletsDumps.getStatus().equalsIgnoreCase("APPROVED")) {
 		//bring object from databse, change status, lastupdatedby,lastupdatedlogin and date  n save
 		LtMastOutletsDump ltMastOutletsDump = ltMastOutletDao.getOutletToChangeStatus(ltMastOutletsDumps.getDistributorId(),
 				ltMastOutletsDumps.getOrgId(),ltMastOutletsDumps.getPrimaryMobile());
@@ -542,6 +544,22 @@ try {
 		  status.setCode(INSERT_FAIL); 
 		  status.setMessage("INSERT_FAIL"); 
 		  }
+}else{
+	LtMastOutletsDump ltMastOutletsDump = ltMastOutletDao.getOutletToChangeStatus(ltMastOutletsDumps.getDistributorId(),
+			ltMastOutletsDumps.getOrgId(),ltMastOutletsDumps.getPrimaryMobile());
+	System.out.println("ltMastOutletsDump in else ---"+ltMastOutletsDump);
+	ltMastOutletsDump.setStatus(ltMastOutletsDumps.getStatus());
+	ltMastOutletsDump.setLastUpdatedBy(ltMastOutletsDumps.getUserId());
+	ltMastOutletsDump.setLastUpdateLogin(ltMastOutletsDumps.getUserId());
+	ltMastOutletsDump.setLastUpdateDate(new Date());
+	
+	ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
+	if(ltMastOutletsDump !=null) {
+		 status.setCode(INSERT_SUCCESSFULLY); 
+		  status.setData(ltMastOutletsDump);
+		  status.setMessage("INSERT_SUCCESSFULLY");
+	}
+}
 }catch (Exception e) {
     // Log the exception or handle it accordingly
     e.printStackTrace();
