@@ -15,8 +15,8 @@ import com.users.usersmanagement.dao.LtMastDistributorsDao;
 import com.users.usersmanagement.dao.LtMastOrganisationsDao;
 import com.users.usersmanagement.model.CodeMaster;
 import com.users.usersmanagement.model.LtMastDistributors;
-import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
+import com.users.usersmanagement.model.NotificationDetails;
 import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.model.RoleMaster;
 import com.users.usersmanagement.model.Status;
@@ -245,5 +245,25 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 			e.printStackTrace();
 		}
 		return status;	
+	}
+	
+	@Override
+	public Status getAllNotification(RequestDto requestDto) throws ServerException, ServiceException{
+		Status status = new Status();
+		try {
+			List<NotificationDetails> notificationList  = ltMastDistributorsDao.getAllNotification(requestDto);
+			if(notificationList != null) {
+				status.setCode(SUCCESS);
+				status.setMessage("RECORD FOUND SUCCESSFULLY");
+				status.setData(notificationList);
+			}else {
+				status.setCode(FAIL);
+				status.setMessage("RECORD NOT FOUND");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return status;
 	}
 }

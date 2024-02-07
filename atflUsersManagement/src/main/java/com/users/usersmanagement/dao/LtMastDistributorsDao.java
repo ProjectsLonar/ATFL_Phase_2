@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.model.LtMastDistributors;
+import com.users.usersmanagement.model.NotificationDetails;
+import com.users.usersmanagement.model.RequestDto;
 
 public interface LtMastDistributorsDao {
 
@@ -16,4 +18,6 @@ public interface LtMastDistributorsDao {
 	LtMastDistributors getLtDistributorsById(Long distributorId) throws ServiceException;
 	
 	List<LtMastDistributors> getAllDistributorAgainstAreahead(String userName)throws ServiceException;
+	
+	List<NotificationDetails> getAllNotification(RequestDto requestDto) throws ServiceException; 
 }

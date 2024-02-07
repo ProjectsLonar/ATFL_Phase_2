@@ -210,7 +210,8 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				 .antMatchers("/cart" + "/ltsalesreturn" + "/getLocationForSalesReturn/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				 .antMatchers("/cart" + "/ltsalesreturn" + "/getSalesReturn/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				 .antMatchers("/cart" + "/ltsalesreturn" + "/getInvoices/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
-				 
+				 .antMatchers("/uam" + "/distributor" + "/getAllNotification/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
+
 
 				// ANONYMOUS
 

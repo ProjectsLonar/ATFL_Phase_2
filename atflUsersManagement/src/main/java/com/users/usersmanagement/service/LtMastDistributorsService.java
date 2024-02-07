@@ -15,5 +15,7 @@ public interface LtMastDistributorsService {
 			throws ServiceException;
 	
 	Status getAllDistributorAgainstAreahead(String userName)throws ServerException, ServiceException;
+	
+	Status getAllNotification(RequestDto requestDto) throws ServerException, ServiceException;
 
 }
