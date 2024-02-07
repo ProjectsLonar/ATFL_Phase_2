@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.model.LtMastDistributors;
+import com.users.usersmanagement.model.NotificationDetails;
+import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.repository.LtMastDistributorsRepository;
 
 @Repository
@@ -82,6 +84,29 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 				new BeanPropertyRowMapper<LtMastDistributors>(LtMastDistributors.class));
 		if (!ltMastDistributorsList.isEmpty()) {
 			return ltMastDistributorsList;
+		}
+		return null;
+	}
+	
+	@Override
+	public List<NotificationDetails> getAllNotification(RequestDto requestDto) throws ServiceException{
+		if (requestDto.getLimit() == 0) {
+			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+
+		String searchField = null;
+		if (requestDto.getSearchField() != null) {
+			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+		}
+		System.out.println("requestDto" + requestDto);
+		
+		
+		String query = env.getProperty("getAllNotification");
+		List<NotificationDetails> notificationList = jdbcTemplate.query(query,
+				new Object[] {requestDto.getDistributorId(),requestDto.getUserId(),requestDto.getSearchField(),requestDto.getLimit(),requestDto.getOffset() },
+				new BeanPropertyRowMapper<NotificationDetails>(NotificationDetails.class));
+		if (!notificationList.isEmpty()) {
+			return notificationList;
 		}
 		return null;
 	}
