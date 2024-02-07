@@ -15,15 +15,49 @@ public class BeatDetailsDto {
 	private List<OutletSequenceData> outletSequenceData;
 	
 	
-//	private String outletName;
-//	private String outletCode;
-//	private String beatName;
-//	private int outletSequence;
-//	private String address;
+	private String NAME;
+	private int STORE_SIZE;
+	private String MASTER_OU_ID;
+	private String OU_TYPE_CD;
+	private String BU_ID;
+	
+	
 	
 //	private String addrLane2;
 //	private String addrLane3;
 //	private String city;
+	
+	
+public String getNAME() {
+		return NAME;
+	}
+	public void setNAME(String nAME) {
+		NAME = nAME;
+	}
+	public int getSTORE_SIZE() {
+		return STORE_SIZE;
+	}
+	public void setSTORE_SIZE(int sTORE_SIZE) {
+		STORE_SIZE = sTORE_SIZE;
+	}
+	public String getMASTER_OU_ID() {
+		return MASTER_OU_ID;
+	}
+	public void setMASTER_OU_ID(String mASTER_OU_ID) {
+		MASTER_OU_ID = mASTER_OU_ID;
+	}
+	public String getOU_TYPE_CD() {
+		return OU_TYPE_CD;
+	}
+	public void setOU_TYPE_CD(String oU_TYPE_CD) {
+		OU_TYPE_CD = oU_TYPE_CD;
+	}
+	public String getBU_ID() {
+		return BU_ID;
+	}
+	public void setBU_ID(String bU_ID) {
+		BU_ID = bU_ID;
+	}
 	
 	
 public List<OutletSequenceData> getOutletSequenceData() {
@@ -75,6 +109,7 @@ public List<OutletSequenceData> getOutletSequenceData() {
 //		this.beatName = beatName;
 //	}
 	
+	
 //	public String getAddress() {
 //		return address;
 //	}
@@ -83,12 +118,13 @@ public List<OutletSequenceData> getOutletSequenceData() {
 //	}
 	
 	
-	
 	@Override
 	public String toString() {
 		return "BeatDetailsDto [distributorNumber=" + distributorNumber + ", distributorName=" + distributorName
-				+ ", distributorCode=" + distributorCode + ", outletSequenceData=" + outletSequenceData + "]";
+				+ ", distributorCode=" + distributorCode + ", outletSequenceData=" + outletSequenceData + ", NAME="
+				+ NAME + ", STORE_SIZE=" + STORE_SIZE + ", MASTER_OU_ID=" + MASTER_OU_ID + ", OU_TYPE_CD=" + OU_TYPE_CD
+				+ ", BU_ID=" + BU_ID + "]";
 	}
-		
+	
 	
 }
