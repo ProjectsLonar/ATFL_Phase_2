@@ -41,13 +41,17 @@ public interface LtMastOutletDao {
 	
 	public List<LtMastUsers> getAllSalesOfficerAgainstDist(String distributorId,String orgId)throws ServiceException, IOException;
 
-	public BeatDetailsDto getBeatDetailsAgainsDistirbutorCodeAndBeatName(String distributorCode, String beatName)throws ServiceException, IOException;
+	//public BeatDetailsDto getBeatDetailsAgainsDistirbutorCodeAndBeatName(String distributorCode, String beatName)throws ServiceException, IOException;
+	public BeatDetailsDto getBeatDetailsAgainsDistirbutorCodeAndBeatName(BeatDetailsDto beatDetailsDto)throws ServiceException, IOException;
 
-	public List<OutletSequenceData> getBeatDetailsAgainsDistirbutorCode(String distributorCode, String beatName)throws ServiceException, IOException;
+	//public List<OutletSequenceData> getBeatDetailsAgainsDistirbutorCode(String distributorCode, String beatName)throws ServiceException, IOException;
+	public List<OutletSequenceData> getBeatDetailsAgainsDistirbutorCode(BeatDetailsDto beatDetailsDto)throws ServiceException, IOException;
 
 	void updateBeatSequence(int outletSeq, String distCode, String beatName, String outletCode)throws ServiceException, IOException ;
 
 	public BeatDetailsDto getUpdatedBeatSequence(String distCode, String beatName, String outletCode)throws ServiceException, IOException;
+
+	public List<BeatDetailsDto> getOutletagainstBeat(BeatDetailsDto beatDetailsDto)throws ServiceException, IOException;
 
 
 }

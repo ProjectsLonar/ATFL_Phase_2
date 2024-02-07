@@ -14,20 +14,42 @@ public class BeatDetailsDto {
 	
 	private List<OutletSequenceData> outletSequenceData;
 	
-	
 	private String NAME;
 	private int STORE_SIZE;
 	private String MASTER_OU_ID;
 	private String OU_TYPE_CD;
 	private String BU_ID;
+	private String RULE_ATTRIB1;   ///i.e. beatName
 	
+	private String searchField;
+	private int limit;
+	private int offset;
 	
-	
-//	private String addrLane2;
-//	private String addrLane3;
-//	private String city;
-	
-	
+		
+    public String getRULE_ATTRIB1() {
+		return RULE_ATTRIB1;
+	}
+	public void setRULE_ATTRIB1(String rULE_ATTRIB1) {
+		RULE_ATTRIB1 = rULE_ATTRIB1;
+	}
+	public String getSearchField() {
+		return searchField;
+	}
+	public void setSearchField(String searchField) {
+		this.searchField = searchField;
+	}
+	public int getLimit() {
+		return limit;
+	}
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
+	public int getOffset() {
+		return offset;
+	}
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
 public String getNAME() {
 		return NAME;
 	}
@@ -107,9 +129,7 @@ public List<OutletSequenceData> getOutletSequenceData() {
 //	}
 //	public void setBeatName(String beatName) {
 //		this.beatName = beatName;
-//	}
-	
-	
+//	}		
 //	public String getAddress() {
 //		return address;
 //	}
@@ -123,8 +143,9 @@ public List<OutletSequenceData> getOutletSequenceData() {
 		return "BeatDetailsDto [distributorNumber=" + distributorNumber + ", distributorName=" + distributorName
 				+ ", distributorCode=" + distributorCode + ", outletSequenceData=" + outletSequenceData + ", NAME="
 				+ NAME + ", STORE_SIZE=" + STORE_SIZE + ", MASTER_OU_ID=" + MASTER_OU_ID + ", OU_TYPE_CD=" + OU_TYPE_CD
-				+ ", BU_ID=" + BU_ID + "]";
-	}
+				+ ", BU_ID=" + BU_ID + ", RULE_ATTRIB1=" + RULE_ATTRIB1 + ", searchField=" + searchField + ", limit="
+				+ limit + ", offset=" + offset + "]";
+	}	
 	
 	
 }

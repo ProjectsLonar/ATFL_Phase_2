@@ -253,9 +253,15 @@ System.out.println("list"+list);
 	}
 
 	@Override
-	public BeatDetailsDto getBeatDetailsAgainsDistirbutorCodeAndBeatName(String distributorCode, String beatName)throws ServiceException, IOException {
+	public BeatDetailsDto getBeatDetailsAgainsDistirbutorCodeAndBeatName(BeatDetailsDto beatDetailsDto)throws ServiceException, IOException {
+		
+		String searchField= null;
+		if (beatDetailsDto.getSearchField() != null) {
+			searchField = "%" + beatDetailsDto.getSearchField().toUpperCase() + "%";
+		}
 		String query = env.getProperty("getBeatDetailsAgainsDistirbutorCodeAndBeatName");
-	       List<BeatDetailsDto> list = jdbcTemplate.query(query, new Object[] {distributorCode, beatName}, 
+	       List<BeatDetailsDto> list = jdbcTemplate.query(query, new Object[] 
+	    		   {beatDetailsDto.getDistributorCode(), searchField, beatDetailsDto.getLimit(), beatDetailsDto.getOffset()}, 
 				new BeanPropertyRowMapper<BeatDetailsDto>(BeatDetailsDto.class));
 	               if(!list.isEmpty()) {
 				                         return list.get(0);
@@ -264,9 +270,16 @@ System.out.println("list"+list);
 			}
 
 	@Override
-	public List<OutletSequenceData> getBeatDetailsAgainsDistirbutorCode(String distributorCode, String beatName)throws ServiceException, IOException {
-		String query = env.getProperty("getBeatDetailsAgainsDistirbutorCodeAndBeat");
-	       List<OutletSequenceData> list = jdbcTemplate.query(query, new Object[] {distributorCode, beatName}, 
+	public List<OutletSequenceData> getBeatDetailsAgainsDistirbutorCode(BeatDetailsDto beatDetailsDto)throws ServiceException, IOException {
+		
+		String searchField= null;
+		if (beatDetailsDto.getSearchField() != null) {
+			searchField = "%" + beatDetailsDto.getSearchField().toUpperCase() + "%";
+		}
+		
+		String query = env.getProperty("getBeatDetailsAgainsDistirbutorCode");
+	       List<OutletSequenceData> list = jdbcTemplate.query(query, new Object[] 
+	    		   {beatDetailsDto.getDistributorCode(), searchField, beatDetailsDto.getLimit(), beatDetailsDto.getOffset()}, 
 				new BeanPropertyRowMapper<OutletSequenceData>(OutletSequenceData.class));
 	               if(!list.isEmpty()) {
 				                         return list;
@@ -294,6 +307,28 @@ System.out.println("list"+list);
 			System.out.print("updatedBeat data is=" +list);
 			return list.get(0);
 		}
+		return null;
+	}
+
+	@Override
+	public List<BeatDetailsDto> getOutletagainstBeat(BeatDetailsDto beatDetailsDto) throws ServiceException, IOException {
+		try {
+		String searchField = null;
+		if (beatDetailsDto.getSearchField() != null) {
+			searchField = "%" + beatDetailsDto.getSearchField().toUpperCase() + "%";
+		}
+		String query= env.getProperty("getOutletagainstBeat");
+		List<BeatDetailsDto> list = jdbcTemplate.query(query, new Object[]
+				{beatDetailsDto.getBU_ID(), searchField, beatDetailsDto.getRULE_ATTRIB1(),
+						beatDetailsDto.getLimit(), beatDetailsDto.getOffset() },
+				new BeanPropertyRowMapper<BeatDetailsDto>(BeatDetailsDto.class));
+		
+				if(!list.isEmpty()) {
+					return list;
+				}
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
 		return null;
 	}
 	

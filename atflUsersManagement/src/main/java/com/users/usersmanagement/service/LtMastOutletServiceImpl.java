@@ -603,32 +603,18 @@ try {
 	    }
 
 	@Override
-	public Status getBeatDetailsAgainsDistirbutorCodeAndBeatName(String distributorCode, String beatName) throws ServiceException, IOException {
+	public Status getBeatDetailsAgainsDistirbutorCode(BeatDetailsDto beatDetailsDto) throws ServiceException, IOException {
 		try {   
 		Status status = new Status();
-		BeatDetailsDto beatDetailsDto = new BeatDetailsDto();
+		//BeatDetailsDto beatDetailsDto1 = new BeatDetailsDto();
 		List<OutletSequenceData> outletSequenceData= new ArrayList<OutletSequenceData>();
-		  BeatDetailsDto headerlist = ltMastOutletDao.getBeatDetailsAgainsDistirbutorCodeAndBeatName(distributorCode, beatName);
-		    if(headerlist!= null) {
-		    	outletSequenceData = ltMastOutletDao.getBeatDetailsAgainsDistirbutorCode(distributorCode, beatName);
-		    	beatDetailsDto.setDistributorCode(headerlist.getDistributorCode());
-		    	beatDetailsDto.setDistributorName(headerlist.getDistributorName());
-		    	beatDetailsDto.setDistributorNumber(headerlist.getDistributorNumber());
-		    	
-		    	if(!outletSequenceData.isEmpty()) {
-		    		beatDetailsDto.setOutletSequenceData(outletSequenceData);
-		    	}else {
-					
-				}status.setCode(FAIL);
-				status.setMessage("RECORD NOT FOUND");
-		    }
-		  	  
-		  if(beatDetailsDto!= null) {
-		    	status.setCode(SUCCESS);
-		    	status.setMessage("RECORD FOUND SUCCESSFULLY");
-		    	status.setData(beatDetailsDto);
-		    	
-		    }else {
+		  //BeatDetailsDto headerlist = ltMastOutletDao.getBeatDetailsAgainsDistirbutorCodeAndBeatName(beatDetailsDto);
+		  outletSequenceData = ltMastOutletDao.getBeatDetailsAgainsDistirbutorCode(beatDetailsDto);
+	    	if(outletSequenceData!= null) {
+	    		status.setCode(RECORD_FOUND);
+	    		status.setMessage("Record Found Successfully");
+	    		status.setData(outletSequenceData);
+		    	  }else {
 		    	status.setCode(FAIL);
 		    	status.setMessage("RECORD NOT FOUND");
 		    }
@@ -672,6 +658,28 @@ try {
 			      e.printStackTrace(); 
 			      return null;
 			}		
+	}
+
+	
+	@Override
+	public Status getOutletagainstBeat(BeatDetailsDto beatDetailsDto) throws ServiceException, IOException {
+		try {
+			System.out.println("In service");
+		Status status = new Status();
+		List<BeatDetailsDto> beatDetailsDto1 = ltMastOutletDao.getOutletagainstBeat(beatDetailsDto) ;
+		if(beatDetailsDto1 != null) {
+			status.setCode(RECORD_FOUND);
+			status.setMessage("Reoced Found Sucessfully");
+			status.setData(beatDetailsDto1);
+		}else {
+			status.setCode(FAIL);
+	    	status.setMessage("RECORD NOT FOUND");
+		    }
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 	

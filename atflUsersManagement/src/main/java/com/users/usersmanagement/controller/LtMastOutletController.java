@@ -120,11 +120,10 @@ public class LtMastOutletController implements CodeMaster {
     }	
 	}
 	
-	@RequestMapping(value = "/getBeatDetailsAgainsDistirbutorCodeAndBeatName/{distributorCode}/{beatName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0")
-		public ResponseEntity<Status> getBeatDetailsAgainsDistirbutorCodeAndBeatName(@PathVariable("distributorCode") String distributorCode, 
-				                       @PathVariable("beatName") String beatName)throws ServerException{
+	@RequestMapping(value = "/getBeatDetailsAgainsDistirbutorCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0")
+	public ResponseEntity<Status> getBeatDetailsAgainsDistirbutorCode(@RequestBody BeatDetailsDto beatDetailsDto)throws ServerException{
 				try {
-						return new ResponseEntity<Status>(ltMastOutletService.getBeatDetailsAgainsDistirbutorCodeAndBeatName(distributorCode,beatName), HttpStatus.OK);
+						return new ResponseEntity<Status>(ltMastOutletService.getBeatDetailsAgainsDistirbutorCode(beatDetailsDto), HttpStatus.OK);
 					}catch(Exception e) {
 						throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 					}
@@ -140,5 +139,17 @@ public class LtMastOutletController implements CodeMaster {
 		   }		
 	  }
 	
-
+    @RequestMapping(value="/getOutletAgainstBeat", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0") 
+	public ResponseEntity<Status> getOutletagainstBeat(@RequestBody BeatDetailsDto beatDetailsDto)throws ServerException
+    {
+    	try {
+    		System.out.println("In controller");
+    		return new ResponseEntity<Status>(ltMastOutletService.getOutletagainstBeat(beatDetailsDto), HttpStatus.OK);
+    		//System.out.println("In controller");
+    	}catch(Exception e) {
+    		throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+    	}
+		
+	}
+	
 }

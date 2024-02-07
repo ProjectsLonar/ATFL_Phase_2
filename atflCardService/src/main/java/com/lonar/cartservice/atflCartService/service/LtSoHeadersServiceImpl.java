@@ -1697,11 +1697,12 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         System.out.println("Response Body: " + response.toString());
 
         //getting invoice number from siebel response         
-        //JSONObject jsonObject = new JSONObject(response);
+        JSONObject jsonObject = new JSONObject(response);
+        String invoiceNumber = jsonObject.getString(line);
+       //String invoiceNumber = jsonObject.getJSONObject(line).toString();
+       System.out.println("Invoice Number: " + invoiceNumber);
         
-       // String invoiceNumber = jsonObject.getJSONObject(0);
-        
-        
+       
         
 	} catch (Exception e) {
         e.printStackTrace();
