@@ -70,6 +70,18 @@ public class LtSoHeaders extends BaseClass1{
 	@Column(name= "PRICE_LIST")
 	private String priceList;
 	
+	@Column(name= "INVOICE_NUMBER")
+	private String invoiceNumber;
+	
+		
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+
 	public Long getHeaderId() {
 		return headerId;
 	}
@@ -194,7 +206,8 @@ public class LtSoHeaders extends BaseClass1{
 				+ ", outletId=" + outletId + ", deliveryDate=" + deliveryDate + ", Address=" + Address + ", latitude="
 				+ latitude + ", longitude=" + longitude + ", remark=" + remark + ", customerId=" + customerId
 				+ ", userId=" + userId + ", inStockFlag=" + inStockFlag + ", beatId=" + beatId + ", priceList="
-				+ priceList + "]";
+				+ priceList + ", invoiceNumber=" + invoiceNumber + "]";
 	}
+
 	
 }

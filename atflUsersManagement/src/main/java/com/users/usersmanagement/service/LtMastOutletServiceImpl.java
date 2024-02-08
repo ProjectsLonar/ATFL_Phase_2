@@ -495,6 +495,7 @@ try {
         // Parse JSON response
         JSONObject jsonObject = new JSONObject(responseBody);
 
+        
         // Navigate through the structure to get the Account Id
         JSONArray accountArray = jsonObject.getJSONObject("SiebelMessage")
                 .getJSONObject("ListOfOutlet Interface")

@@ -1,6 +1,7 @@
 package com.lonar.cartservice.atflCartService.service;
 
 import javax.net.ssl.TrustManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
@@ -42,6 +43,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.lonar.cartservice.atflCartService.common.BusinessException;
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.controller.WebController;
@@ -355,12 +357,20 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				
 				LtMastOutles ltMastOutlets = new LtMastOutles();
 						
-				if(ltMastOutlets.getOutletCode() != null) {
-					outletCode = ltMastOutlets.getOutletCode() ; 
+//				if(ltMastOutlets.getOutletCode() != null) {
+//					outletCode = ltMastOutlets.getOutletCode() ; 
+//				}
+//				
+//				if(ltMastOutlets.getOutletName() != null) {
+//					outletName = ltMastOutlets.getOutletName() ;
+//				}
+				
+				if(ltMastOutle.get(0).getOutletCode() != null) {
+					outletCode = ltMastOutle.get(0).getOutletCode(); 
 				}
 				
-				if(ltMastOutlets.getOutletName() != null) {
-					outletName = ltMastOutlets.getOutletName() ;
+				if(ltMastOutle.get(0).getOutletName() != null) {
+					outletName = ltMastOutle.get(0).getOutletName();
 				}
 			}
 		
@@ -1373,12 +1383,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						ltSoHeader.setCreationDate(new Date()); // new Date()
 						//ltSoHeader.setStatus(DRAFT);
 
-						if(!soHeaderDto.getPriceList().equals(defailtPriceList) ) {
-				 	          ltSoHeader.setStatus(DRAFT);
-					    }else {
-						ltSoHeader.setStatus("APPROVED");
-					    }
-						
+						 ltSoHeader.setStatus(DRAFT);
+					    						
 						if(soHeaderDto.getInStockFlag()!= null) {
 							ltSoHeader.setInStockFlag(soHeaderDto.getInStockFlag());
 						}
@@ -1484,12 +1490,12 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 								
 						// ATFL Phase 2 siebel devlopement					
 						try {
-							if(ltSoHeader.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
+							//if(ltSoHeader.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
 								
 						  // inserting save order data into siebel using sampleCode() and update the order status to NEW 
 								sampleCode(ltSoHeader, soHeaderDto);
 								  
-							}
+							//}
 							
 							RequestDto requestDto = new RequestDto();
 							requestDto.setHeaderId(ltSoHeader.getHeaderId());
@@ -1696,14 +1702,19 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         // Show the response
         System.out.println("Response Body: " + response.toString());
 
-        //getting invoice number from siebel response         
-        JSONObject jsonObject = new JSONObject(response);
-        String invoiceNumber = jsonObject.getString(line);
-       //String invoiceNumber = jsonObject.getJSONObject(line).toString();
-       System.out.println("Invoice Number: " + invoiceNumber);
-        
+    // Create an ObjectMapper instance
+       ObjectMapper objectMapper = new ObjectMapper();
        
-        
+       // Parse the response body into a JSON object
+       JsonNode rootNode = objectMapper.readTree(response.toString());
+       // Access the "Invoice Number" field from the JSON object
+       String invoiceNumber = rootNode.get("Invoice Number").asText();
+       // Now you can use the invoiceNumber variable as needed
+       System.out.println("Invoice Number: " + invoiceNumber);
+             
+       ltSoHeader.setInvoiceNumber(invoiceNumber);
+       //System.out.println("Invoice Number: " + invoiceNumber);
+       
 	} catch (Exception e) {
         e.printStackTrace();
     }
