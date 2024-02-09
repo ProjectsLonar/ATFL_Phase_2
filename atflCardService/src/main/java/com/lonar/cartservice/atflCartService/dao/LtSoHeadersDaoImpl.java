@@ -112,7 +112,11 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 		if (requestDto.getLimit() == 0) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 		}
-
+ String headerId = null;
+		if(requestDto.getHeaderId() !=null) {
+			headerId = requestDto.getHeaderId().toString();
+				}
+		
 		
 		String searchField = null;
 		if (requestDto.getSearchField() != null) {
@@ -277,12 +281,20 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			
 			if(!userList.isEmpty() && userList != null) {
 				query = query + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx')) )a order by a.status_o, a.creation_date desc ) b where rownum<= ? ";
+						+ ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx')) )a order by a.status_o, a.creation_date desc ) b where rownum BETWEEN ? AND ? ";
 			}else {
-				query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  where rownum<= ? ";
+				query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  where rownum BETWEEN ? AND ? ";
 			}
+			/*
+			 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+			 * requestDto.getStatus(),
+			 * requestDto.getOrderNumber(),requestDto.getDistributorId(), headerId,
+			 * searchField, requestDto.getOutletId(), requestDto.getLimit(),
+			 * requestDto.getOffset());
+			 */
+			
 			headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
-					requestDto.getOrderNumber(),requestDto.getDistributorId(), requestDto.getHeaderId(), searchField,
+					requestDto.getOrderNumber(),requestDto.getDistributorId(),  searchField,
 					requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset());
 
 			return headerIdslist;
@@ -301,9 +313,18 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 //				query = query +" ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
 				query = query +" ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ?";
 			}
+			
 			headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
-					requestDto.getOrderNumber(), requestDto.getDistributorId(), requestDto.getHeaderId(), searchField,
+					requestDto.getOrderNumber(), requestDto.getDistributorId(), searchField,
 					requestDto.getLimit(), requestDto.getOffset());
+			
+			
+			/*
+			 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+			 * requestDto.getStatus(), requestDto.getOrderNumber(),
+			 * requestDto.getDistributorId(), headerId, searchField, requestDto.getLimit(),
+			 * requestDto.getOffset());
+			 */
 			return headerIdslist;
 			
 		}else {
@@ -316,11 +337,20 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			
 			System.out.println(requestDto.getHeaderId()); 
 			System.out.println(query);  
-		
+			
+			/*
+			 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+			 * requestDto.getDistributorId(),requestDto.getStatus(),
+			 * requestDto.getOrderNumber(), searchField
+			 * ,headerId,requestDto.getOutletId(),requestDto.getLimit(),
+			 * requestDto.getOffset() );
+			 */
+           
            headerIdslist = jdbcTemplate.queryForList(query, Long.class,
 					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
-					searchField, requestDto.getHeaderId() ,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
+					searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
 					);
+
 
 			/*
 			 * headerIdslist = jdbcTemplate.query(query, new Object[] { }, new
@@ -564,6 +594,10 @@ System.out.println("headerIdsSSSS "+headerIdslist);
 		
 		String query = env.getProperty("getOrderHeaderCount");
 		
+		String headerId = null;
+		if(requestDto.getHeaderId() !=null) {
+			headerId = requestDto.getHeaderId().toString(); 
+		}
 		UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
 		if (userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
 			//get userList by distributorID
@@ -576,9 +610,16 @@ System.out.println("headerIdsSSSS "+headerIdslist);
 				query = query +" COALESCE (lsh.outlet_id, 'xx')= COALESCE( ? ,  COALESCE (lsh.outlet_id, 'xx')) ";
 			}
 			
+			/*
+			 * recordCount = jdbcTemplate.queryForObject(query, new Object[] {
+			 * requestDto.getStatus(), requestDto.getOrderNumber(),
+			 * requestDto.getDistributorId(), headerId, searchField,requestDto.getOutletId()
+			 * }, Long.class);
+			 */
+			
 			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
 					requestDto.getStatus(), requestDto.getOrderNumber(),  
-					requestDto.getDistributorId(), requestDto.getHeaderId(), 
+					requestDto.getDistributorId(), 
 					searchField,requestDto.getOutletId()
 			}, Long.class);
 			return recordCount;
@@ -592,9 +633,15 @@ System.out.println("headerIdsSSSS "+headerIdslist);
 				//query = query +" and COALESCE(lsh.outlet_id ,-99) =  COALESCE( ? ,COALESCE(lsh.outlet_id),-99) ";
 			}
 			
+			/*
+			 * recordCount = jdbcTemplate.queryForObject(query, new Object[] {
+			 * requestDto.getStatus(), requestDto.getOrderNumber(),
+			 * requestDto.getDistributorId(), headerId, searchField }, Long.class);
+			 */
+			
 			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
 					requestDto.getStatus(), requestDto.getOrderNumber(),  
-					requestDto.getDistributorId(), requestDto.getHeaderId(), 
+					requestDto.getDistributorId(), 
 					searchField
 			}, Long.class);
 			return recordCount;
@@ -603,9 +650,16 @@ System.out.println("headerIdsSSSS "+headerIdslist);
 			
 			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
 					requestDto.getStatus(), requestDto.getOrderNumber(),  
-					requestDto.getDistributorId(), requestDto.getHeaderId(), 
+					requestDto.getDistributorId(), 
 					searchField,requestDto.getOutletId()
 			}, Long.class);
+			
+			/*
+			 * recordCount = jdbcTemplate.queryForObject(query, new Object[] {
+			 * requestDto.getStatus(), requestDto.getOrderNumber(),
+			 * requestDto.getDistributorId(), headerId, searchField,requestDto.getOutletId()
+			 * }, Long.class);
+			 */
 			return recordCount;
 			//return 2L;
 		}
