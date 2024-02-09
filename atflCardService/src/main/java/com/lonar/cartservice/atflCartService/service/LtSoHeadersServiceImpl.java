@@ -1101,7 +1101,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				
 							System.out.println("Line insert successfully");
 							RequestDto requestDto = new RequestDto();
-							requestDto.setHeaderId(ltSoHeader.getHeaderId());
+							requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
 							requestDto.setLimit(1);
 							requestDto.setOffset(2);
 							status = getOrderV2(requestDto);
@@ -1307,7 +1307,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						}
 						
 						RequestDto requestDto = new RequestDto();
-						requestDto.setHeaderId(ltSoHeader.getHeaderId());
+						requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
 						requestDto.setLimit(1);
 						requestDto.setOffset(2);
 						status = getOrderV2(requestDto);
@@ -1498,7 +1498,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							//}
 							
 							RequestDto requestDto = new RequestDto();
-							requestDto.setHeaderId(ltSoHeader.getHeaderId());
+							requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
 							requestDto.setLimit(1);
 							requestDto.setOffset(2);
 							status = getOrderV2(requestDto);

@@ -634,25 +634,24 @@ try {
 	public Status updateBeatSequence(BeatDetailsDto beatDetailsDto) throws ServiceException, IOException {
 		try {
 			  Status status = new Status();	
-		//  System.out.print("Req data Isss === "+beatDetailsDto);
+		 // System.out.print("Req data Isss === "+beatDetailsDto);
                List<OutletSequenceData>	outletSequenceData = beatDetailsDto.getOutletSequenceData();
-              // List<BeatDetailsDto> list = new ArrayList<BeatDetailsDto>();
-               //BeatDetailsDto beatDetailsDto1 = new BeatDetailsDto();
-       //   System.out.print("Seq data Isss === "+outletSequenceData);
+              // System.out.println("beatDetailsDto.getDistributorCode()"+beatDetailsDto.getDistributorCode());
+               String distCode =  beatDetailsDto.getDistributorCode();
+             //  System.out.println("distCode"+distCode);
               int a;
                for(int i=0; i<outletSequenceData.size(); i++) {
             	  int outletSeq = outletSequenceData.get(i).getOutletSequence();
-            	  String distCode =  beatDetailsDto.getDistributorCode();
             	  String beatName = outletSequenceData.get(i).getBeatName();
             	   String outletCode = outletSequenceData.get(i).getOutletCode();
-       //  	  System.out.print("Seq dataaa Is === "+outletSeq + distCode +beatName +outletCode );
-       //            	   outletSequenceData=  ltMastOutletDao.updateBeatSequence(outletSeq,distCode,beatName,outletCode);
             	    ltMastOutletDao.updateBeatSequence(outletSeq,distCode,beatName,outletCode);
-            	    beatDetailsDto = ltMastOutletDao.getUpdatedBeatSequence(distCode,beatName,outletCode);
-            	  System.out.print("beat data is =" +outletSeq+ ","+distCode+"," +beatName+"," +outletCode);
+            	   
                }
                
-                         System.out.print("Updated data is =" +beatDetailsDto);
+             
+         	 // System.out.print("beat data is =" +outletSeq+ ","+distCode+"," +beatName+"," +outletCode);
+               
+                         //System.out.print("Updated data is =" +beatDetailsDto);
             	         status.setCode(SUCCESS);
   			             status.setMessage("Record Update Successfully");
   			             status.setData(beatDetailsDto);
