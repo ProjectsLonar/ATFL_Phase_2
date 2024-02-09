@@ -70,16 +70,38 @@ public class LtSoHeaders extends BaseClass1{
 	@Column(name= "PRICE_LIST")
 	private String priceList;
 	
-	@Column(name= "INVOICE_NUMBER")
-	private String invoiceNumber;
+	@Column(name= "SIEBEL_INVOICENUMBER")
+	private String siebelInvoiceNumber;
 	
+	@Column(name= "SIEBEL_STATUS")
+	private String siebelStatus;
+	
+	@Column(name= "SIEBEL_REMARK")
+	private String siebelRemark;
 		
-	public String getInvoiceNumber() {
-		return invoiceNumber;
+	
+	public String getSiebelInvoiceNumber() {
+		return siebelInvoiceNumber;
 	}
 
-	public void setInvoiceNumber(String invoiceNumber) {
-		this.invoiceNumber = invoiceNumber;
+	public void setSiebelInvoiceNumber(String siebelInvoiceNumber) {
+		this.siebelInvoiceNumber = siebelInvoiceNumber;
+	}
+
+	public String getSiebelStatus() {
+		return siebelStatus;
+	}
+
+	public void setSiebelStatus(String siebelStatus) {
+		this.siebelStatus = siebelStatus;
+	}
+
+	public String getSiebelRemark() {
+		return siebelRemark;
+	}
+
+	public void setSiebelRemark(String siebelRemark) {
+		this.siebelRemark = siebelRemark;
 	}
 
 	public Long getHeaderId() {
@@ -206,7 +228,8 @@ public class LtSoHeaders extends BaseClass1{
 				+ ", outletId=" + outletId + ", deliveryDate=" + deliveryDate + ", Address=" + Address + ", latitude="
 				+ latitude + ", longitude=" + longitude + ", remark=" + remark + ", customerId=" + customerId
 				+ ", userId=" + userId + ", inStockFlag=" + inStockFlag + ", beatId=" + beatId + ", priceList="
-				+ priceList + ", invoiceNumber=" + invoiceNumber + "]";
+				+ priceList + ", siebelInvoiceNumber=" + siebelInvoiceNumber + ", siebelStatus=" + siebelStatus
+				+ ", siebelRemark=" + siebelRemark + "]";
 	}
 
 	

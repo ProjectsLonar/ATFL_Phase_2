@@ -1397,7 +1397,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						ltSoHeader = updateSoHeader(ltSoHeader);
 							
 						// send OutofStock order for approval to areHead
-							sendNotifications(ltSoHeader);
+						//	sendNotifications(ltSoHeader);
 						
 						List<SoLineDto> soLineDtoList = soHeaderDto.getSoLineDtoList();
 						
@@ -1546,25 +1546,25 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         String authorization = "Authorization: Basic TE9OQVJfVEVTVDpMb25hcjEyMw==";
 		
         JSONObject lineItemObject = new JSONObject();
-		lineItemObject.put("Id", "1");
-	//	lineItemObject.put("Product Id", soLineDto.getProductId());
-		lineItemObject.put("Product Id", "1-4XBK-8");
-	//	lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
-		lineItemObject.put("Due Date", "12/06/2023");
-	//	lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
-		lineItemObject.put("Item Price List Id", "1-475Z");
-		lineItemObject.put("Action Code", "New");
-	//	lineItemObject.put("Name", soLineDto.getProductName());
-		lineItemObject.put("Name", "P02IAPKP040");
-	//	lineItemObject.put("Quantity", soLineDto.getQuantity());
-		lineItemObject.put("Quantity", "1");
+//		lineItemObject.put("Id", "1");
+//	//	lineItemObject.put("Product Id", soLineDto.getProductId());
+//		lineItemObject.put("Product Id", "1-4XBK-8");
+//	//	lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
+//		lineItemObject.put("Due Date", "12/06/2023");
+//	//	lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
+//		lineItemObject.put("Item Price List Id", "1-475Z");
+//		lineItemObject.put("Action Code", "New");
+//	//	lineItemObject.put("Name", soLineDto.getProductName());
+//		lineItemObject.put("Name", "P02IAPKP040");
+//	//	lineItemObject.put("Quantity", soLineDto.getQuantity());
+//		lineItemObject.put("Quantity", "1");
 		
-		JSONArray lineItemArray = new JSONArray();
+//		JSONArray lineItemArray = new JSONArray();
 //		for (int i =0; i<lineItemObject.length(); i++) {
 //			lineItemArray.put(lineItemObject);	
 //		}
-		
-//		List<SoLineDto> lineItem = soHeaderDto.getSoLineDtoList();
+//		
+		List<SoLineDto> lineItem = soHeaderDto.getSoLineDtoList();
 //        for (int i =0; i<lineItem.size(); i++) {
 //        	 SoLineDto soLineList = new SoLineDto();
 //        	 String id = Integer.toString(i+1);   
@@ -1592,9 +1592,27 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 //        	 lineItemArray.put(lineItemObject);
 //            }
 		
-		
+        JSONArray listOfLineItem1 = new JSONArray();
+        
+        for (int i = 0; i < lineItem.size(); i++) {
+            JSONObject lineItem1 = new JSONObject();
+            lineItem1.put("Product Id", lineItem.get(i).getProductId());
+            lineItem1.put("Item Price List Id", lineItem.get(i).getPriceListId());
+            lineItem1.put("Action Code", "New");
+            lineItem1.put("Quantity", Long.toString(lineItem.get(i).getQuantity()));
+            lineItem1.put("Id", Integer.toString(i+1));
+            DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+			Date date = (Date)formatter.parse(lineItem.get(i).getDeliveryDate().toString());
+			SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+			String deliDate =outputFormat.format(date);
+            lineItem1.put("Due Date", deliDate);
+            lineItem1.put("Name", lineItem.get(i).getProductName());
+            listOfLineItem1.put(lineItem1);
+        }   
+            
+        
 		JSONObject listOfLineItem = new JSONObject();
-		listOfLineItem.put("Line Item", lineItemObject);
+		listOfLineItem.put("Line Item", listOfLineItem1);
 		
 		SoHeaderDto soHeaders = new SoHeaderDto();
 		
@@ -1618,8 +1636,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		header.put("Currency Code", "INR");
 		header.put("Order Number", ltSoHeader.getOrderNumber());
 //		header.put("Order Number", "MSO-53623-2324-11");
-		header.put("Source Inventory Id", "1-2GR1JJ1");            //"1-2FPGVLJ");       //"1-2C7QNZG");
+		header.put("Source Inventory Id", "1-2KK4ILD");            //"1-2FPGVLJ");  // "1-2GR1JJ1"    //"1-2C7QNZG");
 		header.put("ListOfLine Item", listOfLineItem);
+		//header.put("ListOfLine Item", listOfLineItem);
 		
 		JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
 		ListOfATOrdersIntegrationIO.put("Header", header);
@@ -1712,7 +1731,13 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
        // Now you can use the invoiceNumber variable as needed
        System.out.println("Invoice Number: " + invoiceNumber);
              
-       ltSoHeader.setInvoiceNumber(invoiceNumber);
+       ltSoHeader.setSiebelInvoiceNumber(invoiceNumber);
+       
+       String resCode= Integer.toString(responseCode);
+       ltSoHeader.setSiebelStatus(resCode);
+       
+       String res= response.toString();
+       ltSoHeader.setSiebelRemark(res);
        //System.out.println("Invoice Number: " + invoiceNumber);
        
 	} catch (Exception e) {

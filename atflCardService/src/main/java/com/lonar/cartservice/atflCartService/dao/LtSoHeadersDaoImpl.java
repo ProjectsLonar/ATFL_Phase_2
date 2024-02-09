@@ -316,10 +316,10 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			
 			System.out.println(requestDto.getHeaderId()); 
 			System.out.println(query);  
-		
+		   
            headerIdslist = jdbcTemplate.queryForList(query, Long.class,
 					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
-					searchField, requestDto.getHeaderId() ,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
+					searchField, requestDto.getHeaderId(),requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
 					);
 
 			/*
