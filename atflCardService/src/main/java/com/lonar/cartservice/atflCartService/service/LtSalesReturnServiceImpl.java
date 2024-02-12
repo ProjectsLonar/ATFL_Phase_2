@@ -656,6 +656,8 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				invoiceHeaderDto.setInvoiceDate(responseDto.getInvoiceDate());
 				invoiceHeaderDto.setLocation(responseDto.getLocation());
 				invoiceHeaderDto.setTotalAmount(responseDto.getTotalAmount());
+				invoiceHeaderDto.setPriceListId(responseDto.getPriceListId());
+				invoiceHeaderDto.setPriceListName(responseDto.getPriceListName());
 				
 				invoiceDetailsHeaderDtoMap.put(responseDto.getInvoiveNumber(), invoiceHeaderDto);
 

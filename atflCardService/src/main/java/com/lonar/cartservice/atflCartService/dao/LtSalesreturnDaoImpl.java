@@ -216,6 +216,7 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 							requestDto.getLimit(), requestDto.getOffset()},
 					new BeanPropertyRowMapper<LtInvoiceDetailsResponseDto>(LtInvoiceDetailsResponseDto.class));
 
+			System.out.println("invoice list"+list );
 			if (!list.isEmpty()) {
 				return list;
 			}

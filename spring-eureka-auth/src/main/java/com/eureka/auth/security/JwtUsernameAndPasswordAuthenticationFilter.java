@@ -167,7 +167,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 							ltMastUser.getOrgId(), ltMastUser.getUserName(), ltMastUser.getDistributorId(),
 							ltMastUser.getOutletId(), ltMastUser.getDesignation(), ltMastUser.getPositionId(),
 							ltMastUser.getTokenData(),ltMastUser.getOutletName(),ltMastUser.getDistributorCode(),
-							ltMastUser.getDistributorName(),ltMastUser.getProprietorName(),ltMastUser.getPosition() );
+							ltMastUser.getDistributorName(),ltMastUser.getProprietorName(),ltMastUser.getPosition(),
+							ltMastUser.getCreationDate(),ltMastUser.getLastUpdateDate());
 
 					status.setData(jwtResponse);
 

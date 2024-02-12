@@ -15,6 +15,8 @@ public class LtInvoiceDetailsDto {
 	 private Date invoiceDate;
 	 private String location;
 	 private Long totalAmount;
+	 private String priceListId;
+	 private String priceListName;
 	 
 	 private List <LtInvoiceDetailsLineDto> ltInvoiceDetailsLineDto;
 
@@ -106,6 +108,22 @@ public class LtInvoiceDetailsDto {
 
 	public void setLtInvoiceDetailsLineDto(List<LtInvoiceDetailsLineDto> ltInvoiceDetailsLineDto) {
 		this.ltInvoiceDetailsLineDto = ltInvoiceDetailsLineDto;
+	}
+
+	public String getPriceListId() {
+		return priceListId;
+	}
+
+	public void setPriceListId(String priceListId) {
+		this.priceListId = priceListId;
+	}
+
+	public String getPriceListName() {
+		return priceListName;
+	}
+
+	public void setPriceListName(String priceListName) {
+		this.priceListName = priceListName;
 	}
 	 
 	 

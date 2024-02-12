@@ -1,5 +1,6 @@
 package com.eureka.auth.response;
 
+import java.util.Date;
 import java.util.List;
 
 public class JwtResponse {
@@ -23,7 +24,8 @@ public class JwtResponse {
 	private String distributorName;
 	private String proprietorName;
 	private String position;
-	
+	private Date creationDate;
+	private Date lastUpdatedDate;
 
 	public JwtResponse() {
 		super();
@@ -32,7 +34,7 @@ public class JwtResponse {
 	public JwtResponse(String token, String type, String mobileNumber, List<String> roles, String status, Long userId,
 			String userType, String employeeCode, String orgId, String userName, String distributorId, String outletId,
 			String designation, String positionId, String notifyToken,String outletName,String distributorCode,String distributorName,
-			String proprietorName,String position) {
+			String proprietorName,String position,Date creationDate,Date lastUpdatedDate ) {
 		super();
 		this.token = token;
 		this.type = type;
@@ -54,6 +56,8 @@ public class JwtResponse {
 		this.distributorName = distributorName;
 		this.proprietorName= proprietorName;
 		this.position = position;
+		this.creationDate = creationDate;
+		this.lastUpdatedDate = lastUpdatedDate;
 	
 	}
 	
@@ -216,6 +220,22 @@ public class JwtResponse {
 
 	public void setPosition(String position) {
 		this.position = position;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public Date getLastUpdatedDate() {
+		return lastUpdatedDate;
+	}
+
+	public void setLastUpdatedDate(Date lastUpdatedDate) {
+		this.lastUpdatedDate = lastUpdatedDate;
 	}
 
 

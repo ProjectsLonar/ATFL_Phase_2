@@ -19,6 +19,8 @@ public class LtInvoiceDetailsResponseDto {
  private Date invoiceDate;
  private String location;
  private Long totalAmount;
+ private String priceListId;
+ private String priceListName;
 public String getDistributorName() {
 	return distributorName;
 }
@@ -116,6 +118,22 @@ public Long getTotalAmount() {
 public void setTotalAmount(Long totalAmount) {
 	this.totalAmount = totalAmount;
 }
+
+
+public String getPriceListId() {
+	return priceListId;
+}
+public void setPriceListId(String priceListId) {
+	this.priceListId = priceListId;
+}
+
+
+public String getPriceListName() {
+	return priceListName;
+}
+public void setPriceListName(String priceListName) {
+	this.priceListName = priceListName;
+}
 @Override
 public String toString() {
 	return "LtInvoiceDetailsResponseDto [distributorName=" + distributorName + ", distributorCode=" + distributorCode
@@ -123,7 +141,8 @@ public String toString() {
 			+ ", orderNumber=" + orderNumber + ", productCode=" + productCode + ", productName=" + productName
 			+ ", shippedQuantity=" + shippedQuantity + ", ptrPrice=" + ptrPrice + ", listPrice=" + listPrice
 			+ ", ptrBasePrice=" + ptrBasePrice + ", invoiveNumber=" + invoiveNumber + ", invoiceDate=" + invoiceDate
-			+ ", location=" + location + ", totalAmount=" + totalAmount + "]";
+			+ ", location=" + location + ", totalAmount=" + totalAmount + ", priceListId=" + priceListId
+			+ ", priceListName=" + priceListName + "]";
 }
 
 }
