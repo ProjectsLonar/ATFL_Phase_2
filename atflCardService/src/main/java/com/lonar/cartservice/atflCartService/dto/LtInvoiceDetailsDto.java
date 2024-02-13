@@ -18,7 +18,18 @@ public class LtInvoiceDetailsDto {
 	 private String priceListId;
 	 private String priceListName;
 	 
+	 private String beatName;
+	 
 	 private List <LtInvoiceDetailsLineDto> ltInvoiceDetailsLineDto;
+
+	 	 
+	public String getBeatName() {
+		return beatName;
+	}
+
+	public void setBeatName(String beatName) {
+		this.beatName = beatName;
+	}
 
 	public String getDistributorName() {
 		return distributorName;

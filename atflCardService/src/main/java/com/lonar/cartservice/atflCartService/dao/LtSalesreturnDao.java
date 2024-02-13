@@ -32,4 +32,6 @@ public interface LtSalesreturnDao {
 	LtSalesReturnLines updateLines(LtSalesReturnLines ltSalesreturnlines) throws ServerException;
 	
 	List<LtInvoiceDetailsResponseDto> getInvoiceDetails( RequestDto requestDto) throws ServerException;
+
+	String getBeatNameAgainstInvoiceNo(String invoiceNo)throws ServerException;
 }
