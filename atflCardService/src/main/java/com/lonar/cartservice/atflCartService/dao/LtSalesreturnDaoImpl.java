@@ -129,7 +129,7 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		
 
 		List<Long> list = jdbcTemplate.queryForList(query,
-				new Object[] { requestDto.getReturnStatus(), requestDto.getInvoiceNumber(), requestDto.getSalesReturnHeaderId(),
+				new Object[] { requestDto.getReturnStatus(), requestDto.getInvoiceNumber(), requestDto.getSalesReturnNumber(),
 						requestDto.getLimit(), requestDto.getOffset()},Long.class);
 
 		if (!list.isEmpty()) {
@@ -151,7 +151,7 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		
 
 		Long count = jdbcTemplate.queryForObject(query,
-				new Object[] { requestDto.getReturnStatus(), requestDto.getInvoiceNumber(), requestDto.getSalesReturnHeaderId()},Long.class);
+				new Object[] { requestDto.getReturnStatus(), requestDto.getInvoiceNumber(),requestDto.getSalesReturnNumber()},Long.class);
 
 		return count;
 

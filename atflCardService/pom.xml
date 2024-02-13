@@ -177,7 +177,6 @@
     <version>4.9.1</version> <!-- Use the latest version available -->
 </dependency>
 		
-		
 	</dependencies>
 	
 	<dependencyManagement>
@@ -208,6 +207,7 @@
 			<name>Spring Milestones</name>
 			<url>https://repo.spring.io/milestone</url>
 		</repository>
+		
 	</repositories>
 
 </project>

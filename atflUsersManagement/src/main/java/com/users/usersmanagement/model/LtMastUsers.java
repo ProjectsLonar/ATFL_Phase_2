@@ -86,6 +86,17 @@ public class LtMastUsers extends BaseClass {
 	@Column(name = "TOKEN_DATA")
 	private String token;
 	
+	@Column(name = "ISFIRSTLOGIN")
+	private String isFirstLogin;
+	
+	public String getIsFirstLogin() {
+		return isFirstLogin;
+	}
+
+	public void setIsFirstLogin(String isFirstLogin) {
+		this.isFirstLogin = isFirstLogin;
+	}
+	
 	@Transient
 	String distributorCode;
 	

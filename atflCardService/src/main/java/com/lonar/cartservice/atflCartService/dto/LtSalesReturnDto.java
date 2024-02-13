@@ -22,6 +22,8 @@ public class LtSalesReturnDto {
 	private String outletName;
 	private String outletCode;
 	private Long userId;
+	private Double totalSalesreturnAmount;
+	private Double price;
 	
 	
 	List<LtSalesReturnLines> ltSalesReturnLines;
@@ -138,6 +140,25 @@ public class LtSalesReturnDto {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+	
+	
+
+	public Double getTotalSalesreturnAmount() {
+		return totalSalesreturnAmount;
+	}
+
+	public void setTotalSalesreturnAmount(Double totalSalesreturnAmount) {
+		this.totalSalesreturnAmount = totalSalesreturnAmount;
+	}
+	
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 
 	@Override

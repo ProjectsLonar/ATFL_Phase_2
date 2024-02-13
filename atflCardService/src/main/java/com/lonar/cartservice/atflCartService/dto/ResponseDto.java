@@ -80,6 +80,9 @@ public class ResponseDto {
 	private Long  remainingQuantity;
 	private Long  returnQuantity;
 	private String location;
+	private Double salesReturnAmount;
+	private Double price;
+	private Double totalPrice;
 		
 	public String getPTR_PRICE() {
 		return PTR_PRICE;
@@ -491,6 +494,27 @@ public class ResponseDto {
 	}
 	
 	
+	
+	public Double getSalesReturnAmount() {
+		return salesReturnAmount;
+	}
+	public void setSalesReturnAmount(Double salesReturnAmount) {
+		this.salesReturnAmount = salesReturnAmount;
+	}
+	
+	
+	public Double getPrice() {
+		return price;
+	}
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+	public Double getTotalPrice() {
+		return totalPrice;
+	}
+	public void setTotalPrice(Double totalPrice) {
+		this.totalPrice = totalPrice;
+	}
 	@Override
 	public String toString() {
 		return "ResponseDto [headerId=" + headerId + ", orderNumber=" + orderNumber + ", orderDate=" + orderDate
