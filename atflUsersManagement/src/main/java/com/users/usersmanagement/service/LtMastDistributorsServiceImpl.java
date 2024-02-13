@@ -70,6 +70,9 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 							ltMastUsers.setDistributorId(ltMastDistributors.getDistributorId());
 
 							ltMastUsers.setUserType(RoleMaster.DISTRIBUTOR);
+							
+							ltMastUsers.setIsFirstLogin("N");
+							
 
 							ltMastUsers.setEmployeeCode(ltMastDistributors.getEmployeeCode());
 
@@ -162,6 +165,8 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 							ltMastUsers.setDistributorId(ltMastDistributors.getDistributorId());
 
 							ltMastUsers.setUserType(RoleMaster.DISTRIBUTOR);
+							
+							ltMastUsers.setIsFirstLogin("N");
 
 							ltMastUsers.setEmployeeCode(ltMastDistributors.getEmployeeCode());
 

@@ -62,6 +62,8 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 
 							ltMastUsers.setUserType(RoleMaster.SALES);
 
+							ltMastUsers.setIsFirstLogin("N");
+							
 							ltMastUsers.setEmployeeCode(ltMastEmployees.getEmployeeCode());
 
 							ltMastUsers = ltMastUsersDao.saveLtMastUsers(ltMastUsers);
@@ -196,6 +198,8 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 				ltMastUsers.setPositionId(ltMastEmployees.getPositionId());
 
 				ltMastUsers.setUserType(RoleMaster.AREAHEAD);
+				
+				ltMastUsers.setIsFirstLogin("N");
 
 				ltMastUsers.setEmployeeCode(ltMastEmployees.getEmployeeCode());
 
@@ -247,6 +251,8 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 				ltMastUsers.setPositionId(ltMastEmployees.getPositionId());
 
 				ltMastUsers.setUserType(RoleMaster.AREAHEAD);
+				
+				ltMastUsers.setIsFirstLogin("N");
 
 				ltMastUsers.setEmployeeCode(ltMastEmployees.getEmployeeCode());
 
@@ -298,6 +304,8 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 					ltMastUsers.setPositionId(ltMastEmployees.getPositionId());
 
 					ltMastUsers.setUserType(RoleMaster.SALESOFFICER);
+					
+					ltMastUsers.setIsFirstLogin("N");
 
 					ltMastUsers.setEmployeeCode(ltMastEmployees.getEmployeeCode());
 
@@ -347,6 +355,8 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 				ltMastUsers.setPositionId(ltMastEmployees.getPositionId());
 
 				ltMastUsers.setUserType(RoleMaster.SYSTEMADMINISTRATOR);
+				
+				ltMastUsers.setIsFirstLogin("N");
 
 				ltMastUsers.setEmployeeCode(ltMastEmployees.getEmployeeCode());
 

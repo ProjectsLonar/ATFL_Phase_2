@@ -50,6 +50,9 @@ public class LtMastOrganisationsServiceImpl implements LtMastOrganisationsServic
 						ltMastUsers.setLastUpdateDate(new Date());
 						ltMastUsers.setOrgId(ltMastOrganisations.getOrgId());
 						ltMastUsers.setUserType(RoleMaster.ADMIN);
+						
+						ltMastUsers.setIsFirstLogin("N");
+						
 						ltMastUsers.setEmployeeCode(ltMastOrganisations.getEmployeeCode());
 						ltMastUsers.setPositionId(ltMastOrganisations.getPositionId());
 						ltMastUsers = ltMastUsersDao.saveLtMastUsers(ltMastUsers);
@@ -100,6 +103,7 @@ public class LtMastOrganisationsServiceImpl implements LtMastOrganisationsServic
 						ltMastUsers.setLastUpdateDate(new Date());
 						ltMastUsers.setOrgId(ltMastOrganisations.getOrgId());
 						ltMastUsers.setUserType(RoleMaster.ADMIN);
+						ltMastUsers.setIsFirstLogin("N");
 						ltMastUsers.setEmployeeCode(ltMastOrganisations.getEmployeeCode());
 						ltMastUsers.setPositionId(ltMastOrganisations.getPositionId());
 						ltMastUsers = ltMastUsersDao.saveLtMastUsers(ltMastUsers);

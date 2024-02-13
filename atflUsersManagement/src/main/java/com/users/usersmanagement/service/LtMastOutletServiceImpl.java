@@ -107,6 +107,8 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 						ltMastUsers.setOutletId(ltMastOutlets.getOutletId());
 
 						ltMastUsers.setUserType(RoleMaster.RETAILER);
+						
+						ltMastUsers.setIsFirstLogin("N");
 
 						ltMastUsers.setPositionId(ltMastOutlets.getPositionsId());
 
@@ -522,6 +524,7 @@ try {
 		  ltMastUsers.setOutletId(outletDetails.getOutletId());
 		  ltMastUsers.setMobileNumber(ltMastOutletsDump.getPrimaryMobile());
 		  ltMastUsers.setUserType("RETAILER");
+		  ltMastUsers.setIsFirstLogin("Y");
 		  ltMastUsers.setUserName(outletDetails.getOutletName());
 		  ltMastUsers.setStatus("ACTIVE");
 		  ltMastUsers.setCreatedBy(ltMastOutletsDump.getCreatedBy());
