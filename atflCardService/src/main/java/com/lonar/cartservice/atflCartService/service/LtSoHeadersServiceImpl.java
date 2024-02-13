@@ -1003,9 +1003,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						if (soHeaderDto.getUserId() != null) {
 							ltSoHeader.setLastUpdatedBy(soHeaderDto.getUserId());
 						}
-//						if (soHeaderDto.getUserId() != null) {
-//							ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
-//						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
+						}
 						if (soHeaderDto.getAddress() != null) {
 							ltSoHeader.setAddress(soHeaderDto.getAddress());
 						}
@@ -1029,11 +1029,82 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					//	StringBuffer strQuery =  new StringBuffer();
 						
 						for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
+//							
+//							SoLineDto soLineDto = (SoLineDto) iterator.next();
+//							StringBuffer strQuery =  new StringBuffer();
+//							strQuery.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
+//
+//							strQuery.append("(");
+//
+//							//LtSoLines ltSoLines = new LtSoLines();
+//							
+//							if (ltSoHeader.getHeaderId() != null) {
+//								//ltSoLines.setHeaderId(ltSoHeader.getHeaderId());
+//								strQuery.append(ltSoHeader.getHeaderId()+",");
+//								
+//							}
+//							if (soLineDto.getProductId() != null) {
+//								//ltSoLines.setProductId(soLineDto.getProductId());
+//								strQuery.append("'"+soLineDto.getProductId()+"',");
+//							}
+//							if (soLineDto.getQuantity() != null) {
+//								//ltSoLines.setQuantity(soLineDto.getQuantity());
+//								strQuery.append(soLineDto.getQuantity()+",");
+//							}
+//							if (soLineDto.getListPrice() != null) {
+//								//ltSoLines.setListPrice(soLineDto.getListPrice());
+//								strQuery.append("'"+soLineDto.getListPrice()+"',");
+//							}
+//							if (soLineDto.getDeliveryDate() != null) {
+//								//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
+//								strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
+//							}
+//							strQuery.append("'"+DRAFT.toString()+"',");//Status
+//							
+//
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							
+//							strQuery.append("'"+new Date()+"',");//Created Date
+//							
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							
+//							strQuery.append("'"+new Date()+"',");//Last update date
+//							 
+//							if (soLineDto.getPtrPrice() != null) {
+//								//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
+//								strQuery.append("'"+soLineDto.getPtrPrice()+"'");
+//							}else {
+//								//ltSoLines.setPtrPrice(soLineDto.getListPrice());
+//								strQuery.append("'"+soLineDto.getListPrice()+"'");
+//							}
+//							
+//							//ltSoLines.setStatus(DRAFT);
+//							//ltSoLines.setLastUpdateDate(new Date());
+//							//ltSoLines.setCreationDate(new Date());
+//							strQuery.append(")");
+//							
+//							//ltSoLines = ltSoLinesRepository.save(ltSoLines);									
+//							String query = strQuery.toString();
+//							int n = ltSoHeadersDao.insertLine(query);
 							
-							SoLineDto soLineDto = (SoLineDto) iterator.next();
-							StringBuffer strQuery =  new StringBuffer();
-							strQuery.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
+							
 
+							
+							SoLineDto soLineDto = (SoLineDto) iterator.next();	
+							StringBuffer strQuery =  new StringBuffer();
+							strQuery.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,status,created_by,last_update_login,last_updated_by,ptr_price,eimstatus,delivery_date,creation_date,last_update_date) VALUES ");
+							
 							strQuery.append("(");
 
 							//LtSoLines ltSoLines = new LtSoLines();
@@ -1055,48 +1126,61 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 								//ltSoLines.setListPrice(soLineDto.getListPrice());
 								strQuery.append("'"+soLineDto.getListPrice()+"',");
 							}
-							if (soLineDto.getDeliveryDate() != null) {
-								//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
-								strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
-							}
 							strQuery.append("'"+DRAFT.toString()+"',");//Status
 							
-
 							if (soHeaderDto.getUserId() != null) {
 								//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
 								strQuery.append(soHeaderDto.getUserId()+",");
 							}
-							
-							strQuery.append("'"+new Date()+"',");//Created Date
-							
 							if (soHeaderDto.getUserId() != null) {
 								//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
 								strQuery.append(soHeaderDto.getUserId()+",");
 							}
-							
 							if (soHeaderDto.getUserId() != null) {
 								//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
 								strQuery.append(soHeaderDto.getUserId()+",");
 							}
-							
-							strQuery.append("'"+new Date()+"',");//Last update date
-							 
 							if (soLineDto.getPtrPrice() != null) {
 								//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
-								strQuery.append("'"+soLineDto.getPtrPrice()+"'");
+								strQuery.append("'"+soLineDto.getPtrPrice()+"',");
 							}else {
 								//ltSoLines.setPtrPrice(soLineDto.getListPrice());
-								strQuery.append("'"+soLineDto.getListPrice()+"'");
+								strQuery.append("'"+soLineDto.getListPrice()+"',");
 							}
+						//	if(soLineDto.getEimStatus()!= null) {
+							strQuery.append("'"+null+"',"); // eimstatus
+						//	} 		
+							if (soLineDto.getDeliveryDate() != null) {
+								//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
+								
+//								DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+//								Date date = (Date)formatter.parse(soLineDto.getDeliveryDate().toString());
+//								SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+//								String deliveryDate =outputFormat.format(date);
+//							//	System.out.println("formatedDate : " + deliveryDate); 
+													
+							//	strQuery.append("'"+deliveryDate+"',");
+								strQuery.append("'"+"',");
+								
+							 //strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
+							}
+							
+							//strQuery.append("'"+new Date()+"',");//Created Date
+							strQuery.append("'"+"',");  // set null for demo
+							
+							//strQuery.append("'"+new Date()+"'");//Last update date
+							strQuery.append("'"+"'"); // set null for demo
 							
 							//ltSoLines.setStatus(DRAFT);
 							//ltSoLines.setLastUpdateDate(new Date());
 							//ltSoLines.setCreationDate(new Date());
-							strQuery.append(")");
+//							strQuery.append("),");
 							
-							//ltSoLines = ltSoLinesRepository.save(ltSoLines);									
+							strQuery.append(")");
 							String query = strQuery.toString();
 							int n = ltSoHeadersDao.insertLine(query);
+						
+							
 						}
 				
 							System.out.println("Line insert successfully");
