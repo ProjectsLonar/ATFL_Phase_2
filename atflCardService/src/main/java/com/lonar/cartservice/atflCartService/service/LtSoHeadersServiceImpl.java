@@ -472,6 +472,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		 String seqNofiveDigit = sequanceNo;
 		 	//String seqNoSixDigit = "1"+seqNofiveDigit;
 		 String seqNoSixDigit = ltSoHeadersDao.getOrderSequence();	
+		 
+		 System.out.println("seqNoSixDigit"+seqNoSixDigit);
+		 
 		 String orderNumber = null;
 			if(distributorDetailsDto.getDistributorCrmCode() != null) {
 				 orderNumber = "MSO-"+distributorDetailsDto.getDistributorCrmCode()+"-"+finYear+"-"+seqNoSixDigit;

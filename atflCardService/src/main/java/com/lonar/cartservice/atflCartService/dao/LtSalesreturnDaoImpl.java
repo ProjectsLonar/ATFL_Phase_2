@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.LtInvoiceDetailsResponseDto;
 import com.lonar.cartservice.atflCartService.dto.LtSalesReturnDto;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
@@ -227,5 +228,13 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			}
 			
 			return null;
+	}
+	
+	
+	@Override
+	public String getSalesReturnSequence(){
+		String query= env.getProperty("getSalesReturnSequence");
+		String sequenceNumber= jdbcTemplate.queryForObject(query, new Object[] {}, String.class);
+		return sequenceNumber;
 	}
 }
