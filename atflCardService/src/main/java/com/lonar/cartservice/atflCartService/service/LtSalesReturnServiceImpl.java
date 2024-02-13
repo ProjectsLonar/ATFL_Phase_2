@@ -49,6 +49,8 @@ import com.lonar.cartservice.atflCartService.model.LtSalesReturnStatus;
 import com.lonar.cartservice.atflCartService.model.Status;
 import com.lonar.cartservice.atflCartService.repository.LtSalesRetrunLinesRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSalesReturnRepository;
+import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
+
 
 @Service
 @PropertySource(value = "classpath:queries/cartmasterqueries.properties", ignoreResourceNotFound = true)
@@ -633,9 +635,9 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 	}
 	@Override
 	public Status getInvoices(RequestDto requestDto) throws ServerException{
-		
 		Status status = new Status();
-		List<LtInvoiceDetailsResponseDto> ltInvoiceDetailsResponseDto = new ArrayList<LtInvoiceDetailsResponseDto>();
+		try {
+			List<LtInvoiceDetailsResponseDto> ltInvoiceDetailsResponseDto = new ArrayList<LtInvoiceDetailsResponseDto>();
 		ltInvoiceDetailsResponseDto = ltSalesreturnDao.getInvoiceDetails(requestDto);
 		
 		Map<String, LtInvoiceDetailsDto> invoiceDetailsHeaderDtoMap = new LinkedHashMap<String, LtInvoiceDetailsDto>();
@@ -676,6 +678,14 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				// add data into soheader map
 				LtInvoiceDetailsDto invoiceHeaderDto = new LtInvoiceDetailsDto();
 				
+				String invoiceNo= responseDto.getInvoiveNumber();
+				String beatName= null; 
+				beatName =  ltSalesreturnDao.getBeatNameAgainstInvoiceNo(invoiceNo);
+				System.out.println("beatName is =" + beatName);
+				//if(responseDto.getInvoiveNumber()!= null) {
+				//	ltInvoiceDetailsResponseDto = ltSalesreturnDao.getInvoiceDetails(requestDto);
+					//}
+								
 				invoiceHeaderDto.setDistributorName(responseDto.getDistributorName());
 				invoiceHeaderDto.setDistributorCode(responseDto.getDistributorCode());
 				invoiceHeaderDto.setDistributorId(responseDto.getDistributorId());
@@ -688,6 +698,9 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				invoiceHeaderDto.setTotalAmount(responseDto.getTotalAmount());
 				invoiceHeaderDto.setPriceListId(responseDto.getPriceListId());
 				invoiceHeaderDto.setPriceListName(responseDto.getPriceListName());
+				if(beatName!= null) {
+				invoiceHeaderDto.setBeatName(responseDto.getBeatName());
+				}				
 				
 				invoiceDetailsHeaderDtoMap.put(responseDto.getInvoiveNumber(), invoiceHeaderDto);
 
@@ -722,10 +735,13 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
 			status.setData(invoiceDetailsDto);
 			return status;
-		} else {
+		} 
+			else {
 			status.setCode(FAIL);
 			status.setMessage("RECORD NOT FOUND");
 			return status;
 		}
+		}catch(Exception e) {e.printStackTrace();}
+		return status;
 	}
 }

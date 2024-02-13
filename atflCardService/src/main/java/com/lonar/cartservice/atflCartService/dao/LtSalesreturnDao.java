@@ -36,4 +36,6 @@ public interface LtSalesreturnDao {
 	List<LtInvoiceDetailsResponseDto> getInvoiceDetails( RequestDto requestDto) throws ServerException;
 	
 	String getSalesReturnSequence();
+
+	String getBeatNameAgainstInvoiceNo(String invoiceNo)throws ServerException;
 }

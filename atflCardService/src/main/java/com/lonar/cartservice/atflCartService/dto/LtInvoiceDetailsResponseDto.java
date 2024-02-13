@@ -21,6 +21,16 @@ public class LtInvoiceDetailsResponseDto {
  private Long totalAmount;
  private String priceListId;
  private String priceListName;
+ private String beatName;
+ 
+ 
+ 
+public String getBeatName() {
+	return beatName;
+}
+public void setBeatName(String beatName) {
+	this.beatName = beatName;
+}
 public String getDistributorName() {
 	return distributorName;
 }

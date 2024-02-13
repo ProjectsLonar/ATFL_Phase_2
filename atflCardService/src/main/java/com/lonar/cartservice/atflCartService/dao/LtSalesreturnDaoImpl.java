@@ -211,7 +211,6 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		try {
 			String query = env.getProperty("getInvoiceDetails");
 			
-
 			List<LtInvoiceDetailsResponseDto> list = jdbcTemplate.query(query,
 					new Object[] { requestDto.getDistributorId(), requestDto.getInvoiceNumber(),requestDto.getSearchField(),
 							requestDto.getLimit(), requestDto.getOffset()},
@@ -228,13 +227,28 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			}
 			
 			return null;
-	}
-	
+	}	
 	
 	@Override
 	public String getSalesReturnSequence(){
 		String query= env.getProperty("getSalesReturnSequence");
 		String sequenceNumber= jdbcTemplate.queryForObject(query, new Object[] {}, String.class);
 		return sequenceNumber;
+	}
+
+	@Override
+	public String getBeatNameAgainstInvoiceNo(String invoiceNo) throws ServerException {
+	  	   try {
+		    String query = env.getProperty("getBeatNameAgainstInvoiceNo");
+		    System.out.print(query);
+		    System.out.print(invoiceNo);
+		    String beatName = jdbcTemplate.queryForObject(query, new Object[] {invoiceNo},String.class);
+	        if(beatName!= null) {
+		    return beatName;
+	        }
+	  	 }catch(Exception e) 
+	  	   {e.printStackTrace();
+	  	   }return null;
+
 	}
 }
