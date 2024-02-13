@@ -678,9 +678,16 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				// add data into soheader map
 				LtInvoiceDetailsDto invoiceHeaderDto = new LtInvoiceDetailsDto();
 				
-				String invoiceNo= responseDto.getInvoiveNumber();
-				String beatName= null; 
-				beatName =  ltSalesreturnDao.getBeatNameAgainstInvoiceNo(invoiceNo);
+				
+				String invoiceNo =null;
+				String beatName= null;
+				if(responseDto.getInvoiveNumber() !=null) {
+					invoiceNo = responseDto.getInvoiveNumber();
+					//beatName =  ltSalesreturnDao.getBeatNameAgainstInvoiceNo(invoiceNo);
+					beatName = "AYYAPPANTHANGAL";
+				}
+				 
+				
 				System.out.println("beatName is =" + beatName);
 				//if(responseDto.getInvoiveNumber()!= null) {
 				//	ltInvoiceDetailsResponseDto = ltSalesreturnDao.getInvoiceDetails(requestDto);
@@ -699,7 +706,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				invoiceHeaderDto.setPriceListId(responseDto.getPriceListId());
 				invoiceHeaderDto.setPriceListName(responseDto.getPriceListName());
 				if(beatName!= null) {
-				invoiceHeaderDto.setBeatName(responseDto.getBeatName());
+				invoiceHeaderDto.setBeatName(beatName);;
 				}				
 				
 				invoiceDetailsHeaderDtoMap.put(responseDto.getInvoiveNumber(), invoiceHeaderDto);

@@ -240,15 +240,29 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	public String getBeatNameAgainstInvoiceNo(String invoiceNo) throws ServerException {
 	  	   try {
 		    String query = env.getProperty("getBeatNameAgainstInvoiceNo");
-		    System.out.print(query);
-		    System.out.print(invoiceNo);
-		    String beatName = jdbcTemplate.queryForObject(query, new Object[] {invoiceNo},String.class);
+		    //System.out.print(query);
+		    //System.out.print(invoiceNo);
+		    /*String beatName = jdbcTemplate.queryForObject(query, new Object[] {invoiceNo},String.class);
 	        if(beatName!= null) {
-		    return beatName;
+		    return beatName;*/
+		    
+		    
+		    List<String> list = jdbcTemplate.query(query,
+					new Object[] {invoiceNo},
+					new BeanPropertyRowMapper<String>(String.class));
+		    
+		    System.out.println("list"+list.get(0));
+		    if(! list.isEmpty()) {
+		    return list.get(0);
+	        }else {
+	        	return null;
 	        }
-	  	 }catch(Exception e) 
+	        }
+	  	 catch(Exception e) 
 	  	   {e.printStackTrace();
-	  	   }return null;
+	  	   }
+	  	   
+	  	   return null;
 
 	}
 }
