@@ -61,6 +61,17 @@ public class LtMastUsers extends BaseClass {
 	@Column(name = "ALTERNATE_NO")
 	private String alternateNo;
 
+	
+	@Column(name = "ISFIRSTLOGIN")
+	private String isFirstLogin;
+	
+	public String getIsFirstLogin() {
+		return isFirstLogin;
+	}
+
+	public void setIsFirstLogin(String isFirstLogin) {
+		this.isFirstLogin = isFirstLogin;
+	}
 	public Long getUserId() {
 		return userId;
 	}

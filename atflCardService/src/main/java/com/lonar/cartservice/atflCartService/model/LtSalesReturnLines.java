@@ -45,6 +45,12 @@ public class LtSalesReturnLines extends BaseClass {
 	@Column(name = "LOCATION")
 	String location;
 	
+	@Column(name = "PRICE")
+	Double price;
+	
+	@Column(name = "TOTAL_PRICE")
+	Double totalPrice;
+	
 	@Transient
 	String productName;
 	
@@ -131,6 +137,24 @@ public class LtSalesReturnLines extends BaseClass {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+	
+	
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public Double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(Double totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 	@Override

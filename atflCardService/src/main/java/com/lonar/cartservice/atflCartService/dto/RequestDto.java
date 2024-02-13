@@ -22,6 +22,9 @@ public class RequestDto {
 	private String invoiceNumber;
 	private String returnStatus;
 	private Long salesReturnHeaderId;
+	private String salesReturnNumber;
+	private Double price;
+	private Double totalPrice;
 
 	public String getOrgId() {
 		return orgId;
@@ -150,6 +153,33 @@ public class RequestDto {
 
 	public void setSalesReturnHeaderId(Long salesReturnHeaderId) {
 		this.salesReturnHeaderId = salesReturnHeaderId;
+	}
+
+	
+	public String getSalesReturnNumber() {
+		return salesReturnNumber;
+	}
+
+	public void setSalesReturnNumber(String salesReturnNumber) {
+		this.salesReturnNumber = salesReturnNumber;
+	}
+	
+	
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public Double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(Double totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 	@Override

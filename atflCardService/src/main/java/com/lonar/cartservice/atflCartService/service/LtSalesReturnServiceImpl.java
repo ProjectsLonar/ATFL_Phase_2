@@ -145,6 +145,10 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 					}if(soLine.getStatus() !=null) {
 						ltSoLinestosave.setStatus(soLine.getStatus());
 					}
+					if(soLine.getPrice() !=null) {
+						ltSoLinestosave.setPrice(soLine.getPrice());
+						ltSoLinestosave.setTotalPrice((ltSoLinestosave.getPrice() *ltSoLinestosave.getReturnQuantity()));
+					}
 					ltSoLinestosave = updateLines(ltSoLinestosave);
 				}
 				
@@ -222,6 +226,8 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				
 			}
 			///siebel json creation
+			
+			if(ltSalesReturnDto.getReturnStatus().equalsIgnoreCase("APPROVED")) {
 			
 			String url = "https://10.245.4.70:9014/siebel/v1.0/service/AT%20New%20Order%20Creation%20REST%20BS/CreateReturnOrder?matchrequestformat=y";
 	        String method = "POST";
@@ -373,10 +379,10 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 		        System.out.println("Response Body: " + response.toString());
 
 			  			
-			
+			}
 			//get sales return response
 			RequestDto requestDto = new RequestDto();
-			requestDto.setSalesReturnHeaderId(ltSalesReturnHeader.getSalesReturnHeaderId());
+			requestDto.setSalesReturnNumber(ltSalesReturnHeader.getSalesReturnNumber());
 			requestDto.setLimit(1);
 			requestDto.setOffset(2);
 			
@@ -497,7 +503,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 		
 		List<ResponseDto> responseDtoList = new ArrayList<ResponseDto>();
 		
-		
+		Double totalReturnAmount = (double) 0;
 		 responseDtoList = ltSalesreturnDao.getSalesReturn(IdsList);
 		
 		Map<Long, LtSalesReturnDto> salesReturnHeaderDtoMap = new LinkedHashMap<Long, LtSalesReturnDto>();
@@ -530,6 +536,14 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				salesReturnLineDto.setLocation(responseDto.getLocation());
 			}
 			
+			if (responseDto.getPrice() != null) {
+				salesReturnLineDto.setPrice(responseDto.getPrice());
+			}
+			if(responseDto.getTotalPrice() !=null) {
+				salesReturnLineDto.setTotalPrice(responseDto.getTotalPrice());
+				totalReturnAmount = totalReturnAmount + salesReturnLineDto.getTotalPrice();
+			}
+			
 			if (salesReturnLineDtoMap.get(responseDto.getSalesReturnHeaderId()) != null) {
 				// already exost
 				List<LtSalesReturnLines> soLineDtoList = salesReturnLineDtoMap.get(responseDto.getSalesReturnHeaderId());
@@ -546,6 +560,8 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				soHeaderDto.setOutletId(responseDto.getOutletId());
 				soHeaderDto.setReturnReason(responseDto.getReturnReason());
 				soHeaderDto.setReturnStatus(responseDto.getReturnStatus());
+				soHeaderDto.setSalesReturnDate(responseDto.getSalesReturnDate());
+				soHeaderDto.setTotalSalesreturnAmount(totalReturnAmount);
 				
 				salesReturnHeaderDtoMap.put(responseDto.getHeaderId(), soHeaderDto);
 

@@ -86,6 +86,17 @@ public class LtMastUsers{
 	@Column(name = "RECENT_SEARCH_ID")
 	private String recentSerachId;
 	
+	@Column(name = "ISFIRSTLOGIN")
+	private String isFirstLogin;
+	
+	public String getIsFirstLogin() {
+		return isFirstLogin;
+	}
+
+	public void setIsFirstLogin(String isFirstLogin) {
+		this.isFirstLogin = isFirstLogin;
+	}
+	
 	@Transient
 	String distributorCode;
 	
