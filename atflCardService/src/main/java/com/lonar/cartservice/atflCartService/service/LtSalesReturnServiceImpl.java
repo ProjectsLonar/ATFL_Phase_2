@@ -121,6 +121,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				//save sales return lines
 				List<LtSalesReturnLines> salesReturnLines = ltSalesReturnDto.getLtSalesReturnLines();
 				
+				System.out.println("salesReturnLines"+salesReturnLines);
 				for (Iterator iterator = salesReturnLines.iterator(); iterator.hasNext();) {
 					LtSalesReturnLines soLine = (LtSalesReturnLines) iterator.next();
 
@@ -150,6 +151,8 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 						ltSoLinestosave.setTotalPrice((ltSoLinestosave.getPrice() *ltSoLinestosave.getReturnQuantity()));
 					}
 					ltSoLinestosave = updateLines(ltSoLinestosave);
+					
+					System.out.println("ltSoLinestosave"+ltSoLinestosave);
 				}
 				
 			}else {
@@ -219,6 +222,11 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 						ltSoLinestosave.setLocation(soLine.getLocation());
 					}if(soLine.getStatus() !=null) {
 						ltSoLinestosave.setStatus(soLine.getStatus());
+					}
+					
+					if(soLine.getPrice() !=null) {
+						ltSoLinestosave.setPrice(soLine.getPrice());
+						ltSoLinestosave.setTotalPrice((ltSoLinestosave.getPrice() *ltSoLinestosave.getReturnQuantity()));
 					}
 					ltSoLinestosave = updateLines(ltSoLinestosave);
 				}
@@ -417,7 +425,9 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 	    }
 	
 	   //Long sequanceNo = ltSalesreturnDao.getSequancesValue();
-		String seqNoSixDigit = String.format("%06d", 123);
+		//String seqNoSixDigit = String.format("%06d", 123);
+	    String seqNoSixDigit = ltSalesreturnDao.getSalesReturnSequence();
+	    System.out.println("seqNoSixDigit"+seqNoSixDigit);
 		return "MSR-" + finYear + "-" + seqNoSixDigit;
 	}
 	
@@ -505,6 +515,8 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 		
 		Double totalReturnAmount = (double) 0;
 		 responseDtoList = ltSalesreturnDao.getSalesReturn(IdsList);
+		 
+		 System.out.println("responseDtoList"+responseDtoList);
 		
 		Map<Long, LtSalesReturnDto> salesReturnHeaderDtoMap = new LinkedHashMap<Long, LtSalesReturnDto>();
 		Map<Long, List<LtSalesReturnLines>> salesReturnLineDtoMap = new LinkedHashMap<Long, List<LtSalesReturnLines>>();
@@ -543,6 +555,8 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				salesReturnLineDto.setTotalPrice(responseDto.getTotalPrice());
 				totalReturnAmount = totalReturnAmount + salesReturnLineDto.getTotalPrice();
 			}
+			
+			 System.out.println("responseDto.getPrice()"+responseDto.getPrice());
 			
 			if (salesReturnLineDtoMap.get(responseDto.getSalesReturnHeaderId()) != null) {
 				// already exost
@@ -664,9 +678,16 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				// add data into soheader map
 				LtInvoiceDetailsDto invoiceHeaderDto = new LtInvoiceDetailsDto();
 				
-				String invoiceNo= responseDto.getInvoiveNumber();
-				String beatName= null; 
-				beatName =  ltSalesreturnDao.getBeatNameAgainstInvoiceNo(invoiceNo);
+				
+				String invoiceNo =null;
+				String beatName= null;
+				if(responseDto.getInvoiveNumber() !=null) {
+					invoiceNo = responseDto.getInvoiveNumber();
+					//beatName =  ltSalesreturnDao.getBeatNameAgainstInvoiceNo(invoiceNo);
+					beatName = "AYYAPPANTHANGAL";
+				}
+				 
+				
 				System.out.println("beatName is =" + beatName);
 				//if(responseDto.getInvoiveNumber()!= null) {
 				//	ltInvoiceDetailsResponseDto = ltSalesreturnDao.getInvoiceDetails(requestDto);
@@ -685,7 +706,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				invoiceHeaderDto.setPriceListId(responseDto.getPriceListId());
 				invoiceHeaderDto.setPriceListName(responseDto.getPriceListName());
 				if(beatName!= null) {
-				invoiceHeaderDto.setBeatName(responseDto.getBeatName());
+				invoiceHeaderDto.setBeatName(beatName);;
 				}				
 				
 				invoiceDetailsHeaderDtoMap.put(responseDto.getInvoiveNumber(), invoiceHeaderDto);

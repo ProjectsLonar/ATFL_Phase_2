@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.LtInvoiceDetailsResponseDto;
 import com.lonar.cartservice.atflCartService.dto.LtSalesReturnDto;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
@@ -226,20 +227,42 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			}
 			
 			return null;
+	}	
+	
+	@Override
+	public String getSalesReturnSequence(){
+		String query= env.getProperty("getSalesReturnSequence");
+		String sequenceNumber= jdbcTemplate.queryForObject(query, new Object[] {}, String.class);
+		return sequenceNumber;
 	}
 
 	@Override
 	public String getBeatNameAgainstInvoiceNo(String invoiceNo) throws ServerException {
 	  	   try {
 		    String query = env.getProperty("getBeatNameAgainstInvoiceNo");
-		    System.out.print(query);
-		    System.out.print(invoiceNo);
-		    String beatName = jdbcTemplate.queryForObject(query, new Object[] {invoiceNo},String.class);
+		    //System.out.print(query);
+		    //System.out.print(invoiceNo);
+		    /*String beatName = jdbcTemplate.queryForObject(query, new Object[] {invoiceNo},String.class);
 	        if(beatName!= null) {
-		    return beatName;
+		    return beatName;*/
+		    
+		    
+		    List<String> list = jdbcTemplate.query(query,
+					new Object[] {invoiceNo},
+					new BeanPropertyRowMapper<String>(String.class));
+		    
+		    System.out.println("list"+list.get(0));
+		    if(! list.isEmpty()) {
+		    return list.get(0);
+	        }else {
+	        	return null;
 	        }
-	  	 }catch(Exception e) 
+	        }
+	  	 catch(Exception e) 
 	  	   {e.printStackTrace();
-	  	   }return null;
+	  	   }
+	  	   
+	  	   return null;
+
 	}
 }

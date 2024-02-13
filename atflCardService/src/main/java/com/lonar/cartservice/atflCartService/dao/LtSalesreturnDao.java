@@ -1,8 +1,10 @@
 package com.lonar.cartservice.atflCartService.dao;
 
+import java.io.IOException;
 import java.rmi.ServerException;
 import java.util.List;
 
+import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.LtInvoiceDetailsResponseDto;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.ResponseDto;
@@ -32,6 +34,8 @@ public interface LtSalesreturnDao {
 	LtSalesReturnLines updateLines(LtSalesReturnLines ltSalesreturnlines) throws ServerException;
 	
 	List<LtInvoiceDetailsResponseDto> getInvoiceDetails( RequestDto requestDto) throws ServerException;
+	
+	String getSalesReturnSequence();
 
 	String getBeatNameAgainstInvoiceNo(String invoiceNo)throws ServerException;
 }
