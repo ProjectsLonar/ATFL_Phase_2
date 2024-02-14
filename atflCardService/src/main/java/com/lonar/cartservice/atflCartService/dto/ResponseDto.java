@@ -83,6 +83,7 @@ public class ResponseDto {
 	private Double salesReturnAmount;
 	private Double price;
 	private Double totalPrice;
+	private String beatName;
 		
 	public String getPTR_PRICE() {
 		return PTR_PRICE;
@@ -514,6 +515,14 @@ public class ResponseDto {
 	}
 	public void setTotalPrice(Double totalPrice) {
 		this.totalPrice = totalPrice;
+	}
+	
+	
+	public String getBeatName() {
+		return beatName;
+	}
+	public void setBeatName(String beatName) {
+		this.beatName = beatName;
 	}
 	@Override
 	public String toString() {

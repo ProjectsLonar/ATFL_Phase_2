@@ -53,8 +53,12 @@ public class LtSalesReturnHeader extends BaseClass {
 	@Column(name = "SALES_RETURN_DATE")
 	Date salesReturnDate;
 	
-	@Transient
-	private String outletName;
+	@Column(name = "OUTLET_NAME")
+	String  outletName;
+	
+	@Column(name = "BEAT_NAME")
+	String  beatName;
+	
 	
 	@Transient
 	private String outletCode;
@@ -155,6 +159,14 @@ public class LtSalesReturnHeader extends BaseClass {
 
 	public void setOutletCode(String outletCode) {
 		this.outletCode = outletCode;
+	}
+	
+	public String getBeatName() {
+		return beatName;
+	}
+
+	public void setBeatName(String beatName) {
+		this.beatName = beatName;
 	}
 
 	@Override

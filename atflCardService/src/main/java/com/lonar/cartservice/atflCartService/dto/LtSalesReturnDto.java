@@ -24,6 +24,7 @@ public class LtSalesReturnDto {
 	private Long userId;
 	private Double totalSalesreturnAmount;
 	private Double price;
+	private String beatName;
 	
 	
 	List<LtSalesReturnLines> ltSalesReturnLines;
@@ -159,6 +160,16 @@ public class LtSalesReturnDto {
 
 	public void setPrice(Double price) {
 		this.price = price;
+	}
+
+	
+	
+	public String getBeatName() {
+		return beatName;
+	}
+
+	public void setBeatName(String beatName) {
+		this.beatName = beatName;
 	}
 
 	@Override

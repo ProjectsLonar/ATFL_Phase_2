@@ -128,9 +128,14 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		try {
 		String query = env.getProperty("getSalesReturnHeader");
 		
+		String status = null;
+		if(requestDto.getReturnStatus() !=null)
+		{
+			status = requestDto.getReturnStatus().toUpperCase();
+		}
 
 		List<Long> list = jdbcTemplate.queryForList(query,
-				new Object[] { requestDto.getReturnStatus(), requestDto.getInvoiceNumber(), requestDto.getSalesReturnNumber(),
+				new Object[] { status, requestDto.getInvoiceNumber(), requestDto.getSalesReturnNumber(),
 						requestDto.getLimit(), requestDto.getOffset()},Long.class);
 
 		if (!list.isEmpty()) {
@@ -151,8 +156,14 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		String query = env.getProperty("getSalesReturnRecordCount");
 		
 
+		String status = null;
+		if(requestDto.getReturnStatus() !=null)
+		{
+			status = requestDto.getReturnStatus().toUpperCase();
+		}
+
 		Long count = jdbcTemplate.queryForObject(query,
-				new Object[] { requestDto.getReturnStatus(), requestDto.getInvoiceNumber(),requestDto.getSalesReturnNumber()},Long.class);
+				new Object[] { status, requestDto.getInvoiceNumber(),requestDto.getSalesReturnNumber()},Long.class);
 
 		return count;
 
