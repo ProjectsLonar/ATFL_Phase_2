@@ -246,11 +246,13 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 				
 				List<LtMastUsers> ltMastUsers = ltMastOutletDao.getAllSalesOfficerAgainstDist(ltMastOutletsDumpupdated.getDistributorId(),
 						ltMastOutletsDumpupdated.getOrgId());
+				if(ltMastUsers !=null) {
 				for(LtMastUsers user:ltMastUsers) {
 					System.out.println("user"+user);
 					if(user !=null) {
 				webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated);
 				}}
+				}
 
 				status.setMessage("Send For approval.");
 				status.setData(ltMastOutletsDumpupdated);
