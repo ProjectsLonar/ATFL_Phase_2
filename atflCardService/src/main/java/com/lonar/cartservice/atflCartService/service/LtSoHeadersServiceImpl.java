@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -1184,9 +1185,14 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							int n = ltSoHeadersDao.insertLine(query);
 						
 							
-						}
-				
+						}				
 							System.out.println("Line insert successfully");
+							
+					//		sending notification for approve order
+							sendNotifications(ltSoHeader);
+					//    inserting save order data into siebel   
+								  sampleCode(ltSoHeader, soHeaderDto);
+								  
 							RequestDto requestDto = new RequestDto();
 							requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
 							requestDto.setLimit(1);
@@ -1690,7 +1696,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
             lineItem1.put("Id", Integer.toString(i+1));
             DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
 			Date date = (Date)formatter.parse(lineItem.get(i).getDeliveryDate().toString());
-			SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+			SimpleDateFormat outputFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss"); //("dd/MM/yyyy hh:mm:ss");
 			String deliDate =outputFormat.format(date);
             lineItem1.put("Due Date", deliDate);
             lineItem1.put("Name", lineItem.get(i).getProductName());
@@ -1796,37 +1802,56 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         System.out.println("Response Message : " + msg);
         
      // Read the response body
-        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
         StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            response.append(line);
-            System.out.println("response is = " + response);
-        }
-        reader.close();
+        BufferedReader reader;
+        InputStream inputStream;
+        if(responseCode >= 200 && responseCode < 300 ) {
+        	inputStream = con.getInputStream();
+        	reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String line;
+          while ((line = reader.readLine()) != null) {
+        	  System.out.println("line success response is="+line);
+              response.append(line);
+              System.out.println("success response is = " + response);
+          }
+          reader.close();
+  
+//           Show the response
+          System.out.println("Response Body: " + response.toString());
 
-        // Show the response
-        System.out.println("Response Body: " + response.toString());
-
-    // Create an ObjectMapper instance
+        }else {
+        	     reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                 String line;
+                   while ((line = reader.readLine()) != null) 
+                 {
+      	            System.out.println("line error response is="+line);
+                    response.append(line);
+                 }        
+        	     inputStream = con.getErrorStream();
+        	     System.out.println("Error response: " + responseCode + " - " + msg);
+        	     System.out.println("Error Response Body: " + response);
+        	 }
+        
+        // saving response details in to table 
+        String resCode= Integer.toString(responseCode);
+        ltSoHeader.setSiebelStatus(resCode);
+        String res= response.toString();
+        ltSoHeader.setSiebelRemark(res);
+        
+       // Create an ObjectMapper instance
        ObjectMapper objectMapper = new ObjectMapper();
        
        // Parse the response body into a JSON object
        JsonNode rootNode = objectMapper.readTree(response.toString());
        // Access the "Invoice Number" field from the JSON object
+       if(rootNode!= null && responseCode ==200) {
        String invoiceNumber = rootNode.get("Invoice Number").asText();
        // Now you can use the invoiceNumber variable as needed
        System.out.println("Invoice Number: " + invoiceNumber);
              
        ltSoHeader.setSiebelInvoiceNumber(invoiceNumber);
-       
-       String resCode= Integer.toString(responseCode);
-       ltSoHeader.setSiebelStatus(resCode);
-       
-       String res= response.toString();
-       ltSoHeader.setSiebelRemark(res);
-       //System.out.println("Invoice Number: " + invoiceNumber);
-       
+		}
+              
 	} catch (Exception e) {
         e.printStackTrace();
     }
@@ -2330,8 +2355,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					soLineDto.setPriceList(responseDto.getPriceList());
 				}
 			
-				if (responseDto.getStatus2().equalsIgnoreCase(DRAFT) || responseDto.getStatus2().equalsIgnoreCase(PENDINGAPPROVAL) 
-					|| responseDto.getStatus2().equals("APPROVED")) {
+				if (responseDto.getStatus().equalsIgnoreCase(DRAFT) || responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL) 
+					|| responseDto.getStatus().equals("APPROVED")) {
 					if (responseDto.getListPrice() != null) {
 						soLineDto.setListPrice(responseDto.getListPrice());
 					}
@@ -2341,19 +2366,20 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					}
 				}
 								
-				if (responseDto.getPTR_PRICE() != null) {
-					if(responseDto.getPtrFlag().equalsIgnoreCase("Y")) {
+				if (responseDto.getPtrPrice() != null) {
+					if(responseDto.getPtrFlag()!= null && responseDto.getPtrFlag().equalsIgnoreCase("Y")) {
 						soLineDto.setPtrPrice(responseDto.getListPrice());
 					}else {
 						soLineDto.setPtrPrice(responseDto.getPtrPrice());
 					}
 				}
 			
-				if (responseDto.getPTR_PRICE() != null) {
+				if (responseDto.getPtrPrice() != null) {
 					//System.out.println("IF responseDto.getPtrPrice() != null "+responseDto.getPtrPrice());
-					if(responseDto.getPtrFlag().equalsIgnoreCase("Y")) {
+					if(responseDto.getPtrFlag()!= null && responseDto.getPtrFlag().equalsIgnoreCase("Y")) {
 						//soLineDto.setPtrPrice(responseDto.getListPrice());
-						if (responseDto.getStatus().equalsIgnoreCase(DRAFT) || responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
+						if (responseDto.getStatus().equalsIgnoreCase(DRAFT) || responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL) ||
+								responseDto.getStatus().equalsIgnoreCase("APPROVED")) {
 							if (responseDto.getListPrice() != null) {
 								soLineDto.setListPrice(responseDto.getListPrice());
 							}
@@ -2364,7 +2390,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						}
 					}else {
 						//soLineDto.setPtrPrice(responseDto.getPtrPrice());
-						if (responseDto.getStatus().equalsIgnoreCase(DRAFT) || responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
+						if (responseDto.getStatus().equalsIgnoreCase(DRAFT) || responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL) ||
+								responseDto.getStatus().equalsIgnoreCase("APPROVED")) {
 							if (responseDto.getPtrPrice() != null) {
 								soLineDto.setPtrPrice(responseDto.getPtrPrice());
 							}

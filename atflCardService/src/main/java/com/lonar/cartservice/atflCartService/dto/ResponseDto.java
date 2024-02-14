@@ -42,7 +42,7 @@ public class ResponseDto {
 	private String listPrice;
 	private String priceList;
 	private String ptrPrice;
-	private String PTR_PRICE;
+	//private String PTR_PRICE;
 	private Date deliveryDate;
 	private String ptrFlag;
 	private String linelistPrice;
@@ -84,12 +84,12 @@ public class ResponseDto {
 	private Double price;
 	private Double totalPrice;
 		
-	public String getPTR_PRICE() {
-		return PTR_PRICE;
-	}
-	public void setPTR_PRICE(String pTR_PRICE) {
-		PTR_PRICE = pTR_PRICE;
-	}
+//	public String getPTR_PRICE() {
+//		return PTR_PRICE;
+//	}
+//	public void setPTR_PRICE(String pTR_PRICE) {
+//		PTR_PRICE = pTR_PRICE;
+//	}
 	public String getDistributorCode() {
 		return distributorCode;
 	}

@@ -3,6 +3,7 @@ package com.users.usersmanagement.service;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -473,24 +474,53 @@ try {
         System.out.println("Response Message : " + msg); 
         
         String responseBody = null;
-        if (responseCode >= 200 && responseCode < 300) {
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-                StringBuilder response = new StringBuilder();
-                String line;
+//        if (responseCode >= 200 && responseCode < 300) {
+//            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+//                StringBuilder response = new StringBuilder();
+//                String line;
+//
+//                while ((line = in.readLine()) != null) {
+//                    response.append(line);
+//                }
+//
+//                responseBody = response.toString();
+//                System.out.println("Response body: " + responseBody);
+//            }
+//        } else {
+//            // Handle error responses if needed
+//            System.out.println("Error response: " + responseCode + " - " + msg);
+//        }
+        
+        StringBuilder response = new StringBuilder();
+        BufferedReader reader;
+        InputStream inputStream;
+        if(responseCode >= 200 && responseCode < 300 ) {
+        	inputStream = con.getInputStream();
+        	reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String line;
+          while ((line = reader.readLine()) != null) {
+        	  System.out.println("line success response is="+line);
+              response.append(line);
+              System.out.println("success response is = " + response);
+          }
+          reader.close();
+  
+//           Show the response
+          System.out.println("Response Body: " + response.toString());
 
-                while ((line = in.readLine()) != null) {
+        }else {
+        	     reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                 String line;
+                   while ((line = reader.readLine()) != null) 
+                 {
+      	            System.out.println("line error response is="+line);
                     response.append(line);
-                }
+                 }        
+        	     inputStream = con.getErrorStream();
+        	     System.out.println("Error response: " + responseCode + " - " + msg);
+        	     System.out.println("Error Response Body: " + response);
+        	 }
 
-                responseBody = response.toString();
-                System.out.println("Response body: " + responseBody);
-            }
-        } else {
-            // Handle error responses if needed
-            System.out.println("Error response: " + responseCode + " - " + msg);
-        }
-        
-        
         
         // Parse JSON response
         JSONObject jsonObject = new JSONObject(responseBody);
