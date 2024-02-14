@@ -108,6 +108,8 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 						ltMastUsers.setOutletId(ltMastOutlets.getOutletId());
 
 						ltMastUsers.setUserType(RoleMaster.RETAILER);
+						
+						ltMastUsers.setIsFirstLogin("N");
 
 						ltMastUsers.setPositionId(ltMastOutlets.getPositionsId());
 
@@ -245,11 +247,13 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 				
 				List<LtMastUsers> ltMastUsers = ltMastOutletDao.getAllSalesOfficerAgainstDist(ltMastOutletsDumpupdated.getDistributorId(),
 						ltMastOutletsDumpupdated.getOrgId());
+				if(ltMastUsers !=null) {
 				for(LtMastUsers user:ltMastUsers) {
 					System.out.println("user"+user);
 					if(user !=null) {
 				webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated);
 				}}
+				}
 
 				status.setMessage("Send For approval.");
 				status.setData(ltMastOutletsDumpupdated);
@@ -552,6 +556,7 @@ try {
 		  ltMastUsers.setOutletId(outletDetails.getOutletId());
 		  ltMastUsers.setMobileNumber(ltMastOutletsDump.getPrimaryMobile());
 		  ltMastUsers.setUserType("RETAILER");
+		  ltMastUsers.setIsFirstLogin("Y");
 		  ltMastUsers.setUserName(outletDetails.getOutletName());
 		  ltMastUsers.setStatus("ACTIVE");
 		  ltMastUsers.setCreatedBy(ltMastOutletsDump.getCreatedBy());

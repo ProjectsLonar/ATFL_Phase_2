@@ -110,6 +110,10 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				if(ltSalesReturnDto.getLongitude() !=null) {
 					ltSalesReturnHeader.setLongitude(ltSalesReturnDto.getLongitude());
 				}
+				
+				if(ltSalesReturnDto.getBeatName() !=null) {
+					ltSalesReturnHeader.setBeatName(ltSalesReturnDto.getBeatName());
+				}
 				ltSalesReturnHeader.setSalesReturnDate(new Date());
 				//ltSalesReturnHeader.setCreatedBy(ltSalesReturnDto.getUserId());
 				//ltSalesReturnHeader.setCreationDate(new Date());
@@ -188,6 +192,10 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				}
 				if(ltSalesReturnDto.getLongitude() !=null) {
 					ltSalesReturnHeader.setLongitude(ltSalesReturnDto.getLongitude());
+				}
+				
+				if(ltSalesReturnDto.getBeatName() !=null) {
+					ltSalesReturnHeader.setBeatName(ltSalesReturnDto.getBeatName());
 				}
 				ltSalesReturnHeader.setSalesReturnDate(new Date());
 				ltSalesReturnHeader.setCreatedBy(ltSalesReturnDto.getUserId());
@@ -548,6 +556,9 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				salesReturnLineDto.setLocation(responseDto.getLocation());
 			}
 			
+			if (responseDto.getStatus() != null) {
+				salesReturnLineDto.setStatus(responseDto.getStatus());
+			}
 			if (responseDto.getPrice() != null) {
 				salesReturnLineDto.setPrice(responseDto.getPrice());
 			}
@@ -576,6 +587,8 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				soHeaderDto.setReturnStatus(responseDto.getReturnStatus());
 				soHeaderDto.setSalesReturnDate(responseDto.getSalesReturnDate());
 				soHeaderDto.setTotalSalesreturnAmount(totalReturnAmount);
+				soHeaderDto.setOutletName(responseDto.getOutletName());
+				soHeaderDto.setBeatName(responseDto.getBeatName());
 				
 				salesReturnHeaderDtoMap.put(responseDto.getHeaderId(), soHeaderDto);
 
