@@ -524,7 +524,6 @@ try {
         	     System.out.println("Error response: " + responseCode + " - " + msg);
         	     System.out.println("Error Response Body: " + response);
         	 }
-
         
         // Parse JSON response
         JSONObject jsonObject = new JSONObject(responseBody);
