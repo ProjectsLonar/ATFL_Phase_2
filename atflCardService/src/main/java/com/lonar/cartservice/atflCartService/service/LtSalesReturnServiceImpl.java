@@ -2,6 +2,7 @@ package com.lonar.cartservice.atflCartService.service;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -383,17 +384,46 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 		        System.out.println("Response Message : " + msg);
 		        
 		     // Read the response body
-		        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		        StringBuilder response = new StringBuilder();
-		        String line;
-		        while ((line = reader.readLine()) != null) {
-		            response.append(line);
-		        }
-		        reader.close();
+//		        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//		        StringBuilder response = new StringBuilder();
+//		        String line;
+//		        while ((line = reader.readLine()) != null) {
+//		            response.append(line);
+//		        }
+//		        reader.close();
 
 		        // Show the response
-		        System.out.println("Response Body: " + response.toString());
+//		        System.out.println("Response Body: " + response.toString());
 
+		        StringBuilder response = new StringBuilder();
+		        BufferedReader reader;
+		        InputStream inputStream;
+		        if(responseCode >= 200 && responseCode < 300 ) {
+		        	inputStream = con.getInputStream();
+		        	reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		            String line;
+		          while ((line = reader.readLine()) != null) {
+		        	  System.out.println("line success response is="+line);
+		              response.append(line);
+		              System.out.println("success response is = " + response);
+		          }
+		          reader.close();
+		  
+//		           Show the response
+		          System.out.println("Response Body: " + response.toString());
+
+		        }else {
+		        	    reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+	                    String line;
+	                      while ((line = reader.readLine()) != null) 
+	                   {
+	      	              System.out.println("line error response is="+line);
+	                      response.append(line);
+	                   }        
+	        	          inputStream = con.getErrorStream();
+	        	          System.out.println("Error response: " + responseCode + " - " + msg);
+	        	          System.out.println("Error Response Body: " + response);
+	        	    }
 			  			
 			}
 			//get sales return response
@@ -405,7 +435,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 			status = getSalesReturn(requestDto);
 			if(status.getData() !=null) {
 				status.setCode(SUCCESS);
-				status.setMessage("Done");
+				status.setMessage("Save Successfully");
 				status.setData(status.getData());
 				return status;
 			}else {

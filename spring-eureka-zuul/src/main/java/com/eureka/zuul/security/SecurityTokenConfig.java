@@ -98,10 +98,10 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				 .antMatchers("/uam" + "/outlets" + "/getAllOutletChannel/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD","SALES")
 				 .antMatchers("/uam" + "/outlets" + "/createOutlet/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD","SALES")
 				 .antMatchers("/uam" + "/outlets" + "/getPriceListAgainstDistributor/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD","SALES")
-				 .antMatchers("/uam" + "/outlets" + "/getPendingAprrovalOutlet/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD","SALES")
+				 .antMatchers("/uam" + "/outlets" + "/getPendingAprrovalOutlet/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD","SALES", "SYSTEMADMINISTRATOR")
 				 .antMatchers("/uam" + "/outlets" + "/approveOutlet/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD","SALES")
 				 .antMatchers("/uam" + "/users" + "/saveRecentSearchId/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
-				 .antMatchers("/uam" + "/users" + "/getUserAllMasterDataById/**").hasAnyRole("PREVERIFIED","DISTRIBUTOR", "ADMIN", "SALES", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
+				 .antMatchers("/uam" + "/users" + "/getUserAllMasterDataById/**").hasAnyRole("PREVERIFIED","DISTRIBUTOR", "ADMIN", "SALES", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR")
 				 .antMatchers("/uam" + "/salepersons" + "/getSalesPersonsForDistributor/**").hasAnyRole("PREVERIFIED","DISTRIBUTOR","SALES", "ADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				 .antMatchers("/uam" + "/users" + "/getUsersList/**").hasAnyRole("PREVERIFIED","DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				
@@ -119,7 +119,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/master" + "/products" + "/searchProdByCatIdOrgIdDisIdOutId/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				.antMatchers("/master" + "/products" + "/getOutlet/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				.antMatchers("/master" + "/products" + "/getProduct/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
-				.antMatchers("/master" + "/products" + "/getInStockProduct/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
+				.antMatchers("/master" + "/products" + "/getInStockProduct/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER")
 				.antMatchers("/master" + "/products" + "/getOutOfStockProduct/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				
 				.antMatchers("/master" + "/dashboard" + "/statusWiseOrdersCount/**").hasAnyRole( "DISTRIBUTOR", "ADMIN","SALESOFFICER","AREAHEAD")
@@ -128,7 +128,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/master" + "/dashboard" + "/monthlySales/**").hasAnyRole( "DISTRIBUTOR", "ADMIN","SALES","SALESOFFICER","AREAHEAD")
 				.antMatchers("/master" + "/dashboard" + "/dailySalesExcel/**").hasAnyRole( "DISTRIBUTOR", "ADMIN","SALES","SALESOFFICER","AREAHEAD")
 				
-				.antMatchers("/master" + "/categories" + "/getCategory/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
+				.antMatchers("/master" + "/categories" + "/getCategory/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER")
 				.antMatchers("/master" + "/categories" + "/findCategoryBy/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				.antMatchers("/master" + "/categories" +"/findCategoryByStatus/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				.antMatchers("/master" + "/categories" +"/searchCategory/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
@@ -138,9 +138,9 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/master" + "/pricelists" +"/getPriceListByOrgId/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				
 				.antMatchers("/master" + "/privacypolicy" +"/readPrivacyPolicy/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
-				.antMatchers("/master" + "/faq" +"/aboutUsAndFaqDetails/**").hasAnyRole( "PREVERIFIED", "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
+				.antMatchers("/master" + "/faq" +"/aboutUsAndFaqDetails/**").hasAnyRole( "PREVERIFIED", "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER")
 				
-				.antMatchers("/master" + "/privacypolicy" +"/privacypolicy/**").hasAnyRole( "PREVERIFIED", "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
+				.antMatchers("/master" + "/privacypolicy" +"/privacypolicy/**").hasAnyRole( "PREVERIFIED", "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER")
 				.antMatchers("/master" + "/privacypolicy" +"/termsAndConditions/**").hasAnyRole( "PREVERIFIED", "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				
 				.antMatchers("/master" + "/reports" +"/getCategoryDetails/**").hasAnyRole("PREVERIFIED", "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
@@ -188,7 +188,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				 .antMatchers("/cart" + "/ltsoheaders" + "/getOrder/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN")
 				 .antMatchers("/cart" + "/ltsoheaders" + "/saveOrder/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 
-				 .antMatchers("/cart" + "/ltsoheaders" + "/getOrderV2/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN")
+				 .antMatchers("/cart" + "/ltsoheaders" + "/getOrderV2/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN", "AREAHEAD")
 				 .antMatchers("/cart" + "/ltsoheaders" + "/saveOrderV2/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 
 				 
