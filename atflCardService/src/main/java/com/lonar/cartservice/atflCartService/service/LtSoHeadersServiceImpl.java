@@ -2472,7 +2472,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					sdf.setTimeZone(utc);
 					soHeaderDto.setOrderDate(sdf.format(responseDto.getOrderDate()));
 					
-					soHeaderDto.setStatus(responseDto.getStatus2());
+					soHeaderDto.setStatus(responseDto.getStatus());
 					soHeaderDto.setAddress(responseDto.getAddress());
 					soHeaderDto.setOutletName(responseDto.getOutletName());
 					soHeaderDto.setOutletId(responseDto.getOutletId());
