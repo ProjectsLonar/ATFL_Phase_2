@@ -509,7 +509,7 @@ try {
               responseBody = response.toString();
               System.out.println("success response is = " + responseBody);
           }
-          reader.close();
+          //reader.close();
   
 //           Show the response
           System.out.println("Response Body: " + response.toString());
