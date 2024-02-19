@@ -1699,7 +1699,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			SimpleDateFormat outputFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss"); //("dd/MM/yyyy hh:mm:ss");
 			String deliDate =outputFormat.format(date);
             lineItem1.put("Due Date", deliDate);
-            lineItem1.put("Name", lineItem.get(i).getProductName());
+            lineItem1.put("Name", lineItem.get(i).getProductName());     // in table this is as product desc
+           // lineItem1.put("Name", lineItem.get(i).getProductDesc());  // in table this is as product name;
             listOfLineItem1.put(lineItem1);
         }   
             

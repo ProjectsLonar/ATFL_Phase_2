@@ -498,6 +498,7 @@ try {
         StringBuilder response = new StringBuilder();
         BufferedReader reader;
         InputStream inputStream;
+        LtMastOutlets outletDetails = new LtMastOutlets();
         if(responseCode >= 200 && responseCode < 300 ) {
         	inputStream = con.getInputStream();
         	reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -505,56 +506,38 @@ try {
           while ((line = reader.readLine()) != null) {
         	  System.out.println("line success response is="+line);
               response.append(line);
-              System.out.println("success response is = " + response);
+              responseBody = response.toString();
+              System.out.println("success response is = " + responseBody);
           }
           reader.close();
   
 //           Show the response
           System.out.println("Response Body: " + response.toString());
 
-        }else {
-        	     reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-                 String line;
-                   while ((line = reader.readLine()) != null) 
-                 {
-      	            System.out.println("line error response is="+line);
-                    response.append(line);
-                 }        
-        	     inputStream = con.getErrorStream();
-        	     System.out.println("Error response: " + responseCode + " - " + msg);
-        	     System.out.println("Error Response Body: " + response);
-        	 }
-        
-        // saving siebel response & status code in to table 
-        String resCode = Integer.toString(responseCode);
-        String res = response.toString();
-        ltMastOutletsDump.setSiebelStatus(resCode);
-        ltMastOutletsDump.setSiebelRemark(res);
-        
-        // Parse JSON response
-        JSONObject jsonObject = new JSONObject(responseBody);
+          // Parse JSON response
+          JSONObject jsonObject = new JSONObject(responseBody);
 
-        
-        // Navigate through the structure to get the Account Id
-        JSONArray accountArray = jsonObject.getJSONObject("SiebelMessage")
-                .getJSONObject("ListOfOutlet Interface")
-                .getJSONArray("Account");
+          
+          // Navigate through the structure to get the Account Id
+          JSONArray accountArray = jsonObject.getJSONObject("SiebelMessage")
+                  .getJSONObject("ListOfOutlet Interface")
+                  .getJSONArray("Account");
 
-        // Assuming there is only one account in the array
-        String accountId = accountArray.getJSONObject(0).getString("Account Id");
+          // Assuming there is only one account in the array
+          String accountId = accountArray.getJSONObject(0).getString("Account Id");
+          //}
+          // Print the result //ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
 
-        // Print the result //ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
+          System.out.println("Account Id: " + accountId);
+             
+  		  String outletCode = accountId;   //once you got response add outlet code and pass it here.
+  	      outletDetails =ltMastOutletDao.getOutletByOutletCode(outletCode);
+  	
+  		  
+  		  ltMastOutletsDump.setOutletCode(outletCode);
+  		  ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
 
-        System.out.println("Account Id: " + accountId);
-		  
-		  String outletCode = accountId;   //once you got response add outlet code and pass it here.
-		  LtMastOutlets outletDetails =ltMastOutletDao.getOutletByOutletCode(outletCode);
-		  
-		  
-		  ltMastOutletsDump.setOutletCode(outletCode);
-		  ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
-		  
-		  LtMastUsers ltMastUsers = new LtMastUsers();
+  		LtMastUsers ltMastUsers = new LtMastUsers();
 		  if(outletDetails !=null) {	
 		  ltMastUsers.setOrgId(outletDetails.getOrgId());
 		  ltMastUsers.setDistributorId(outletDetails.getDistributorId());
@@ -577,7 +560,35 @@ try {
 		  +" "+outletDetails.getCountry() +" "+outletDetails.getPin_code());
 		  
 		  ltMastUsers = ltMastUsersRepository.save(ltMastUsers);
-		  }
+           
+          
+        }}else {
+        	     reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                 String line;
+                   while ((line = reader.readLine()) != null) 
+                 {
+      	            System.out.println("line error response is="+line);
+                    response.append(line);
+                    responseBody = response.toString();
+                    System.out.println("Error response is = " + responseBody);
+                 }        
+        	     inputStream = con.getErrorStream();
+        	     System.out.println("Error response: " + responseCode + " - " + msg);
+        	     System.out.println("Error Response Body: " + responseBody);
+        	 }
+        
+        // saving siebel response & status code in to table 
+        String resCode = Integer.toString(responseCode);
+        String res = responseBody.toString();
+        System.out.println("Final response = "+resCode+res);
+        ltMastOutletsDump.setSiebelStatus(resCode);
+        ltMastOutletsDump.setSiebelRemark(res);
+        
+        //String accountId = null;
+        //if(resCode == "200") {
+        
+		  
+		  		 // }
 
 		  if(outletDetails !=null) {
 		  status.setCode(INSERT_SUCCESSFULLY); 
