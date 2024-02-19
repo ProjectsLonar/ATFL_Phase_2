@@ -525,6 +525,12 @@ try {
         	     System.out.println("Error Response Body: " + response);
         	 }
         
+        // saving siebel response & status code in to table 
+        String resCode = Integer.toString(responseCode);
+        String res = response.toString();
+        ltMastOutletsDump.setSiebelStatus(resCode);
+        ltMastOutletsDump.setSiebelRemark(res);
+        
         // Parse JSON response
         JSONObject jsonObject = new JSONObject(responseBody);
 
