@@ -68,9 +68,14 @@ public class LtMastOutletDaoImpl implements LtMastOutletDao, CodeMaster {
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
+		
+		String status = null;
+		if(requestDto.getStatus() !=null) {
+			status = requestDto.getStatus().toUpperCase();
+		}
 
 		List<LtMastOutlets> ltMastOutletslist = jdbcTemplate.query(query,
-				new Object[] { requestDto.getDistributorId(), requestDto.getSalesPersonId(), requestDto.getOrgId(),
+				new Object[] {status, requestDto.getDistributorId(), requestDto.getSalesPersonId(), requestDto.getOrgId(),
 						searchField, requestDto.getLimit(), requestDto.getOffset() },
 				new BeanPropertyRowMapper<LtMastOutlets>(LtMastOutlets.class));
 		System.out.println("ltMastOutletslist"+ltMastOutletslist);
