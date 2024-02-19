@@ -106,8 +106,11 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 				if(productList !=null) {
 				ltTemplateDao.deletelinedetailsbytemplateid(ltTemplateHeadersUpdated.getTemplateHeaderId());
 				}
-				LtTemplateLines ltTemplateLines = new LtTemplateLines();
-				for(LtTemplateLines lines:ltTemplateDto.getLtTemplateLines()) {
+				
+				
+				List<LtTemplateLines> lineData = ltTemplateDto.getLtTemplateLines();
+				for(LtTemplateLines lines:lineData) {
+					LtTemplateLines ltTemplateLines = new LtTemplateLines();
 					ltTemplateLines.setTemplateHeaderId(ltTemplateHeadersUpdated.getTemplateHeaderId());
 					ltTemplateLines.setSalesType(lines.getSalesType());
 					ltTemplateLines.setProductId(lines.getProductId());
