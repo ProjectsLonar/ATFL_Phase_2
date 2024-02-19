@@ -107,6 +107,13 @@ public class LtMastOutletsDump extends BaseClass {
 	@Column(name = "OUTLET_CHANNEL")
 	String outletChannel;
 	
+	@Column(name = "SIEBEL_STATUS")
+	String siebelStatus;
+	
+	@Column(name = "SIEBEL_REMARK")
+	String siebelRemark;
+	
+	
 	@Transient
 	String distributorCode;
 	
@@ -446,6 +453,22 @@ public class LtMastOutletsDump extends BaseClass {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
+		
+	public String getSiebelStatus() {
+		return siebelStatus;
+	}
+
+	public void setSiebelStatus(String siebelStatus) {
+		this.siebelStatus = siebelStatus;
+	}
+
+	public String getSiebelRemark() {
+		return siebelRemark;
+	}
+
+	public void setSiebelRemark(String siebelRemark) {
+		this.siebelRemark = siebelRemark;
+	}
 
 	@Override
 	public String toString() {
@@ -457,12 +480,13 @@ public class LtMastOutletsDump extends BaseClass {
 				+ ", area=" + area + ", territory=" + territory + ", outletGstn=" + outletGstn + ", outletPan="
 				+ outletPan + ", licenceNo=" + licenceNo + ", positionsId=" + positionsId + ", phone=" + phone
 				+ ", email=" + email + ", primaryMobile=" + primaryMobile + ", priceList=" + priceList
-				+ ", outletChannel=" + outletChannel + ", distributorCode=" + distributorCode + ", distributorCrmCode="
-				+ distributorCrmCode + ", distributorStatus=" + distributorStatus + ", distributorName="
-				+ distributorName + ", employeeId=" + employeeId + ", empName=" + empName + ", employeeCode="
-				+ employeeCode + ", position=" + position + ", outletAddress=" + outletAddress + ", userId=" + userId
-				+ "]";
+				+ ", outletChannel=" + outletChannel + ", siebelStatus=" + siebelStatus + ", siebelRemark="
+				+ siebelRemark + ", distributorCode=" + distributorCode + ", distributorCrmCode=" + distributorCrmCode
+				+ ", distributorStatus=" + distributorStatus + ", distributorName=" + distributorName + ", employeeId="
+				+ employeeId + ", empName=" + empName + ", employeeCode=" + employeeCode + ", position=" + position
+				+ ", outletAddress=" + outletAddress + ", userId=" + userId + "]";
 	}
+
 	
 }
 

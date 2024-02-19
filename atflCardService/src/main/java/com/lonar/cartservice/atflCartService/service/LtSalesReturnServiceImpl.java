@@ -425,6 +425,13 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 	        	          System.out.println("Error Response Body: " + response);
 	        	    }
 			  			
+		        //saving siebel response & status code in to table
+		        
+		        String resCode = Integer.toString(responseCode);
+		        String res = response.toString();
+		        ltSalesReturnHeader.setSiebelStatus(resCode);
+		        ltSalesReturnHeader.setSiebelRemark(res);
+		        
 			}
 			//get sales return response
 			RequestDto requestDto = new RequestDto();

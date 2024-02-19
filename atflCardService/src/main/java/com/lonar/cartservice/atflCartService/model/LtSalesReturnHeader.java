@@ -59,6 +59,12 @@ public class LtSalesReturnHeader extends BaseClass {
 	@Column(name = "BEAT_NAME")
 	String  beatName;
 	
+	@Column(name = "SIEBEL_STATUS")
+	String siebelStatus;
+	
+	@Column(name = "SIEBEL_REMARK")
+	String siebelRemark;
+	
 	
 	@Transient
 	private String outletCode;
@@ -167,6 +173,22 @@ public class LtSalesReturnHeader extends BaseClass {
 
 	public void setBeatName(String beatName) {
 		this.beatName = beatName;
+	}	
+	
+	public String getSiebelStatus() {
+		return siebelStatus;
+	}
+
+	public void setSiebelStatus(String siebelStatus) {
+		this.siebelStatus = siebelStatus;
+	}
+
+	public String getSiebelRemark() {
+		return siebelRemark;
+	}
+
+	public void setSiebelRemark(String siebelRemark) {
+		this.siebelRemark = siebelRemark;
 	}
 
 	@Override
@@ -175,9 +197,9 @@ public class LtSalesReturnHeader extends BaseClass {
 				+ salesReturnNumber + ", invoiceNumber=" + invoiceNumber + ", outletId=" + outletId + ", returnStatus="
 				+ returnStatus + ", address=" + address + ", latitude=" + latitude + ", longitude=" + longitude
 				+ ", returnReason=" + returnReason + ", salesReturnDate=" + salesReturnDate + ", outletName="
-				+ outletName + ", outletCode=" + outletCode + "]";
+				+ outletName + ", beatName=" + beatName + ", siebelStatus=" + siebelStatus + ", siebelRemark="
+				+ siebelRemark + ", outletCode=" + outletCode + "]";
 	}
-
 	
 	
 }
