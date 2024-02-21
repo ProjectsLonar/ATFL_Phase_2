@@ -533,7 +533,13 @@ try {
   		  String outletCode = accountId;   //once you got response add outlet code and pass it here.
   	      outletDetails =ltMastOutletDao.getOutletByOutletCode(outletCode);
   	
-  		  
+  	 // saving siebel response & status code in to table
+  	    String resCode = Integer.toString(responseCode);
+        String res = responseBody.toString();
+        System.out.println("Final response = "+resCode+res);
+        ltMastOutletsDump.setSiebelStatus(resCode);
+        ltMastOutletsDump.setSiebelRemark(res);
+        
   		  ltMastOutletsDump.setOutletCode(outletCode);
   		  ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
 
@@ -560,7 +566,11 @@ try {
 		  +" "+outletDetails.getCountry() +" "+outletDetails.getPin_code());
 		  
 		  ltMastUsers = ltMastUsersRepository.save(ltMastUsers);
-           
+		  if(outletDetails !=null) {
+			  status.setCode(INSERT_SUCCESSFULLY); 
+			  status.setData(outletDetails);
+			  status.setMessage("INSERT_SUCCESSFULLY");
+			  }
           
         }}else {
         	     reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
@@ -575,29 +585,28 @@ try {
         	     inputStream = con.getErrorStream();
         	     System.out.println("Error response: " + responseCode + " - " + msg);
         	     System.out.println("Error Response Body: " + responseBody);
-        	 }
-        
-        // saving siebel response & status code in to table 
-        String resCode = Integer.toString(responseCode);
-        String res = responseBody.toString();
-        System.out.println("Final response = "+resCode+res);
-        ltMastOutletsDump.setSiebelStatus(resCode);
-        ltMastOutletsDump.setSiebelRemark(res);
-        
-        //String accountId = null;
-        //if(resCode == "200") {
-        
-		  
-		  		 // }
-
-		  if(outletDetails !=null) {
-		  status.setCode(INSERT_SUCCESSFULLY); 
-		  status.setData(outletDetails);
-		  status.setMessage("INSERT_SUCCESSFULLY");
-		  } else {
-		  status.setCode(INSERT_FAIL); 
-		  status.setMessage("INSERT_FAIL"); 
-		  }
+        	 
+        	  // saving siebel response & status code in to table   
+        	        String resCode = Integer.toString(responseCode);
+        	        String res = responseBody.toString();
+        	        System.out.println("Final response = "+resCode+res);
+        	        ltMastOutletsDump.setSiebelStatus(resCode);
+        	        ltMastOutletsDump.setSiebelRemark(res);
+        	        
+        	  	    ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
+        	  	  status.setCode(INSERT_FAIL); 
+        		  status.setMessage("INSERT_FAIL");
+        }
+                
+//		  if(outletDetails !=null) {
+//		  status.setCode(INSERT_SUCCESSFULLY); 
+//		  status.setData(outletDetails);
+//		  status.setMessage("INSERT_SUCCESSFULLY");
+//		  } 
+//        else {
+//		  status.setCode(INSERT_FAIL); 
+//		  status.setMessage("INSERT_FAIL"); 
+//		  }
 }else{
 	LtMastOutletsDump ltMastOutletsDump = ltMastOutletDao.getOutletToChangeStatus(ltMastOutletsDumps.getDistributorId(),
 			ltMastOutletsDumps.getOrgId(),ltMastOutletsDumps.getPrimaryMobile());

@@ -1191,7 +1191,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					//		sending notification for approve order
 							sendNotifications(ltSoHeader);
 					//    inserting save order data into siebel   
-								  sampleCode(ltSoHeader, soHeaderDto);
+							saveOrderIntoSiebel(ltSoHeader, soHeaderDto);
 								  
 							RequestDto requestDto = new RequestDto();
 							requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
@@ -1385,7 +1385,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 								ltSoHeader.getInStockFlag().equals("Y") && ltSoHeader.getPriceList()==defailtPriceList) {
 												
 						// inserting save order data into siebel using sampleCode()   
-						   sampleCode(ltSoHeader, soHeaderDto);
+							 saveOrderIntoSiebel(ltSoHeader, soHeaderDto);
 													
 						// saveOutlet();  inserting the create outlet data into siebel using saveOutlet() 
 																	
@@ -1395,7 +1395,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							sendNotifications(ltSoHeader);
 						
 						//    inserting save order data into siebel  if order is approved using sampleCode()   
-							  sampleCode(ltSoHeader, soHeaderDto);
+							saveOrderIntoSiebel(ltSoHeader, soHeaderDto);
 													
 						}
 						
@@ -1586,7 +1586,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							//if(ltSoHeader.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
 								
 						  // inserting save order data into siebel using sampleCode() and update the order status to NEW 
-								sampleCode(ltSoHeader, soHeaderDto);
+							saveOrderIntoSiebel(ltSoHeader, soHeaderDto);
 								  
 							//}
 							
@@ -1631,7 +1631,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		return null; 
 	}
 
-	private void sampleCode(LtSoHeaders ltSoHeader, SoHeaderDto soHeaderDto){
+	private void saveOrderIntoSiebel(LtSoHeaders ltSoHeader, SoHeaderDto soHeaderDto){
 		try {
         String url = "https://10.245.4.70:9014/siebel/v1.0/service/AT%20New%20Order%20Creation%20REST%20BS/CreateOrder?matchrequestformat=y";
         String method = "POST";
@@ -1730,7 +1730,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		header.put("Currency Code", "INR");
 		header.put("Order Number", ltSoHeader.getOrderNumber());
 //		header.put("Order Number", "MSO-53623-2324-11");
-		header.put("Source Inventory Id", "1-2KK4ILD");            //"1-2FPGVLJ");  // "1-2GR1JJ1"    //"1-2C7QNZG");
+//		header.put("Source Inventory Id", "1-2KK4ILD");            //"1-2FPGVLJ");  // "1-2GR1JJ1"    //"1-2C7QNZG");
 		header.put("ListOfLine Item", listOfLineItem);
 		//header.put("ListOfLine Item", listOfLineItem);
 		

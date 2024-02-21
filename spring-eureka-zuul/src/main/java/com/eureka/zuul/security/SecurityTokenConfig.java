@@ -74,7 +74,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/uam" + "/distributor" + "/getAllDistributorAgainstAreahead/**").hasAnyRole("PREVERIFIED", "DISTRIBUTOR", "ADMIN", "SUPERADMIN","AREAHEAD")
 				// For DISTRIBUTOR & admin & superadmin
 				.antMatchers("/uam" + "/org" + "/getById/**").hasAnyRole("PREVERIFIED", "ADMIN", "SUPERADMIN")
-				.antMatchers("/uam" + "/org" + "/verifyOrganisation/**").hasAnyRole("PREVERIFIED",  "ADMIN", "SUPERADMIN")
+				.antMatchers("/uam" + "/org" + "/verifyOrganisation/**").hasAnyRole("PREVERIFIED",  "ADMIN", "SUPERADMIN", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR", "SALESOFFICER")
 				.antMatchers("/uam" + "/users" + "/update/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				.antMatchers("/uam" + "/users" + "/getPenddingApprovalByDistributorId/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				.antMatchers("/uam" + "/users" + "/changeUserStatus/**").hasAnyRole("PREVERIFIED","DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")

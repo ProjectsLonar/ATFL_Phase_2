@@ -281,9 +281,11 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			
 			if(!userList.isEmpty() && userList != null) {
 				query = query + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx')) )a order by a.status_o, a.creation_date desc ) b where rownum BETWEEN ? AND ? ";
+					//	+ ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx')) )a order by a.status_o, a.creation_date desc ) b where rownum BETWEEN ? AND ? ";
+				        + ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx')) )a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 			}else {
-				query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  where rownum BETWEEN ? AND ? ";
+				//query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  where rownum BETWEEN ? AND ? ";
+				query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 			}
 			/*
 			 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
