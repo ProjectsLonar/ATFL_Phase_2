@@ -550,7 +550,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 		System.out.println("IdsList"+IdsList +" "+recordCount);
 		status.setTotalCount(recordCount);
 		status.setRecordCount(recordCount);
-		if(IdsList.isEmpty()) {
+		if(IdsList== null) {
 			status.setCode(RECORD_NOT_FOUND);
 			status.setData("Record not found"); 
 			return status;
