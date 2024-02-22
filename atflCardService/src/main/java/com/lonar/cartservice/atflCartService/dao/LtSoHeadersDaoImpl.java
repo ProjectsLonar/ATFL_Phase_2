@@ -310,10 +310,12 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 				//query = query + " and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
 				//		+ " ) ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
 				query = query + " and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
-						+ " ) ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
+					//	+ " ) ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
+				+ " ) ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 			}else {
 //				query = query +" ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
-				query = query +" ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ?";
+			//	query = query +" ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ?";
+				query = query +" ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 			}
 			
 			headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
@@ -330,8 +332,8 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			return headerIdslist;
 			
 		}else {
-			query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
-			
+		//	query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
+			query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 			/*
 			 * if(requestDto.getHeaderId() !=null) { headerId = requestDto.getHeaderId();
 			 * }else { headerId = null; }

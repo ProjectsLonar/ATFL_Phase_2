@@ -402,7 +402,8 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 					query = env.getProperty("getSearchDistributorForRegionOther");
 					query = query + " and lmd.distributor_id in ("
 							+ userList.toString().replace("[", "").replace("]", "")
-							+ ")order by distributor_id asc ) a limit ? offset ?";
+						//	+ ")order by distributor_id asc ) a limit ? offset ?";
+					        + ")order by distributor_id asc ) a OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
 				} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 
@@ -410,7 +411,8 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 					query = env.getProperty("getSearchDistributorForRegionOther");
 					query = query + " and lmd.distributor_id in ("
 							+ userList.toString().replace("[", "").replace("]", "")
-							+ ")order by distributor_id asc ) a limit ? offset ?";
+						//	+ ")order by distributor_id asc ) a limit ? offset ?";
+							+ ")order by distributor_id asc ) a OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
 				}
 			}

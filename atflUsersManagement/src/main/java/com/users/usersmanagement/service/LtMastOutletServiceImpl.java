@@ -370,8 +370,8 @@ try {
 		  JSONObject relatedOrganizationDetail = new JSONObject();
 		  
 		  relatedOrganizationDetail.put("IsPrimaryMVG","Y");
-//		  relatedOrganizationDetail.put("Organization", ltMastOrganisations.getOrganisationName());
-		  relatedOrganizationDetail.put("Organization", "JSB AGENCIES");
+		  relatedOrganizationDetail.put("Organization", ltMastOrganisations.getOrganisationName());
+//		  relatedOrganizationDetail.put("Organization", "JSB AGENCIES");
 		  
 		  
 		  JSONObject listOfRelatedOrganizations = new JSONObject();
