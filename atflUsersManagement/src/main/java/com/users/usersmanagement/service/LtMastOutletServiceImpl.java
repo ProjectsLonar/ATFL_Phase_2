@@ -224,7 +224,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			ltMastOutletsDump.setArea(ltMastOutlets.getArea());
 			ltMastOutletsDump.setTerritory(ltMastOutlets.getTerritory());
 			ltMastOutletsDump.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
-			ltMastOutletsDump.setStatus("DRAFT");
+			ltMastOutletsDump.setStatus("PENDING_APPROVAL");
 			ltMastOutletsDump.setPriceList(ltMastOutlets.getPriceList());
 			ltMastOutletsDump.setOrgId(ltMastOutlets.getOrgId());
 
