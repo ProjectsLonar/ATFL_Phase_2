@@ -39,10 +39,17 @@ public class LtPromotionDaoImpl implements LtPromotionDao, CodeMaster {
 			throws ServiceException {
 		String defaultLimit = env.getProperty("limit_value");
 		List<LtPromotion> list;
-		if (limit == 0) {
+		
+		String defaultoffset = env.getProperty("offset_value");
+		
+		
+		if (limit == 0 || limit == 1) {
 			limit = Long.valueOf(defaultLimit);
 		}
 
+		if (offset == 0) {
+			offset = Long.valueOf(defaultoffset);
+		}
 		UserDetailsDto userDetailsDto = getUserTypeAndDisId(userId);
 		if (userDetailsDto.getUserType().equalsIgnoreCase(ADMIN)) {
 			String query = env.getProperty("getPromotionDataForAdmin");
@@ -64,8 +71,15 @@ public class LtPromotionDaoImpl implements LtPromotionDao, CodeMaster {
 	public List<LtPromotion> getPromotionData(String orgId, Long limit, Long offset) throws ServiceException {
 		String defaultLimit = env.getProperty("limit_value");
 		List<LtPromotion> list;
-		if (limit == 0) {
+String defaultoffset = env.getProperty("offset_value");
+		
+		
+		if (limit == 0 || limit == 1) {
 			limit = Long.valueOf(defaultLimit);
+		}
+
+		if (offset == 0) {
+			offset = Long.valueOf(defaultoffset);
 		}
 
 		String query = env.getProperty("getPromotionData");

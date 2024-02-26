@@ -180,9 +180,14 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 	@Override
 	public List<LtMastUsers> getUsersList(RequestDto requestDto) throws IOException {
 		String query = env.getProperty("getUsersList");
-		if (requestDto.getLimit() == 0) {
+		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 		}
+		
+		if(requestDto.getOffset() == 0) {
+			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
+		
 		
 		Long userId;
 		if(requestDto.getUserId() != null) {

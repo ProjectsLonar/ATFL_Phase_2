@@ -62,10 +62,13 @@ public class LtMastEmployeeDaoImpl implements LtMastEmployeeDao {
 	public List<LtMastPositions> getSalesPersonsForDistributorV1(RequestDto requestDto) throws ServiceException {
 		String query = env.getProperty("getSalesPersonsForDistributorV1");
 
-		if (requestDto.getLimit() == 0) {
+		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 		}
-
+		
+		if(requestDto.getOffset() == 0) {
+			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
 		String searchField = null;
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";

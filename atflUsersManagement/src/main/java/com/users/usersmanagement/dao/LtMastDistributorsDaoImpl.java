@@ -81,7 +81,10 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 
 		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
-			//requestDto.setLimit(-1);
+		}
+		
+		if(requestDto.getOffset() == 0) {
+			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 		}
 
 		String searchField = null;
@@ -105,9 +108,11 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 	public List<NotificationDetails> getAllNotification(RequestDto requestDto) throws ServiceException{
 		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
-		//	requestDto.setLimit(-1);
 		}
-
+		
+		if(requestDto.getOffset() == 0) {
+			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
 		String searchField = null;
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";

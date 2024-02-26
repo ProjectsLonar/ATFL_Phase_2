@@ -60,9 +60,13 @@ public class LtMastOutletDaoImpl implements LtMastOutletDao, CodeMaster {
 	public List<LtMastOutlets> getOutlet(RequestDto requestDto) throws ServiceException, IOException {
 		String query = env.getProperty("getOutlet");
 		try {
-		if (requestDto.getLimit() == 0) {
-			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
-		}
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
 
 		String searchField = null;
 		if (requestDto.getSearchField() != null) {
@@ -189,10 +193,13 @@ System.out.println("list"+list);
 	public List<LtMastOutletsDump> getPendingAprrovalOutlet(RequestDto requestDto)throws ServiceException, IOException{
 		String query = env.getProperty("getPendingAprrovalOutlet");
 		try {
-		if (requestDto.getLimit() == 0) {
-			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
-		}
-
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
 		String searchField = null;
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
@@ -340,9 +347,14 @@ System.out.println("list"+list);
 	
 	@Override
 	 public List<BeatDetailsDto> getOutletAgainstBeat(BeatDetailsDto beatDetailsDto)throws ServiceException, IOException{
-		if (beatDetailsDto.getLimit() == 0) {
+		if (beatDetailsDto.getLimit() == 0 || beatDetailsDto.getLimit() == 1) {
 			beatDetailsDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 		}
+		
+		if (beatDetailsDto.getOffset() == 0 ) {
+			beatDetailsDto.setOffset(Integer.parseInt(env.getProperty("limit_value")));
+		}
+		
 
 		String searchField = null;
 		if (beatDetailsDto.getSearchField() != null) {
