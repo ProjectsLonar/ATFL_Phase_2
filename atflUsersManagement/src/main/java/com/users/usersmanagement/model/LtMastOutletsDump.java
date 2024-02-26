@@ -116,8 +116,9 @@ public class LtMastOutletsDump extends BaseClass {
 	@Column(name = "DISTRIBUTOR_NAME")
 	String distributorName;
 	
-	@Column(name = "position")
-	String position;
+	/*
+	 * @Column(name = "pos_name") String posName;
+	 */
 	
 	@Transient
 	String distributorCode;
@@ -141,9 +142,9 @@ public class LtMastOutletsDump extends BaseClass {
 	@Transient
 	String employeeCode;
 	
-	/*
-	 * @Transient String position;
-	 */
+	
+	  @Transient String position;
+	 
 	
 	@Transient
 	String outletAddress;
@@ -151,15 +152,13 @@ public class LtMastOutletsDump extends BaseClass {
 	@Transient
 	Long userId;
 
-	public String getPosition() {
-		return position;
-	}
-
-	public void setPosition(String position) {
-		this.position = position;
-	}
 
 	
+	/*
+	 * public String getPosName() { return posName; }
+	 * 
+	 * public void setPosName(String posName) { this.posName = posName; }
+	 */
 
 	public Long getOutletId() {
 		return outletId;
@@ -477,6 +476,14 @@ public class LtMastOutletsDump extends BaseClass {
 		this.siebelRemark = siebelRemark;
 	}
 
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
 	@Override
 	public String toString() {
 		return "LtMastOutletsDump [outletId=" + outletId + ", orgId=" + orgId + ", outletCode=" + outletCode
@@ -488,12 +495,14 @@ public class LtMastOutletsDump extends BaseClass {
 				+ outletPan + ", licenceNo=" + licenceNo + ", positionsId=" + positionsId + ", phone=" + phone
 				+ ", email=" + email + ", primaryMobile=" + primaryMobile + ", priceList=" + priceList
 				+ ", outletChannel=" + outletChannel + ", siebelStatus=" + siebelStatus + ", siebelRemark="
-				+ siebelRemark + ", distributorCode=" + distributorCode + ", distributorCrmCode=" + distributorCrmCode
-				+ ", distributorStatus=" + distributorStatus + ", distributorName=" + distributorName + ", employeeId="
-				+ employeeId + ", empName=" + empName + ", employeeCode=" + employeeCode + ", position=" + position
-				+ ", outletAddress=" + outletAddress + ", userId=" + userId + "]";
+				+ siebelRemark + ", distributorName=" + distributorName + ", distributorCode=" + distributorCode
+				+ ", distributorCrmCode=" + distributorCrmCode + ", distributorStatus=" + distributorStatus
+				+ ", employeeId=" + employeeId + ", empName=" + empName + ", employeeCode=" + employeeCode
+				+ ", position=" + position + ", outletAddress=" + outletAddress + ", userId=" + userId + "]";
 	}
 
+
+	
 	
 }
 

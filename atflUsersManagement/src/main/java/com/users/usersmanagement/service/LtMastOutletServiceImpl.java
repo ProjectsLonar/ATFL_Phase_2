@@ -196,7 +196,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 	}
 
 	@Override
-	public Status createOutlet(LtMastOutlets ltMastOutlets) throws ServiceException, IOException {
+	public Status createOutlet(LtMastOutletsDump ltMastOutlets) throws ServiceException, IOException {
 		Status status = new Status();
 
 		LtMastOutletsDump ltMastOutletsDump = new LtMastOutletsDump();
@@ -210,10 +210,10 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			if (ltMastOutlets.getDistributorName() != null) {
 				ltMastOutletsDump.setDistributorName(ltMastOutlets.getDistributorName());
 			}
-			if (ltMastOutlets.getPosition() != null) {
-				ltMastOutletsDump.setPosition(ltMastOutlets.getPosition());
-			}
-			
+			/*
+			 * if (ltMastOutlets.getPosName() != null) {
+			 * ltMastOutletsDump.setPosName(ltMastOutlets.getPosName()); }
+			 */
 			if (ltMastOutlets.getProprietorName() != null) {
 				ltMastOutletsDump.setProprietorName(ltMastOutlets.getProprietorName());
 			}

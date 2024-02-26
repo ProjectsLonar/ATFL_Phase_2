@@ -24,7 +24,7 @@ public interface LtMastOutletService {
 	
 	Status getAllOutletChannel() throws ServiceException, IOException;
 	
-	Status createOutlet(LtMastOutlets ltMastOutlets) throws ServiceException, IOException;
+	Status createOutlet(LtMastOutletsDump ltMastOutlets) throws ServiceException, IOException;
 	
 	Status getPriceListAgainstDistributor(String distributorId )throws ServiceException, IOException;
 	
