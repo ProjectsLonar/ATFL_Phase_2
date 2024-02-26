@@ -71,6 +71,15 @@ public class LtMastTestProductDaoImpl implements LtMastTestProductDao {
 		if (limit == 0) {
 			limit = Long.parseLong(env.getProperty("limit_value"));
 		}
+		
+		if (limit == 0 || limit == 1) {
+			limit=(Long.parseLong(env.getProperty("limit_value")));
+		}
+		
+		if(offset == 0) {
+			offset = (Long.parseLong(env.getProperty("offset_value")));
+		}
+		
 		List<LtMastTestProduct> ltMastTestProductList = jdbcTemplate.query(query, new Object[] { limit, offset },
 				new BeanPropertyRowMapper<LtMastTestProduct>(LtMastTestProduct.class));
 		if (!ltMastTestProductList.isEmpty()) {

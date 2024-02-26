@@ -39,8 +39,13 @@ public class LtMastProdCatDaoImpl implements LtMastProdCatDao, CodeMaster {
 
 	@Override
 	public List<LtMastProductCat> getCategory(RequestDto requestDto) throws ServiceException {
-		if (requestDto.getLimit() == 0) {
+		
+		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+		
+		if(requestDto.getOffset() == 0) {
+			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 		}
 
 		String searchField = null;
