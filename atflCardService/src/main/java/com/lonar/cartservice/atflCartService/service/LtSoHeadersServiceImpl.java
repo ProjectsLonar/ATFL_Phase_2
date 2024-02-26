@@ -1195,7 +1195,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 								  
 							RequestDto requestDto = new RequestDto();
 							requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
-							requestDto.setLimit(1);
+							requestDto.setLimit(-1);
 							requestDto.setOffset(2);
 							status = getOrderV2(requestDto);
 							status.setCode(INSERT_SUCCESSFULLY);
@@ -1401,7 +1401,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						
 						RequestDto requestDto = new RequestDto();
 						requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
-						requestDto.setLimit(1);
+						requestDto.setLimit(-1);
 						requestDto.setOffset(2);
 						status = getOrderV2(requestDto);
 						
@@ -1592,7 +1592,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							
 							RequestDto requestDto = new RequestDto();
 							requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
-							requestDto.setLimit(1);
+							requestDto.setLimit(-1);
 							requestDto.setOffset(2);
 							status = getOrderV2(requestDto);
 							
@@ -2279,7 +2279,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			if(ltSoHeader.getCustomerId() != null) {
 				requestDto.setCustomerId(ltSoHeader.getCustomerId());
 			}
-			requestDto.setLimit(1);
+			requestDto.setLimit(-1);
 			requestDto.setOffset(2);
 			
 			status = getOrderV2(requestDto);

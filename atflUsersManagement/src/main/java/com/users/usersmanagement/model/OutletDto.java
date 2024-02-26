@@ -51,5 +51,6 @@ public class OutletDto {
     
 	private String beatNo;
 	private String outletChannel;
+	private String beatName;
 
 }

@@ -99,6 +99,9 @@ public class LtMastOutlets extends BaseClassForSiebelModel {
 	@Column(name = "PRICE_LIST")
 	String priceList;
 	
+	@Column(name = "BEAT_NAME")
+	String beatName;
+	
 	@Transient
 	String distributorCode;
 	
@@ -412,8 +415,6 @@ public class LtMastOutlets extends BaseClassForSiebelModel {
 	public void setDistributorStatus(String distributorStatus) {
 		this.distributorStatus = distributorStatus;
 	}
-	
-	
 
 	public String getPriceList() {
 		return priceList;
@@ -430,8 +431,6 @@ public class LtMastOutlets extends BaseClassForSiebelModel {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-	
-	
 
 	public String getOutletChannel() {
 		return outletChannel;
@@ -440,7 +439,16 @@ public class LtMastOutlets extends BaseClassForSiebelModel {
 	public void setOutletChannel(String outletChannel) {
 		this.outletChannel = outletChannel;
 	}
+	
+	public String getBeatName() {
+		return beatName;
+	}
 
+	public void setBeatName(String beatName) {
+		this.beatName = beatName;
+	}
+
+	
 	@Override
 	public String toString() {
 		return "LtMastOutlets [outletId=" + outletId + ", orgId=" + orgId + ", outletCode=" + outletCode
@@ -450,11 +458,12 @@ public class LtMastOutlets extends BaseClassForSiebelModel {
 				+ country + ", state=" + state + ", city=" + city + ", pin_code=" + pin_code + ", region=" + region
 				+ ", area=" + area + ", territory=" + territory + ", outletGstn=" + outletGstn + ", outletPan="
 				+ outletPan + ", licenceNo=" + licenceNo + ", positionsId=" + positionsId + ", phone=" + phone
-				+ ", email=" + email + ", primaryMobile=" + primaryMobile + ", priceList=" + priceList
-				+ ", distributorCode=" + distributorCode + ", distributorCrmCode=" + distributorCrmCode
-				+ ", distributorStatus=" + distributorStatus + ", distributorName=" + distributorName + ", employeeId="
-				+ employeeId + ", empName=" + empName + ", employeeCode=" + employeeCode + ", position=" + position
-				+ ", outletAddress=" + outletAddress + ", userId=" + userId + "]";
+				+ ", email=" + email + ", primaryMobile=" + primaryMobile + ", priceList=" + priceList + ", beatName="
+				+ beatName + ", distributorCode=" + distributorCode + ", distributorCrmCode=" + distributorCrmCode
+				+ ", distributorStatus=" + distributorStatus + ", outletChannel=" + outletChannel + ", distributorName="
+				+ distributorName + ", employeeId=" + employeeId + ", empName=" + empName + ", employeeCode="
+				+ employeeCode + ", position=" + position + ", outletAddress=" + outletAddress + ", userId=" + userId
+				+ "]";
 	}
 
 	

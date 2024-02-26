@@ -13,6 +13,8 @@ public class RequestDto {
 	private Long userId;
 	private String primaryMobile;
 	
+	private String beatName;
+	
 	//Added by Nikhil
 	private String userType;
 	private String status;
@@ -124,15 +126,24 @@ public class RequestDto {
 	public void setPrimaryMobile(String primaryMobile) {
 		this.primaryMobile = primaryMobile;
 	}
+	
+	public String getBeatName() {
+		return beatName;
+	}
 
+	public void setBeatName(String beatName) {
+		this.beatName = beatName;
+	}
+
+	
 	@Override
 	public String toString() {
 		return "RequestDto [orgId=" + orgId + ", distributorId=" + distributorId + ", outletId=" + outletId + ", limit="
 				+ limit + ", offset=" + offset + ", searchField=" + searchField + ", outletName=" + outletName
 				+ ", salesPersonId=" + salesPersonId + ", userId=" + userId + ", primaryMobile=" + primaryMobile
-				+ ", userType=" + userType + ", status=" + status + ", userName=" + userName + "]";
+				+ ", beatName=" + beatName + ", userType=" + userType + ", status=" + status + ", userName=" + userName
+				+ "]";
 	}
-	
 	
 
 }
