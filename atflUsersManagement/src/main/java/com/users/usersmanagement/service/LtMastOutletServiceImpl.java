@@ -206,6 +206,14 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			ltMastOutletsDump.setDistributorId(ltMastOutlets.getDistributorId());
 			ltMastOutletsDump.setOutletType(ltMastOutlets.getOutletType());
 			ltMastOutletsDump.setOutletName(ltMastOutlets.getOutletName());
+			
+			if (ltMastOutlets.getDistributorName() != null) {
+				ltMastOutletsDump.setDistributorName(ltMastOutlets.getDistributorName());
+			}
+			if (ltMastOutlets.getPosition() != null) {
+				ltMastOutletsDump.setPosition(ltMastOutlets.getPosition());
+			}
+			
 			if (ltMastOutlets.getProprietorName() != null) {
 				ltMastOutletsDump.setProprietorName(ltMastOutlets.getProprietorName());
 			}

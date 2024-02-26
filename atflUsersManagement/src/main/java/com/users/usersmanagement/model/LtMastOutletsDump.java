@@ -113,6 +113,11 @@ public class LtMastOutletsDump extends BaseClass {
 	@Column(name = "SIEBEL_REMARK")
 	String siebelRemark;
 	
+	@Column(name = "DISTRIBUTOR_NAME")
+	String distributorName;
+	
+	@Column(name = "position")
+	String position;
 	
 	@Transient
 	String distributorCode;
@@ -123,8 +128,9 @@ public class LtMastOutletsDump extends BaseClass {
 	@Transient
 	String distributorStatus;
 	
-	@Transient
-	String distributorName;
+	/*
+	 * @Transient String distributorName;
+	 */
 	
 	@Transient
 	String employeeId;
@@ -135,8 +141,9 @@ public class LtMastOutletsDump extends BaseClass {
 	@Transient
 	String employeeCode;
 	
-	@Transient
-	String position;
+	/*
+	 * @Transient String position;
+	 */
 	
 	@Transient
 	String outletAddress;

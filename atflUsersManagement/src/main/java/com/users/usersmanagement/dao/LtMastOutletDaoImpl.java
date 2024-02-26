@@ -63,7 +63,6 @@ public class LtMastOutletDaoImpl implements LtMastOutletDao, CodeMaster {
 		if (requestDto.getLimit() == 0) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 		}
-		
 
 		String searchField = null;
 		if (requestDto.getSearchField() != null) {
