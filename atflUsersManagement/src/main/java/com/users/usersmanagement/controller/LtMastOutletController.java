@@ -82,7 +82,7 @@ public class LtMastOutletController implements CodeMaster {
 	}
 	
 	@PostMapping(value = "/createOutlet", consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status>createOutlet(@RequestBody LtMastOutlets ltMastOutlets) throws ServerException{
+	public ResponseEntity<Status>createOutlet(@RequestBody LtMastOutletsDump ltMastOutlets) throws ServerException{
 	try {
 		  return new ResponseEntity<Status>(ltMastOutletService.createOutlet(ltMastOutlets), HttpStatus.OK);
 	    }catch(Exception e) {
