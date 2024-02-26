@@ -14,7 +14,7 @@ public interface LtMastDistributorsService {
 	Status verifyDistributorV1(String distributorCrmCode,String distributorName,String proprietorName,Long userId)
 			throws ServiceException;
 	
-	Status getAllDistributorAgainstAreahead(String userName)throws ServerException, ServiceException;
+	Status getAllDistributorAgainstAreahead(RequestDto requestDto)throws ServerException, ServiceException;
 	
 	Status getAllNotification(RequestDto requestDto) throws ServerException, ServiceException;
 
