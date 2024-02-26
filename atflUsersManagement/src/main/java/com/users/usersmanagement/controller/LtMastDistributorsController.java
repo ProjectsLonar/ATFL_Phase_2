@@ -55,17 +55,27 @@ public class LtMastDistributorsController implements CodeMaster {
 	}
 
 
-	@GetMapping(value = "/getAllDistributorAgainstAreahead/{userName}", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> getAllDistributorAgainstAreahead(@PathVariable("userName") String userName) throws ServerException {
+	/*
+	 * @GetMapping(value = "/getAllDistributorAgainstAreahead/{userName}", produces
+	 * = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0") public
+	 * ResponseEntity<Status>
+	 * getAllDistributorAgainstAreahead(@PathVariable("userName") String userName)
+	 * throws ServerException { try { return new ResponseEntity<Status>(
+	 * ltMastDistributorsService.getAllDistributorAgainstAreahead(userName),
+	 * HttpStatus.OK); } catch (Exception e) { throw new
+	 * BusinessException(INTERNAL_SERVER_ERROR, null, e); } }
+	 */
+	
+	@PostMapping(value = "/getAllDistributorAgainstAreahead", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getAllDistributorAgainstAreahead(@RequestBody RequestDto requestDto) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(
-					ltMastDistributorsService.getAllDistributorAgainstAreahead(userName),
+					ltMastDistributorsService.getAllDistributorAgainstAreahead(requestDto),
 					HttpStatus.OK);
 		} catch (Exception e) {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 		}
 }
-	
 	
 	@PostMapping(value = "/getAllNotification", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> getAllNotification(@RequestBody RequestDto requestDto) throws ServerException {

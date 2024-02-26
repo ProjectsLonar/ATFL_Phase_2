@@ -77,10 +77,23 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 	}
 	
 	@Override
-	public List<LtMastDistributors> getAllDistributorAgainstAreahead(String userName)throws ServiceException{
+	public List<LtMastDistributors> getAllDistributorAgainstAreahead(RequestDto requestDto)throws ServiceException{
+
+		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			//requestDto.setLimit(-1);
+		}
+
+		String searchField = null;
+		if (requestDto.getSearchField() != null) {
+			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+		}
+		System.out.println("requestDto" + requestDto);
+		
+		
 		String query = env.getProperty("getAllDistributorAgainstAreahead");
 		List<LtMastDistributors> ltMastDistributorsList = jdbcTemplate.query(query,
-				new Object[] { userName.trim().toUpperCase()},
+				new Object[] {requestDto.getUserName(),searchField,requestDto.getLimit(),requestDto.getOffset() },
 				new BeanPropertyRowMapper<LtMastDistributors>(LtMastDistributors.class));
 		if (!ltMastDistributorsList.isEmpty()) {
 			return ltMastDistributorsList;
@@ -90,8 +103,9 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 	
 	@Override
 	public List<NotificationDetails> getAllNotification(RequestDto requestDto) throws ServiceException{
-		if (requestDto.getLimit() == 0) {
+		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		//	requestDto.setLimit(-1);
 		}
 
 		String searchField = null;
