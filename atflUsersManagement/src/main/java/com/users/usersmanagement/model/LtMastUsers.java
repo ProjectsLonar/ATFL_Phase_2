@@ -146,7 +146,20 @@ public class LtMastUsers extends BaseClass {
 	@Transient
 	String position;
 	
+	@Transient 
+	private String territory;
+	
+	
+	
 
+
+	public String getTerritory() {
+		return territory;
+	}
+
+	public void setTerritory(String territory) {
+		this.territory = territory;
+	}
 
 	public Long getUserId() {
 		return userId;
@@ -456,14 +469,17 @@ public class LtMastUsers extends BaseClass {
 				+ ", Address=" + Address + ", email=" + email + ", alternateNo=" + alternateNo + ", latitude="
 				+ latitude + ", longitude=" + longitude + ", imageType=" + imageType + ", imageName=" + imageName
 				+ ", imageData=" + imageData + ", addressDetails=" + addressDetails + ", recentSerachId="
-				+ recentSerachId + ", token=" + token + ", distributorCode=" + distributorCode + ", primaryMobile="
-				+ primaryMobile + ", distributorCrmCode=" + distributorCrmCode + ", distributorName=" + distributorName
-				+ ", distributorAddress=" + distributorAddress + ", employeeId=" + employeeId + ", empName=" + empName
-				+ ", empCode=" + empCode + ", organisationCode=" + organisationCode + ", organisationName="
-				+ organisationName + ", outletName=" + outletName + ", outletCode=" + outletCode + ", outletAddress="
-				+ outletAddress + ", proprietorName=" + proprietorName + ", orgStatus=" + orgStatus + ", position="
-				+ position + "]";
+				+ recentSerachId + ", token=" + token + ", isFirstLogin=" + isFirstLogin + ", distributorCode="
+				+ distributorCode + ", primaryMobile=" + primaryMobile + ", distributorCrmCode=" + distributorCrmCode
+				+ ", distributorName=" + distributorName + ", distributorAddress=" + distributorAddress
+				+ ", employeeId=" + employeeId + ", empName=" + empName + ", empCode=" + empCode + ", organisationCode="
+				+ organisationCode + ", organisationName=" + organisationName + ", outletName=" + outletName
+				+ ", outletCode=" + outletCode + ", outletAddress=" + outletAddress + ", proprietorName="
+				+ proprietorName + ", orgStatus=" + orgStatus + ", position=" + position + ", territory=" + territory
+				+ "]";
 	}
+
+
 	
 	
 }
