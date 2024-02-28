@@ -426,9 +426,13 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 			if (excelReportDto.getRegion() != null) {
 				regionStr = excelReportDto.getRegion();
 			}
-
-			if (excelReportDto.getLimit() == 0) {
+			
+			if (excelReportDto.getLimit() == 0 || excelReportDto.getLimit() == 1) {
 				excelReportDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(excelReportDto.getOffset() == 0) {
+				excelReportDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 			}
 
 			List<DistributorDto> dataList = jdbcTemplate.query(query,
@@ -456,8 +460,12 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				searchFieldStr = "%" + excelReportDto.getSearchField().toUpperCase().trim() + "%";
 			}
 
-			if (excelReportDto.getLimit() == 0) {
+			if (excelReportDto.getLimit() == 0 || excelReportDto.getLimit() == 1) {
 				excelReportDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(excelReportDto.getOffset() == 0) {
+				excelReportDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 			}
 
 			List<ResponseExcelDto> dataList = jdbcTemplate.query(query,
@@ -498,8 +506,12 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				searchFieldStr = "%" + excelReportDto.getSearchField().toUpperCase().trim() + "%";
 			}
 
-			if (excelReportDto.getLimit() == 0) {
+			if (excelReportDto.getLimit() == 0 || excelReportDto.getLimit() == 1) {
 				excelReportDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(excelReportDto.getOffset() == 0) {
+				excelReportDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 			}
 
 			List<ResponseExcelDto> dataList = jdbcTemplate.query(query,

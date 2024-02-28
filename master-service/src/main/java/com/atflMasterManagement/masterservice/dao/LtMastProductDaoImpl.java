@@ -48,8 +48,13 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	public List<ProductDto> getProduct(RequestDto requestDto) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getProduct");
-			if (requestDto.getLimit() == 0) {
+			
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 			}
 
 			String searchField = null;
@@ -98,8 +103,13 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	public List<ProductDto> getProductForAdmin(RequestDto requestDto) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getProductForAdmin");
-			if (requestDto.getLimit() == 0) {
+			
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 			}
 
 			String searchField = null;
@@ -149,10 +159,15 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	public List<ProductDto> getProductWithInventory(RequestDto requestDto) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getProductWithInventory");
-			if (requestDto.getLimit() == 0) {
+			
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 			}
-
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
+			
 			String searchField = null;
 			if (requestDto.getSearchField() != null) {
 				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
@@ -183,8 +198,13 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	public List<ProductDto> getInStockProductAdmin(RequestDto requestDto) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getInStockProductAdmin");
-			if (requestDto.getLimit() == 0) {
+			
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 			}
 
 			String searchField = null;
@@ -221,8 +241,13 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	public List<ProductDto> getOutOfStockProductForAdmin(RequestDto requestDto) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getOutOfStockProductForAdmin");
-			if (requestDto.getLimit() == 0) {
+			
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 			}
 
 			String searchField = null;
@@ -259,8 +284,13 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	public List<ProductDto> getInStockProductWithInventory(RequestDto requestDto) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getInStockProductWithInventory");
-			if (requestDto.getLimit() == 0) {
+			
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 			}
 
 			String searchField = null;
@@ -297,8 +327,13 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	public List<ProductDto> getOutOfStockProductWithInventory(RequestDto requestDto) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getOutOfStockProductWithInventory");
-			if (requestDto.getLimit() == 0) {
+			
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 			}
 
 			String searchField = null;

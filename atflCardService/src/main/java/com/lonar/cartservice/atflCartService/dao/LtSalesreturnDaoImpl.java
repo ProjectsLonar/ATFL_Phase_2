@@ -129,6 +129,15 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		String query = env.getProperty("getSalesReturnHeader");
 		
 		String status = null;
+		
+		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+		
+		if(requestDto.getOffset() == 0) {
+			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
+		
 		if(requestDto.getReturnStatus() !=null)
 		{
 			status = requestDto.getReturnStatus().toUpperCase();
@@ -221,6 +230,15 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	public List<LtInvoiceDetailsResponseDto> getInvoiceDetails( RequestDto requestDto) throws ServerException{
 		try {
 			String query = env.getProperty("getInvoiceDetails");
+			
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
+			
 			
 			List<LtInvoiceDetailsResponseDto> list = jdbcTemplate.query(query,
 					new Object[] { requestDto.getDistributorId(), requestDto.getInvoiceNumber(),requestDto.getSearchField(),

@@ -109,9 +109,14 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	public List<Long> getSoHeader(RequestDto requestDto) throws ServiceException, IOException {
 		String query = env.getProperty("getOrderHeaderV1");
        
-		if (requestDto.getLimit() == 0) {
+		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 		}
+		
+		if(requestDto.getOffset() == 0) {
+			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
+		
  String headerId = null;
 		if(requestDto.getHeaderId() !=null) {
 			headerId = requestDto.getHeaderId().toString();

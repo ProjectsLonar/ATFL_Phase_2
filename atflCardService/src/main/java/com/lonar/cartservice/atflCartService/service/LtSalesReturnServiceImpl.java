@@ -436,7 +436,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 			//get sales return response
 			RequestDto requestDto = new RequestDto();
 			requestDto.setSalesReturnNumber(ltSalesReturnHeader.getSalesReturnNumber());
-			requestDto.setLimit(1);
+			requestDto.setLimit(-1);
 			requestDto.setOffset(2);
 			
 			status = getSalesReturn(requestDto);
