@@ -289,7 +289,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 				ltMastUser.setEmployeeCode("");
 				ltMastUser.setUserName("");
 				ltMastUser = ltMastUsersDao.saveLtMastUsers(ltMastUser);
-
+ 
 				if (ltMastUser.getUserId() != null) {
 					LtMastLogins mastLogins = this.generateAndSendOtp(ltMastUser);
 					if (mastLogins != null) {
