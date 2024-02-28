@@ -524,6 +524,8 @@ public class ResponseDto {
 	public void setBeatName(String beatName) {
 		this.beatName = beatName;
 	}
+	
+	
 	@Override
 	public String toString() {
 		return "ResponseDto [headerId=" + headerId + ", orderNumber=" + orderNumber + ", orderDate=" + orderDate
@@ -532,22 +534,24 @@ public class ResponseDto {
 				+ outletCode + ", latitude=" + latitude + ", longitude=" + longitude + ", remark=" + remark
 				+ ", userId=" + userId + ", address1=" + address1 + ", city=" + city + ", outletAddress="
 				+ outletAddress + ", customerId=" + customerId + ", proprietorName=" + proprietorName + ", BeatId="
-				+ BeatId + ", headerPriceList=" + headerPriceList + ", lineId=" + lineId + ", productId=" + productId
-				+ ", quantity=" + quantity + ", productCode=" + productCode + ", productDesc=" + productDesc
-				+ ", productName=" + productName + ", listPrice=" + listPrice + ", priceList=" + priceList
-				+ ", ptrPrice=" + ptrPrice + ", deliveryDate=" + deliveryDate + ", ptrFlag=" + ptrFlag
-				+ ", linelistPrice=" + linelistPrice + ", linePtrPrice=" + linePtrPrice + ", inventoryQuantity="
-				+ inventoryQuantity + ", orgId=" + orgId + ", categoryId=" + categoryId + ", productType=" + productType
-				+ ", category=" + category + ", subCategory=" + subCategory + ", primaryUom=" + primaryUom
-				+ ", secondaryUom=" + secondaryUom + ", secondaryUomValue=" + secondaryUomValue + ", unitsPerCase="
-				+ unitsPerCase + ", segment=" + segment + ", brand=" + brand + ", subBrand=" + subBrand + ", casePack="
-				+ casePack + ", hsnCode=" + hsnCode + ", productImage=" + productImage + ", thumbnailImage="
-				+ thumbnailImage + ", distributorCode=" + distributorCode + ", salesReturnNumber=" + salesReturnNumber
-				+ ", invoiceNumber=" + invoiceNumber + ", returnStatus=" + returnStatus + ", salesReturnHeaderId="
-				+ salesReturnHeaderId + ", returnReason=" + returnReason + ", salesReturnDate=" + salesReturnDate
-				+ ", salesReturnLineId=" + salesReturnLineId + ", shippedQuantity=" + shippedQuantity
-				+ ", availability=" + availability + ", remainingQuantity=" + remainingQuantity + ", returnQuantity="
-				+ returnQuantity + ", location=" + location + "]";
+				+ BeatId + ", instockFlag=" + instockFlag + ", headerPriceList=" + headerPriceList + ", lineId="
+				+ lineId + ", productId=" + productId + ", quantity=" + quantity + ", productCode=" + productCode
+				+ ", productDesc=" + productDesc + ", productName=" + productName + ", listPrice=" + listPrice
+				+ ", priceList=" + priceList + ", ptrPrice=" + ptrPrice + ", deliveryDate=" + deliveryDate
+				+ ", ptrFlag=" + ptrFlag + ", linelistPrice=" + linelistPrice + ", linePtrPrice=" + linePtrPrice
+				+ ", inventoryQuantity=" + inventoryQuantity + ", orgId=" + orgId + ", categoryId=" + categoryId
+				+ ", productType=" + productType + ", category=" + category + ", subCategory=" + subCategory
+				+ ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom + ", secondaryUomValue="
+				+ secondaryUomValue + ", unitsPerCase=" + unitsPerCase + ", segment=" + segment + ", brand=" + brand
+				+ ", subBrand=" + subBrand + ", casePack=" + casePack + ", hsnCode=" + hsnCode + ", productImage="
+				+ productImage + ", thumbnailImage=" + thumbnailImage + ", distributorCode=" + distributorCode
+				+ ", salesReturnNumber=" + salesReturnNumber + ", invoiceNumber=" + invoiceNumber + ", returnStatus="
+				+ returnStatus + ", salesReturnHeaderId=" + salesReturnHeaderId + ", returnReason=" + returnReason
+				+ ", salesReturnDate=" + salesReturnDate + ", salesReturnLineId=" + salesReturnLineId
+				+ ", shippedQuantity=" + shippedQuantity + ", availability=" + availability + ", remainingQuantity="
+				+ remainingQuantity + ", returnQuantity=" + returnQuantity + ", location=" + location
+				+ ", salesReturnAmount=" + salesReturnAmount + ", price=" + price + ", totalPrice=" + totalPrice
+				+ ", beatName=" + beatName + "]";
 	}
-		
+			
 }

@@ -2480,6 +2480,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					soHeaderDto.setOutletCode(responseDto.getOutletCode());
 					soHeaderDto.setLatitude(responseDto.getLatitude());
 					soHeaderDto.setLongitude(responseDto.getLongitude());
+					
 					soHeaderDto.setInstockFlag(responseDto.getInstockFlag());
 					//soHeaderDto.setPriceList(responseDto.getPriceList());
 					//soHeaderDto.setBeatId(responseDto.getBeatId());
