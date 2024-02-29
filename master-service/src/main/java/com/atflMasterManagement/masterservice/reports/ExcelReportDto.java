@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class ExcelReportDto {
 	private String fromDate;
     private String toDate;
-    private Long orgId;
+    private String orgId;
     private int limit;
 	private int offset;
 	private Long userId;
@@ -15,8 +15,8 @@ public class ExcelReportDto {
     //salesperson
     private String distributorCode;
     private String employeeCode;
-    private Long distributorId;
-    private Long employeeId;
+    private String distributorId;
+    private String employeeId;
     private Long productId;
     private Long outletId;
     private Long categoryId;
@@ -36,11 +36,11 @@ public class ExcelReportDto {
   //---distributor wise summary report
     private String categoryCode;
 
-	public Long getEmployeeId() {
+	public String getEmployeeId() {
 		return employeeId;
 	}
 
-	public void setEmployeeId(Long employeeId) {
+	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
 
@@ -148,11 +148,11 @@ public class ExcelReportDto {
 		this.priceList = priceList;
 	}
 
-	public Long getOrgId() {
+	public String getOrgId() {
 		return orgId;
 	}
 
-	public void setOrgId(Long orgId) {
+	public void setOrgId(String orgId) {
 		this.orgId = orgId;
 	}
 
@@ -164,11 +164,11 @@ public class ExcelReportDto {
 		this.searchField = searchField;
 	}
 
-	public Long getDistributorId() {
+	public String getDistributorId() {
 		return distributorId;
 	}
 
-	public void setDistributorId(Long distributorId) {
+	public void setDistributorId(String distributorId) {
 		this.distributorId = distributorId;
 	}
 
