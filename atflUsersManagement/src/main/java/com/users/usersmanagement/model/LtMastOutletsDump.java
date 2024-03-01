@@ -19,8 +19,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class LtMastOutletsDump extends BaseClass {
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_MAST_OUTLET_DUMP_SEQ")
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LT_MAST_OUTLET_DUMP_SEQ")
 	@SequenceGenerator(name = "LT_MAST_OUTLET_DUMP_SEQ", sequenceName = "LT_MAST_OUTLET_DUMP_SEQ", allocationSize = 1)
 	@Basic(optional = false)
 	@Column(name = "OUTLET_ID")
@@ -100,65 +100,50 @@ public class LtMastOutletsDump extends BaseClass {
 
 	@Column(name = "primary_mobile")
 	String primaryMobile;
-	
+
 	@Column(name = "PRICE_LIST")
 	String priceList;
-	
+
 	@Column(name = "OUTLET_CHANNEL")
 	String outletChannel;
-	
+
 	@Column(name = "SIEBEL_STATUS")
 	String siebelStatus;
-	
+
 	@Column(name = "SIEBEL_REMARK")
 	String siebelRemark;
-	
+
 	@Column(name = "DISTRIBUTOR_NAME")
 	String distributorName;
-	
-	/*
-	 * @Column(name = "pos_name") String posName;
-	 */
-	
+
 	@Transient
 	String distributorCode;
-	
+
 	@Transient
 	String distributorCrmCode;
-	
+
 	@Transient
 	String distributorStatus;
-	
+
 	/*
 	 * @Transient String distributorName;
 	 */
-	
+
 	@Transient
 	String employeeId;
-	
+
 	@Transient
 	String empName;
-	
+
 	@Transient
 	String employeeCode;
-	
-	
-	  @Transient String position;
-	 
-	
+
 	@Transient
 	String outletAddress;
-	
+
 	@Transient
 	Long userId;
 
-
-	
-	/*
-	 * public String getPosName() { return posName; }
-	 * 
-	 * public void setPosName(String posName) { this.posName = posName; }
-	 */
 
 	public Long getOutletId() {
 		return outletId;
@@ -419,8 +404,6 @@ public class LtMastOutletsDump extends BaseClass {
 	public String getDistributorStatus() {
 		return distributorStatus;
 	}
-	
-	
 
 	public String getDistributorCrmCode() {
 		return distributorCrmCode;
@@ -434,7 +417,6 @@ public class LtMastOutletsDump extends BaseClass {
 		this.distributorStatus = distributorStatus;
 	}
 
-	
 	public String getPriceList() {
 		return priceList;
 	}
@@ -443,7 +425,6 @@ public class LtMastOutletsDump extends BaseClass {
 		this.priceList = priceList;
 	}
 
-	
 	public String getOutletChannel() {
 		return outletChannel;
 	}
@@ -459,7 +440,7 @@ public class LtMastOutletsDump extends BaseClass {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-		
+
 	public String getSiebelStatus() {
 		return siebelStatus;
 	}
@@ -476,14 +457,6 @@ public class LtMastOutletsDump extends BaseClass {
 		this.siebelRemark = siebelRemark;
 	}
 
-	public String getPosition() {
-		return position;
-	}
-
-	public void setPosition(String position) {
-		this.position = position;
-	}
-
 	@Override
 	public String toString() {
 		return "LtMastOutletsDump [outletId=" + outletId + ", orgId=" + orgId + ", outletCode=" + outletCode
@@ -498,12 +471,9 @@ public class LtMastOutletsDump extends BaseClass {
 				+ siebelRemark + ", distributorName=" + distributorName + ", distributorCode=" + distributorCode
 				+ ", distributorCrmCode=" + distributorCrmCode + ", distributorStatus=" + distributorStatus
 				+ ", employeeId=" + employeeId + ", empName=" + empName + ", employeeCode=" + employeeCode
-				+ ", position=" + position + ", outletAddress=" + outletAddress + ", userId=" + userId + "]";
+				+ ", outletAddress=" + outletAddress + ", userId=" + userId + "]";
 	}
 
 
-	
-	
+
 }
-
-
