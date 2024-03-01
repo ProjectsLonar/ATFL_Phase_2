@@ -9,11 +9,11 @@ public class ExcelDataSelesperson {
 	private String positionCode;
 	private String outletName;
 	private Double revenue;
-	private Long outletId;
+	private String outletId;
 	private String ptrPrice;
 	private Long quantity;
-	private Long employeeId;
-	private Long distributorId;
+	private String employeeId;
+	private String distributorId;
 	private String distributorCode;
 	private String distributorName;
 	private String position;
@@ -79,10 +79,10 @@ public class ExcelDataSelesperson {
 	public void setRevenue(Double revenue) {
 		this.revenue = revenue;
 	}
-	public Long getOutletId() {
+	public String getOutletId() {
 		return outletId;
 	}
-	public void setOutletId(Long outletId) {
+	public void setOutletId(String outletId) {
 		this.outletId = outletId;
 	}
 	
@@ -98,16 +98,16 @@ public class ExcelDataSelesperson {
 	public void setQuantity(Long quantity) {
 		this.quantity = quantity;
 	}
-	public Long getEmployeeId() {
+	public String getEmployeeId() {
 		return employeeId;
 	}
-	public void setEmployeeId(Long employeeId) {
+	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
-	public Long getDistributorId() {
+	public String getDistributorId() {
 		return distributorId;
 	}
-	public void setDistributorId(Long distributorId) {
+	public void setDistributorId(String distributorId) {
 		this.distributorId = distributorId;
 	}
 	public String getDistributorCode() {

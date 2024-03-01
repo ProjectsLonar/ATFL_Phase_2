@@ -35,7 +35,7 @@ public class SoHeaderDto {
 	
 	private String priceList;
 	private String beatId;
-	private String inStockFlag;
+	private String instockFlag;
 	
 
 	public Long getHeaderId() {
@@ -206,12 +206,14 @@ public class SoHeaderDto {
 		this.beatId = beatId;
 	}
 
-	public String getInStockFlag() {
-		return inStockFlag;
+	public String getInstockFlag() {
+		return instockFlag;
 	}
 
-	public void setInStockFlag(String inStockFlag) {
-		this.inStockFlag = inStockFlag;
+	public void setInstockFlag(String instockFlag) {
+		this.instockFlag = instockFlag;
 	}
+
+	
 	
 }

@@ -1216,7 +1216,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				  
 				  String defailtPriceList = ltSoHeadersDao.getDefaultPriceListAgainstOutletId(soHeaderDto.getOutletId());
 				  
-				   if(soHeaderDto.getInStockFlag().equals("Y")) {
+				   if(soHeaderDto.getInstockFlag().equals("Y")) {
 						
 					String orderNumber = genrateOrderNumber(soHeaderDto.getOutletId());
 					//System.out.println("orderNumber :: "+orderNumber);
@@ -1257,8 +1257,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					ltSoHeader.setCreationDate(new Date()); // new Date()
 					//ltSoHeader.setStatus(DRAFT);
 
-					if(soHeaderDto.getInStockFlag()!= null) {
-						ltSoHeader.setInStockFlag(soHeaderDto.getInStockFlag());
+					if(soHeaderDto.getInstockFlag()!= null) {
+						ltSoHeader.setInStockFlag(soHeaderDto.getInstockFlag());
 					}
 					if(soHeaderDto.getPriceList()!= null) {
 						ltSoHeader.setPriceList(soHeaderDto.getPriceList());
@@ -1478,8 +1478,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 
 						 ltSoHeader.setStatus(DRAFT);
 					    						
-						if(soHeaderDto.getInStockFlag()!= null) {
-							ltSoHeader.setInStockFlag(soHeaderDto.getInStockFlag());
+						if(soHeaderDto.getInstockFlag()!= null) {
+							ltSoHeader.setInStockFlag(soHeaderDto.getInstockFlag());
 						}
 						if(soHeaderDto.getBeatId()!= null) {
 							ltSoHeader.setBeatId(soHeaderDto.getBeatId());
@@ -2044,7 +2044,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		ltSoHeader.setOutletId(soHeaderDto.getOutletId());
 		
 		
-		ltSoHeader.setInStockFlag(soHeaderDto.getInStockFlag());
+		ltSoHeader.setInStockFlag(soHeaderDto.getInstockFlag());
 		
 		if (soHeaderDto.getOrderNumber() != null) {
 			ltSoHeader.setOrderNumber(soHeaderDto.getOrderNumber());
@@ -2093,8 +2093,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		if(soHeaderDto.getPriceList()!= null) {
 			ltSoHeader.setPriceList(soHeaderDto.getPriceList());
 		}
-		if(soHeaderDto.getInStockFlag()!= null) {
-			ltSoHeader.setInStockFlag(soHeaderDto.getInStockFlag());
+		if(soHeaderDto.getInstockFlag()!= null) {
+			ltSoHeader.setInStockFlag(soHeaderDto.getInstockFlag());
 		}
 		
 		ltSoHeader.setCreationDate(creationDate); //(new Date());
@@ -2480,7 +2480,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					soHeaderDto.setOutletCode(responseDto.getOutletCode());
 					soHeaderDto.setLatitude(responseDto.getLatitude());
 					soHeaderDto.setLongitude(responseDto.getLongitude());
-					//soHeaderDto.setInStockFlag(responseDto.getInstockFlag());
+					
+					soHeaderDto.setInstockFlag(responseDto.getInstockFlag());
 					//soHeaderDto.setPriceList(responseDto.getPriceList());
 					//soHeaderDto.setBeatId(responseDto.getBeatId());
 					
