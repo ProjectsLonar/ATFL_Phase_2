@@ -152,6 +152,19 @@ public class LtMastUsers extends BaseClass {
 	@Transient
 	private String inventoryLocationName;
 	
+	@Transient
+	private String priceList;
+	
+
+	
+	
+	public String getPriceList() {
+		return priceList;
+	}
+
+	public void setPriceList(String priceList) {
+		this.priceList = priceList;
+	}
 
 	public String getTerritory() {
 		return territory;
