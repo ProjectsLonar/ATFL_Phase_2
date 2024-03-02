@@ -362,8 +362,8 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 		String reportDateTime = new SimpleDateFormat("yyyyMMdd_HHmmssSSS").format(Calendar.getInstance().getTime());
 		String reportCreationPath = env.getProperty("reportCreationPath");
 		String reportShowPath = env.getProperty("reportShowPath");
-		// String logoImagePath = env.getProperty("logoImagePath"); //Remove for NNF
-		String logoImagePath = "";
+	    String logoImagePath = env.getProperty("logoImagePath"); //Remove for NNF
+		//String logoImagePath = "";
 		saveDirectory = reportCreationPath;
 
 		File dir = new File(saveDirectory);

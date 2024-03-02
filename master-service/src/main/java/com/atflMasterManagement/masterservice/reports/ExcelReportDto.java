@@ -17,9 +17,9 @@ public class ExcelReportDto {
     private String employeeCode;
     private String distributorId;
     private String employeeId;
-    private Long productId;
-    private Long outletId;
-    private Long categoryId;
+    private String productId;
+    private String outletId;
+    private String categoryId;
     
     //Region
     private String region;
@@ -52,27 +52,27 @@ public class ExcelReportDto {
 		this.fromDate = fromDate;
 	}
 
-	public Long getProductId() {
+	public String getProductId() {
 		return productId;
 	}
 
-	public Long getOutletId() {
+	public String getOutletId() {
 		return outletId;
 	}
 
-	public void setOutletId(Long outletId) {
+	public void setOutletId(String outletId) {
 		this.outletId = outletId;
 	}
 
-	public Long getCategoryId() {
+	public String getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(Long categoryId) {
+	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
 
-	public void setProductId(Long productId) {
+	public void setProductId(String productId) {
 		this.productId = productId;
 	}
 
