@@ -169,7 +169,7 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 	public LtMastUsers getUserAllMasterDataById(Long userId) throws ServiceException {
 
 		String query = env.getProperty("getUserAllMasterDataById");
-		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { userId.toString() },
+		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { userId },
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
 		if (!list.isEmpty()) {
 			return list.get(0);

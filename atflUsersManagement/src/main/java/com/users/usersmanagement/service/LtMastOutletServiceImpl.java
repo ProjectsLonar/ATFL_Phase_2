@@ -210,10 +210,11 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			if (ltMastOutlets.getDistributorName() != null) {
 				ltMastOutletsDump.setDistributorName(ltMastOutlets.getDistributorName());
 			}
-			/*
-			 * if (ltMastOutlets.getPosName() != null) {
-			 * ltMastOutletsDump.setPosName(ltMastOutlets.getPosName()); }
-			 */
+			
+			  if (ltMastOutlets.getPositionsId() != null) {
+			  ltMastOutletsDump.setPositionsId(ltMastOutlets.getPositionsId()); 
+			  }
+			 
 			if (ltMastOutlets.getProprietorName() != null) {
 				ltMastOutletsDump.setProprietorName(ltMastOutlets.getProprietorName());
 			}
@@ -548,6 +549,13 @@ try {
         ltMastOutletsDump.setSiebelStatus(resCode);
         ltMastOutletsDump.setSiebelRemark(res);
         
+        
+        ltMastOutletsDump.setStatus(ltMastOutletsDumps.getStatus());
+		ltMastOutletsDump.setLastUpdatedBy(ltMastOutletsDumps.getUserId());
+		ltMastOutletsDump.setLastUpdateLogin(ltMastOutletsDumps.getUserId());
+		ltMastOutletsDump.setLastUpdateDate(new Date());
+		
+		//ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
   		  ltMastOutletsDump.setOutletCode(outletCode);
   		  ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
 

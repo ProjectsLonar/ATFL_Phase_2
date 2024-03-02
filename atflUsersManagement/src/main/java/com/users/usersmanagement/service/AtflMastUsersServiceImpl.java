@@ -647,6 +647,8 @@ try {
 
 			ltMastUserDto.setOrgStatus(ltMastUsers.getOrgStatus());
 			ltMastUserDto.setPosition(ltMastUsers.getPosition());
+			ltMastUserDto.setTerritory(ltMastUsers.getTerritory());
+			ltMastUserDto.setInventoryLocationName(ltMastUsers.getInventoryLocationName());
 
 		}
 }catch(Exception e) {

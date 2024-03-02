@@ -149,9 +149,22 @@ public class LtMastUsers extends BaseClass {
 	@Transient 
 	private String territory;
 	
+	@Transient
+	private String inventoryLocationName;
 	
+	@Transient
+	private String priceList;
 	
 
+	
+	
+	public String getPriceList() {
+		return priceList;
+	}
+
+	public void setPriceList(String priceList) {
+		this.priceList = priceList;
+	}
 
 	public String getTerritory() {
 		return territory;
@@ -460,6 +473,16 @@ public class LtMastUsers extends BaseClass {
 	public void setPrimaryMobile(String primaryMobile) {
 		this.primaryMobile = primaryMobile;
 	}
+	
+	
+
+	public String getInventoryLocationName() {
+		return inventoryLocationName;
+	}
+
+	public void setInventoryLocationName(String inventoryLocationName) {
+		this.inventoryLocationName = inventoryLocationName;
+	}
 
 	@Override
 	public String toString() {
@@ -476,9 +499,8 @@ public class LtMastUsers extends BaseClass {
 				+ organisationCode + ", organisationName=" + organisationName + ", outletName=" + outletName
 				+ ", outletCode=" + outletCode + ", outletAddress=" + outletAddress + ", proprietorName="
 				+ proprietorName + ", orgStatus=" + orgStatus + ", position=" + position + ", territory=" + territory
-				+ "]";
+				+ ", inventoryLocationName=" + inventoryLocationName + "]";
 	}
-
 
 	
 	
