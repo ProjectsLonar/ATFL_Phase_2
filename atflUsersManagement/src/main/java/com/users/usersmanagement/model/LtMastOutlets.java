@@ -102,6 +102,9 @@ public class LtMastOutlets extends BaseClassForSiebelModel {
 	@Column(name = "BEAT_NAME")
 	String beatName;
 	
+	@Column(name = "OUTLET_CHANNEL")
+	String outletChannel;
+	
 	@Transient
 	String distributorCode;
 	
@@ -111,8 +114,6 @@ public class LtMastOutlets extends BaseClassForSiebelModel {
 	@Transient
 	String distributorStatus;
 
-	@Transient
-	String outletChannel;
 	@Transient
 	String distributorName;
 	

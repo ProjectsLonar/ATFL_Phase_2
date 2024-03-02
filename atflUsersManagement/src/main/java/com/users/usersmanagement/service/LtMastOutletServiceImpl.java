@@ -202,7 +202,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		LtMastOutletsDump ltMastOutletsDump = new LtMastOutletsDump();
 
 		if (ltMastOutlets != null) {
-				if (ltMastOutlets.getOutletId() == null && ltMastOutlets.getOutletCode() ==null) {
+				if (ltMastOutlets.getOutletCode() ==null) {
 			ltMastOutletsDump.setDistributorId(ltMastOutlets.getDistributorId());
 			ltMastOutletsDump.setOutletType(ltMastOutlets.getOutletType());
 			ltMastOutletsDump.setOutletName(ltMastOutlets.getOutletName());
@@ -280,7 +280,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		}
 		}else {
 
-			ltMastOutletsDump = ltMastOutletDao.getoutletByIdAndCode(ltMastOutlets.getOutletId(),ltMastOutlets.getOutletCode());
+			ltMastOutletsDump = ltMastOutletDao.getoutletByIdAndCode(ltMastOutlets.getOutletCode());
 			
 			ltMastOutletsDump.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
 			ltMastOutletsDump.setStatus("PENDING_APPROVAL");

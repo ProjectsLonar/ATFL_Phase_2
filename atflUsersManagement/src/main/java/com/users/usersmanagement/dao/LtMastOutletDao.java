@@ -55,7 +55,7 @@ public interface LtMastOutletDao {
 	
 	public List<BeatDetailsDto> getOutletAgainstBeat(BeatDetailsDto beatDetailsDto)throws ServiceException, IOException;
 	
-	public LtMastOutletsDump getoutletByIdAndCode(Long outletId ,String outletCode)throws ServiceException, IOException;
+	public LtMastOutletsDump getoutletByIdAndCode(String outletCode)throws ServiceException, IOException;
 
 
 }

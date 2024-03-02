@@ -375,10 +375,10 @@ System.out.println("list"+list);
 	}
 	
 	@Override
-	public LtMastOutletsDump getoutletByIdAndCode(Long outletId ,String outletCode)throws ServiceException, IOException{
+	public LtMastOutletsDump getoutletByIdAndCode(String outletCode)throws ServiceException, IOException{
 		String query = env.getProperty("getoutletByIdAndCode");
 		List<LtMastOutletsDump> ltMastOutletslist = jdbcTemplate.query(query,
-				new Object[] {outletId,outletCode },
+				new Object[] {outletCode },
 				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
 
 		if (!ltMastOutletslist.isEmpty()) {
