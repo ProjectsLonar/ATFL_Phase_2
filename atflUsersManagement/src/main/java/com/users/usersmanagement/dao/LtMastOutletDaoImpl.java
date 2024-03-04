@@ -374,4 +374,18 @@ System.out.println("list"+list);
 		return null;
 	}
 	
+	@Override
+	public LtMastOutletsDump getoutletByIdAndCode(String outletCode)throws ServiceException, IOException{
+		String query = env.getProperty("getoutletByIdAndCode");
+		List<LtMastOutletsDump> ltMastOutletslist = jdbcTemplate.query(query,
+				new Object[] {outletCode },
+				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+
+		if (!ltMastOutletslist.isEmpty()) {
+			return ltMastOutletslist.get(0);
+		}else {
+			return null;
+		}
+	}
+	
 }

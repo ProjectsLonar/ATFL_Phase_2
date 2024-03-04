@@ -202,7 +202,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		LtMastOutletsDump ltMastOutletsDump = new LtMastOutletsDump();
 
 		if (ltMastOutlets != null) {
-
+				if (ltMastOutlets.getOutletCode() ==null) {
 			ltMastOutletsDump.setDistributorId(ltMastOutlets.getDistributorId());
 			ltMastOutletsDump.setOutletType(ltMastOutlets.getOutletType());
 			ltMastOutletsDump.setOutletName(ltMastOutlets.getOutletName());
@@ -262,7 +262,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 					if(user !=null) {
 				webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated);
 				}}
-				}
+				} 
 
 				status.setMessage("Send For approval.");
 				status.setData(ltMastOutletsDumpupdated);
@@ -278,7 +278,52 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			}
 			
 		}
+		}else {
 
+			ltMastOutletsDump = ltMastOutletDao.getoutletByIdAndCode(ltMastOutlets.getOutletCode());
+			
+			ltMastOutletsDump.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
+			ltMastOutletsDump.setStatus("PENDING_APPROVAL");
+			ltMastOutletsDump.setLastUpdatedBy(ltMastOutlets.getUserId());
+			ltMastOutletsDump.setLastUpdateLogin(ltMastOutlets.getUserId());
+			ltMastOutletsDump.setLastUpdateDate(new Date());
+
+			try {
+			LtMastOutletsDump ltMastOutletsDumpupdated = ltMastOutletDumpRepository.save(ltMastOutletsDump);
+			
+			LtMastUsers ltMastUsersSysAdmin = ltMastOutletDao.getSystemAdministartorDetails(ltMastOutletsDumpupdated.getOrgId());
+			if(ltMastUsersSysAdmin!=null) {
+			webController.sendOutletApprovalNotification(ltMastUsersSysAdmin, ltMastOutletsDumpupdated);
+			}
+			
+			if (ltMastOutletsDumpupdated != null) {
+				// send notification to mapped system administrator and sales officer
+				
+				List<LtMastUsers> ltMastUsers = ltMastOutletDao.getAllSalesOfficerAgainstDist(ltMastOutletsDumpupdated.getDistributorId(),
+						ltMastOutletsDumpupdated.getOrgId());
+				if(ltMastUsers !=null) {
+				for(LtMastUsers user:ltMastUsers) {
+					System.out.println("user"+user);
+					if(user !=null) {
+				webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated);
+				}}
+				} 
+
+				status.setMessage("Send For approval.");
+				status.setData(ltMastOutletsDumpupdated);
+				status.setCode(UPDATE_SUCCESSFULLY);
+			} else {
+				status.setMessage("UPDATE_FAIL");
+				status.setData(null);
+				status.setCode(UPDATE_FAIL);
+			}
+			}catch (Exception e) {
+			    // Log the exception or handle it accordingly
+			    e.printStackTrace();
+			}
+			
+		
+		}
 		return status;
 	}
 
@@ -329,6 +374,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		
 		
 		return status;
 	}

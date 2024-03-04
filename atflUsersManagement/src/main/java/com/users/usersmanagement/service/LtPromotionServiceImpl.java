@@ -116,9 +116,9 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 					ltPromotion.setOrgId(orgId);
 				}
 
-				//Date sDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"))
-				///		.parse(startDate.replaceAll("Z$", "+0000"));
-				//Date eDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(endDate.replaceAll("Z$", "+0000"));
+				Date sDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"))
+						.parse(startDate.replaceAll("Z$", "+0000"));
+				Date eDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(endDate.replaceAll("Z$", "+0000"));
 
 				if (startDate != null) {
 					ltPromotion.setStartDate(startDate);
