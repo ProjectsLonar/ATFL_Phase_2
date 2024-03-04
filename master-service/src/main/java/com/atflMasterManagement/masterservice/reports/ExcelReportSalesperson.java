@@ -71,7 +71,13 @@ public class ExcelReportSalesperson {
 			++rowIndex;
 			++srNo;
 			insertReportData(sheet, rowIndex, excelDataSelesperson, srNo, workbook,styleTableRow,styleTableRowRight);
-			Double value = (excelDataSelesperson.getQuantity()*Double.parseDouble(excelDataSelesperson.getListPrice()));
+			Double value=0.0;
+			if(excelDataSelesperson.getListPrice()==null) {
+				//Double listPrice=0.0;
+				value = (excelDataSelesperson.getQuantity()*(value));
+			}else {
+			 value = (excelDataSelesperson.getQuantity()*Double.parseDouble(excelDataSelesperson.getListPrice()));
+			}
 			totalRevenu = totalRevenu + value;
 		}
 

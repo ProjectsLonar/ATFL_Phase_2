@@ -74,5 +74,7 @@ public interface LtSoHeadersDao {
 	String getDefaultPriceListAgainstOutletId(String outletId)throws ServiceException, IOException;
 
 	String getOrderSequence()throws ServiceException, IOException;
+
+	List<LtMastUsers> getActiveSysAdminUsersFromHeaderId(Long headerId, String orderNumber)throws ServiceException, IOException;
 	
 }

@@ -61,5 +61,6 @@ public interface CodeMaster {
 	
 	public static final String SALES = "SALES";
 	
+	public static final String SYSTEMADMINISTRATOR = "SYSTEMADMINISTRATOR";
 	
 }

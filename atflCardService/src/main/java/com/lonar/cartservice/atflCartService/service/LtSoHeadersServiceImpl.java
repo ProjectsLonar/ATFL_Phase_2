@@ -344,11 +344,16 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		List<LtMastUsers>salesUsersList  = ltSoHeadersDao.getActiveSalesUsersFromHeaderId(ltSoHeader.getHeaderId(), ltSoHeader.getOrderNumber());
 		
 		List<LtMastUsers> areaHeadUserList = ltSoHeadersDao.getActiveAreaHeadeUsersFromHeaderId(ltSoHeader.getHeaderId(), ltSoHeader.getOrderNumber());
+		List<LtMastUsers> sysAdminUserList = ltSoHeadersDao.getActiveSysAdminUsersFromHeaderId(ltSoHeader.getHeaderId(), ltSoHeader.getOrderNumber());
 		
 		//	Optional<LtMastOutles> outletsObj =ltMastOutletRepository.findById(ltSoHeader.getOutletId());
 		//List<LtMastOutles> ltMastOutle = new ArrayList<LtMastOutles>();
 		List<LtMastOutles>ltMastOutle = ltSoHeadersDao.getOutletDetailsById(ltSoHeader.getOutletId());
 		String defailtPriceList = ltSoHeadersDao.getDefaultPriceListAgainstOutletId(ltSoHeader.getOutletId());
+		
+		//merging areaHeader & sysAdmin list
+		areaHeadUserList.addAll(sysAdminUserList);
+		//System.out.print("This is new areaHeadList = "+areaHeadUserList);
 		
 			String outletCode = "";
 			String outletName = "";
@@ -382,7 +387,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			
 			System.out.println("Thisss ISSSS ISSSUEEEE"+ ltSoHeader.getInStockFlag());
 			
-			// send salesOrder approval notification to areHead if order is outOfStock
+			// send salesOrder approval notification to areHead && sysAdmin if order is outOfStock
 			if(!areaHeadUserList.isEmpty() && ltSoHeader.getInStockFlag()!="Y" && 
 					ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null) 
 			{	
@@ -1210,7 +1215,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					return null;
 				  				  
 				  
-			  }else  if(user.getUserType().equalsIgnoreCase(SALES) || user.getUserType().equalsIgnoreCase(DISTRIBUTOR))
+			  }else  if(user.getUserType().equalsIgnoreCase(SALES) || user.getUserType().equalsIgnoreCase(DISTRIBUTOR) ||
+					    user.getUserType().equalsIgnoreCase(SYSTEMADMINISTRATOR))
 			    {
 				   // for Instock products order
 				  
@@ -2482,7 +2488,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					soHeaderDto.setLongitude(responseDto.getLongitude());
 					
 					soHeaderDto.setInstockFlag(responseDto.getInstockFlag());
-					//soHeaderDto.setPriceList(responseDto.getPriceList());
+					soHeaderDto.setPriceList(responseDto.getPriceList());
 					//soHeaderDto.setBeatId(responseDto.getBeatId());
 					
 					

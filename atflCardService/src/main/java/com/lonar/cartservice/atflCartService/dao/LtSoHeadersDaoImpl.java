@@ -838,5 +838,14 @@ System.out.println("headerIdsSSSS "+headerIdslist);
 		String sequenceNumber= jdbcTemplate.queryForObject(query, new Object[] {}, String.class);
 		return sequenceNumber;
 	}
+
+	@Override
+	public List<LtMastUsers> getActiveSysAdminUsersFromHeaderId(Long headerId, String orderNumber)
+			throws ServiceException, IOException {
+		String query = env.getProperty("getActiveSysAdminUsersFromHeaderId");
+		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		return userList;
+	}
 	
 }
