@@ -202,7 +202,8 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		LtMastOutletsDump ltMastOutletsDump = new LtMastOutletsDump();
 
 		if (ltMastOutlets != null) {
-				if (ltMastOutlets.getOutletCode() ==null) {
+			System.out.println("ltMastOutlets"+ltMastOutlets);
+				if (ltMastOutlets.getOutletCode()== null) {
 			ltMastOutletsDump.setDistributorId(ltMastOutlets.getDistributorId());
 			ltMastOutletsDump.setOutletType(ltMastOutlets.getOutletType());
 			ltMastOutletsDump.setOutletName(ltMastOutlets.getOutletName());
@@ -278,15 +279,61 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			}
 			
 		}
-		}else {
-
+		else {
+System.out.println("in else"+ltMastOutlets.getOutletCode());
 			ltMastOutletsDump = ltMastOutletDao.getoutletByIdAndCode(ltMastOutlets.getOutletCode());
 			
-			ltMastOutletsDump.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
-			ltMastOutletsDump.setStatus("PENDING_APPROVAL");
-			ltMastOutletsDump.setLastUpdatedBy(ltMastOutlets.getUserId());
-			ltMastOutletsDump.setLastUpdateLogin(ltMastOutlets.getUserId());
-			ltMastOutletsDump.setLastUpdateDate(new Date());
+			if(ltMastOutletsDump == null)
+			{
+				
+				ltMastOutletsDump.setDistributorId(ltMastOutlets.getDistributorId());
+				ltMastOutletsDump.setOutletType(ltMastOutlets.getOutletType());
+				ltMastOutletsDump.setOutletName(ltMastOutlets.getOutletName());
+				
+				if (ltMastOutlets.getDistributorName() != null) {
+					ltMastOutletsDump.setDistributorName(ltMastOutlets.getDistributorName());
+				}
+				
+				  if (ltMastOutlets.getPositionsId() != null) {
+				  ltMastOutletsDump.setPositionsId(ltMastOutlets.getPositionsId()); 
+				  }
+				 
+				if (ltMastOutlets.getProprietorName() != null) {
+					ltMastOutletsDump.setProprietorName(ltMastOutlets.getProprietorName());
+				}
+				ltMastOutletsDump.setOutletChannel(ltMastOutlets.getOutletChannel());
+				ltMastOutletsDump.setAddress1(ltMastOutlets.getAddress1());
+				ltMastOutletsDump.setAddress2(ltMastOutlets.getAddress2());
+				ltMastOutletsDump.setLandmark(ltMastOutlets.getLandmark());
+				ltMastOutletsDump.setCountry("INDIA");
+				ltMastOutletsDump.setState(ltMastOutlets.getState());
+				ltMastOutletsDump.setCity(ltMastOutlets.getCity());
+				ltMastOutletsDump.setPin_code(ltMastOutlets.getPin_code());
+
+				if (ltMastOutlets.getRegion() != null) {
+					ltMastOutletsDump.setRegion(ltMastOutlets.getRegion());
+				}
+				ltMastOutletsDump.setArea(ltMastOutlets.getArea());
+				ltMastOutletsDump.setTerritory(ltMastOutlets.getTerritory());
+				ltMastOutletsDump.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
+				ltMastOutletsDump.setStatus("PENDING_APPROVAL");
+				ltMastOutletsDump.setPriceList(ltMastOutlets.getPriceList());
+				ltMastOutletsDump.setOrgId(ltMastOutlets.getOrgId());
+
+				ltMastOutletsDump.setCreatedBy(ltMastOutlets.getUserId());
+				ltMastOutletsDump.setLastUpdatedBy(ltMastOutlets.getUserId());
+				ltMastOutletsDump.setLastUpdateLogin(ltMastOutlets.getUserId());
+				ltMastOutletsDump.setCreationDate(new Date());
+				ltMastOutletsDump.setLastUpdateDate(new Date());
+
+			
+			}else {
+				ltMastOutletsDump.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
+				ltMastOutletsDump.setStatus("PENDING_APPROVAL");
+				ltMastOutletsDump.setLastUpdatedBy(ltMastOutlets.getUserId());
+				ltMastOutletsDump.setLastUpdateLogin(ltMastOutlets.getUserId());
+				ltMastOutletsDump.setLastUpdateDate(new Date());
+			}
 
 			try {
 			LtMastOutletsDump ltMastOutletsDumpupdated = ltMastOutletDumpRepository.save(ltMastOutletsDump);
@@ -323,6 +370,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			}
 			
 		
+		}
 		}
 		return status;
 	}
