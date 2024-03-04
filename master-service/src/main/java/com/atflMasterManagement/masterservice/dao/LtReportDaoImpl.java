@@ -139,13 +139,22 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 	@Override
 	public List<ExcelDataRegion> getRegionwiseSalesReportData(ExcelReportDto excelReportDto) {
 		try {
-			Date startDate = reportStartEndDateFormat
-					.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getFromDate()));
-			Date endDate = reportStartEndDateFormat
-					.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getToDate()));
-			String strStartDate = reportStartEndDateFormat.format(startDate);
-			String strEndDate = reportStartEndDateFormat.format(endDate);
+		//	Date startDate = reportStartEndDateFormat.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getFromDate()));
+			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH).withZone(ZoneId.systemDefault());
+	        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MMM-yy", Locale.ENGLISH);
+	            Instant instant = Instant.from(inputFormatter.parse(excelReportDto.getFromDate()));
+	            String startDate = outputFormatter.format(instant.atZone(ZoneId.systemDefault()));
+						
+			//Date endDate = reportStartEndDateFormat.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getToDate()));
+	            Instant instant1 = Instant.from(inputFormatter.parse(excelReportDto.getToDate()));
+	            String endDate = outputFormatter.format(instant1.atZone(ZoneId.systemDefault()));
+	            
+	        //String strStartDate = reportStartEndDateFormat.format(startDate);
+			//String strEndDate = reportStartEndDateFormat.format(endDate);
 
+	            String strStartDate = startDate;
+				String strEndDate = endDate;  
+	            
 			String query = env.getProperty("getReportDataByRegionwiseSalesAdmin");
 
 			if (excelReportDto.getUserId() != null) {
@@ -277,13 +286,23 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 	@Override
 	public List<ExcelDataDistributor> getDistributorReportData(ExcelReportDto excelReportDto) throws ServiceException {
 		try {
-			Date startDate = reportStartEndDateFormat
-					.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getFromDate()));
-			Date endDate = reportStartEndDateFormat
-					.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getToDate()));
-			String strStartDate = reportStartEndDateFormat.format(startDate);
-			String strEndDate = reportStartEndDateFormat.format(endDate);
+			//Date startDate = reportStartEndDateFormat.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getFromDate()));
+			//Date endDate = reportStartEndDateFormat.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getToDate()));
+			
+			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH).withZone(ZoneId.systemDefault());
+	        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MMM-yy", Locale.ENGLISH);
+	            Instant instant = Instant.from(inputFormatter.parse(excelReportDto.getFromDate()));
+	            String startDate = outputFormatter.format(instant.atZone(ZoneId.systemDefault()));
+			
+	            Instant instant1 = Instant.from(inputFormatter.parse(excelReportDto.getToDate()));
+	            String endDate = outputFormatter.format(instant1.atZone(ZoneId.systemDefault()));
+	            
+	         //String strStartDate = reportStartEndDateFormat.format(startDate);
+			//String strEndDate = reportStartEndDateFormat.format(endDate);
 
+	            String strStartDate = startDate;
+				String strEndDate = endDate; 
+	            
 			if (excelReportDto.getUserId() != null) {
 				UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());
 
@@ -354,13 +373,23 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				status = excelReportDto.getStatus().trim().toUpperCase();
 			}
 
-			Date startDate = reportStartEndDateFormat
-					.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getFromDate()));
-			Date endDate = reportStartEndDateFormat
-					.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getToDate()));
-			String strStartDate = reportStartEndDateFormat.format(startDate);
-			String strEndDate = reportStartEndDateFormat.format(endDate);
+			//Date startDate = reportStartEndDateFormat.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getFromDate()));
+			//Date endDate = reportStartEndDateFormat.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getToDate()));
+			
+			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH).withZone(ZoneId.systemDefault());
+	        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MMM-yy", Locale.ENGLISH);
+	            Instant instant = Instant.from(inputFormatter.parse(excelReportDto.getFromDate()));
+	            String startDate = outputFormatter.format(instant.atZone(ZoneId.systemDefault()));
+			
+	            Instant instant1 = Instant.from(inputFormatter.parse(excelReportDto.getToDate()));
+	            String endDate = outputFormatter.format(instant1.atZone(ZoneId.systemDefault()));
+			
+			//String strStartDate = reportStartEndDateFormat.format(startDate);
+			//String strEndDate = reportStartEndDateFormat.format(endDate);
 
+	            String strStartDate = startDate;
+				String strEndDate = endDate;
+	            
 			String query = env.getProperty("getReportDataByOutletAdmin");
 
 			UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());
@@ -761,13 +790,22 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 	@Override
 	public List<ExcelDataProduct> getProductReportData2(ExcelReportDto excelReportDto) throws ServiceException {
 		try {
-			Date startDate = reportStartEndDateFormat
-					.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getFromDate()));
-			Date endDate = reportStartEndDateFormat
-					.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getToDate()));
-			String strStartDate = reportStartEndDateFormat.format(startDate);
-			String strEndDate = reportStartEndDateFormat.format(endDate);
+			//Date startDate = reportStartEndDateFormat.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getFromDate()));
+			//Date endDate = reportStartEndDateFormat.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getToDate()));
+			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH).withZone(ZoneId.systemDefault());
+	        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MMM-yy", Locale.ENGLISH);
+	            Instant instant = Instant.from(inputFormatter.parse(excelReportDto.getFromDate()));
+	            String startDate = outputFormatter.format(instant.atZone(ZoneId.systemDefault()));
+			
+	            Instant instant1 = Instant.from(inputFormatter.parse(excelReportDto.getToDate()));
+	            String endDate = outputFormatter.format(instant1.atZone(ZoneId.systemDefault()));
+	            
+	        //String strStartDate = reportStartEndDateFormat.format(startDate);
+			//String strEndDate = reportStartEndDateFormat.format(endDate);
 
+	            String strStartDate = startDate;
+				String strEndDate = endDate;     
+	            
 			String query = env.getProperty("getReportDataByProductAdmin");
 
 			UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());

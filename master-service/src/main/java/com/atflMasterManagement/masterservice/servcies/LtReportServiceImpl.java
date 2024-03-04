@@ -237,10 +237,11 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 
 				if (outletReportDataMap.get(mapKey) != null) {
 					ExcelDataOutlet excelDataOutlet = outletReportDataMap.get(mapKey);
+					if(excelDataOutletObj.getListPrice()!=null) {
 					Double totalAmount = (excelDataOutletObj.getQuantity()
 							* Double.parseDouble(excelDataOutletObj.getListPrice()));
 					totalAmount = excelDataOutlet.getAmount() + totalAmount;
-					excelDataOutlet.setAmount(totalAmount);
+					excelDataOutlet.setAmount(totalAmount);}
 					switch (excelDataOutletObj.getCategoryCode()) {
 					case EDIBLE_OILS: // C101
 						Double edibleOilsTotal = (excelDataOutletObj.getQuantity()
@@ -261,10 +262,11 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 						excelDataOutlet.setReadyToEat(readyToEatTotal);
 						break;
 					case SPREADS: // C104
+						if(excelDataOutletObj.getListPrice()!=null) {
 						Double spreadsTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
 						spreadsTotal = excelDataOutlet.getSpreads() + spreadsTotal;
-						excelDataOutlet.setSpreads(spreadsTotal);
+						excelDataOutlet.setSpreads(spreadsTotal);}
 						break;
 					case CEREAL_SNACKS: // C105
 						Double cerealSnacksTotal = (excelDataOutletObj.getQuantity()
@@ -290,11 +292,14 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 					excelDataOutlet.setCreationDate(excelDataOutletObj.getCreationDate());
 					excelDataOutlet.setDistributorName(excelDataOutletObj.getDistributorName());
 					excelDataOutlet.setDistributorCrmCode(excelDataOutletObj.getDistributorCrmCode());
-
+                   
+					
+					if(excelDataOutletObj.getPtrPrice()!= null && excelDataOutletObj.getListPrice()!= null && 
+							excelDataOutletObj.getQuantity()!=null) {
 					Double totalAmount = (excelDataOutletObj.getQuantity()
 							* Double.parseDouble(excelDataOutletObj.getListPrice()));
 					totalAmount = excelDataOutlet.getAmount() + totalAmount;
-					excelDataOutlet.setAmount(totalAmount);
+					excelDataOutlet.setAmount(totalAmount);}
 
 					switch (excelDataOutletObj.getCategoryCode()) {
 					case EDIBLE_OILS: // C101
@@ -316,10 +321,11 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 						excelDataOutlet.setReadyToEat(readyToEatTotal);
 						break;
 					case SPREADS: // C104
+						if(excelDataOutletObj.getListPrice()!=null) {
 						Double spreadsTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
 						spreadsTotal = excelDataOutlet.getSpreads() + spreadsTotal;
-						excelDataOutlet.setSpreads(spreadsTotal);
+						excelDataOutlet.setSpreads(spreadsTotal);}
 						break;
 					case CEREAL_SNACKS: // C105
 						Double cerealSnacksTotal = (excelDataOutletObj.getQuantity()

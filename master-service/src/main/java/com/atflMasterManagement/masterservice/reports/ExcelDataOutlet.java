@@ -3,7 +3,7 @@ package com.atflMasterManagement.masterservice.reports;
 public class ExcelDataOutlet {
 
 	private int srNo;
-	private Long outletId;
+	private String outletId;
 	private String outletName;
 	private String outletCode;
 	private String orderNumber;
@@ -42,11 +42,11 @@ public class ExcelDataOutlet {
 		this.srNo = srNo;
 	}
 
-	public Long getOutletId() {
+	public String getOutletId() {
 		return outletId;
 	}
 
-	public void setOutletId(Long outletId) {
+	public void setOutletId(String outletId) {
 		this.outletId = outletId;
 	}
 
