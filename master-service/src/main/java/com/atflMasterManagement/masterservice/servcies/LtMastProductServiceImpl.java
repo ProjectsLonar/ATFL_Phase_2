@@ -157,7 +157,7 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 			List<ProductDto> list = ltMastProductDao.getInStockProductWithInventory(requestDto);
 			Long productCount = ltMastProductDao.getInStockProductCountWithInventory(requestDto);
 			//System.out.print("Hi in prodInvent query");
-			//System.out.print(list);
+			System.out.print("ProductList= "+ list);
 
 			if (list != null) {
 				
@@ -167,7 +167,7 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 					
 					ProductDto productDto = (ProductDto) iterator.next();
 					
-					//System.out.print(productDto);
+					System.out.print(productDto);
 					
 					if(productDto.getPtrFlag().equalsIgnoreCase("Y")) {
 						productDto.setPtrPrice(productDto.getListPrice());

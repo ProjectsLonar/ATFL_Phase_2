@@ -111,4 +111,13 @@ public class RequestDto {
 		this.userType = userType;
 	}
 
+	@Override
+	public String toString() {
+		return "RequestDto [catId=" + catId + ", orgId=" + orgId + ", distId=" + distId + ", outletId=" + outletId
+				+ ", limit=" + limit + ", offset=" + offset + ", searchField=" + searchField + ", productId="
+				+ productId + ", categoryId=" + categoryId + ", subCategoryId=" + subCategoryId + ", userId=" + userId
+				+ ", userType=" + userType + "]";
+	}
+	
+
 }

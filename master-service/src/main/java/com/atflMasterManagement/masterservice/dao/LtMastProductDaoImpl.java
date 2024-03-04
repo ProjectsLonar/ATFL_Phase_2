@@ -1,7 +1,10 @@
 package com.atflMasterManagement.masterservice.dao;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -282,7 +285,7 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	
 	@Override
 	public List<ProductDto> getInStockProductWithInventory(RequestDto requestDto) throws ServiceException, IOException {
-		try {
+		//try {
 			String query = env.getProperty("getInStockProductWithInventory");
 			
 			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
@@ -297,18 +300,41 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 			if (requestDto.getSearchField() != null) {
 				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 			}
+			System.out.print("Input requestDto= "+requestDto);
               //System.out.print(query);
-			List<ProductDto> productsList = jdbcTemplate.query(query,
-					new Object[] { requestDto.getOrgId(), requestDto.getProductId(), requestDto.getCategoryId(),
-							searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
-					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
-			if (!productsList.isEmpty()) {
-				return productsList;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+//			List<ProductDto> productsList = jdbcTemplate.query(query,
+//					new Object[] { requestDto.getOrgId(), requestDto.getProductId(), requestDto.getCategoryId(),
+//							searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
+//					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+			 return jdbcTemplate.query(query,new Object[] { requestDto.getOrgId(), requestDto.getProductId(), 
+					 requestDto.getCategoryId(),searchField,requestDto.getOutletId(), requestDto.getLimit(), 
+					 requestDto.getOffset()},
+					new BeanPropertyRowMapper<ProductDto>(){
+				 public ProductDto mapRow(ResultSet rs, int row) throws SQLException {    
+					ProductDto e=new ProductDto();  
+					
+					 e.setInventoryCode(rs.getString("INVENTORY_CODE"));
+					 System.out.println(rs.getString("INVENTORY_CODE"));
+					 e.setProductId(rs.getString("PRODUCT_ID"));
+					 System.out.println("1234="+rs.getString("productId"));
+					 System.out.println("123="+rs.getString("PRODUCT_ID"));
+					 System.out.print("ProductList " + e);
+					 e.setOrgId(rs.getString("ORG_ID"));
+					 e.setCategoryId(rs.getString("CATEGORY_ID"));
+					 return e;
+					 
+			        }    
+			    });    
+			 
+					
+//			if (!productsList.isEmpty()) {
+//				return productsList;
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return null;
 	}
 
 	@Override

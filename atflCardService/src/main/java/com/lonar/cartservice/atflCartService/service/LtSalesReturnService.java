@@ -20,4 +20,6 @@ public interface LtSalesReturnService {
 	
 	Status getInvoices(RequestDto requestDto) throws ServerException;
 
+	Status getInvoicePdfAgainstInvoiceNumber(RequestDto requestDto)throws ServerException;
+
 }

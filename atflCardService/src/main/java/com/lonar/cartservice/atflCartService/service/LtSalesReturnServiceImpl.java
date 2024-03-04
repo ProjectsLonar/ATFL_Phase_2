@@ -33,6 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lonar.cartservice.atflCartService.dao.LtSalesreturnDao;
 import com.lonar.cartservice.atflCartService.dto.LtInvoiceDetailsDto;
 import com.lonar.cartservice.atflCartService.dto.LtInvoiceDetailsLineDto;
@@ -800,5 +802,127 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 		}
 		}catch(Exception e) {e.printStackTrace();}
 		return status;
+	}
+
+	@Override
+	public Status getInvoicePdfAgainstInvoiceNumber(RequestDto requestDto) throws ServerException {
+		try {
+			Status status = new Status();
+			
+			String url = "https://10.245.4.70:9014/siebel/v1.0/service/AT%20New%20Order%20Creation%20REST%20BS/InvoicePdf?matchrequestformat=y";
+			String method = "POST";
+	        String contentType = "Content-Type: application/json";
+	        //String authorization = "Authorization: Basic TE9OQVJfVEVTVDpMb25hcjEyMw=="; need to check
+			
+	        JSONObject siebelReq = new JSONObject();
+	        siebelReq.put("InvoiceNum",requestDto.getInvoiceNumber());
+	        
+	        String jsonPayload =siebelReq.toString();
+            System.out.println(siebelReq);     //(requestBody);
+            
+	        URL obj = new URL(url);
+	        System.out.println("url is..... = "+ url);
+	        // Add this line before opening the connection
+	        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+	            new javax.net.ssl.HostnameVerifier(){
+	                public boolean verify(String hostname,
+	                        javax.net.ssl.SSLSession sslSession) {
+	                    return true;
+	                }
+	            });
+
+	        TrustManager[] trustAllCertificates = new TrustManager[]{
+	        	    new X509TrustManager() {
+	        	        public X509Certificate[] getAcceptedIssuers() {
+	        	            return null;
+	        	        }
+	        	        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+	        	        }
+	        	        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+	        	        }
+	        	    }
+	        	};
+
+	        	SSLContext sslContext = SSLContext.getInstance("SSL");
+	        	sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
+	        	HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+
+	        	// Create HttpURLConnection object
+	            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+	            // Set request method
+	            con.setRequestMethod(method);
+	            // Set request headers
+	            con.setRequestProperty("Content-Type", "application/json");
+	            con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpMb25hcjEyMw=="); //need to check
+	            // Enable output and set request body
+	            con.setDoOutput(true);
+	            try (OutputStream os = con.getOutputStream()) {
+	                byte[] input = jsonPayload.getBytes("utf-8");
+	                os.write(input, 0, input.length);
+	            }
+
+	         // Get response code
+	            int responseCode = con.getResponseCode();
+	            String msg = con.getResponseMessage();
+	            System.out.println("Response Code : " + responseCode);
+	            System.out.println("Response Message : " + msg);
+	            
+	         // Read the response body
+	            StringBuilder response = new StringBuilder();
+	            BufferedReader reader;
+	            InputStream inputStream;
+	            if(responseCode >= 200 && responseCode < 300 ) {
+	            	inputStream = con.getInputStream();
+	            	reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+	                String line;
+	              while ((line = reader.readLine()) != null) {
+	            	  System.out.println("line success response is="+line);
+	                  response.append(line);
+	                  System.out.println("success response is = " + response);
+	              }
+	              reader.close();
+	      
+//	               Show the response
+	              System.out.println("Response Body: " + response.toString());
+
+	            }else {
+	            	     reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+	                     String line;
+	                       while ((line = reader.readLine()) != null) 
+	                     {
+	          	            System.out.println("line error response is="+line);
+	                        response.append(line);
+	                     }        
+	            	     inputStream = con.getErrorStream();
+	            	     System.out.println("Error response: " + responseCode + " - " + msg);
+	            	     System.out.println("Error Response Body: " + response);
+	            	 }
+                   
+	         // saving response details in to table 
+	            String resCode= Integer.toString(responseCode);
+	            //tableNameToStore.setSiebelStatus(resCode);
+	            String res= response.toString();
+	            //tableNameToStore.setSiebelRemark(res);
+	            
+	           // Create an ObjectMapper instance
+	           ObjectMapper objectMapper = new ObjectMapper();
+	           
+	           // Parse the response body into a JSON object
+	           JsonNode rootNode = objectMapper.readTree(response.toString());
+	           // Access the "Invoice Number" field from the JSON object
+	           if(rootNode!= null && responseCode ==200) {
+	           String invoiceNumber = rootNode.get("Invoice Number").asText();
+	           // Now you can use the invoiceNumber variable as needed
+	           System.out.println("Invoice Number: " + invoiceNumber);
+	                 
+	          // tableNameToStore.setSiebelInvoiceNumber(invoiceNumber);
+	    		}
+	        	
+	        	
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		
+		return null;
 	}
 }

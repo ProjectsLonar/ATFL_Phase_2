@@ -85,4 +85,14 @@ public class LtSalesReturnController implements  CodeMaster {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 		}
 	}
+
+	@PostMapping(value = "/getInvoicePdf", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+   public ResponseEntity<Status> getInvoicePdfAgainstInvoiceNumber(@RequestBody RequestDto requestDto)throws ServerException{
+		try {
+			return new ResponseEntity<Status>(ltSalesReturnService.getInvoicePdfAgainstInvoiceNumber(requestDto), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+	}	
+
 }

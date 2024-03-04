@@ -49,8 +49,65 @@ public class ProductDto {
 	private String subCategoryImage;
 	
 	private String inventoryQuantity;
-	private String  inventoryCode;
+	private String inventoryCode;
+	private String outletId;
+	private String subcategory;
+	private String unitPerCase;
+	private String orderable;
+	private String categoryId1;
+	private String orgId1;
+	private String locationName;
+	private String distributorId;
 	
+		
+	public String getOutletId() {
+		return outletId;
+	}
+	public void setOutletId(String outletId) {
+		this.outletId = outletId;
+	}
+	public String getSubcategory() {
+		return subcategory;
+	}
+	public void setSubcategory(String subcategory) {
+		this.subcategory = subcategory;
+	}
+	public String getUnitPerCase() {
+		return unitPerCase;
+	}
+	public void setUnitPerCase(String unitPerCase) {
+		this.unitPerCase = unitPerCase;
+	}
+	public String getOrderable() {
+		return orderable;
+	}
+	public void setOrderable(String orderable) {
+		this.orderable = orderable;
+	}
+	public String getCategoryId1() {
+		return categoryId1;
+	}
+	public void setCategoryId1(String categoryId1) {
+		this.categoryId1 = categoryId1;
+	}
+	public String getOrgId1() {
+		return orgId1;
+	}
+	public void setOrgId1(String orgId1) {
+		this.orgId1 = orgId1;
+	}
+	public String getLocationName() {
+		return locationName;
+	}
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+	public String getDistributorId() {
+		return distributorId;
+	}
+	public void setDistributorId(String distributorId) {
+		this.distributorId = distributorId;
+	}
 	public String getProductId() {
 		return productId;
 	}
@@ -292,4 +349,27 @@ public class ProductDto {
 	public void setInventoryCode(String inventoryCode) {
 		this.inventoryCode = inventoryCode;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return "ProductDto [productId=" + productId + ", orgId=" + orgId + ", categoryId=" + categoryId
+				+ ", subCategoryId=" + subCategoryId + ", productType=" + productType + ", category=" + category
+				+ ", subCategory=" + subCategory + ", productCode=" + productCode + ", productName=" + productName
+				+ ", productDesc=" + productDesc + ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom
+				+ ", secondaryUomValue=" + secondaryUomValue + ", unitsPerCase=" + unitsPerCase + ", segment=" + segment
+				+ ", brand=" + brand + ", subBrand=" + subBrand + ", style=" + style + ", flavor=" + flavor
+				+ ", casePack=" + casePack + ", hsnCode=" + hsnCode + ", productImage=" + productImage + ", status="
+				+ status + ", thumbnailImage=" + thumbnailImage + ", ptrFlag=" + ptrFlag + ", currency=" + currency
+				+ ", listPrice=" + listPrice + ", priceList=" + priceList + ", ptrPrice=" + ptrPrice + ", categoryCode="
+				+ categoryCode + ", categoryName=" + categoryName + ", categoryDesc=" + categoryDesc
+				+ ", categoryThumbnail=" + categoryThumbnail + ", categoryImage=" + categoryImage + ", subCategoryCode="
+				+ subCategoryCode + ", subCategoryName=" + subCategoryName + ", subCategoryDesc=" + subCategoryDesc
+				+ ", subCategoryImage=" + subCategoryImage + ", inventoryQuantity=" + inventoryQuantity
+				+ ", inventoryCode=" + inventoryCode + ", outletId=" + outletId + ", subcategory=" + subcategory
+				+ ", unitPerCase=" + unitPerCase + ", orderable=" + orderable + ", categoryId1=" + categoryId1
+				+ ", orgId1=" + orgId1 + ", locationName=" + locationName + ", distributorId=" + distributorId + "]";
+	}
+		
+
 }
