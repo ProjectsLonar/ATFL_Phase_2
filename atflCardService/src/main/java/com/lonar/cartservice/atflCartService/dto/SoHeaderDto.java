@@ -36,7 +36,16 @@ public class SoHeaderDto {
 	private String priceList;
 	private String beatId;
 	private String instockFlag;
+	private String headerPriceList;
 	
+
+	public String getHeaderPriceList() {
+		return headerPriceList;
+	}
+
+	public void setHeaderPriceList(String headerPriceList) {
+		this.headerPriceList = headerPriceList;
+	}
 
 	public Long getHeaderId() {
 		return headerId;
@@ -215,5 +224,16 @@ public class SoHeaderDto {
 	}
 
 	
+	@Override
+	public String toString() {
+		return "SoHeaderDto [headerId=" + headerId + ", orderNumber=" + orderNumber + ", orderDate=" + orderDate
+				+ ", status=" + status + ", address=" + address + ", outletId=" + outletId + ", outletName="
+				+ outletName + ", outletCode=" + outletCode + ", outletAddress=" + outletAddress + ", customerId="
+				+ customerId + ", proprietorName=" + proprietorName + ", deliveryDate=" + deliveryDate + ", latitude="
+				+ latitude + ", longitude=" + longitude + ", userId=" + userId + ", remark=" + remark + ", address1="
+				+ address1 + ", city=" + city + ", soLineDtoList=" + soLineDtoList + ", priceList=" + priceList
+				+ ", beatId=" + beatId + ", instockFlag=" + instockFlag + ", headerPriceList=" + headerPriceList + "]";
+	}
+
 	
 }

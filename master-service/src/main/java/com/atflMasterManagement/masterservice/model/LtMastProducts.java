@@ -93,6 +93,18 @@ public class LtMastProducts  extends BaseClass {
 	@Column(name = "ptr_flag")
 	String ptrFlag;
 	
+	@Column(name = "prod_short_desc")
+	String prodShortDesc;
+	
+	
+	public String getProdShortDesc() {
+		return prodShortDesc;
+	}
+
+	public void setProdShortDesc(String prodShortDesc) {
+		this.prodShortDesc = prodShortDesc;
+	}
+
 	public String getPtrFlag() {
 		return ptrFlag;
 	}

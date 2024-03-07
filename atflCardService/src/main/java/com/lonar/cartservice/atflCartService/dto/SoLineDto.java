@@ -42,7 +42,17 @@ public class SoLineDto {
 	
 	private String eimStatus;
 	private String priceListId;
+	private String headerPriceList;
 	
+		
+	public String getHeaderPriceList() {
+		return headerPriceList;
+	}
+
+	public void setHeaderPriceList(String headerPriceList) {
+		this.headerPriceList = headerPriceList;
+	}
+
 	public String getPriceListId() {
 		return priceListId;
 	}
@@ -299,4 +309,21 @@ public class SoLineDto {
 	public void setInventoryQuantity(String inventoryQuantity) {
 		this.inventoryQuantity = inventoryQuantity;
 	}
+
+	@Override
+	public String toString() {
+		return "SoLineDto [lineId=" + lineId + ", productId=" + productId + ", quantity=" + quantity + ", productCode="
+				+ productCode + ", productDesc=" + productDesc + ", productName=" + productName + ", listPrice="
+				+ listPrice + ", priceList=" + priceList + ", ptrPrice=" + ptrPrice + ", deliveryDate=" + deliveryDate
+				+ ", status=" + status + ", linelistPrice=" + linelistPrice + ", linePtrPrice=" + linePtrPrice
+				+ ", inventoryQuantity=" + inventoryQuantity + ", orgId=" + orgId + ", categoryId=" + categoryId
+				+ ", productType=" + productType + ", category=" + category + ", subCategory=" + subCategory
+				+ ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom + ", secondaryUomValue="
+				+ secondaryUomValue + ", unitsPerCase=" + unitsPerCase + ", segment=" + segment + ", brand=" + brand
+				+ ", subBrand=" + subBrand + ", casePack=" + casePack + ", hsnCode=" + hsnCode + ", productImage="
+				+ productImage + ", thumbnailImage=" + thumbnailImage + ", eimStatus=" + eimStatus + ", priceListId="
+				+ priceListId + ", headerPriceList=" + headerPriceList + "]";
+	}
+	
+
 }

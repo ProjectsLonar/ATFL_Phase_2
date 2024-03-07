@@ -1,5 +1,7 @@
 package com.users.usersmanagement.model;
 
+import java.util.Optional;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -155,9 +157,73 @@ public class LtMastUsers extends BaseClass {
 	@Transient
 	private String priceList;
 	
+//Atfl phase 2 siebel data
+	@Transient
+	private String recentSearchId;
+	@Transient
+	private String status;
+	@Transient
+	private Optional<Integer> latitud;
+	@Transient
+	private Optional<Integer> longitud;
+	@Transient
+	private String address;
+	@Transient
+	private String homephNum;
+	@Transient
+	private String asstOPhNum;
+	@Transient
+	private String positionId;
+	
+	
+	public Optional<Integer> getLatitud() {
+		return latitud;
+	}
 
-	
-	
+	public void setLatitud(Optional<Integer> latitud) {
+		this.latitud = latitud;
+	}
+
+	public Optional<Integer> getLongitud() {
+		return longitud;
+	}
+
+	public void setLongitud(Optional<Integer> longitud) {
+		this.longitud = longitud;
+	}
+
+	public String getRecentSearchId() {
+		return recentSearchId;
+	}
+
+	public void setRecentSearchId(String recentSearchId) {
+		this.recentSearchId = recentSearchId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getHomephNum() {
+		return homephNum;
+	}
+
+	public void setHomephNum(String homephNum) {
+		this.homephNum = homephNum;
+	}
+
+	public String getAsstOPhNum() {
+		return asstOPhNum;
+	}
+
+	public void setAsstOPhNum(String asstOPhNum) {
+		this.asstOPhNum = asstOPhNum;
+	}
+
 	public String getPriceList() {
 		return priceList;
 	}
@@ -484,6 +550,7 @@ public class LtMastUsers extends BaseClass {
 		this.inventoryLocationName = inventoryLocationName;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "LtMastUsers [userId=" + userId + ", orgId=" + orgId + ", distributorId=" + distributorId + ", outletId="
@@ -499,9 +566,11 @@ public class LtMastUsers extends BaseClass {
 				+ organisationCode + ", organisationName=" + organisationName + ", outletName=" + outletName
 				+ ", outletCode=" + outletCode + ", outletAddress=" + outletAddress + ", proprietorName="
 				+ proprietorName + ", orgStatus=" + orgStatus + ", position=" + position + ", territory=" + territory
-				+ ", inventoryLocationName=" + inventoryLocationName + "]";
+				+ ", inventoryLocationName=" + inventoryLocationName + ", priceList=" + priceList + ", recentSearchId="
+				+ recentSearchId + ", status=" + status + ", latitud=" + latitud + ", longitud=" + longitud
+				+ ", address=" + address + ", homephNum=" + homephNum + ", asstOPhNum=" + asstOPhNum + ", positionId="
+				+ positionId + "]";
 	}
-
 	
 	
 }

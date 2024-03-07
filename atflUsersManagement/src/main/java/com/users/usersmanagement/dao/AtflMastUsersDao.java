@@ -44,5 +44,7 @@ public interface AtflMastUsersDao {
 	List<LtMastUsers> getActiveUsersDistByUserId(Long userId)throws ServiceException;
 	
 	List<LtConfigurartion> getAllConfiguration() throws ServiceException;
+
+	LtMastUsers verifyUserDetailsByMobileNumbervInSiebel(String mobileNumber)throws ServiceException;
 	
 }

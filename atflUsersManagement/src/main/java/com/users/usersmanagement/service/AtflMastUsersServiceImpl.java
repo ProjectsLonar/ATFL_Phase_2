@@ -275,11 +275,43 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 
 			if (user == null) {
 				LtMastUsers ltMastUser = new LtMastUsers();
-
+                
+				ltMastUser= ltMastUsersDao.verifyUserDetailsByMobileNumbervInSiebel(mobileNumber);
+				System.out.println("User Data is"+ltMastUser);
 				ltMastUser.setMobileNumber(mobileNumber);
 				ltMastUser.setStatus(INPROCESS);
-
-				ltMastUser.setCreatedBy(-1L);
+               
+				ltMastUser.setOutletId(ltMastUser.getOutletId());
+				ltMastUser.setRecentSearchId(ltMastUser.getRecentSearchId());
+				ltMastUser.setDistributorId(ltMastUser.getDistributorId());
+				ltMastUser.setEmpCode(ltMastUser.getEmployeeCode());
+				ltMastUser.setUserName(ltMastUser.getUserName());
+				if(ltMastUser.getLatitud().isPresent()) {
+				ltMastUser.setLatitud(ltMastUser.getLatitud());
+				}
+				if(ltMastUser.getLongitud().isPresent()) {
+				ltMastUser.setLongitud(ltMastUser.getLongitud());
+				}
+				ltMastUser.setUserType(ltMastUser.getUserType());
+				ltMastUser.setAddress(ltMastUser.getAddress());
+				ltMastUser.setEmail(ltMastUser.getEmail());
+				ltMastUser.setHomephNum(ltMastUser.getHomephNum());
+			//	ltMastUser.setMobileNumber(ltMastUser.getMobileNumber());
+				ltMastUser.setAsstOPhNum(ltMastUser.getAsstOPhNum());
+				ltMastUser.setAddressDetails(ltMastUser.getAddressDetails());
+				ltMastUser.setPositionId(ltMastUser.getPositionId());
+				ltMastUser.setCreationDate(ltMastUser.getCreationDate());
+			//	ltMastUser.setCreationDate(Validation.getCurrentDateTime());
+				ltMastUser.setCreatedBy(ltMastUser.getCreatedBy());
+    		//	ltMastUser.setCreatedBy(-1L);
+				ltMastUser.setLastUpdateDate(ltMastUser.getLastUpdateDate());
+		  //	ltMastUser.setLastUpdateDate(Validation.getCurrentDateTime());
+				ltMastUser.setLastUpdatedBy(ltMastUser.getLastUpdatedBy());
+		//		ltMastUser.setLastUpdatedBy(-1L);
+				ltMastUser.setIsFirstLogin("Y");
+				
+/*                    phase1-old-code				
+                ltMastUser.setCreatedBy(-1L);
 				ltMastUser.setCreationDate(Validation.getCurrentDateTime());
 				ltMastUser.setLastUpdateDate(Validation.getCurrentDateTime());
 				ltMastUser.setLastUpdatedBy(-1L);
@@ -288,8 +320,8 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 				ltMastUser.setUserType("");
 				ltMastUser.setEmployeeCode("");
 				ltMastUser.setUserName("");
-				ltMastUser = ltMastUsersDao.saveLtMastUsers(ltMastUser);
- 
+*/				ltMastUser = ltMastUsersDao.saveLtMastUsers(ltMastUser);
+                  
 				if (ltMastUser.getUserId() != null) {
 					LtMastLogins mastLogins = this.generateAndSendOtp(ltMastUser);
 					if (mastLogins != null) {

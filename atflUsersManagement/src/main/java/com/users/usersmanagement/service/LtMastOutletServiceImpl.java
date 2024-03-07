@@ -281,62 +281,66 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		}
 		else {
 System.out.println("in else"+ltMastOutlets.getOutletCode());
-			ltMastOutletsDump = ltMastOutletDao.getoutletByIdAndCode(ltMastOutlets.getOutletCode());
+LtMastOutletsDump ltMastOutletsDump1 = new LtMastOutletsDump();
+			try{ltMastOutletsDump = ltMastOutletDao.getoutletByIdAndCode(ltMastOutlets.getOutletCode());
 			
 			if(ltMastOutletsDump == null)
 			{
 				
-				ltMastOutletsDump.setDistributorId(ltMastOutlets.getDistributorId());
-				ltMastOutletsDump.setOutletType(ltMastOutlets.getOutletType());
-				ltMastOutletsDump.setOutletName(ltMastOutlets.getOutletName());
+				ltMastOutletsDump1.setDistributorId(ltMastOutlets.getDistributorId());
+				ltMastOutletsDump1.setOutletType(ltMastOutlets.getOutletType());
+				ltMastOutletsDump1.setOutletName(ltMastOutlets.getOutletName());
 				
 				if (ltMastOutlets.getDistributorName() != null) {
-					ltMastOutletsDump.setDistributorName(ltMastOutlets.getDistributorName());
+					ltMastOutletsDump1.setDistributorName(ltMastOutlets.getDistributorName());
 				}
 				
 				  if (ltMastOutlets.getPositionsId() != null) {
-				  ltMastOutletsDump.setPositionsId(ltMastOutlets.getPositionsId()); 
+				  ltMastOutletsDump1.setPositionsId(ltMastOutlets.getPositionsId()); 
 				  }
 				 
 				if (ltMastOutlets.getProprietorName() != null) {
-					ltMastOutletsDump.setProprietorName(ltMastOutlets.getProprietorName());
+					ltMastOutletsDump1.setProprietorName(ltMastOutlets.getProprietorName());
 				}
-				ltMastOutletsDump.setOutletChannel(ltMastOutlets.getOutletChannel());
-				ltMastOutletsDump.setAddress1(ltMastOutlets.getAddress1());
-				ltMastOutletsDump.setAddress2(ltMastOutlets.getAddress2());
-				ltMastOutletsDump.setLandmark(ltMastOutlets.getLandmark());
-				ltMastOutletsDump.setCountry("INDIA");
-				ltMastOutletsDump.setState(ltMastOutlets.getState());
-				ltMastOutletsDump.setCity(ltMastOutlets.getCity());
-				ltMastOutletsDump.setPin_code(ltMastOutlets.getPin_code());
+				ltMastOutletsDump1.setOutletChannel(ltMastOutlets.getOutletChannel());
+				ltMastOutletsDump1.setAddress1(ltMastOutlets.getAddress1());
+				ltMastOutletsDump1.setAddress2(ltMastOutlets.getAddress2());
+				ltMastOutletsDump1.setLandmark(ltMastOutlets.getLandmark());
+				ltMastOutletsDump1.setCountry("INDIA");
+				ltMastOutletsDump1.setState(ltMastOutlets.getState());
+				ltMastOutletsDump1.setCity(ltMastOutlets.getCity());
+				ltMastOutletsDump1.setPin_code(ltMastOutlets.getPin_code());
 
 				if (ltMastOutlets.getRegion() != null) {
-					ltMastOutletsDump.setRegion(ltMastOutlets.getRegion());
+					ltMastOutletsDump1.setRegion(ltMastOutlets.getRegion());
 				}
-				ltMastOutletsDump.setArea(ltMastOutlets.getArea());
-				ltMastOutletsDump.setTerritory(ltMastOutlets.getTerritory());
-				ltMastOutletsDump.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
-				ltMastOutletsDump.setStatus("PENDING_APPROVAL");
-				ltMastOutletsDump.setPriceList(ltMastOutlets.getPriceList());
-				ltMastOutletsDump.setOrgId(ltMastOutlets.getOrgId());
+				ltMastOutletsDump1.setArea(ltMastOutlets.getArea());
+				ltMastOutletsDump1.setTerritory(ltMastOutlets.getTerritory());
+				ltMastOutletsDump1.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
+				ltMastOutletsDump1.setStatus("PENDING_APPROVAL");
+				ltMastOutletsDump1.setPriceList(ltMastOutlets.getPriceList());
+				ltMastOutletsDump1.setOrgId(ltMastOutlets.getOrgId());
 
-				ltMastOutletsDump.setCreatedBy(ltMastOutlets.getUserId());
-				ltMastOutletsDump.setLastUpdatedBy(ltMastOutlets.getUserId());
-				ltMastOutletsDump.setLastUpdateLogin(ltMastOutlets.getUserId());
-				ltMastOutletsDump.setCreationDate(new Date());
-				ltMastOutletsDump.setLastUpdateDate(new Date());
+				ltMastOutletsDump1.setCreatedBy(ltMastOutlets.getUserId());
+				ltMastOutletsDump1.setLastUpdatedBy(ltMastOutlets.getUserId());
+				ltMastOutletsDump1.setLastUpdateLogin(ltMastOutlets.getUserId());
+				ltMastOutletsDump1.setCreationDate(new Date());
+				ltMastOutletsDump1.setLastUpdateDate(new Date());
 
 			
 			}else {
-				ltMastOutletsDump.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
-				ltMastOutletsDump.setStatus("PENDING_APPROVAL");
-				ltMastOutletsDump.setLastUpdatedBy(ltMastOutlets.getUserId());
-				ltMastOutletsDump.setLastUpdateLogin(ltMastOutlets.getUserId());
-				ltMastOutletsDump.setLastUpdateDate(new Date());
+				ltMastOutletsDump1.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
+				ltMastOutletsDump1.setStatus("PENDING_APPROVAL");
+				ltMastOutletsDump1.setLastUpdatedBy(ltMastOutlets.getUserId());
+				ltMastOutletsDump1.setLastUpdateLogin(ltMastOutlets.getUserId());
+				ltMastOutletsDump1.setLastUpdateDate(new Date());
+			}}catch (Exception e) {
+			    // Log the exception or handle it accordingly
+			    e.printStackTrace();
 			}
 
 			try {
-			LtMastOutletsDump ltMastOutletsDumpupdated = ltMastOutletDumpRepository.save(ltMastOutletsDump);
+			LtMastOutletsDump ltMastOutletsDumpupdated = ltMastOutletDumpRepository.save(ltMastOutletsDump1);
 			
 			LtMastUsers ltMastUsersSysAdmin = ltMastOutletDao.getSystemAdministartorDetails(ltMastOutletsDumpupdated.getOrgId());
 			if(ltMastUsersSysAdmin!=null) {
@@ -473,7 +477,7 @@ try {
 		  JSONObject relatedOrganizationDetail = new JSONObject();
 		  
 		  relatedOrganizationDetail.put("IsPrimaryMVG","Y");
-		  relatedOrganizationDetail.put("Organization", ltMastOrganisations.getOrganisationName());
+		  relatedOrganizationDetail.put("Organization",ltMastOutletsDumps.getDistributorName());//ltMastOrganisations.getOrganisationName());
 //		  relatedOrganizationDetail.put("Organization", "JSB AGENCIES");
 		  
 		  

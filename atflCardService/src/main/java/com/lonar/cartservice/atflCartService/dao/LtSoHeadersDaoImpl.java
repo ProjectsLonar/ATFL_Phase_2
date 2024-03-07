@@ -847,5 +847,12 @@ System.out.println("headerIdsSSSS "+headerIdslist);
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
 		return userList;
 	}
+
+	@Override
+	public String getUserTypeAgainsUserId(Long createdBy) throws ServiceException, IOException {
+		String query= env.getProperty("getUserTypeAgainsUserId");
+		String userType= jdbcTemplate.queryForObject(query, new Object[] {createdBy}, String.class);
+		return userType;
+	}
 	
 }

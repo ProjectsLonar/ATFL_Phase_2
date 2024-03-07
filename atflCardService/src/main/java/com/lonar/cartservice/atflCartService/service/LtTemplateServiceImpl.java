@@ -99,6 +99,7 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 				ltTemplateHeaders.setLastUpdatedDate(new Date());
 				ltTemplateHeaders.setLastUpdatedLogin(ltTemplateDto.getUserId());
 				ltTemplateHeaders.setProductCount(ltTemplateDto.getLtTemplateLines().size());
+				ltTemplateHeaders.setTemplateHeaderId(ltTemplateDto.getTemplateHeaderId());
 				ltTemplateHeadersUpdated = ltTemplateDao.saveheaderData(ltTemplateHeaders);
 			}
 			if(ltTemplateHeadersUpdated !=null) {
@@ -146,11 +147,14 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 
 		Status status = new Status();
 		try {
+			System.out.println("distributorId"+distributorId);
 		LtTemplateHeaders templateHeaders = ltTemplateDao.getTemplateAgainstDistributors(distributorId);
+		System.out.println(templateHeaders);
 		List<LtTemplateLines> templateLineDetails = new ArrayList<LtTemplateLines>();
 		LtTemplateDto ltTemplateDto = new LtTemplateDto();
 		if(templateHeaders !=null) {
 			templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId(templateHeaders.getTemplateHeaderId());
+			System.out.println(templateLineDetails);
 			ltTemplateDto.setTemplateHeaderId(templateHeaders.getTemplateHeaderId());
 			ltTemplateDto.setDistributorId(templateHeaders.getDistributorId());
 			ltTemplateDto.setStatus(templateHeaders.getStatus());

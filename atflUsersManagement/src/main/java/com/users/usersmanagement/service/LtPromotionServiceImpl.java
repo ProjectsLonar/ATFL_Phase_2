@@ -6,8 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,10 +120,17 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 					ltPromotion.setOrgId(orgId);
 				}
 
-				Date sDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"))
-						.parse(startDate.replaceAll("Z$", "+0000"));
-				Date eDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(endDate.replaceAll("Z$", "+0000"));
+				//Date sDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(startDate.replaceAll("Z$", "+0000"));
+				//Date eDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(endDate.replaceAll("Z$", "+0000"));
 
+				DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH).
+						withZone(ZoneId.systemDefault());
+		        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MMM-yy", Locale.ENGLISH);
+		            Instant instant = Instant.from(inputFormatter.parse(startDate));
+		            String sDate = outputFormatter.format(instant.atZone(ZoneId.systemDefault()));
+		            Instant instant1 = Instant.from(inputFormatter.parse(endDate));
+		            String eDate = outputFormatter.format(instant.atZone(ZoneId.systemDefault()));
+		            
 				if (startDate != null) {
 					ltPromotion.setStartDate(startDate);
 				}

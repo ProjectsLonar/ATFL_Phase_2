@@ -352,7 +352,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		String defailtPriceList = ltSoHeadersDao.getDefaultPriceListAgainstOutletId(ltSoHeader.getOutletId());
 		
 		//merging areaHeader & sysAdmin list
-		areaHeadUserList.addAll(sysAdminUserList);
+		//areaHeadUserList.addAll(sysAdminUserList);
 		//System.out.print("This is new areaHeadList = "+areaHeadUserList);
 		
 			String outletCode = "";
@@ -380,39 +380,22 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				}
 			}
 		
-			if(!areaHeadUserList.isEmpty()) {System.out.println("THis is 1 if");}
-			if(ltSoHeader.getInStockFlag()=="N") {System.out.println("THis is 2 if");}
-			if(ltSoHeader.getStatus()=="DRAFT") {System.out.println("THis is 3 if");}
-			if(ltSoHeader.getOrderNumber()!= null) {System.out.println("THis is 4 if");}
+//			if(!areaHeadUserList.isEmpty()) {System.out.println("THis is 1 if");}
+//			System.out.println("This is--" +ltSoHeader.getInStockFlag());
+//			String flag=ltSoHeader.getInStockFlag();
+//			System.out.println("This is flag is --"+flag);
+//			if(flag.equalsIgnoreCase("N")){System.out.println("THis is 2 of equlcase if");}
+//			if(flag=="N") {System.out.println("THis is 2 if");}
+//			if(ltSoHeader.getStatus()=="DRAFT") {System.out.println("THis is 3 if");}
+//			if(ltSoHeader.getOrderNumber()!= null) {System.out.println("THis is 4 if");}
+//			
+//			System.out.println("Thisss ISSSS ISSSUEEEE"+ ltSoHeader.getInStockFlag());
 			
-			System.out.println("Thisss ISSSS ISSSUEEEE"+ ltSoHeader.getInStockFlag());
+			String userType = ltSoHeadersDao.getUserTypeAgainsUserId(ltSoHeader.getCreatedBy());
 			
-			// send salesOrder approval notification to areHead && sysAdmin if order is outOfStock
-			if(!areaHeadUserList.isEmpty() && ltSoHeader.getInStockFlag()!="Y" && 
-					ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null) 
-			{	
-					for(Iterator iterator = areaHeadUserList.iterator(); iterator.hasNext();) {
-						LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
-						System.out.print(ltMastUsers.getTokenData());
-						if(ltMastUsers.getTokenData() != null) {
-							webController.send(ltMastUsers, ltSoHeader, outletCode, outletName);
-						}
-					}
-			}// send salesOrder approval notification to areHead if order is inStock & priceList is not default
-			 else if(!areaHeadUserList.isEmpty() && ltSoHeader.getInStockFlag()!="N" && ltSoHeader.getStatus()=="DRAFT" 
-					&& ltSoHeader.getOrderNumber()!= null && !ltSoHeader.getPriceList().equals(defailtPriceList)) 
-			      {			
-						for(Iterator iterator = areaHeadUserList.iterator(); iterator.hasNext();) {
-							LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
-							System.out.print(ltMastUsers.getTokenData());
-							if(ltMastUsers.getTokenData() != null) {
-								webController.send(ltMastUsers, ltSoHeader, outletCode, outletName);
-							}
-						}
-			}
-			else {
-		                if(!distUsersList.isEmpty()) {
-			
+			if(userType.equalsIgnoreCase("RETAILER")) {
+				if(!distUsersList.isEmpty()) {
+					
 			          for (Iterator iterator = distUsersList.iterator(); iterator.hasNext();) {
 				          LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
 				      if(ltMastUsers.getTokenData() != null) {
@@ -429,7 +412,80 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				    }
 			     }
 		      }
-	      }
+				
+		               if(!sysAdminUserList.isEmpty()) {
+			               for (Iterator iterator = sysAdminUserList.iterator(); iterator.hasNext();) {
+				           LtMastUsers ltMastUsers2 = (LtMastUsers) iterator.next();
+				       if(ltMastUsers2.getTokenData() != null) {
+					       webController.send(ltMastUsers2, ltSoHeader, outletCode, outletName);
+				    }
+			     }
+		      }
+		               
+			}
+			if(userType.equalsIgnoreCase("SALES") || userType.equalsIgnoreCase("DISTRIBUTOR")) {
+				// send salesOrder approval notification to areHead if order is outOfStock
+//				System.out.println("In-Notif"+areaHeadUserList);
+//				System.out.println("In-Notif"+ltSoHeader.getInStockFlag());
+//				System.out.println("In-Notif"+ltSoHeader.getStatus());
+//				System.out.println("In-Notif"+ltSoHeader.getOrderNumber());
+//				System.out.println();
+				if(!areaHeadUserList.isEmpty() && !ltSoHeader.getInStockFlag().equalsIgnoreCase("Y") 
+						&&	ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null) 
+					{	
+						for(Iterator iterator = areaHeadUserList.iterator(); iterator.hasNext();) {
+							LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
+							System.out.print("In-Notif"+ltMastUsers.getTokenData());
+							if(ltMastUsers.getTokenData() != null) {
+								webController.send(ltMastUsers, ltSoHeader, outletCode, outletName);
+							}
+						}
+				}// send salesOrder approval notification to areHead if order is inStock & priceList is not default
+				 if(!areaHeadUserList.isEmpty() && !ltSoHeader.getInStockFlag().equalsIgnoreCase("N") 
+						 && ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null 
+						 && !ltSoHeader.getPriceList().equals(defailtPriceList)) 
+				      {			
+							for(Iterator iterator = areaHeadUserList.iterator(); iterator.hasNext();) {
+								LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
+								System.out.print(ltMastUsers.getTokenData());
+								if(ltMastUsers.getTokenData() != null) {
+									webController.send(ltMastUsers, ltSoHeader, outletCode, outletName);
+								}
+							}
+				} //send salesOrder approval notification to sysAdmin if order is outOfStock
+				//System.out.println();
+				
+				 if(!sysAdminUserList.isEmpty() && !ltSoHeader.getInStockFlag().equalsIgnoreCase("Y") && 
+						ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null) 
+				{	
+//			    System.out.println("In-Notif"+sysAdminUserList);
+//				System.out.println("In-Notif"+ltSoHeader.getInStockFlag());
+//				System.out.println("In-Notif"+ltSoHeader.getStatus());
+//				System.out.println("In-Notif"+ltSoHeader.getOrderNumber());
+				
+						for(Iterator iterator = sysAdminUserList.iterator(); iterator.hasNext();) {
+							LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
+							System.out.print("In-Notif"+ltMastUsers.getTokenData());
+							if(ltMastUsers.getTokenData() != null) {
+								webController.send(ltMastUsers, ltSoHeader, outletCode, outletName);
+							}
+						}
+				}// send salesOrder approval notification to sysAdmin if order is inStock & priceList is not default
+				  if(!sysAdminUserList.isEmpty() && !ltSoHeader.getInStockFlag().equalsIgnoreCase("N") && 
+						  ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null 
+						  && !ltSoHeader.getPriceList().equals(defailtPriceList)) 
+				      {			
+							for(Iterator iterator = sysAdminUserList.iterator(); iterator.hasNext();) {
+								LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
+								System.out.print(ltMastUsers.getTokenData());
+								if(ltMastUsers.getTokenData() != null) {
+									webController.send(ltMastUsers, ltSoHeader, outletCode, outletName);
+								}
+							}
+				}
+				
+			}
+			
 	}
 
 	public static int getYearFromDate(Date date) {
@@ -1274,7 +1330,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					if(!soHeaderDto.getPriceList().equals(defailtPriceList) ) {
 				 	          ltSoHeader.setStatus(DRAFT);
 					}else {
-						ltSoHeader.setStatus("APPROVED");
+						//ltSoHeader.setStatus("APPROVED");
+						ltSoHeader.setStatus(DRAFT);
 					}
 					if(soHeaderDto.getBeatId()!= null) {
 						ltSoHeader.setBeatId(soHeaderDto.getBeatId());
@@ -2360,6 +2417,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				}
 				if (responseDto.getPriceList() != null) {
 					soLineDto.setPriceList(responseDto.getPriceList());
+					
 				}
 			
 				if (responseDto.getStatus().equalsIgnoreCase(DRAFT) || responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL) 
@@ -2589,4 +2647,272 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		return status;
 	}
 
+	
+	@Override
+	public Status getOrderForPendingApprovals(RequestDto requestDto) throws ServiceException, IOException {
+		try {
+			Status status = new Status();
+			String userType = ltSoHeadersDao.getUserTypeAgainsUserId(requestDto.getUserId());
+			if(userType.equalsIgnoreCase(DISTRIBUTOR) || userType.equalsIgnoreCase("SALESOFFICER")) {
+			
+			List<Long> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
+			System.out.print("headerIdsList is ====" +headerIdsList);
+			Long recordCount = ltSoHeadersDao.getRecordCount(requestDto);
+			//Long recordCount = (long) headerIdsList.size() + 1;
+			
+			System.out.println("headerIdsList====>"+headerIdsList.size());
+			//System.out.println("recordCount====>"+recordCount);
+			
+			status.setTotalCount(recordCount);
+			status.setRecordCount(recordCount);
+			if(headerIdsList.isEmpty()) {
+				status.setCode(RECORD_NOT_FOUND);
+				status.setData("Record not found");
+				return status;
+			}
+			
+			List<ResponseDto> responseDtoList = new ArrayList<ResponseDto>();
+			
+			responseDtoList = ltSoHeadersDao.getOrderV2(headerIdsList);
+			
+			Map<Long, SoHeaderDto> soHeaderDtoMap = new LinkedHashMap<Long, SoHeaderDto>();
+			Map<Long, List<SoLineDto>> soLineDtoMap = new LinkedHashMap<Long, List<SoLineDto>>();
+
+			for (Iterator iterator = responseDtoList.iterator(); iterator.hasNext();) {
+				ResponseDto responseDto = (ResponseDto) iterator.next();
+                
+				System.out.println("responseDto is ===" +responseDto);
+				
+				SoLineDto soLineDto = new SoLineDto();
+
+				if (responseDto.getLineId() != null) {
+					soLineDto.setLineId(responseDto.getLineId());
+				}
+				if (responseDto.getProductId() != null) {
+					soLineDto.setProductId(responseDto.getProductId());
+				}
+				if (responseDto.getQuantity() != null) {
+					soLineDto.setQuantity(responseDto.getQuantity());
+				}
+				if (responseDto.getProductCode() != null) {
+					soLineDto.setProductCode(responseDto.getProductCode());
+				}
+				if (responseDto.getProductDesc() != null) {
+					soLineDto.setProductDesc(responseDto.getProductDesc());
+				}
+				if (responseDto.getProductName() != null) {
+					soLineDto.setProductName(responseDto.getProductName());
+				}
+				if (responseDto.getPriceList() != null) {
+					soLineDto.setPriceList(responseDto.getPriceList());
+					
+				}
+			
+				if (responseDto.getStatus().equalsIgnoreCase(DRAFT) || responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL) 
+					|| responseDto.getStatus().equals("APPROVED")) {
+					if (responseDto.getListPrice() != null) {
+						soLineDto.setListPrice(responseDto.getListPrice());
+					}
+				}else {
+					if (responseDto.getLinelistPrice() != null) {
+						soLineDto.setListPrice(responseDto.getLinelistPrice());
+					}
+				}
+								
+				if (responseDto.getPtrPrice() != null) {
+					if(responseDto.getPtrFlag()!= null && responseDto.getPtrFlag().equalsIgnoreCase("Y")) {
+						soLineDto.setPtrPrice(responseDto.getListPrice());
+					}else {
+						soLineDto.setPtrPrice(responseDto.getPtrPrice());
+					}
+				}
+			
+				if (responseDto.getPtrPrice() != null) {
+					//System.out.println("IF responseDto.getPtrPrice() != null "+responseDto.getPtrPrice());
+					if(responseDto.getPtrFlag()!= null && responseDto.getPtrFlag().equalsIgnoreCase("Y")) {
+						//soLineDto.setPtrPrice(responseDto.getListPrice());
+						if (responseDto.getStatus().equalsIgnoreCase(DRAFT) || responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL) ||
+								responseDto.getStatus().equalsIgnoreCase("APPROVED")) {
+							if (responseDto.getListPrice() != null) {
+								soLineDto.setListPrice(responseDto.getListPrice());
+							}
+						}else {
+							if (responseDto.getLinelistPrice() != null) {
+								soLineDto.setListPrice(responseDto.getLinelistPrice());
+							}
+						}
+					}else {
+						//soLineDto.setPtrPrice(responseDto.getPtrPrice());
+						if (responseDto.getStatus().equalsIgnoreCase(DRAFT) || responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL) ||
+								responseDto.getStatus().equalsIgnoreCase("APPROVED")) {
+							if (responseDto.getPtrPrice() != null) {
+								soLineDto.setPtrPrice(responseDto.getPtrPrice());
+							}
+						}else {
+							if (responseDto.getLinePtrPrice() != null) {
+								soLineDto.setPtrPrice(responseDto.getLinePtrPrice());
+							}
+						}
+					}
+				}
+				
+				if (responseDto.getInventoryQuantity() != null) {
+					soLineDto.setInventoryQuantity(responseDto.getInventoryQuantity());
+				}
+				if (responseDto.getDeliveryDate() != null) {
+					soLineDto.setDeliveryDate(responseDto.getDeliveryDate());
+				}
+				if (responseDto.getOrgId() != null) {
+					soLineDto.setOrgId(responseDto.getOrgId());
+				}
+				if (responseDto.getProductType() != null) {
+					soLineDto.setProductType(responseDto.getProductType());
+				}
+				if (responseDto.getPrimaryUom() != null) {
+					soLineDto.setPrimaryUom(responseDto.getPrimaryUom());
+				}
+				if (responseDto.getSecondaryUom() != null) {
+					soLineDto.setSecondaryUom(responseDto.getSecondaryUom());
+				}
+				if (responseDto.getSecondaryUomValue() != null) {
+					soLineDto.setSecondaryUomValue(responseDto.getSecondaryUomValue());
+				}
+				if (responseDto.getUnitsPerCase() != null) {
+					soLineDto.setUnitsPerCase(responseDto.getUnitsPerCase());
+				}
+				if (responseDto.getProductImage() != null) {
+					soLineDto.setProductImage(responseDto.getProductImage());
+				}
+				if (responseDto.getBrand() != null) {
+					soLineDto.setBrand(responseDto.getBrand());
+				}
+				if (responseDto.getSubBrand() != null) {
+					soLineDto.setSubBrand(responseDto.getSubBrand());
+				}
+				if (responseDto.getSegment() != null) {
+					soLineDto.setSegment(responseDto.getSegment());
+				}
+				if (responseDto.getCasePack() != null) {
+					soLineDto.setCasePack(responseDto.getCasePack());
+				}
+				if (responseDto.getHsnCode() != null) {
+					soLineDto.setHsnCode(responseDto.getHsnCode());
+				}
+				if (responseDto.getThumbnailImage() != null) {
+					soLineDto.setThumbnailImage(responseDto.getThumbnailImage());
+				}
+
+				if (soLineDtoMap.get(responseDto.getHeaderId()) != null) {
+					// already exost
+					List<SoLineDto> soLineDtoList = soLineDtoMap.get(responseDto.getHeaderId());
+					if(soLineDto.getLineId() != null) {
+						soLineDtoList.add(soLineDto);
+					}
+					soLineDtoMap.put(responseDto.getHeaderId(), soLineDtoList);
+				} else {
+					// add data into soheader map
+					SoHeaderDto soHeaderDto = new SoHeaderDto();
+					soHeaderDto.setHeaderId(responseDto.getHeaderId());
+					soHeaderDto.setOrderNumber(responseDto.getOrderNumber());
+					
+					//FOR DEV UTC TIME ZONE
+					//soHeaderDto.setOrderDate(responseDto.getOrderDate().toString());
+					
+					//FOR DEV IST TIME ZONE
+					final String ISO_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+					final SimpleDateFormat sdf = new SimpleDateFormat(ISO_FORMAT);
+					final TimeZone utc = TimeZone.getTimeZone("UTC");
+					sdf.setTimeZone(utc);
+					soHeaderDto.setOrderDate(sdf.format(responseDto.getOrderDate()));
+					
+					soHeaderDto.setStatus(responseDto.getStatus());
+					soHeaderDto.setAddress(responseDto.getAddress());
+					soHeaderDto.setOutletName(responseDto.getOutletName());
+					soHeaderDto.setOutletId(responseDto.getOutletId());
+					soHeaderDto.setOutletCode(responseDto.getOutletCode());
+					soHeaderDto.setLatitude(responseDto.getLatitude());
+					soHeaderDto.setLongitude(responseDto.getLongitude());
+					
+					soHeaderDto.setInstockFlag(responseDto.getInstockFlag());
+					soHeaderDto.setPriceList(responseDto.getPriceList());
+					//soHeaderDto.setBeatId(responseDto.getBeatId());
+					
+					
+					if(responseDto.getBeatId()!= null) {
+					soHeaderDto.setBeatId(responseDto.getBeatId());
+					}
+					if(responseDto.getHeaderPriceList()!= null) {
+					soHeaderDto.setPriceList(responseDto.getHeaderPriceList());
+					}
+					
+					if (responseDto.getProprietorName() != null) {
+						soHeaderDto.setProprietorName(responseDto.getProprietorName());
+					}
+					if (responseDto.getRemark() != null) {
+						soHeaderDto.setRemark(responseDto.getRemark());
+					}
+					if (responseDto.getDeliveryDate() != null) {
+						soHeaderDto.setDeliveryDate(responseDto.getDeliveryDate());
+					}
+					if (responseDto.getUserId() != null) {
+						soHeaderDto.setUserId(responseDto.getUserId());
+					}
+					if (responseDto.getOutletAddress() != null) {
+						soHeaderDto.setOutletAddress(responseDto.getOutletAddress());
+					}
+					if (responseDto.getCustomerId() != null) {
+						soHeaderDto.setCustomerId(responseDto.getCustomerId());
+					}
+					if (responseDto.getAddress() != null) {
+						soHeaderDto.setAddress(responseDto.getAddress());
+					}
+					
+					if (responseDto.getCity() != null) { soHeaderDto.setCity(responseDto.getCity()); }
+					
+					if(responseDto.getBeatId()!= null) {
+						soHeaderDto.setBeatId(responseDto.getBeatId());
+					}
+					if(responseDto.getHeaderPriceList()!= null) {
+					soHeaderDto.setPriceList(responseDto.getHeaderPriceList());
+					}
+					
+					soHeaderDtoMap.put(responseDto.getHeaderId(), soHeaderDto);
+
+					List<SoLineDto> soLineDtoList = new ArrayList<SoLineDto>();
+					if(soLineDto.getLineId() != null) {
+						soLineDtoList.add(soLineDto);
+					}
+					soLineDtoMap.put(responseDto.getHeaderId(), soLineDtoList);
+				}
+
+			}
+			OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
+
+			List<SoHeaderDto> soHeaderDtoList = new ArrayList<SoHeaderDto>();
+
+			for (Map.Entry<Long, SoHeaderDto> entry : soHeaderDtoMap.entrySet()) {
+				SoHeaderDto soHeaderDto = entry.getValue();
+
+				List<SoLineDto> soLineDtoList = soLineDtoMap.get(entry.getKey());
+				soHeaderDto.setSoLineDtoList(soLineDtoList);
+
+				soHeaderDtoList.add(soHeaderDto);
+			}
+			orderDetailsDto.setSoHeaderDto(soHeaderDtoList);
+
+			if (!responseDtoList.isEmpty()) {
+				status.setCode(RECORD_FOUND);// = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
+				status.setData(orderDetailsDto);
+				return status;
+			}
+			status.setCode(RECORD_NOT_FOUND); // status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
+			status.setData(null);
+			return status;
+		}} catch (Exception e) {
+			logger.error("Error Description :", e);
+			e.printStackTrace();
+		} return null;
+	}
+
+	
 }

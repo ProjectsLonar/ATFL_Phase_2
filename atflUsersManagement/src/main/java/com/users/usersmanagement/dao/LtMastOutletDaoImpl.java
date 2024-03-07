@@ -352,7 +352,7 @@ System.out.println("list"+list);
 		}
 		
 		if (beatDetailsDto.getOffset() == 0 ) {
-			beatDetailsDto.setOffset(Integer.parseInt(env.getProperty("limit_value")));
+			beatDetailsDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 		}
 		
 

@@ -76,5 +76,7 @@ public interface LtSoHeadersDao {
 	String getOrderSequence()throws ServiceException, IOException;
 
 	List<LtMastUsers> getActiveSysAdminUsersFromHeaderId(Long headerId, String orderNumber)throws ServiceException, IOException;
+
+	String getUserTypeAgainsUserId(Long createdBy)throws ServiceException, IOException;
 	
 }

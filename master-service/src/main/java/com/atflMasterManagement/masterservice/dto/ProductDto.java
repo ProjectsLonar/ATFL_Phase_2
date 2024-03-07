@@ -58,8 +58,16 @@ public class ProductDto {
 	private String orgId1;
 	private String locationName;
 	private String distributorId;
-	
 		
+	private String prodShortDesc;
+	
+	
+	public String getProdShortDesc() {
+		return prodShortDesc;
+	}
+	public void setProdShortDesc(String prodShortDesc) {
+		this.prodShortDesc = prodShortDesc;
+	}
 	public String getOutletId() {
 		return outletId;
 	}
@@ -368,8 +376,10 @@ public class ProductDto {
 				+ ", subCategoryImage=" + subCategoryImage + ", inventoryQuantity=" + inventoryQuantity
 				+ ", inventoryCode=" + inventoryCode + ", outletId=" + outletId + ", subcategory=" + subcategory
 				+ ", unitPerCase=" + unitPerCase + ", orderable=" + orderable + ", categoryId1=" + categoryId1
-				+ ", orgId1=" + orgId1 + ", locationName=" + locationName + ", distributorId=" + distributorId + "]";
+				+ ", orgId1=" + orgId1 + ", locationName=" + locationName + ", distributorId=" + distributorId
+				+ ", prodShortDesc=" + prodShortDesc + "]";
 	}
-		
+	
+			
 
 }

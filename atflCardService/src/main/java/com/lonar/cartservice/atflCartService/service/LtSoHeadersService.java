@@ -24,4 +24,7 @@ public interface LtSoHeadersService {
 	Status getOrderV2(RequestDto requestDto) throws ServiceException, IOException;
 	
 	Status locationSaveOnNoOrder(LtSalesPersonLocation ltSalesPersonLocation) throws ServiceException, IOException;
+
+	Status getOrderForPendingApprovals(RequestDto requestDto) throws ServiceException, IOException;
+
 }

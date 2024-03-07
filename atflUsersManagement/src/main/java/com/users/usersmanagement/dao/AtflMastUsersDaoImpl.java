@@ -248,4 +248,19 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 		return list;
 	}
 
+	@Override
+	public LtMastUsers verifyUserDetailsByMobileNumbervInSiebel(String mobileNumber) throws ServiceException {
+		String query = env.getProperty("verifyUserDetailsByMobileNumbervInSiebel");
+//		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { mobileNumber, mobileNumber,mobileNumber },
+//				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+//		
+		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] {mobileNumber, mobileNumber, mobileNumber},
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		System.out.println("User list is"+list);
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
+	}
+
 }
