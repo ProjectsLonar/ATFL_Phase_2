@@ -4,9 +4,11 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -120,22 +122,37 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 					ltPromotion.setOrgId(orgId);
 				}
 
-				//Date sDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(startDate.replaceAll("Z$", "+0000"));
-				//Date eDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(endDate.replaceAll("Z$", "+0000"));
+//				Date sDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"))
+//						.parse(startDate.replaceAll("Z$", "+0000"));
+//				Date eDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(endDate.replaceAll("Z$", "+0000"));
+//       		       
+				//String dateString = "2024-03-11T18:30:00";
+		        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+		        LocalDateTime sDate = LocalDateTime.parse(startDate, formatter);
+		        //System.out.println("Parsed date and time: " + sDate);
+		        Date sDate1 = java.sql.Timestamp.valueOf(sDate);
+		        
+		        LocalDateTime eDate = LocalDateTime.parse(endDate, formatter);
+		        //System.out.println("Parsed date and time: " + eDate);
+		        Date eDate1 = java.sql.Timestamp.valueOf(eDate);
+		        
+//				String strStartDate = startDate;
+//				String strEndDate = endDate;
 
-				DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH).
-						withZone(ZoneId.systemDefault());
-		        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MMM-yy", Locale.ENGLISH);
-		            Instant instant = Instant.from(inputFormatter.parse(startDate));
-		            String sDate = outputFormatter.format(instant.atZone(ZoneId.systemDefault()));
-		            Instant instant1 = Instant.from(inputFormatter.parse(endDate));
-		            String eDate = outputFormatter.format(instant.atZone(ZoneId.systemDefault()));
-		            
+				
+//				if (startDate != null) {
+//					ltPromotion.setStartDate(sDate);
+//				}
+//				if (endDate != null) {
+//					ltPromotion.setEndDate(eDate);
+//				}
+				
+				
 				if (startDate != null) {
-					ltPromotion.setStartDate(startDate);
+					ltPromotion.setStartDate1(sDate1);
 				}
 				if (endDate != null) {
-					ltPromotion.setEndDate(endDate);
+					ltPromotion.setEndDate1(eDate1);
 				}
 
 				ltPromotion.setCreationDate(new Date());

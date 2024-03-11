@@ -276,6 +276,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 			if (user == null) {
 				LtMastUsers ltMastUser = new LtMastUsers();
                 
+				System.out.println("Input MobNo is"+mobileNumber);
 				ltMastUser= ltMastUsersDao.verifyUserDetailsByMobileNumbervInSiebel(mobileNumber);
 				System.out.println("User Data is"+ltMastUser);
 				ltMastUser.setMobileNumber(mobileNumber);

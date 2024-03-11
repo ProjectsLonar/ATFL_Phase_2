@@ -254,6 +254,7 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 //		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { mobileNumber, mobileNumber,mobileNumber },
 //				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
 //		
+		System.out.println("Input MobNo is"+mobileNumber);
 		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] {mobileNumber, mobileNumber, mobileNumber},
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
 		System.out.println("User list is"+list);

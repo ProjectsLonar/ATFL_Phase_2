@@ -66,6 +66,30 @@ public class LtPromotion {
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
 
+	
+	@Column(name = "start_date_1")
+	private Date startDate1;
+
+	@Column(name = "end_date_1")
+	private Date endDate1;
+	
+	
+	public Date getStartDate1() {
+		return startDate1;
+	}
+
+	public void setStartDate1(Date startDate1) {
+		this.startDate1 = startDate1;
+	}
+
+	public Date getEndDate1() {
+		return endDate1;
+	}
+
+	public void setEndDate1(Date endDate1) {
+		this.endDate1 = endDate1;
+	}
+
 	public Long getPromotionId() {
 		return promotionId;
 	}
