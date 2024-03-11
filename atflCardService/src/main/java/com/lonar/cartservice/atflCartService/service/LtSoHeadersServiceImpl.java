@@ -1793,7 +1793,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		header.put("Currency Code", "INR");
 		header.put("Order Number", ltSoHeader.getOrderNumber());
 //		header.put("Order Number", "MSO-53623-2324-11");
-		header.put("Source Inventory Id",  "1-2FPGVLJ");//"1-2GR1JJ1");//"1-2C7QNZG");// "1-2KK4ILD");            //"1-2FPGVLJ");  // "1-2GR1JJ1"    //"1-2C7QNZG");
+//		header.put("Source Inventory Id",  "1-2FPGVLJ");//"1-2GR1JJ1");//"1-2C7QNZG");// "1-2KK4ILD");            //"1-2FPGVLJ");  // "1-2GR1JJ1"    //"1-2C7QNZG");
 		header.put("ListOfLine Item", listOfLineItem);
 		//header.put("ListOfLine Item", listOfLineItem);
 		
