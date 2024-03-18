@@ -314,7 +314,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 		  //	ltMastUser.setLastUpdateDate(Validation.getCurrentDateTime());
 		//		ltMastUser.setLastUpdatedBy(Long.parseLong(userDto.getLastUpdatedBy()));
 				ltMastUser.setLastUpdatedBy(-1L);
-				ltMastUser.setRecentSerachId(userDto.getRecentSearchId1());
+				ltMastUser.setRecentSerachId(userDto.getRecentSearchId());
 				ltMastUser.setLastUpdateLogin(-1L);
 				ltMastUser.setIsFirstLogin("Y");
 				
