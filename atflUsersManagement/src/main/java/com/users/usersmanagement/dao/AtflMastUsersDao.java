@@ -8,6 +8,7 @@ import com.users.usersmanagement.model.LtConfigurartion;
 import com.users.usersmanagement.model.LtMastLogins;
 import com.users.usersmanagement.model.LtMastUsers;
 import com.users.usersmanagement.model.RequestDto;
+import com.users.usersmanagement.model.UserDto;
 
 public interface AtflMastUsersDao {
 
@@ -45,6 +46,6 @@ public interface AtflMastUsersDao {
 	
 	List<LtConfigurartion> getAllConfiguration() throws ServiceException;
 
-	LtMastUsers verifyUserDetailsByMobileNumbervInSiebel(String mobileNumber)throws ServiceException;
+	UserDto verifyUserDetailsByMobileNumbervInSiebel(String mobileNumber)throws ServiceException;
 	
 }

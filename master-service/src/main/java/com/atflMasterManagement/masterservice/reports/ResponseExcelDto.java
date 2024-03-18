@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class ResponseExcelDto {
 	
 	private String region;
-	private Long distributorId;
+	private String distributorId;
 	private String distributorName;
 	private String distributorCode;
 	private Long employeeId;
@@ -17,7 +17,7 @@ public class ResponseExcelDto {
 	private Long productId;
 	private String productCode;
 	private String productName;
-	private Long outletId;
+	private String outletId;
 	private String outletCode;
 	private String outletName;
 	private String status;
@@ -32,10 +32,10 @@ public class ResponseExcelDto {
 	public void setRegion(String region) {
 		this.region = region;
 	}
-	public Long getDistributorId() {
+	public String getDistributorId() {
 		return distributorId;
 	}
-	public void setDistributorId(Long distributorId) {
+	public void setDistributorId(String distributorId) {
 		this.distributorId = distributorId;
 	}
 	public String getDistributorName() {
@@ -93,10 +93,10 @@ public class ResponseExcelDto {
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
-	public Long getOutletId() {
+	public String getOutletId() {
 		return outletId;
 	}
-	public void setOutletId(Long outletId) {
+	public void setOutletId(String outletId) {
 		this.outletId = outletId;
 	}
 	public String getOutletCode() {

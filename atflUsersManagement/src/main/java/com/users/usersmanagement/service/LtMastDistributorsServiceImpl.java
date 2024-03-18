@@ -200,7 +200,7 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 								status.setMessage(env.getProperty("lonar.users.distributorverified"));
 								
 								ltMastDistributors.setDistributorCode(ltMastDistributors.getDistributorCrmCode());
-								
+								//ltMastDistributors.setDistributorCode(ltMastDistributors.getDistributorCode());
 								status.setData(ltMastDistributors);
 								return status;
 

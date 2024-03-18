@@ -8,6 +8,7 @@ import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.DistributorDetailsDto;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.ResponseDto;
+import com.lonar.cartservice.atflCartService.dto.SoHeaderDto;
 import com.lonar.cartservice.atflCartService.model.LtMastOutles;
 import com.lonar.cartservice.atflCartService.model.LtMastUsers;
 import com.lonar.cartservice.atflCartService.model.LtOrderCancellationReason;
@@ -78,5 +79,7 @@ public interface LtSoHeadersDao {
 	List<LtMastUsers> getActiveSysAdminUsersFromHeaderId(Long headerId, String orderNumber)throws ServiceException, IOException;
 
 	String getUserTypeAgainsUserId(Long createdBy)throws ServiceException, IOException;
+
+	SoHeaderDto getheaderByHeaderId(Long headerId)throws ServiceException, IOException;
 	
 }

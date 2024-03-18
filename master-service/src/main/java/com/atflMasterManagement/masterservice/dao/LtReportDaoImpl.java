@@ -480,12 +480,13 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 			if(excelReportDto.getOffset() == 0) {
 				excelReportDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 			}
-
+			System.out.println("In query"+query);
 			List<DistributorDto> dataList = jdbcTemplate.query(query,
 					new Object[] { excelReportDto.getOrgId().toString(), regionStr, searchFieldStr,
 							excelReportDto.getLimit(), excelReportDto.getOffset() },
 					new BeanPropertyRowMapper<DistributorDto>(DistributorDto.class));
 
+			System.out.println("In dataList"+dataList);
 			if (dataList != null) {
 				return dataList;
 			}

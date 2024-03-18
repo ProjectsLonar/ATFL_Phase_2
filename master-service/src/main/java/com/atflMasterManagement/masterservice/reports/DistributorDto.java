@@ -1,16 +1,16 @@
 package com.atflMasterManagement.masterservice.reports;
 
 public class DistributorDto {
-	private Long distributorId;
+	private String distributorId;
 	private String distributorName;
 	private String distributorCode;
 	private String distributorCrmCode;
 
-	public Long getDistributorId() {
+	public String getDistributorId() {
 		return distributorId;
 	}
 
-	public void setDistributorId(Long distributorId) {
+	public void setDistributorId(String distributorId) {
 		this.distributorId = distributorId;
 	}
 

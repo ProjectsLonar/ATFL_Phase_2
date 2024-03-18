@@ -38,6 +38,16 @@ public class SoHeaderDto {
 	private String instockFlag;
 	private String headerPriceList;
 	
+	private int createdBy;
+	
+	
+	public int getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(int createdBy) {
+		this.createdBy = createdBy;
+	}
 
 	public String getHeaderPriceList() {
 		return headerPriceList;
@@ -232,7 +242,8 @@ public class SoHeaderDto {
 				+ customerId + ", proprietorName=" + proprietorName + ", deliveryDate=" + deliveryDate + ", latitude="
 				+ latitude + ", longitude=" + longitude + ", userId=" + userId + ", remark=" + remark + ", address1="
 				+ address1 + ", city=" + city + ", soLineDtoList=" + soLineDtoList + ", priceList=" + priceList
-				+ ", beatId=" + beatId + ", instockFlag=" + instockFlag + ", headerPriceList=" + headerPriceList + "]";
+				+ ", beatId=" + beatId + ", instockFlag=" + instockFlag + ", headerPriceList=" + headerPriceList
+				+ ", createdBy=" + createdBy + "]";
 	}
 
 	

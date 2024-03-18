@@ -179,7 +179,8 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			}
 			query = env.getProperty("dailySalesForDistributorV2");
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-					+ ") group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
+					+ ") group by to_char(lsh.last_update_date, 'DD-MON-YY')";
+					//+ "group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
 					//+ "group by to_char(lsh.last_update_date at time zone 'IST', 'DD-MM-YYYY') ";
 
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
@@ -191,7 +192,8 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			query = env.getProperty("dailySalesForDistributorV2");
 			
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-					+ ")group by to_char(lsh.last_update_date, 'YYYY-MM-DD') ";
+					+ ") group by to_char(lsh.last_update_date, 'DD-MON-YY')";
+					//+ "group by to_char(lsh.last_update_date, 'YYYY-MM-DD') ";
 					//+ "group by to_char(lsh.last_update_date at time zone 'IST', 'DD-MM-YYYY') ";
 			
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
@@ -204,13 +206,15 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			query = env.getProperty("dailySalesForDistributorV2");
 			
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-					+ ") group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
+					+ ") group by to_char(lsh.last_update_date, 'DD-MON-YY')";
+					//+ "group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
 					//+ "group by to_char(lsh.last_update_date at time zone 'IST', 'DD-MM-YYYY') ";
 			
 		}else if (userDetailsDto.getUserType().equalsIgnoreCase(SALES)) {
 			query = env.getProperty("dailySalesForDistributorV2");
 			query = query + " and lsh.last_updated_by in (" + userId
-					+ ") group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
+					+ ") group by to_char(lsh.last_update_date, 'DD-MON-YY')";
+					//+ "group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
 					//+ "group by to_char(lsh.last_update_date at time zone 'IST', 'DD-MM-YYYY')";
 		}
 
@@ -234,7 +238,8 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			}
 			query = env.getProperty("monthlySalesForDistributorV2");
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-					+ ") group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
+					+ ") group by to_char(lsh.last_update_date, 'DD-MON-YY')";
+					//+ "group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
 //					+ "group by  to_char(lsh.last_update_date at time zone 'IST', 'Mon YYYY') ";
 
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
@@ -247,7 +252,8 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			query = env.getProperty("monthlySalesForDistributorV2");
 			
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-					+ ") group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
+					+ ")group by to_char(lsh.last_update_date, 'DD-MON-YY')"; 
+					//+ "group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
 					//+ "group by  to_char(lsh.last_update_date at time zone 'IST', 'Mon YYYY') ";
 
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
@@ -260,7 +266,8 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			query = env.getProperty("monthlySalesForDistributorV2");
 			
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-					+ ") group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
+					+ ") group by to_char(lsh.last_update_date, 'DD-MON-YY')";
+					//+ "group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
 					//+ "group by  to_char(lsh.last_update_date at time zone 'IST', 'Mon YYYY') ";
 
 		}

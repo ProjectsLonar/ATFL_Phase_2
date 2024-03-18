@@ -18,6 +18,7 @@ import com.users.usersmanagement.model.LtConfigurartion;
 import com.users.usersmanagement.model.LtMastLogins;
 import com.users.usersmanagement.model.LtMastUsers;
 import com.users.usersmanagement.model.RequestDto;
+import com.users.usersmanagement.model.UserDto;
 import com.users.usersmanagement.repository.LtConfigurationRepository;
 import com.users.usersmanagement.repository.LtMastUsersRepository;
 
@@ -249,19 +250,24 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 	}
 
 	@Override
-	public LtMastUsers verifyUserDetailsByMobileNumbervInSiebel(String mobileNumber) throws ServiceException {
+	public UserDto verifyUserDetailsByMobileNumbervInSiebel(String mobileNumber) throws ServiceException {
+		try {
 		String query = env.getProperty("verifyUserDetailsByMobileNumbervInSiebel");
 //		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { mobileNumber, mobileNumber,mobileNumber },
 //				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
 //		
 		System.out.println("Input Dao MobNo is"+mobileNumber);
-		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] {mobileNumber, mobileNumber, mobileNumber},
-				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		List<UserDto> list = jdbcTemplate.query(query, new Object[] {mobileNumber, mobileNumber, mobileNumber},
+				new BeanPropertyRowMapper<UserDto>(UserDto.class));
 		System.out.println("User list is"+list);
 		if (!list.isEmpty()) {
 			return list.get(0);
 		}
 		return null;
 	}
-
+		catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

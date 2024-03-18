@@ -585,6 +585,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 		Status status = new Status();
 		try {
 			List<DistributorDto> searchDistributorList = ltReportDao.searchDistributor(excelReportDto);
+			System.out.println("In service list"+searchDistributorList);
 			if (!searchDistributorList.isEmpty()) {
 				status.setData(searchDistributorList);
 				status.setMessage("Sucess");

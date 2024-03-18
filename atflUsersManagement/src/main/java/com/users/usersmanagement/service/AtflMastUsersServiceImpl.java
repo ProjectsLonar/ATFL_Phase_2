@@ -51,6 +51,7 @@ import com.users.usersmanagement.model.MobileSupportedVersionResponseDto;
 import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.model.RoleMaster;
 import com.users.usersmanagement.model.Status;
+import com.users.usersmanagement.model.UserDto;
 import com.users.usersmanagement.repository.LtMastLoginsRepository;
 import com.users.usersmanagement.repository.LtMastUsersRepository;
 
@@ -260,6 +261,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	@Override
 	public Status sendOTPToUser(String mobileNumber) throws ServiceException, IOException {
 
+		try {
 		Status status = new Status();
 		LtMastUsers user = null;
 
@@ -276,39 +278,44 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 			if (user == null) {
 				LtMastUsers ltMastUser = new LtMastUsers();
                 
+				UserDto userDto = new UserDto();
+				
 				System.out.println("Input MobNo is"+mobileNumber);
-				ltMastUser= ltMastUsersDao.verifyUserDetailsByMobileNumbervInSiebel(mobileNumber);
+				userDto= ltMastUsersDao.verifyUserDetailsByMobileNumbervInSiebel(mobileNumber);
 				System.out.println("User Data is"+ltMastUser);
 				ltMastUser.setMobileNumber(mobileNumber);
-				ltMastUser.setStatus(INPROCESS);
-               
-				ltMastUser.setOutletId(ltMastUser.getOutletId());
-				ltMastUser.setRecentSearchId(ltMastUser.getRecentSearchId());
-				ltMastUser.setDistributorId(ltMastUser.getDistributorId());
-				ltMastUser.setEmpCode(ltMastUser.getEmployeeCode());
-				ltMastUser.setUserName(ltMastUser.getUserName());
-				if(ltMastUser.getLatitud().isPresent()) {
-				ltMastUser.setLatitud(ltMastUser.getLatitud());
+				//ltMastUser.setStatus(INPROCESS); vaibhav 15-mar-24
+				ltMastUser.setStatus(userDto.getStatus());
+				ltMastUser.setOrgId("1");
+				ltMastUser.setOutletId(userDto.getOutletId());
+				ltMastUser.setRecentSerachId(userDto.getRecentSearchId());
+				ltMastUser.setDistributorId(userDto.getDistributorId());
+				ltMastUser.setEmployeeCode(userDto.getEmployeeCode());
+				ltMastUser.setUserName(userDto.getUserName());
+				if(userDto.getLatitude().isPresent()) {
+				ltMastUser.setLatitud(userDto.getLatitude());
 				}
-				if(ltMastUser.getLongitud().isPresent()) {
-				ltMastUser.setLongitud(ltMastUser.getLongitud());
+				if(userDto.getLongitude().isPresent()) {
+				ltMastUser.setLongitud(userDto.getLongitude());
 				}
-				ltMastUser.setUserType(ltMastUser.getUserType());
-				ltMastUser.setAddress(ltMastUser.getAddress());
-				ltMastUser.setEmail(ltMastUser.getEmail());
-				ltMastUser.setHomephNum(ltMastUser.getHomephNum());
+				ltMastUser.setUserType(userDto.getUserType());
+				ltMastUser.setAddress(userDto.getAddress());
+				ltMastUser.setEmail(userDto.getEmail());
+				ltMastUser.setHomephNum(userDto.getHomephNum());
 			//	ltMastUser.setMobileNumber(ltMastUser.getMobileNumber());
-				ltMastUser.setAsstOPhNum(ltMastUser.getAsstOPhNum());
-				ltMastUser.setAddressDetails(ltMastUser.getAddressDetails());
-				ltMastUser.setPositionId(ltMastUser.getPositionId());
-				ltMastUser.setCreationDate(ltMastUser.getCreationDate());
+				ltMastUser.setAsstOPhNum(userDto.getAsstPhNum());
+				ltMastUser.setAddressDetails(userDto.getAddressDetails());
+				ltMastUser.setPositionId(userDto.getPositionId());
+				ltMastUser.setCreationDate(userDto.getCreationDate());
 			//	ltMastUser.setCreationDate(Validation.getCurrentDateTime());
-				ltMastUser.setCreatedBy(ltMastUser.getCreatedBy());
-    		//	ltMastUser.setCreatedBy(-1L);
-				ltMastUser.setLastUpdateDate(ltMastUser.getLastUpdateDate());
+			//	ltMastUser.setCreatedBy(Long.parseLong(userDto.getCreatedBy()));
+    			ltMastUser.setCreatedBy(-1L);
+				ltMastUser.setLastUpdateDate(userDto.getLastUpdateDate());
 		  //	ltMastUser.setLastUpdateDate(Validation.getCurrentDateTime());
-				ltMastUser.setLastUpdatedBy(ltMastUser.getLastUpdatedBy());
-		//		ltMastUser.setLastUpdatedBy(-1L);
+		//		ltMastUser.setLastUpdatedBy(Long.parseLong(userDto.getLastUpdatedBy()));
+				ltMastUser.setLastUpdatedBy(-1L);
+				ltMastUser.setRecentSerachId(userDto.getRecentSearchId1());
+				ltMastUser.setLastUpdateLogin(-1L);
 				ltMastUser.setIsFirstLogin("Y");
 				
 /*                    phase1-old-code				
@@ -356,6 +363,10 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 			status.setData(null);
 		}
 		return status;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override

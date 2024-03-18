@@ -2383,9 +2383,24 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				return status;
 			}
 			
+			// code for not showing pending_approval to himself
+			
+//			List<Long> headerIdsListUpdated = new ArrayList<Long>();
+//					if(!headerIdsList.isEmpty()) {
+//						for(Long headerId:headerIdsList) {
+//							SoHeaderDto list = ltSoHeadersDao.getheaderByHeaderId(headerId);
+//									if (!(list.getCreatedBy() == requestDto.getUserId()) && !list.getStatus().equalsIgnoreCase("PENDING_APPROVAL")) {
+//										headerIdsListUpdated.add(headerId);
+//									}
+//						}
+//					}
+			
+			
 			List<ResponseDto> responseDtoList = new ArrayList<ResponseDto>();
 			
 			responseDtoList = ltSoHeadersDao.getOrderV2(headerIdsList);
+			
+		//	responseDtoList = ltSoHeadersDao.getOrderV2(headerIdsListUpdated);
 			
 			Map<Long, SoHeaderDto> soHeaderDtoMap = new LinkedHashMap<Long, SoHeaderDto>();
 			Map<Long, List<SoLineDto>> soLineDtoMap = new LinkedHashMap<Long, List<SoLineDto>>();
