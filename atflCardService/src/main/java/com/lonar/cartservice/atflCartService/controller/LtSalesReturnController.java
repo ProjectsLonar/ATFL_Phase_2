@@ -86,13 +86,53 @@ public class LtSalesReturnController implements  CodeMaster {
 		}
 	}
 
-	@PostMapping(value = "/getInvoicePdf", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
-   public ResponseEntity<Status> getInvoicePdfAgainstInvoiceNumber(@RequestBody RequestDto requestDto)throws ServerException{
+/*	@PostMapping(value = "/getInvoicePdf", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+    public ResponseEntity<Status> getInvoicePdfAgainstInvoiceNumber(@RequestBody RequestDto requestDto)throws ServerException{
 		try {
 			return new ResponseEntity<Status>(ltSalesReturnService.getInvoicePdfAgainstInvoiceNumber(requestDto), HttpStatus.OK);
 		} catch (Exception e) {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 		}
+	}*/	
+
+	@PostMapping(value = "/getInvoicePdf", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+    public StringBuilder getInvoicePdfAgainstInvoiceNumber1(@RequestBody RequestDto requestDto)throws ServerException{
+		try {
+			 StringBuilder res =  new StringBuilder();
+			 return res= ltSalesReturnService.getInvoicePdfAgainstInvoiceNumber1(requestDto);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
 	}	
 
+	
+	@GetMapping(value = "/getLotNumber/{prodId}/{inventId}", produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0")
+    public ResponseEntity<Status> getLotNumber(@PathVariable String prodId, @PathVariable String inventId) throws ServerException{
+		try {
+			   return new ResponseEntity<Status>(ltSalesReturnService.getLotNumber(prodId, inventId), HttpStatus.OK);
+		}catch(Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+
+		}
+	}	
+
+    @PostMapping(value = "/getSalesReturnForPendingAprroval", produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getSalesReturnForPendingAprroval(@RequestBody RequestDto requestDto) throws ServerException{
+		try {
+			return new ResponseEntity<Status>(ltSalesReturnService.getSalesReturnForPendingAprroval(requestDto), HttpStatus.OK);
+		}catch(Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+			}
+	}
+
+    
+    @GetMapping(value = "/getSalesReturnOrderAgainstReturnOrderNo/{returnorderNo}", produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v2.0")
+    public ResponseEntity<Status> getSalesReturnOrderAgainstReturnOrderNo(@PathVariable String returnorderNo) throws ServerException{
+    	try {
+    		return new ResponseEntity<Status>(ltSalesReturnService.getSalesReturnOrderAgainstReturnOrderNo(returnorderNo), HttpStatus.OK);
+    	}catch(Exception e) {
+    		throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+    	}
+    }
+    
 }

@@ -82,9 +82,11 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 			String query = env.getProperty("getReportDataBySalesPersonAdmin");
 
 			UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());
-
+			System.out.println("Hi i'm in Dao query reqbody = "+excelReportDto + "\n user Id is "+excelReportDto.getUserId());
+			System.out.println("Hi i'm in Dao userDetailsDto = "+userDetailsDto);
 			if (userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
 				List<Long> userList = getUsersByDistributorId(userDetailsDto.getDistributorId());
+				System.out.println("Hi i'm in Dao DISTRIBUTOR userList = "+userList);
 				if (userList == null) {
 					return null;
 				}
@@ -95,16 +97,18 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 
 				List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+				System.out.println("Hi i'm in Dao SALESOFFICER userList = "+userList);
 				if (userList == null) {
 					return null;
 				}
 				query = env.getProperty("getReportDataBySalesPersonDistributor");
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
 						+ ") order by lsh.order_number desc";
+				System.out.println("SALESOFFICER Fullquery =" +query);
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 
 				List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId());
-
+				System.out.println("Hi i'm in Dao AREAHEAD userList = "+userList);
 				if (userList == null) {
 					return null;
 				}
@@ -112,7 +116,7 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				query = env.getProperty("getReportDataBySalesPersonDistributor");
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
 						+ ") order by lsh.order_number desc";
-				//System.out.println("116query =" +query);
+				System.out.println("AREAHEAD query =" +query);
 			}
 			List<ExcelDataSelesperson> dataList = jdbcTemplate.query(query,
 					new Object[] { excelReportDto.getStatus(), excelReportDto.getOrgId(),
@@ -120,7 +124,7 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 							strStartDate, strEndDate },
 					new BeanPropertyRowMapper<ExcelDataSelesperson>(ExcelDataSelesperson.class));
 			if (dataList != null) {
-     // System.out.print("result="+dataList);
+      System.out.print("result="+dataList);
 				return dataList;
 			}
 		} catch (Exception e) {
@@ -155,53 +159,63 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 	            String strStartDate = startDate;
 				String strEndDate = endDate;  
 	            
+				System.out.println("Hi i'm in Dao query reqbody = "+excelReportDto + "\n user Id is "+excelReportDto.getUserId());
+				
 			String query = env.getProperty("getReportDataByRegionwiseSalesAdmin");
 
 			if (excelReportDto.getUserId() != null) {
 
 				UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());
-
+				System.out.println("Hi i'm in Dao userDetailsDto is = "+userDetailsDto);
+				
 				if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 
 					List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId());
+					System.out.println("Hi i'm in Dao AREAHEAD userList is = "+userList);
 					
 					if (userList == null) {
 						return null;
 					}
 
 					Long processedCount = checkOrderedIsProcessed(userList);
-
+					System.out.println("Hi i'm in Dao AREAHEAD processedCount is = "+processedCount);
 					query = env.getProperty("getReportDataByRegionwiseSales");
 
-					if (processedCount != 0) {
+// 		if (processedCount != 0) {         comment temprary on 13-May-2024
 						query = query + " and lsh.last_updated_by in ("
 								+ userList.toString().replace("[", "").replace("]", "")
-								+ ")group by lmo.region,lmd.distributor_id, lmd.distributor_name, lmd.distributor_code , lmd.distributor_crm_code";
-					}
+								+ ")group by lmo.region,lmd.distributor_id, lmd.distributor_name, lmd.distributor_code , lmd.distributor_crm_code , lsl.ptr_price, lsl.quantity";
+					//}
+					System.out.println("Hi i'm in Dao AREAHEAD query is = "+query);
 
 				} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 
 					List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+					System.out.println("Hi i'm in Dao SALESOFFICER userList is = "+userList);
 
 					if (userList == null) {
 						return null;
 					}
 					Long processedCount = checkOrderedIsProcessed(userList);
-
+					System.out.println("Hi i'm in Dao SALESOFFICER processedCount is = "+processedCount);
+					
 					query = env.getProperty("getReportDataByRegionwiseSales");
 
-					if (processedCount != 0) {
+//					if (processedCount != 0) { comment temprary on 13-May-2024
 						query = query + " and lsh.last_updated_by in ("
 								+ userList.toString().replace("[", "").replace("]", "")
-								+ ")group by lmo.region,lmd.distributor_id, lmd.distributor_name, lmd.distributor_code , lmd.distributor_crm_code";
-					}
+								+ ")group by lmo.region,lmd.distributor_id, lmd.distributor_name, lmd.distributor_code , lmd.distributor_crm_code, lsl.ptr_price, lsl.quantity";
+//					}
+					System.out.println("Hi i'm in Dao SALESOFFICER query is = "+query);
 				}
 
 			}
+			System.out.println("Hi i'm in Dao query is = "+query);
 			List<ExcelDataRegion> dataList = jdbcTemplate.query(query,
 					new Object[] { excelReportDto.getRegion(), excelReportDto.getDistributorId(), startDate, endDate,
 							strStartDate, strEndDate },
 					new BeanPropertyRowMapper<ExcelDataRegion>(ExcelDataRegion.class));
+			System.out.println("Hi i'm in Dao query dataList is = "+dataList);
 			if (dataList != null) {
 				return dataList;
 			}
@@ -269,7 +283,7 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				if (dataList != null) {
 					return dataList;
 				}
-			} else if (userDetailsDto.getUserType().equalsIgnoreCase(ADMIN)) {
+			} else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR")) {
 				List<ExcelDataProduct> dataList = jdbcTemplate.query(query,
 						new Object[] { excelReportDto.getProductId(), startDate, endDate, strStartDate, strEndDate },
 						new BeanPropertyRowMapper<ExcelDataProduct>(ExcelDataProduct.class));
@@ -302,12 +316,15 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 
 	            String strStartDate = startDate;
 				String strEndDate = endDate; 
-	            
+				System.out.println("Hi i'm in Dao query reqbody = "+excelReportDto + "\n user Id is "+excelReportDto.getUserId());
+				
 			if (excelReportDto.getUserId() != null) {
 				UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());
-
+				System.out.println("Hi i'm in Dao query userDetailsDto = "+ userDetailsDto);
+				
 				if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 					List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+					System.out.println("Hi i'm in Dao query userList = "+ userList);
 					if (userList == null) {
 						return null;
 					}
@@ -316,41 +333,44 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 
 					query = query + " and lsh.last_updated_by in ("
 							+ userList.toString().replace("[", "").replace("]", "") + ") "
-							+ " group by lmd.distributor_crm_code,lmpc.category_code,lmd.distributor_name,lmpc.category_name order by lmd.distributor_crm_code asc";
-
+							+ " group by lmd.distributor_crm_code,lmpc.category_code,lmd.distributor_name,lmpc.category_name,lsl.ptr_price,lsl.quantity order by lmd.distributor_crm_code asc";
+					System.out.println("Hi i'm in Dao query = "+ query);
 					List<ExcelDataDistributor> dataList = jdbcTemplate.query(query,
 							new Object[] { excelReportDto.getOrgId(), excelReportDto.getCategoryId(),
 									excelReportDto.getDistributorId(), startDate, endDate, strStartDate, strEndDate },
 							new BeanPropertyRowMapper<ExcelDataDistributor>(ExcelDataDistributor.class));
-
+					System.out.println("Hi i'm in Dao query dataList = "+ dataList);
 					if (dataList != null) {
 						return dataList;
 					}
 				} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 					List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId());
+					System.out.println("Hi i'm in Dao query userList = "+ userList);
 					if (userList == null) {
 						return null;
 					}
 					String query = env.getProperty("getReportDataByDistributor");
 					query = query + " and lsh.last_updated_by in ("
 							+ userList.toString().replace("[", "").replace("]", "") + ") "
-							+ " group by lmd.distributor_crm_code,lmpc.category_code,lmd.distributor_name,lmpc.category_name order by lmd.distributor_crm_code asc";
-
+							+ " group by lmd.distributor_crm_code,lmpc.category_code,lmd.distributor_name,lmpc.category_name,lsl.ptr_price,lsl.quantity order by lmd.distributor_crm_code asc";
+					System.out.println("Hi i'm in Dao query = "+ query);
+					
 					List<ExcelDataDistributor> dataList = jdbcTemplate.query(query,
 							new Object[] { excelReportDto.getOrgId(), excelReportDto.getCategoryId(),
 									excelReportDto.getDistributorId(), startDate, endDate, strStartDate, strEndDate },
 							new BeanPropertyRowMapper<ExcelDataDistributor>(ExcelDataDistributor.class));
-
+					System.out.println("Hi i'm in Dao query dataList= "+ dataList);
 					if (dataList != null) {
 						return dataList;
 					}
-				} else if (userDetailsDto.getUserType().equalsIgnoreCase(ADMIN)) {
+				} else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR")) {
 					String query = env.getProperty("getReportDataByDistributorAdmin");
+					System.out.println("Hi i'm in Dao query = "+ query);
 					List<ExcelDataDistributor> dataList = jdbcTemplate.query(query,
 							new Object[] { excelReportDto.getOrgId(), excelReportDto.getCategoryId(),
 									excelReportDto.getDistributorId(), startDate, endDate, strStartDate, strEndDate },
 							new BeanPropertyRowMapper<ExcelDataDistributor>(ExcelDataDistributor.class));
-
+					System.out.println("Hi i'm in Dao query dataList = "+ dataList);
 					if (dataList != null) {
 						return dataList;
 					}
@@ -392,34 +412,45 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 	            
 			String query = env.getProperty("getReportDataByOutletAdmin");
 
+			System.out.println("Hi i'm in Dao query reqbody = "+excelReportDto + "\n user Id is "+excelReportDto.getUserId());
+			
 			UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());
+			System.out.println("Hi i'm in Dao userDetailsDto is = "+userDetailsDto);
+			
 			if (userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
 				List<Long> userList = getUsersByDistributorId(userDetailsDto.getDistributorId());
+				System.out.println("Hi i'm in Dao userList is = "+userList);
 				if (userList == null) {
 					return null;
 				}
 
 				query = env.getProperty("getReportDataByOutletDistributor");
+				System.out.println("Hi i'm in Dao DISTRIBUTOR query is = "+query);
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
 						+ ") order by lsh.last_update_date desc";
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 				List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+				System.out.println("Hi i'm in Dao userList is = "+userList);
 				if (userList == null) {
 					return null;
 				}
 				query = env.getProperty("getReportDataByOutletDistributor");
+				System.out.println("Hi i'm in Dao SALESOFFICER query is = "+query);
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
 						+ ") order by lsh.last_update_date desc";
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 				List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId());
+				System.out.println("Hi i'm in Dao userList is = "+userList);
 				if (userList == null) {
 					return null;
 				}
 				query = env.getProperty("getReportDataByOutletDistributor");
+				System.out.println("Hi i'm in Dao AREAHEAD query is = "+query);
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
 						+ ") order by lsh.last_update_date desc";
 			}
 
+			System.out.println("Hi i'm in Dao query is = "+query);
 			List<ExcelDataOutlet> dataList = jdbcTemplate.query(query,
 					new Object[] { excelReportDto.getOrgId(), excelReportDto.getOutletId(),
 							excelReportDto.getDistributorId(), status, startDate, endDate, strStartDate, strEndDate },
@@ -439,27 +470,34 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 			String query = env.getProperty("getSearchDistributorForRegion");
 
 			if (excelReportDto.getUserId() != null) {
-
+System.out.println("ReqData is ="+excelReportDto + "UserId is = "+excelReportDto.getUserId());
 				UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());
-
+				System.out.println("userDetailsDto"+userDetailsDto);
 				if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 
-					List<Long> userList = getDistributorIdByAH(userDetailsDto.getPositionId());
+					//List<Long> userList = getDistributorIdByAH(userDetailsDto.getPositionId());
+					List<String> userList = getDistributorIdByAH(userDetailsDto.getPositionId());
+					System.out.println("userList AREAHEAD"+userList);
+					
 					query = env.getProperty("getSearchDistributorForRegionOther");
-					query = query + " and lmd.distributor_id in ("
-							+ userList.toString().replace("[", "").replace("]", "")
+					query = query + " and lmd.distributor_id in ("+"'"
+							+ userList.toString().replace("[", "").replace("]", "'")
 						//	+ ")order by distributor_id asc ) a limit ? offset ?";
 					        + ")order by distributor_id asc ) a OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
+					System.out.println("userList AREAHEAD query"+query);
+					
 				} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 
-					List<Long> userList = getDistributorIdBySO(userDetailsDto.getPositionId());
+				//	List<Long> userList = getDistributorIdBySO(userDetailsDto.getPositionId());
+					List<String> userList = getDistributorIdBySO(userDetailsDto.getPositionId());
+					System.out.println("userList SALESOFFICER userList"+userList);
+					
 					query = env.getProperty("getSearchDistributorForRegionOther");
-					query = query + " and lmd.distributor_id in ("
-							+ userList.toString().replace("[", "").replace("]", "")
+					query = query + " and lmd.distributor_id in ("+"'"
+							+ userList.toString().replace("[", "").replace("]", "'")
 						//	+ ")order by distributor_id asc ) a limit ? offset ?";
 							+ ")order by distributor_id asc ) a OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
+					System.out.println("userList SALESOFFICER query"+query);
 				}
 			}
 
@@ -692,7 +730,7 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 			if (excelReportDto.getUserId() != null) {
 				UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());
 
-				if (userDetailsDto.getUserType().equalsIgnoreCase(ADMIN)) {
+				if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR")) {
 					String salesPersonCountQuery = env.getProperty("getSalesPersonCountCOPY");
 					List<RecordCountDto> salesPersonCountList = jdbcTemplate.query(salesPersonCountQuery,
 							new Object[] { distId }, new BeanPropertyRowMapper<RecordCountDto>(RecordCountDto.class));
@@ -770,18 +808,22 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 		return null;
 	}
 
-	List<Long> getDistributorIdByAH(String distributorId) {
+	//List<Long> getDistributorIdByAH(String distributorId) { original
+		List<String> getDistributorIdByAH(String distributorId) {
 		String query = env.getProperty("getDistributorIdByAH");
-		List<Long> userIdList = jdbcTemplate.queryForList(query, Long.class, distributorId);
+		//List<Long> userIdList = jdbcTemplate.queryForList(query, Long.class, distributorId);  original
+		List<String> userIdList = jdbcTemplate.queryForList(query, String.class, distributorId);
 		if (!userIdList.isEmpty())
 			return userIdList;
 		else
 			return null;
 	}
 
-	List<Long> getDistributorIdBySO(String distributorId) {
+	//List<Long> getDistributorIdBySO(String distributorId) {
+		List<String> getDistributorIdBySO(String distributorId) {
 		String query = env.getProperty("getDistributorIdBySO");
-		List<Long> userIdList = jdbcTemplate.queryForList(query, Long.class, distributorId);
+		//List<Long> userIdList = jdbcTemplate.queryForList(query, Long.class, distributorId);
+		List<String> userIdList = jdbcTemplate.queryForList(query, String.class, distributorId);
 		if (!userIdList.isEmpty())
 			return userIdList;
 		else
@@ -810,9 +852,10 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 			String query = env.getProperty("getReportDataByProductAdmin");
 
 			UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());
-			
+			System.out.println("Hi i'm in serviceImpl userDetailsDto = "+userDetailsDto +"&&&"+excelReportDto.getUserId());
 			if (userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
 				List<Long> userList = getUsersByDistributorId(userDetailsDto.getDistributorId());
+				System.out.println("Hi i'm in serviceImpl DISTRIBUTOR userList = "+userList);
 				if (userList == null) {
 					return null;
 				}
@@ -820,17 +863,20 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				query = env.getProperty("getReportDataByProductDistributor");
 
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") group by lmp.product_id,lmp.product_name, lmp.product_code, lsl.ptr_price";
+						+ ") group by lmp.product_id,lmp.product_name, lmp.product_code, lsl.ptr_price, lsl.quantity";
 				List<ExcelDataProduct> dataList = jdbcTemplate.query(query,
 						new Object[] { excelReportDto.getOrgId(), excelReportDto.getProductId(), startDate, endDate,
 								strStartDate, strEndDate },
 						new BeanPropertyRowMapper<ExcelDataProduct>(ExcelDataProduct.class));
+				System.out.println("Hi i'm in serviceImpl DISTRIBUTOR query = "+query);
+				System.out.println("Hi i'm in serviceImpl DISTRIBUTOR dataList = "+dataList);
 				if (dataList != null) {
 					return dataList;
 				}
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 
 				List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+				System.out.println("Hi i'm in serviceImpl SALESOFFICER userList = "+userList);
 				if (userList == null) {
 					return null;
 				}
@@ -838,16 +884,19 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				query = env.getProperty("getReportDataByProductDistributor");
 
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") group by lmp.product_id,lmp.product_name, lmp.product_code, lsl.ptr_price";
+						+ ") group by lmp.product_id,lmp.product_name, lmp.product_code, lsl.ptr_price, lsl.quantity";
 				List<ExcelDataProduct> dataList = jdbcTemplate.query(query,
 						new Object[] { excelReportDto.getOrgId(), excelReportDto.getProductId(), startDate, endDate,
 								strStartDate, strEndDate },
 						new BeanPropertyRowMapper<ExcelDataProduct>(ExcelDataProduct.class));
+				System.out.println("Hi i'm in serviceImpl SALESOFFICER query = "+query);
+				System.out.println("Hi i'm in serviceImpl SALESOFFICER dataList = "+dataList);
 				if (dataList != null) {
 					return dataList;
 				}
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 				List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId());
+				System.out.println("Hi i'm in serviceImpl AREAHEAD userList = "+userList);
 				if (userList == null) {
 					return null;
 				}
@@ -855,18 +904,22 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				query = env.getProperty("getReportDataByProductDistributor");
 
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") group by lmp.product_id,lmp.product_name, lmp.product_code, lsl.ptr_price";
+						+ ") group by lmp.product_id,lmp.product_name, lmp.product_code, lsl.ptr_price, lsl.quantity";
 				List<ExcelDataProduct> dataList = jdbcTemplate.query(query,
 						new Object[] { excelReportDto.getOrgId(), excelReportDto.getProductId(), startDate, endDate,
 								strStartDate, strEndDate },
 						new BeanPropertyRowMapper<ExcelDataProduct>(ExcelDataProduct.class));
+				System.out.println("Hi i'm in serviceImpl AREAHEAD query = "+query);
+				System.out.println("Hi i'm in serviceImpl AREAHEAD dataList = "+dataList);
 				if (dataList != null) {
 					return dataList;
 				}
-			} else if (userDetailsDto.getUserType().equalsIgnoreCase(ADMIN)) {
+			} else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR")) {
 				List<ExcelDataProduct> dataList = jdbcTemplate.query(query,
 						new Object[] { excelReportDto.getProductId(), startDate, endDate, strStartDate, strEndDate },
 						new BeanPropertyRowMapper<ExcelDataProduct>(ExcelDataProduct.class));
+				System.out.println("Hi i'm in serviceImpl ADMIN query = "+query);
+				System.out.println("Hi i'm in serviceImpl ADMIN dataList = "+dataList);
 				if (dataList != null) {
 					return dataList;
 				}
@@ -884,18 +937,35 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 		long salesPersonCount = 0;
 		List<ExcelDataRegion> listMain = new LinkedList<ExcelDataRegion>();
 		try {
-			Date startDate = reportStartEndDateFormat
+/*			Date startDate = reportStartEndDateFormat
 					.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getFromDate()));
 			Date endDate = reportStartEndDateFormat
 					.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getToDate()));
 			String strStartDate = reportStartEndDateFormat.format(startDate);
 			String strEndDate = reportStartEndDateFormat.format(endDate);
+*/
+			
+			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH).withZone(ZoneId.systemDefault());
+	        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MMM-yy", Locale.ENGLISH);
+	            Instant instant = Instant.from(inputFormatter.parse(excelReportDto.getFromDate()));
+	            String startDate = outputFormatter.format(instant.atZone(ZoneId.systemDefault()));
+						
+			//Date endDate = reportStartEndDateFormat.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getToDate()));
+	            Instant instant1 = Instant.from(inputFormatter.parse(excelReportDto.getToDate()));
+	            String endDate = outputFormatter.format(instant1.atZone(ZoneId.systemDefault()));
+	            
+	        //String strStartDate = reportStartEndDateFormat.format(startDate);
+			//String strEndDate = reportStartEndDateFormat.format(endDate);
 
+	            String strStartDate = startDate;
+				String strEndDate = endDate; 
+			
+			
 			if (excelReportDto.getUserId() != null) {
 				
 				UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());
 
-				if (userDetailsDto.getUserType().equalsIgnoreCase(ADMIN)) {
+				if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR")) {
 
 					for (ExcelDataRegion excelDataRegion : list) {
 						if (excelDataRegion.getDistributorId() != null) {
@@ -923,15 +993,19 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 						if (excelDataRegion.getDistributorId() != null) {
 							
 							String salesPersonCountQuery = env.getProperty("getSalesPersonCount");
-							
+							System.out.println("salesPersonCountQuery" + salesPersonCountQuery);
 							List<RecordCountDto> salesPersonCountList = jdbcTemplate.query(salesPersonCountQuery,
 									new Object[] { excelDataRegion.getDistributorId(), startDate, endDate,
 											strStartDate, strEndDate },
 									new BeanPropertyRowMapper<RecordCountDto>(RecordCountDto.class));
 							
+							System.out.println("salesPersonCountList" + salesPersonCountList);
+							
 							if (!salesPersonCountList.isEmpty()) {
 								RecordCountDto recordCountDto = salesPersonCountList.get(0);
+								System.out.println("recordCountDto" + recordCountDto +"count is " +recordCountDto.getCount());
 								salesPersonCount = recordCountDto.getCount();
+								System.out.println("salesPersonCount" + salesPersonCount);
 							}
 							excelDataRegion.setTotalEff(salesPersonCount);
 							listMain.add(excelDataRegion);
@@ -940,7 +1014,7 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				}
 			}
 
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return listMain;

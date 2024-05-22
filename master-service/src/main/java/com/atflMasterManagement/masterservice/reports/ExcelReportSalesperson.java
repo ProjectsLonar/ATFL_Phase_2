@@ -72,11 +72,14 @@ public class ExcelReportSalesperson {
 			++srNo;
 			insertReportData(sheet, rowIndex, excelDataSelesperson, srNo, workbook,styleTableRow,styleTableRowRight);
 			Double value=0.0;
+			String value1 = null;
 			if(excelDataSelesperson.getListPrice()==null) {
 				//Double listPrice=0.0;
 				value = (excelDataSelesperson.getQuantity()*(value));
 			}else {
-			 value = (excelDataSelesperson.getQuantity()*Double.parseDouble(excelDataSelesperson.getListPrice()));
+				//String listprice = excelDataSelesperson.getListPrice().replace("0*", "");
+			 //value = (excelDataSelesperson.getQuantity()*Double.parseDouble(excelDataSelesperson.getListPrice()));
+			 value1 = (excelDataSelesperson.getQuantity()+"*"+excelDataSelesperson.getListPrice());
 			}
 			totalRevenu = totalRevenu + value;
 		}
@@ -383,15 +386,25 @@ public class ExcelReportSalesperson {
 		cell = row.createCell(12);
 		cell.setCellStyle(styleTableRowRight);
 		if (excelDataSelesperson.getListPrice() != null) {
-			cell.setCellValue(df.format(Double.parseDouble(excelDataSelesperson.getListPrice())));
+			//String listPrice = excelDataSelesperson.getListPrice().replace("0*", "");
+			//cell.setCellValue(df.format(Double.parseDouble(excelDataSelesperson.getListPrice())));  original
+			cell.setCellValue(excelDataSelesperson.getListPrice());
+			//cell.setCellValue(df.format(Double.parseDouble(listPrice)));
 		}
 		
-		Double value = 0.0;
+		//Double value = 0.0;
+		String value = null;
 		cell = row.createCell(13);
 		cell.setCellStyle(styleTableRowRight);
 		if (excelDataSelesperson.getListPrice() != null && excelDataSelesperson.getQuantity() != null) {
-			value = (excelDataSelesperson.getQuantity()*Double.parseDouble(excelDataSelesperson.getListPrice()));
-			cell.setCellValue(df.format(Double.parseDouble(value.toString())));
+			//value = (excelDataSelesperson.getQuantity()*Double.parseDouble(excelDataSelesperson.getListPrice())); original
+			//cell.setCellValue(df.format(Double.parseDouble(value.toString())));  original
+			value = (excelDataSelesperson.getQuantity()+"*"+(excelDataSelesperson.getListPrice()));
+			cell.setCellValue(value.toString());
+			/*String listPrice = excelDataSelesperson.getListPrice().replace("0*", "");;
+			value = (excelDataSelesperson.getQuantity()*Double.parseDouble(listPrice)); 
+			cell.setCellValue(df.format(Double.parseDouble(value.toString()))); 
+			*/
 		}
 		return rowIndex;
 	}

@@ -27,4 +27,7 @@ public interface LtSoHeadersService {
 
 	Status getOrderForPendingApprovals(RequestDto requestDto) throws ServiceException, IOException;
 
+	Status getAllPendingOrders(RequestDto requestDto)throws ServiceException, IOException;
+
+	Status removingPendingOrdersFromGetOrderV2(RequestDto requestDto) throws ServiceException, IOException;
 }

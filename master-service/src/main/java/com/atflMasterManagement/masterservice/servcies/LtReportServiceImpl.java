@@ -57,7 +57,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 		Status status = new Status();
 		try {
 			List<ExcelDataSelesperson> salesReportDataList = ltReportDao.getSalesReportData(excelReportDto);
-
+			System.out.println("Hi i'm in serviceImpl query dats is = "+excelReportDto +"&&&"+salesReportDataList);
 			if (salesReportDataList == null || salesReportDataList.isEmpty()) {
 				status.setMessage("Report data not available");
 				status.setCode(FAIL);
@@ -198,6 +198,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 		Status status = new Status();
 		try {
 			List<ExcelDataDistributor> distributorReportDataList = ltReportDao.getDistributorReportData(excelReportDto);
+			System.out.println("Hi i'm in serviceImpl query dats is = "+distributorReportDataList);
 			if (distributorReportDataList == null || distributorReportDataList.isEmpty()) {
 				status.setMessage("Report data not available");
 				status.setCode(FAIL);
@@ -221,6 +222,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 		Status status = new Status();
 		try {
 			List<ExcelDataOutlet> outletReportDataList = ltReportDao.getOutletReportData(excelReportDto);
+			System.out.println("Hi i'm in serviceImpl query dats is = "+outletReportDataList);
 			if (outletReportDataList == null || outletReportDataList.isEmpty()) {
 				status.setMessage("Report data not available");
 				status.setCode(FAIL);
@@ -238,48 +240,72 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 				if (outletReportDataMap.get(mapKey) != null) {
 					ExcelDataOutlet excelDataOutlet = outletReportDataMap.get(mapKey);
 					if(excelDataOutletObj.getListPrice()!=null) {
+						System.out.println("in map for loop "+excelDataOutletObj.getQuantity()+ "in loop of map "+(excelDataOutletObj.getListPrice()));
+						
 					Double totalAmount = (excelDataOutletObj.getQuantity()
 							* Double.parseDouble(excelDataOutletObj.getListPrice()));
-					totalAmount = excelDataOutlet.getAmount() + totalAmount;
+//					String totalAmount = (excelDataOutletObj.getQuantity()+"*"+(excelDataOutletObj.getListPrice()));
+//					totalAmount = excelDataOutlet.getAmount() + totalAmount;
+					System.out.println("in map for totalAmount"+totalAmount);
 					excelDataOutlet.setAmount(totalAmount);}
+//					excelDataOutlet.setAmount1(totalAmount);}
 					switch (excelDataOutletObj.getCategoryCode()) {
 					case EDIBLE_OILS: // C101
 						Double edibleOilsTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
+//						String edibleOilsTotal = (excelDataOutletObj.getQuantity()+"*"+
+//								 (excelDataOutletObj.getListPrice()));
+						
 						edibleOilsTotal = excelDataOutlet.getEdibleOils() + edibleOilsTotal;
 						excelDataOutlet.setEdibleOils(edibleOilsTotal);
+//						excelDataOutlet.setEdibleOils1(edibleOilsTotal);
 						break;
 					case READY_TO_COOK: // C102
 						Double readyToCookTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
+//						String readyToCookTotal = (excelDataOutletObj.getQuantity()+"*"+
+//								 (excelDataOutletObj.getListPrice()));
 						readyToCookTotal = excelDataOutlet.getReadyToCook() + readyToCookTotal;
 						excelDataOutlet.setReadyToCook(readyToCookTotal);
+//						excelDataOutlet.setReadyToCook1(readyToCookTotal);
 						break;
 					case READY_TO_EAT_SNACKS: // C103
 						Double readyToEatTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
+//						String readyToEatTotal = (excelDataOutletObj.getQuantity()+"*"+
+//								 (excelDataOutletObj.getListPrice()));
 						readyToEatTotal = excelDataOutlet.getReadyToEat() + readyToEatTotal;
 						excelDataOutlet.setReadyToEat(readyToEatTotal);
+//						excelDataOutlet.setReadyToEat1(readyToEatTotal);
 						break;
 					case SPREADS: // C104
 						if(excelDataOutletObj.getListPrice()!=null) {
 						Double spreadsTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
+//						String spreadsTotal = (excelDataOutletObj.getQuantity()+"*"+
+//								 (excelDataOutletObj.getListPrice()));
 						spreadsTotal = excelDataOutlet.getSpreads() + spreadsTotal;
 						excelDataOutlet.setSpreads(spreadsTotal);}
+//						excelDataOutlet.setSpreads1(spreadsTotal);}
 						break;
 					case CEREAL_SNACKS: // C105
 						Double cerealSnacksTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
+//						String cerealSnacksTotal = (excelDataOutletObj.getQuantity()+"*"+
+//								 (excelDataOutletObj.getListPrice()));
 						cerealSnacksTotal = excelDataOutlet.getCerealSnacks() + cerealSnacksTotal;
 						excelDataOutlet.setCerealSnacks(cerealSnacksTotal);
+//						excelDataOutlet.setCerealSnacks1(cerealSnacksTotal);
 						break;
 					case CHOCOLATEY_CONFECTIONERY: // C106
 						Double chocolateyConfectioneryTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
+//						String chocolateyConfectioneryTotal = (excelDataOutletObj.getQuantity()+"*"+
+//								 (excelDataOutletObj.getListPrice()));
 						chocolateyConfectioneryTotal = excelDataOutlet.getChocolateyConfectionery()
 								+ chocolateyConfectioneryTotal;
 						excelDataOutlet.setChocolateyConfectionery(chocolateyConfectioneryTotal);
+//						excelDataOutlet.setChocolateyConfectionery1(chocolateyConfectioneryTotal);
 						break;
 					}
 					outletReportDataMap.put(mapKey, excelDataOutlet);
@@ -296,49 +322,63 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 					
 					if(excelDataOutletObj.getPtrPrice()!= null && excelDataOutletObj.getListPrice()!= null && 
 							excelDataOutletObj.getQuantity()!=null) {
-					Double totalAmount = (excelDataOutletObj.getQuantity()
+				Double totalAmount = (excelDataOutletObj.getQuantity()
 							* Double.parseDouble(excelDataOutletObj.getListPrice()));
-					totalAmount = excelDataOutlet.getAmount() + totalAmount;
-					excelDataOutlet.setAmount(totalAmount);}
+//				String totalAmount = (excelDataOutletObj.getQuantity()+"*" +excelDataOutletObj.getListPrice());
+//					totalAmount = excelDataOutlet.getAmount() + totalAmount;
+				excelDataOutlet.setAmount(totalAmount);       //original
+//					excelDataOutlet.setAmount1((totalAmount));}
 
 					switch (excelDataOutletObj.getCategoryCode()) {
 					case EDIBLE_OILS: // C101
 						Double edibleOilsTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
-						edibleOilsTotal = excelDataOutlet.getEdibleOils() + edibleOilsTotal;
+//						String edibleOilsTotal = (excelDataOutletObj.getQuantity()+"*"+ (excelDataOutletObj.getListPrice()));
+//						edibleOilsTotal = excelDataOutlet.getEdibleOils() + edibleOilsTotal;
 						excelDataOutlet.setEdibleOils(edibleOilsTotal);
+//						excelDataOutlet.setEdibleOils1(edibleOilsTotal);
 						break;
 					case READY_TO_COOK: // C102
-						Double readyToCookTotal = (excelDataOutletObj.getQuantity()
+					    Double readyToCookTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
-						readyToCookTotal = excelDataOutlet.getReadyToCook() + readyToCookTotal;
-						excelDataOutlet.setReadyToCook(readyToCookTotal);
+//						String readyToCookTotal = (excelDataOutletObj.getQuantity()+"*"+ (excelDataOutletObj.getListPrice()));
+//						readyToCookTotal = excelDataOutlet.getReadyToCook() + readyToCookTotal;
+					    excelDataOutlet.setReadyToCook(readyToCookTotal);
+//						excelDataOutlet.setReadyToCook1(readyToCookTotal);
 						break;
 					case READY_TO_EAT_SNACKS: // C103
-						Double readyToEatTotal = (excelDataOutletObj.getQuantity()
+					Double readyToEatTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
-						readyToEatTotal = excelDataOutlet.getReadyToEat() + readyToEatTotal;
-						excelDataOutlet.setReadyToEat(readyToEatTotal);
+//						String readyToEatTotal = (excelDataOutletObj.getQuantity()+"*"+ (excelDataOutletObj.getListPrice()));
+//						readyToEatTotal = excelDataOutlet.getReadyToEat() + readyToEatTotal;
+					excelDataOutlet.setReadyToEat(readyToEatTotal);
+//						excelDataOutlet.setReadyToEat1(readyToEatTotal);
 						break;
 					case SPREADS: // C104
 						if(excelDataOutletObj.getListPrice()!=null) {
 						Double spreadsTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
-						spreadsTotal = excelDataOutlet.getSpreads() + spreadsTotal;
+//						String spreadsTotal = (excelDataOutletObj.getQuantity()+"*"+ (excelDataOutletObj.getListPrice()));
+//						spreadsTotal = excelDataOutlet.getSpreads() + spreadsTotal;
 						excelDataOutlet.setSpreads(spreadsTotal);}
+//						excelDataOutlet.setSpreads1(spreadsTotal);}
 						break;
 					case CEREAL_SNACKS: // C105
-						Double cerealSnacksTotal = (excelDataOutletObj.getQuantity()
+					Double cerealSnacksTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
-						cerealSnacksTotal = excelDataOutlet.getCerealSnacks() + cerealSnacksTotal;
-						excelDataOutlet.setCerealSnacks(cerealSnacksTotal);
+//						String cerealSnacksTotal = (excelDataOutletObj.getQuantity()+"*"+ (excelDataOutletObj.getListPrice()));
+//						cerealSnacksTotal = excelDataOutlet.getCerealSnacks() + cerealSnacksTotal;
+					excelDataOutlet.setCerealSnacks(cerealSnacksTotal);
+//						excelDataOutlet.setCerealSnacks1(cerealSnacksTotal);
 						break;
 					case CHOCOLATEY_CONFECTIONERY: // C106
-						Double chocolateyConfectioneryTotal = (excelDataOutletObj.getQuantity()
+					Double chocolateyConfectioneryTotal = (excelDataOutletObj.getQuantity()
 								* Double.parseDouble(excelDataOutletObj.getListPrice()));
-						chocolateyConfectioneryTotal = excelDataOutlet.getChocolateyConfectionery()
-								+ chocolateyConfectioneryTotal;
-						excelDataOutlet.setChocolateyConfectionery(chocolateyConfectioneryTotal);
+//						String chocolateyConfectioneryTotal = (excelDataOutletObj.getQuantity()+"*"+ (excelDataOutletObj.getListPrice()));
+//						chocolateyConfectioneryTotal = excelDataOutlet.getChocolateyConfectionery()
+//								+ chocolateyConfectioneryTotal;
+					excelDataOutlet.setChocolateyConfectionery(chocolateyConfectioneryTotal);
+//						excelDataOutlet.setChocolateyConfectionery1(chocolateyConfectioneryTotal);
 						break;
 					}
 
@@ -347,13 +387,15 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 			}
 			List<ExcelDataOutlet> excelDataProductList = new ArrayList(outletReportDataMap.values());
 
-			if (!excelDataProductList.isEmpty()) {
+		if (!excelDataProductList.isEmpty()) {
+				//if (!outletReportDataList.isEmpty()) {
 				status = createExcelOutletReport(excelDataProductList, excelReportDto);
 			} else {
 				status.setMessage("Fail");
 				status.setCode(FAIL);
 			}
-		} catch (Exception e) {
+		
+			}} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return status;
@@ -467,6 +509,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 			}
 		}
 		Sheet sheet = workbook.createSheet("Product_wise_Revenue_Summary_Report");
+		System.out.println("Directory creation" + excelReportDto +"\n"+ productReportDataList);
 		ExcelReportProduct.headerData(workbook, sheet, excelReportDto, productReportDataList, logoImagePath);
 
 		fileName = "ProductWiseReport" + "_" + reportDateTime + ".xlsx";
@@ -739,7 +782,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 		Status status = new Status();
 		try {
 			List<ExcelDataProduct> productReportDataList = ltReportDao.getProductReportData2(excelReportDto);
-
+			System.out.println("Hi i'm in serviceImpl query dats is = "+excelReportDto +"&&&"+productReportDataList);
 			if (productReportDataList == null || productReportDataList.isEmpty()) {
 				status.setMessage("Report data not available");
 				status.setCode(FAIL);
@@ -747,7 +790,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 			}
 
 			if (!productReportDataList.isEmpty()) {
-
+				System.out.println("Hi i'm"+ productReportDataList);
 				status = createExcelProductReport(productReportDataList, excelReportDto);
 
 			} else {

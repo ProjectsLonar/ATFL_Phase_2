@@ -1,9 +1,12 @@
 package com.lonar.cartservice.atflCartService.dto;
 
+import java.sql.Clob;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.lonar.cartservice.atflCartService.model.LtSalesReturnLines;
 
 @JsonInclude(Include.NON_NULL)
 public class ResponseDto {
@@ -27,10 +30,18 @@ public class ResponseDto {
 	private String outletAddress;
 	private Long customerId;
 	private String proprietorName;
-
+	private Date deliveryDate;
+	
 	private String BeatId;
 	private String instockFlag;
 	private String headerPriceList;
+	
+	private String siebelStatus;
+	//private Clob siebelRemark;
+	private String siebelRemark;
+	private String siebelInvoicenumber;
+	private String siebelJsonpayload;
+	
 	
 	// Line Data
 	private Long lineId;
@@ -43,7 +54,7 @@ public class ResponseDto {
 	private String priceList;
 	private String ptrPrice;
 	//private String PTR_PRICE;
-	private Date deliveryDate;
+	private Date deliveryDate1;
 	private String ptrFlag;
 	private String linelistPrice;
 	private String linePtrPrice;
@@ -91,8 +102,53 @@ public class ResponseDto {
 //	public void setPTR_PRICE(String pTR_PRICE) {
 //		PTR_PRICE = pTR_PRICE;
 //	}
+	
+	
+	private List<LtSalesReturnLines> LtSalesReturnLines;
+	
+	public List<LtSalesReturnLines> getLtSalesReturnLines() {
+		return LtSalesReturnLines;
+	}
+	public void setLtSalesReturnLines(List<LtSalesReturnLines> ltSalesReturnLines) {
+		LtSalesReturnLines = ltSalesReturnLines;
+	}
+
+
+	String Test;
+	
+		
+	public String getTest() {
+		return Test;
+	}
+	public void setTest(String test) {
+		Test = test;
+	}
 	public String getDistributorCode() {
 		return distributorCode;
+	}
+	public Date getDeliveryDate1() {
+		return deliveryDate1;
+	}
+	public void setDeliveryDate1(Date deliveryDate1) {
+		this.deliveryDate1 = deliveryDate1;
+	}
+	public String getSiebelStatus() {
+		return siebelStatus;
+	}
+	public void setSiebelStatus(String siebelStatus) {
+		this.siebelStatus = siebelStatus;
+	}
+	public String getSiebelRemark() {
+		return siebelRemark;
+	}
+	public void setSiebelRemark(String siebelRemark) {
+		this.siebelRemark = siebelRemark;
+	}
+	public String getSiebelInvoicenumber() {
+		return siebelInvoicenumber;
+	}
+	public void setSiebelInvoicenumber(String siebelInvoicenumber) {
+		this.siebelInvoicenumber = siebelInvoicenumber;
 	}
 	public void setDistributorCode(String distributorCode) {
 		this.distributorCode = distributorCode;
@@ -524,6 +580,13 @@ public class ResponseDto {
 	public void setBeatName(String beatName) {
 		this.beatName = beatName;
 	}
+		
+	public String getSiebelJsonpayload() {
+		return siebelJsonpayload;
+	}
+	public void setSiebelJsonpayload(String siebelJsonpayload) {
+		this.siebelJsonpayload = siebelJsonpayload;
+	}
 	
 	
 	@Override
@@ -533,25 +596,30 @@ public class ResponseDto {
 				+ ", address=" + address + ", outletId=" + outletId + ", outletName=" + outletName + ", outletCode="
 				+ outletCode + ", latitude=" + latitude + ", longitude=" + longitude + ", remark=" + remark
 				+ ", userId=" + userId + ", address1=" + address1 + ", city=" + city + ", outletAddress="
-				+ outletAddress + ", customerId=" + customerId + ", proprietorName=" + proprietorName + ", BeatId="
-				+ BeatId + ", instockFlag=" + instockFlag + ", headerPriceList=" + headerPriceList + ", lineId="
-				+ lineId + ", productId=" + productId + ", quantity=" + quantity + ", productCode=" + productCode
-				+ ", productDesc=" + productDesc + ", productName=" + productName + ", listPrice=" + listPrice
-				+ ", priceList=" + priceList + ", ptrPrice=" + ptrPrice + ", deliveryDate=" + deliveryDate
-				+ ", ptrFlag=" + ptrFlag + ", linelistPrice=" + linelistPrice + ", linePtrPrice=" + linePtrPrice
-				+ ", inventoryQuantity=" + inventoryQuantity + ", orgId=" + orgId + ", categoryId=" + categoryId
-				+ ", productType=" + productType + ", category=" + category + ", subCategory=" + subCategory
-				+ ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom + ", secondaryUomValue="
-				+ secondaryUomValue + ", unitsPerCase=" + unitsPerCase + ", segment=" + segment + ", brand=" + brand
-				+ ", subBrand=" + subBrand + ", casePack=" + casePack + ", hsnCode=" + hsnCode + ", productImage="
-				+ productImage + ", thumbnailImage=" + thumbnailImage + ", distributorCode=" + distributorCode
-				+ ", salesReturnNumber=" + salesReturnNumber + ", invoiceNumber=" + invoiceNumber + ", returnStatus="
-				+ returnStatus + ", salesReturnHeaderId=" + salesReturnHeaderId + ", returnReason=" + returnReason
-				+ ", salesReturnDate=" + salesReturnDate + ", salesReturnLineId=" + salesReturnLineId
+				+ outletAddress + ", customerId=" + customerId + ", proprietorName=" + proprietorName
+				+ ", deliveryDate=" + deliveryDate + ", BeatId=" + BeatId + ", instockFlag=" + instockFlag
+				+ ", headerPriceList=" + headerPriceList + ", siebelStatus=" + siebelStatus + ", siebelRemark="
+				+ siebelRemark + ", siebelInvoicenumber=" + siebelInvoicenumber + ", siebelJsonpayload="
+				+ siebelJsonpayload + ", lineId=" + lineId + ", productId=" + productId + ", quantity=" + quantity
+				+ ", productCode=" + productCode + ", productDesc=" + productDesc + ", productName=" + productName
+				+ ", listPrice=" + listPrice + ", priceList=" + priceList + ", ptrPrice=" + ptrPrice
+				+ ", deliveryDate1=" + deliveryDate1 + ", ptrFlag=" + ptrFlag + ", linelistPrice=" + linelistPrice
+				+ ", linePtrPrice=" + linePtrPrice + ", inventoryQuantity=" + inventoryQuantity + ", orgId=" + orgId
+				+ ", categoryId=" + categoryId + ", productType=" + productType + ", category=" + category
+				+ ", subCategory=" + subCategory + ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom
+				+ ", secondaryUomValue=" + secondaryUomValue + ", unitsPerCase=" + unitsPerCase + ", segment=" + segment
+				+ ", brand=" + brand + ", subBrand=" + subBrand + ", casePack=" + casePack + ", hsnCode=" + hsnCode
+				+ ", productImage=" + productImage + ", thumbnailImage=" + thumbnailImage + ", distributorCode="
+				+ distributorCode + ", salesReturnNumber=" + salesReturnNumber + ", invoiceNumber=" + invoiceNumber
+				+ ", returnStatus=" + returnStatus + ", salesReturnHeaderId=" + salesReturnHeaderId + ", returnReason="
+				+ returnReason + ", salesReturnDate=" + salesReturnDate + ", salesReturnLineId=" + salesReturnLineId
 				+ ", shippedQuantity=" + shippedQuantity + ", availability=" + availability + ", remainingQuantity="
 				+ remainingQuantity + ", returnQuantity=" + returnQuantity + ", location=" + location
 				+ ", salesReturnAmount=" + salesReturnAmount + ", price=" + price + ", totalPrice=" + totalPrice
-				+ ", beatName=" + beatName + "]";
+				+ ", beatName=" + beatName + ", LtSalesReturnLines=" + LtSalesReturnLines + ", Test=" + Test + "]";
 	}
-			
+	
+	
+	
+				
 }

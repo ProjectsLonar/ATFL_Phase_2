@@ -209,4 +209,16 @@ public class LtPromotion {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	@Override
+	public String toString() {
+		return "LtPromotion [promotionId=" + promotionId + ", promotionName=" + promotionName + ", orgId=" + orgId
+				+ ", imageType=" + imageType + ", imageName=" + imageName + ", imageData=" + imageData + ", startDate="
+				+ startDate + ", endDate=" + endDate + ", status=" + status + ", allTimeShowFlag=" + allTimeShowFlag
+				+ ", createdBy=" + createdBy + ", creationDate=" + creationDate + ", lastUpdateLogin=" + lastUpdateLogin
+				+ ", lastUpdatedBy=" + lastUpdatedBy + ", lastUpdateDate=" + lastUpdateDate + ", startDate1="
+				+ startDate1 + ", endDate1=" + endDate1 + "]";
+	}
+	
+	
 }

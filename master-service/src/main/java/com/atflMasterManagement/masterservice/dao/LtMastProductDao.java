@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.atflMasterManagement.masterservice.common.ServiceException;
 import com.atflMasterManagement.masterservice.dto.ProductDto;
+import com.atflMasterManagement.masterservice.dto.TlEtlDto;
 //import com.atflMasterManagement.masterservice.model.LtMastProducts;
 import com.atflMasterManagement.masterservice.model.LtMastProducts;
 import com.atflMasterManagement.masterservice.model.RequestDto;
@@ -42,5 +43,11 @@ public interface LtMastProductDao {
 	public List<ProductDto> getOutOfStockProductWithInventory(RequestDto requestDto) throws ServiceException, IOException;
 
 	public Long getOutOfStockProductCountWithInventory(RequestDto requestDto) throws ServiceException, IOException;
+
+	public List<ProductDto> getMultipleMrpForProduct(String distId, String outId, String prodId, String priceList)throws ServiceException, IOException;
+
+	public List<TlEtlDto> getTlForProductDescription(String priceList, String productId) throws ServiceException, IOException;
+
+	public List<TlEtlDto> getEtlForProductDescription(String priceList, String productId) throws ServiceException, IOException;
 
 }

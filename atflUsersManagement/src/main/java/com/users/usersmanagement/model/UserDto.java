@@ -32,8 +32,19 @@ public class UserDto {
 	private String employeeCode;
 	private String addressDetails;
 	
+	private String orgId;
+	private Long userId;
+	private String Designation;
+	private String territory;
 	
 	
+	
+	public String getTerritory() {
+		return territory;
+	}
+	public void setTerritory(String territory) {
+		this.territory = territory;
+	}
 	public String getRecentSearchId() {
 		return recentSearchId;
 	}
@@ -163,16 +174,18 @@ public class UserDto {
 	}
 	
 	
+	
 	@Override
 	public String toString() {
 		return "UserDto [recentSearchId=" + recentSearchId + ", recentSearchId1=" + recentSearchId1 + ", status="
-				+ status + ", createdBy=" + createdBy + ", latitude=" + latitude + ", lstUpdatedBy=" + lastUpdatedBy
-				+ ", longitude=" + longitude + ", lstUpdateDate=" + lastUpdateDate + ", address=" + address
+				+ status + ", createdBy=" + createdBy + ", latitude=" + latitude + ", lastUpdatedBy=" + lastUpdatedBy
+				+ ", longitude=" + longitude + ", lastUpdateDate=" + lastUpdateDate + ", address=" + address
 				+ ", creationDate=" + creationDate + ", homephNum=" + homephNum + ", PositionId=" + PositionId
 				+ ", asstPhNum=" + asstPhNum + ", mobileNumber=" + mobileNumber + ", positionId=" + positionId
 				+ ", outletId=" + outletId + ", distributorId=" + distributorId + ", userName=" + userName
 				+ ", userType=" + userType + ", email=" + email + ", employeeCode=" + employeeCode + ", addressDetails="
-				+ addressDetails + "]";
+				+ addressDetails + ", orgId=" + orgId + ", userId=" + userId + ", Designation=" + Designation
+				+ ", territory=" + territory + "]";
 	}
 		
 	

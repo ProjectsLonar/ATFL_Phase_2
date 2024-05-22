@@ -81,5 +81,21 @@ public interface LtSoHeadersDao {
 	String getUserTypeAgainsUserId(Long createdBy)throws ServiceException, IOException;
 
 	SoHeaderDto getheaderByHeaderId(Long headerId)throws ServiceException, IOException;
+
+	String getEmailBody(String subject)throws ServiceException, IOException;
+
+	String getUserNameAgainsUserId(Long createdBy)throws ServiceException, IOException;
+
+	List<Double> getTotalAmount(Long headerId)throws ServiceException, IOException;
+	List<String> getTotalAmount1(Long headerId)throws ServiceException, IOException;
+
+	LtSoHeaders getSiebelDataById(Long headerId)throws ServiceException, IOException;
 	
+	List<Long> getSoHeaderRemovingPendingOrdersFromGetOrderV2(RequestDto requestDto) throws ServiceException, IOException;
+	
+	//Long getRecordCountRemovingPendingOrdersFromGetOrderV2(RequestDto requestDto) throws ServiceException, IOException;
+	
+	List<ResponseDto> getOrderV2RemovingPendingOrdersFromGetOrderV2(List<Long> headerIdList) throws ServiceException, IOException;
+
+	List<SoHeaderDto> getheaderByHeaderIdNew(List<Long> headerIdsList)throws ServiceException, IOException;
 }

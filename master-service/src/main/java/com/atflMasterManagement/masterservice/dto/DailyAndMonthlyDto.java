@@ -41,4 +41,12 @@ public class DailyAndMonthlyDto {
 		this.quantity = quantity;
 	}
 
+	
+	@Override
+	public String toString() {
+		return "DailyAndMonthlyDto [creationDate=" + creationDate + ", listPrice=" + listPrice + ", ptrPrice="
+				+ ptrPrice + ", quantity=" + quantity + "]";
+	}
+
+	
 }

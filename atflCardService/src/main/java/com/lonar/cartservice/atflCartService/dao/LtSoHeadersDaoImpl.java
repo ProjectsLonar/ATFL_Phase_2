@@ -108,6 +108,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 
 	@Override
 	public List<Long> getSoHeader(RequestDto requestDto) throws ServiceException, IOException {
+		try {
 		String query = env.getProperty("getOrderHeaderV1");
        
 		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
@@ -321,6 +322,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 					requestDto.getOrderNumber(),requestDto.getDistributorId(),  searchField,
 					requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset());
 
+			System.out.println("headerIdslist in Dao"+headerIdslist);
 			return headerIdslist;
 			
 		}else if(userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(SALES)) {
@@ -403,7 +405,10 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			 */
 System.out.println("headerIdsSSSS "+headerIdslist);
 			return headerIdslist;
-		}
+		}}catch(Exception e) {
+			logger.error("Error Description :", e);
+			e.printStackTrace();
+		}return null;
 	}
 
 	@Override
@@ -806,8 +811,10 @@ System.out.println("headerIdsSSSS "+headerIdslist);
 	@Override
 	public List<LtMastUsers> getActiveAreaHeadeUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException {
 		String query = env.getProperty("getActiveAreaHeadUsersFromHeaderId");
+		System.out.println("This is areaHead User query in Dao \n" + query+ "\n"+ headerId+"\n"+ orderNumber);
 		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		System.out.println("This is areaHead User List in Dao " + userList);
 		return userList;
 	}
 	
@@ -900,6 +907,410 @@ System.out.println("headerIdsSSSS "+headerIdslist);
 			return soHeaderDto.get(0);
 		else
 			return null;
+	}
+
+	@Override
+	public String getEmailBody(String subject) throws ServiceException, IOException {
+		String query= env.getProperty("getEmailBody");
+		String body= jdbcTemplate.queryForObject(query, new Object[] {subject}, String.class);
+		return body;
+	}
+
+	@Override
+	public String getUserNameAgainsUserId(Long createdBy) throws ServiceException, IOException {
+		String query= env.getProperty("getUserNameAgainsUserId");
+		String userName= jdbcTemplate.queryForObject(query, new Object[] {createdBy}, String.class);
+		return userName;
+	}
+
+	@Override
+	public List<Double> getTotalAmount(Long headerId) throws ServiceException, IOException {
+		String query= env.getProperty("getTotalAmount");
+		List<Double> amount= jdbcTemplate.queryForList(query, new Object[] {headerId}, double.class);
+		System.out.println("amount is........" + amount);
+		return amount;
+	}
+
+	@Override
+	public List<String> getTotalAmount1(Long headerId) throws ServiceException, IOException {
+		String query= env.getProperty("getTotalAmount");
+		List<String> amount= jdbcTemplate.queryForList(query, new Object[] {headerId}, String.class);
+		System.out.println("amount is........" + amount);
+		return amount;
+	}
+	
+	@Override
+	public LtSoHeaders getSiebelDataById(Long headerId) throws ServiceException, IOException {
+		String query= env.getProperty("getSiebelDataById");
+		List<LtSoHeaders> siebelData= jdbcTemplate.query(query, new Object[] {headerId}, 
+				new BeanPropertyRowMapper<LtSoHeaders>(LtSoHeaders.class));
+		if (!siebelData.isEmpty())
+			return siebelData.get(0);
+		else
+			return null;	
+	}
+
+	@Override
+	public List<Long> getSoHeaderRemovingPendingOrdersFromGetOrderV2(RequestDto requestDto)
+			throws ServiceException, IOException {
+			try {
+			String query = env.getProperty("getOrderHeaderV1RemovingPendingOrders");
+	       
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
+			
+	 String headerId = null;
+			if(requestDto.getHeaderId() !=null) {
+				headerId = requestDto.getHeaderId().toString();
+					}
+			
+			
+			String searchField = null;
+			if (requestDto.getSearchField() != null) {
+				
+				String searchStr = requestDto.getSearchField().toUpperCase();
+				
+				String dayStr = "";
+			    String yearStr = "";
+				if(searchStr.contains("JAN")) {
+					 String[] arr = searchStr.trim().split("JAN"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-01-"+dayStr+"%";
+					
+				}else if (searchStr.contains("FEB")) {
+					 String[] arr = searchStr.trim().split("FEB"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-02-"+dayStr+"%";
+					
+				}else if (searchStr.contains("MAR")) {
+					 String[] arr = searchStr.trim().split("MAR"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-03-"+dayStr+"%";
+					
+				}else if (searchStr.contains("APR")) {
+					 String[] arr = searchStr.trim().split("APR"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-04-"+dayStr+"%";
+					
+				}else if (searchStr.contains("MAY")) {
+					 String[] arr = searchStr.trim().split("MAY"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-05-"+dayStr+"%";
+					
+				}else if (searchStr.contains("JUN")) {
+					 String[] arr = searchStr.trim().split("JUN"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-06-"+dayStr+"%";
+					
+				}else if (searchStr.contains("JUL")) {
+					 String[] arr = searchStr.trim().split("JUL"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-07-"+dayStr+"%";
+					
+				}else if (searchStr.contains("AUG")) {
+					 String[] arr = searchStr.trim().split("AUG"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-08-"+dayStr+"%";
+					
+				}else if (searchStr.contains("SEP")) {
+					 String[] arr = searchStr.trim().split("SEP"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-09-"+dayStr+"%";
+				}else if (searchStr.contains("OCT")) {
+					 String[] arr = searchStr.trim().split("OCT"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-10-"+dayStr+"%";
+					
+				}else if (searchStr.contains("NOV")) {
+					 String[] arr = searchStr.trim().split("NOV"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-11-"+dayStr+"%";
+				}else if (searchStr.contains("DEC")) {
+					 String[] arr = searchStr.trim().split("DEC"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-12-"+dayStr+"%";
+				}else {
+					searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+				}
+			}
+			System.out.println("searchField :: "+searchField);
+			
+			List<Long> headerIdslist = null;		
+			//Long headerId =0l;
+			UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
+			
+			System.out.println("AlluserDetailsDto"+userDetailsDto);
+			if (userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
+				//get userList by distributorID
+				
+		/*Keyur		if(userDetailsDto != null) {
+					query = query + " and lsh.created_by not in ( " + requestDto.getUserId() + ")";
+					System.out.println("New AlluserDetailsDto"+query);
+				}
+				query = query +" ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+				System.out.println("New123 AlluserDetailsDto"+query);
+		*/		
+				List<Long> userList = getUsersByDistributorId(userDetailsDto.getDistributorId());
+				
+				System.out.println("AlluserListDto"+userList);
+				
+				if(!userList.isEmpty() && userList != null) {
+					query = query + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
+						//	+ ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx')) )a order by a.status_o, a.creation_date desc ) b where rownum BETWEEN ? AND ? ";
+				// on 7-May-24	        + ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx')) )a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+							+ ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx')) )a order by a.last_update_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				}else {
+					//query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  where rownum BETWEEN ? AND ? ";
+			//on 7-May-24		query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+					query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.last_update_date desc ) b  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				}
+				
+				
+				
+				
+				/*
+				 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+				 * requestDto.getStatus(),
+				 * requestDto.getOrderNumber(),requestDto.getDistributorId(), headerId,
+				 * searchField, requestDto.getOutletId(), requestDto.getLimit(),
+				 * requestDto.getOffset());
+				 */
+				
+				headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
+						requestDto.getOrderNumber(),requestDto.getDistributorId(),  searchField,
+						requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset());
+
+				System.out.println("headerIdslist in Dao"+headerIdslist);
+				return headerIdslist;
+				
+			}else if(userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(SALES)) {
+				//String positionId = getPositionIdByUserId(requestDto.getUserId());
+				//List<Long> outletList = getOutletIdsByPositionId(userDetailsDto.getPositionId()); //comment on 12-March-24 vaibhav
+				List<String> outletList = getOutletIdsByPositionId(userDetailsDto.getPositionId());
+				
+				if(!outletList.isEmpty() && outletList != null) {
+					//query = query +" and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
+					//query = query + " and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
+					//		+ " ) ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
+
+					//				String outList = null;   comment on 13-march-2024 vaibhav 320-333
+//					String newList = null;
+//					for(int i=1; i< outletList.size(); i++) { 
+//						if(i!=outletList.size()) {
+//						 outList= "'" + outletList.get(i).toString().replace("[", "").replace("]", "") + "'"+",";
+//						 //outList.charAt(outList.length() - 1);
+//						 outList.substring(0, outList.length() - 1);
+//						 //outList.replace(",", "");
+//						 System.out.println("Issue for outList =\n"+newList);}
+//						if(i==outletList.size()-1) {
+//							String outList1= "'" + outletList.get(i).toString().replace("[", "").replace("]", "") + "'";
+//							 System.out.print("2nd outList =\n"+outList+outList1);}
+//						
+//					}
+					
+					query = query + " and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
+						//	+ " ) ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
+					//7-May-24      +  ") ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+							+  ") ) a order by a.last_update_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				}else {
+//					query = query +" ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
+				//	query = query +" ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ?";
+		// 7-may-24	query = query +" ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+					query = query +" ) a order by a.last_update_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+				}
+				
+				System.out.print("Issue for query ="+query);
+				
+				headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
+						requestDto.getOrderNumber(), requestDto.getDistributorId(), searchField,
+						requestDto.getLimit(), requestDto.getOffset());
+				
+				
+				/*
+				 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+				 * requestDto.getStatus(), requestDto.getOrderNumber(),
+				 * requestDto.getDistributorId(), headerId, searchField, requestDto.getLimit(),
+				 * requestDto.getOffset());
+				 */
+				return headerIdslist;
+				
+			}else {
+			//	query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
+	//07-May-24			query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.last_update_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				
+				/*
+				 * if(requestDto.getHeaderId() !=null) { headerId = requestDto.getHeaderId();
+				 * }else { headerId = null; }
+				 */
+				
+				System.out.println(requestDto.getHeaderId()); 
+				System.out.println(query);  
+				
+				/*
+				 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+				 * requestDto.getDistributorId(),requestDto.getStatus(),
+				 * requestDto.getOrderNumber(), searchField
+				 * ,headerId,requestDto.getOutletId(),requestDto.getLimit(),
+				 * requestDto.getOffset() );
+				 */
+	           
+	           headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+						requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+						searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
+						);
+
+
+				/*
+				 * headerIdslist = jdbcTemplate.query(query, new Object[] { }, new
+				 * BeanPropertyRowMapper<Long>(Long.class));
+				 */
+	System.out.println("headerIdsSSSS "+headerIdslist);
+				return headerIdslist;
+			}}catch(Exception e) {
+				logger.error("Error Description :", e);
+				e.printStackTrace();
+			}return null;
+		
+	}
+
+	/*@Override
+	public Long getRecordCountRemovingPendingOrdersFromGetOrderV2(RequestDto requestDto)
+			throws ServiceException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public List<ResponseDto> getOrderV2RemovingPendingOrdersFromGetOrderV2(List<Long> headerIdList)
+			throws ServiceException, IOException {	
+			try {
+				String query = env.getProperty("getOrderLineV1RemovingPendingOrders");
+				System.out.print("headerIdList =" +headerIdList);
+				
+				//query = query + "  and lsh.header_id IN ( 164) ) a order by a.status_o, a.cdate desc, a.header_id ";
+				query = query + "  and lsh.header_id IN ( " + headerIdList.toString().replace("[", "").replace("]", "")
+				//07-May-24		+ " ) ) a order by a.status_o, a.cdate desc, a.header_id ";
+				+ " ) ) a order by a.last_update_date desc";//, a.header_id ";
+				List<ResponseDto> headerDtolist = jdbcTemplate.query(query, new Object[] {},
+						new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+
+				return headerDtolist;
+			} catch (Exception e) {
+				logger.error("Error Description :", e);
+				e.printStackTrace();
+			}
+			return null;
+	
+	}
+
+	@Override
+	public List<SoHeaderDto> getheaderByHeaderIdNew(List<Long> headerIdsList) throws ServiceException, IOException {
+		String query = env.getProperty("getheaderByHeaderIdNew");
+		try {
+			query = query + " and lsh.header_id IN ( " + headerIdsList.toString().replace("[", "").replace("]", "")
+					+ " ) ORDER BY lsh.HEADER_ID desc";
+		List<SoHeaderDto> SoHeaderData = jdbcTemplate.query(query,new Object[] {} , 
+				new BeanPropertyRowMapper<SoHeaderDto>(SoHeaderDto.class));
+	
+	if(SoHeaderData.size()>0) {
+		return SoHeaderData;
+	}
+	}catch(Exception e) 
+	    {
+		 e.printStackTrace();
+		}
+	return null;
 	}
 	
 }

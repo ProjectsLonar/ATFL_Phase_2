@@ -54,7 +54,7 @@ public class LtSalesReturnLines extends BaseClass {
 	@Transient
 	String productName;
 	
-	@Transient
+	@Column(name = "LOT_NUMBER")
 	String lotNumber;
 
 	public String getProductName() {
@@ -162,10 +162,9 @@ public class LtSalesReturnLines extends BaseClass {
 		return "LtSalesReturnLines [salesReturnLineId=" + salesReturnLineId + ", salesReturnHeaderId="
 				+ salesReturnHeaderId + ", productId=" + productId + ", shippedQuantity=" + shippedQuantity
 				+ ", returnQuantity=" + returnQuantity + ", remainingQuantity=" + remainingQuantity + ", availability="
-				+ availability + ", location=" + location + "]";
-	}
-
-	
+				+ availability + ", location=" + location + ", price=" + price + ", totalPrice=" + totalPrice
+				+ ", productName=" + productName + ", lotNumber=" + lotNumber + "]";
+	}	
 	
 	
 }

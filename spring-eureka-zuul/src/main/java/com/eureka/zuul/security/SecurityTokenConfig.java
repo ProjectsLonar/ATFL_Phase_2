@@ -104,7 +104,9 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				 .antMatchers("/uam" + "/users" + "/getUserAllMasterDataById/**").hasAnyRole("PREVERIFIED","DISTRIBUTOR", "ADMIN", "SALES", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
 				 .antMatchers("/uam" + "/salepersons" + "/getSalesPersonsForDistributor/**").hasAnyRole("PREVERIFIED","DISTRIBUTOR","SALES", "ADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
 				 .antMatchers("/uam" + "/users" + "/getUsersList/**").hasAnyRole("PREVERIFIED","DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
-				
+				 .antMatchers("/uam" + "/outlets" + "/getAllStates/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD","SALES", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
+				 .antMatchers("/uam" + "/outlets" + "/getOutletById/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD","SALES", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
+					
 				.antMatchers("/master" + "/products" + "/searchProduct/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR")
 				.antMatchers("/master" + "/products" + "/getdatatable/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
 				.antMatchers("/master" + "/products" + "/findPricelistByCategoryId/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
@@ -121,6 +123,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/master" + "/products" + "/getProduct/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR")
 				.antMatchers("/master" + "/products" + "/getInStockProduct/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER","SYSTEMADMINISTRATOR")
 				.antMatchers("/master" + "/products" + "/getOutOfStockProduct/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
+				.antMatchers("/master" + "/products" + "/getMultipleMrpForProduct/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR") 
 				
 				.antMatchers("/master" + "/dashboard" + "/statusWiseOrdersCount/**").hasAnyRole( "DISTRIBUTOR", "ADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
 				.antMatchers("/master" + "/dashboard" + "/categoryRevenueDistribution/**").hasAnyRole( "DISTRIBUTOR", "ADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
@@ -166,6 +169,9 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				 .antMatchers("/master" + "/testProducts" + "/getAllState/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN")
 				 .antMatchers("/master" + "/testProducts" + "/getAllCategory/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN")
 				 .antMatchers("/master" + "/testProducts" + "/getAllSubcategoryAgainstCatId/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN")
+				 .antMatchers("/master" + "/email" + "/send-email/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN", "SYSTEMADMINISTRATOR", "AREAHEAD", "SALESOFFICER")
+				 .antMatchers("/master" + "/products" + "/getTlForProductDescription/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN", "SYSTEMADMINISTRATOR", "AREAHEAD", "SALESOFFICER")
+				 .antMatchers("/master" + "/products" + "/getEtlForProductDescription/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN", "SYSTEMADMINISTRATOR", "AREAHEAD", "SALESOFFICER") 				 
 				 
 				/* //------Cart---- */
 				 .antMatchers("/cart" + "/ltsoheaders" + "/save/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
@@ -190,11 +196,13 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 
 				 .antMatchers("/cart" + "/ltsoheaders" + "/getOrderV2/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN", "AREAHEAD", "SYSTEMADMINISTRATOR","SALESOFFICER")
 				 .antMatchers("/cart" + "/ltsoheaders" + "/saveOrderV2/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR")
-
+				 .antMatchers("/cart" + "/ltsoheaders" + "/removingPendingOrdersFromGetOrderV2/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN", "AREAHEAD", "SYSTEMADMINISTRATOR","SALESOFFICER")
+				 
 				 
 				 .antMatchers("/cart" + "/ltsoheaders" + "/getAllInprocessOrder/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR")
+				 .antMatchers("/cart" + "/ltsoheaders" + "/getAllPendingOrders/**").permitAll()
 				 
-				 .antMatchers("/cart" + "/ltsoheaders" + "/getOrderCancellationReason/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD")
+				 .antMatchers("/cart" + "/ltsoheaders" + "/getOrderCancellationReason/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD","SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
 				 .antMatchers("/cart" + "/lttemplatecontroller" + "/getTemplateAgainstDistributor/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR")
 				 .antMatchers("/uam" + "/salepersons" + "/systemAdministrator/**").hasAnyRole("PREVERIFIED","SALES", "ADMIN", "SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER" )
 				 .antMatchers("/cart" + "/lttemplatecontroller" + "/createTemplate/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR")
@@ -210,12 +218,17 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				 .antMatchers("/cart" + "/ltsalesreturn" + "/getLocationForSalesReturn/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR")
 				 .antMatchers("/cart" + "/ltsalesreturn" + "/getSalesReturn/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
 				 .antMatchers("/cart" + "/ltsalesreturn" + "/getInvoices/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
+				 .antMatchers("/cart" + "/ltsalesreturn" + "/getLotNumber/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
+				 .antMatchers("/cart" + "/ltsalesreturn" + "/getSalesReturnForPendingAprroval/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
+				 .antMatchers("/cart" + "/ltsalesreturn" + "/getInvoicePdf/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR") 			 
+				 .antMatchers("/cart" + "/ltsalesreturn" + "/getSalesReturnOrderAgainstReturnOrderNo/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
 				 
 				 .antMatchers("/uam" + "/outlets" + "/getBeatDetailsAgainsDistirbutorCode/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
 				 .antMatchers("/uam" + "/outlets" + "/getOutletAgainstBeat/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
 				 
 				 .antMatchers("/uam" + "/distributor" + "/getAllNotification/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
-
+				 .antMatchers("/uam" + "/distributor" + "/getUserDataByIdForValidation/**").permitAll()
+				 .antMatchers("/uam" + "/distributor" + "/saveSeibelUserData/**").permitAll()
 
 				// ANONYMOUS
 

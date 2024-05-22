@@ -11,4 +11,11 @@ public class RecordCountDto {
 		this.count = count;
 	}
 
+	@Override
+	public String toString() {
+		return "RecordCountDto [count=" + count + "]";
+	}
+
+	
+	
 }

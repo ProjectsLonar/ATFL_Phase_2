@@ -7,6 +7,18 @@ public class Status {
 	private Object data;
 	private Long  totalCount;
 	private Long recordCount;
+	
+	private StringBuilder stringBuilder;
+
+	
+	
+	public StringBuilder getStringBuilder() {
+		return stringBuilder;
+	}
+
+	public void setStringBuilder(StringBuilder stringBuilder) {
+		this.stringBuilder = stringBuilder;
+	}
 
 	public Long getTotalCount() {
 		return totalCount;
@@ -56,9 +68,12 @@ public class Status {
 		this.recordCount = recordCount;
 	}
 
+	
 	@Override
 	public String toString() {
-		return "Status [code=" + code + ", message=" + message + ", data=" + data + "]";
+		return "Status [code=" + code + ", message=" + message + ", data=" + data + ", totalCount=" + totalCount
+				+ ", recordCount=" + recordCount + ", stringBuilder=" + stringBuilder + "]";
 	}
+	
 	
 }

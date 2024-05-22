@@ -37,6 +37,7 @@ public class LtMastSmsTokenDaoImpl implements LtMastSmsTokenDao {
 
 	@Override
 	public List<LtMastSmsToken> getBySmsId(Long userId, String transId) throws ServiceException {
+		System.out.println("token ="+ userId + transId);
 		String query = "SELECT * FROM LT_MAST_SMS_TOKENS WHERE ( SMS_STATUS = 'SENDING' OR SMS_STATUS = 'FAIL TO SEND' ) "
 				+ " AND COALESCE(USER_ID,-99) =  COALESCE(?,COALESCE(USER_ID,-99))  AND Transaction_id = ? ";
 

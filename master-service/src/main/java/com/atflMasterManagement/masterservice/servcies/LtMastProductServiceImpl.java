@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.atflMasterManagement.masterservice.common.ServiceException;
 import com.atflMasterManagement.masterservice.dao.LtMastProductDao;
 import com.atflMasterManagement.masterservice.dto.ProductDto;
+import com.atflMasterManagement.masterservice.dto.TlEtlDto;
 import com.atflMasterManagement.masterservice.model.CodeMaster;
 import com.atflMasterManagement.masterservice.model.LtMastProducts;
 //import com.atflMasterManagement.masterservice.model.LtMastProductsView;
@@ -138,6 +139,7 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 	public Status getInStockProduct(RequestDto requestDto) throws ServiceException, IOException {
 		Status status = new Status();
 		
+		System.out.print("In service getInStockProduct");
 		String userType =  ltMastProductDao.getUserTypeByUserId(requestDto.getUserId());
 		
 		if(userType.equalsIgnoreCase(ADMIN)||userType.equalsIgnoreCase(SALESOFFICER)||userType.equalsIgnoreCase(AREAHEAD)) {
@@ -154,6 +156,7 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 			}
 			
 		}else {
+			System.out.print("In Controller else getInStockProduct");
 			List<ProductDto> list = ltMastProductDao.getInStockProductWithInventory(requestDto);
 			Long productCount = ltMastProductDao.getInStockProductCountWithInventory(requestDto);
 			//System.out.print("Hi in prodInvent query");
@@ -170,7 +173,8 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 					System.out.print(productDto);
 					
 					if(productDto.getPtrFlag().equalsIgnoreCase("Y")) {
-						productDto.setPtrPrice(productDto.getListPrice());
+					//	productDto.setPtrPrice(productDto.getListPrice());
+						productDto.setPtrPrice(productDto.getPtrPrice());
 					}
 					
 					if(productDto.getInventoryQuantity() !=null) {
@@ -227,7 +231,8 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 					//System.out.print(productDto);
 					
 					if(productDto.getPtrFlag().equalsIgnoreCase("Y")) {
-						productDto.setPtrPrice(productDto.getListPrice());
+						//productDto.setPtrPrice(productDto.getListPrice());
+						productDto.setPtrPrice(productDto.getPtrPrice());
 					}
 					
 					if(productDto.getInventoryQuantity() !=null) {
@@ -245,6 +250,59 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 				status.setCode(RECORD_NOT_FOUND);
 			}
 		}
+		return status;
+	}
+
+	@Override
+	public Status getMultipleMrpForProduct(String distId, String outId, String prodId, String priceList)
+			throws ServiceException, IOException {
+		       Status status= new Status();
+		try{
+			List<ProductDto> list = ltMastProductDao.getMultipleMrpForProduct(distId,outId,prodId,priceList);
+			if(!list.isEmpty()) {
+				status.setCode(RECORD_FOUND);
+				status.setData(list);
+			}else 
+			{
+			  status.setCode(RECORD_NOT_FOUND);
+			}
+			}catch(Exception e) 
+		     {
+				e.printStackTrace();
+				return null;
+			 }
+		return status;		
+	}
+
+	@Override
+	public Status getTlForProductDescription(String priceList, String productId) throws ServiceException, IOException {
+		    Status status= new Status();
+		try {
+			List<TlEtlDto> tlList = ltMastProductDao.getTlForProductDescription(priceList, productId);
+			if(!tlList.isEmpty()) {
+				status.setCode(RECORD_FOUND);
+				status.setData(tlList);
+			 }else {
+				status.setCode(RECORD_NOT_FOUND);
+			  }
+			} catch(Exception e) 
+		      {e.printStackTrace();}
+		return status;
+	}
+
+	@Override
+	public Status getEtlForProductDescription(String priceList, String productId) throws ServiceException, IOException {
+		Status status= new Status();
+		try {
+			List<TlEtlDto> tlList = ltMastProductDao.getEtlForProductDescription(priceList, productId);
+			if(!tlList.isEmpty()) {
+				status.setCode(RECORD_FOUND);
+				status.setData(tlList);
+			 }else {
+				status.setCode(RECORD_NOT_FOUND);
+			  }
+			} catch(Exception e) 
+		      {e.printStackTrace();}
 		return status;
 	}
 	

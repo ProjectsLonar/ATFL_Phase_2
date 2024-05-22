@@ -26,6 +26,74 @@ public class ExcelDataOutlet {
 	private Double cerealSnacks = 0D;
 	private String listPrice;
 	
+	private String amount1;
+	private String edibleOils1;
+	private String readyToCook1;
+	private String chocolateyConfectionery1;
+	private String readyToEat1;
+	private String spreads1;
+	private String cerealSnacks1;
+	
+
+	
+	
+	
+	public String getEdibleOils1() {
+		return edibleOils1;
+	}
+
+	public void setEdibleOils1(String edibleOils1) {
+		this.edibleOils1 = edibleOils1;
+	}
+
+	public String getReadyToCook1() {
+		return readyToCook1;
+	}
+
+	public void setReadyToCook1(String readyToCook1) {
+		this.readyToCook1 = readyToCook1;
+	}
+
+	public String getChocolateyConfectionery1() {
+		return chocolateyConfectionery1;
+	}
+
+	public void setChocolateyConfectionery1(String chocolateyConfectionery1) {
+		this.chocolateyConfectionery1 = chocolateyConfectionery1;
+	}
+
+	public String getReadyToEat1() {
+		return readyToEat1;
+	}
+
+	public void setReadyToEat1(String readyToEat1) {
+		this.readyToEat1 = readyToEat1;
+	}
+
+	public String getSpreads1() {
+		return spreads1;
+	}
+
+	public void setSpreads1(String spreads1) {
+		this.spreads1 = spreads1;
+	}
+
+	public String getCerealSnacks1() {
+		return cerealSnacks1;
+	}
+
+	public void setCerealSnacks1(String cerealSnacks1) {
+		this.cerealSnacks1 = cerealSnacks1;
+	}
+
+	public String getAmount1() {
+		return amount1;
+	}
+
+	public void setAmount1(String amount1) {
+		this.amount1 = amount1;
+	}
+
 	public String getListPrice() {
 		return listPrice;
 	}
@@ -194,4 +262,21 @@ public class ExcelDataOutlet {
 		this.distributorCrmCode = distributorCrmCode;
 	}
 
+	
+	@Override
+	public String toString() {
+		return "ExcelDataOutlet [srNo=" + srNo + ", outletId=" + outletId + ", outletName=" + outletName
+				+ ", outletCode=" + outletCode + ", orderNumber=" + orderNumber + ", status=" + status
+				+ ", creationDate=" + creationDate + ", ptrPrice=" + ptrPrice + ", quantity=" + quantity + ", amount="
+				+ amount + ", distributorName=" + distributorName + ", distributorCrmCode=" + distributorCrmCode
+				+ ", categoryCode=" + categoryCode + ", categoryDesc=" + categoryDesc + ", edibleOils=" + edibleOils
+				+ ", readyToCook=" + readyToCook + ", chocolateyConfectionery=" + chocolateyConfectionery
+				+ ", readyToEat=" + readyToEat + ", spreads=" + spreads + ", cerealSnacks=" + cerealSnacks
+				+ ", listPrice=" + listPrice + ", amount1=" + amount1 + ", edibleOils1=" + edibleOils1
+				+ ", readyToCook1=" + readyToCook1 + ", chocolateyConfectionery1=" + chocolateyConfectionery1
+				+ ", readyToEat1=" + readyToEat1 + ", spreads1=" + spreads1 + ", cerealSnacks1=" + cerealSnacks1 + "]";
+	}
+
+	
+			
 }

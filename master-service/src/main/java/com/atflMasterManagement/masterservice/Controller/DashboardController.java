@@ -1,5 +1,7 @@
 package com.atflMasterManagement.masterservice.Controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import com.atflMasterManagement.masterservice.dto.MonthlyResponseDto;
 
 import com.atflMasterManagement.masterservice.common.BusinessException;
 import com.atflMasterManagement.masterservice.common.ServiceException;
@@ -64,10 +67,10 @@ public class DashboardController implements CodeMaster {
 	}
 	
 	@RequestMapping(value = "/monthlySales/{orgId}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> monthlySales(@PathVariable("orgId") String orgId, @PathVariable("userId") String userId)
+	public ResponseEntity<List<MonthlyResponseDto>> monthlySales(@PathVariable("orgId") String orgId, @PathVariable("userId") String userId)
 			throws ServiceException {
 		try {
-			return new ResponseEntity<Status>(dashboardService.monthlySalesV2(orgId, userId), HttpStatus.OK);
+			return new ResponseEntity<List<MonthlyResponseDto>>(dashboardService.monthlySalesV2(orgId, userId), HttpStatus.OK);
 		} catch (Exception e) {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 		}

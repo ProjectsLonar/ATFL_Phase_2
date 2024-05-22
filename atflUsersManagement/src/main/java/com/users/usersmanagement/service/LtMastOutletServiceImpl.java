@@ -44,11 +44,13 @@ import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastOutletsType;
 import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
+import com.users.usersmanagement.model.LtOutletDto;
 import com.users.usersmanagement.model.NotificationDetails;
 import com.users.usersmanagement.model.OutletSequenceData;
 import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.model.RoleMaster;
 import com.users.usersmanagement.model.Status;
+import com.users.usersmanagement.model.LtMastStates;
 import com.users.usersmanagement.repository.LtMastOutletDumpRepository;
 import com.users.usersmanagement.repository.LtMastOutletRepository;
 import com.users.usersmanagement.repository.LtMastUsersRepository;
@@ -146,7 +148,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 	public Status getOutlet(RequestDto requestDto) throws ServiceException, IOException {
 		Status status = new Status();
 		System.out.println("requestDto"+requestDto);
-		List<LtMastOutlets> list = ltMastOutletDao.getOutlet(requestDto);
+		List<LtOutletDto> list = ltMastOutletDao.getOutlet(requestDto);
 		System.out.println("list"+list);
 		if (list != null) {
 			status.setCode(SUCCESS);
@@ -227,6 +229,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			ltMastOutletsDump.setState(ltMastOutlets.getState());
 			ltMastOutletsDump.setCity(ltMastOutlets.getCity());
 			ltMastOutletsDump.setPin_code(ltMastOutlets.getPin_code());
+			ltMastOutletsDump.setBeatId(ltMastOutlets.getBeatId());
 
 			if (ltMastOutlets.getRegion() != null) {
 				ltMastOutletsDump.setRegion(ltMastOutlets.getRegion());
@@ -310,7 +313,8 @@ LtMastOutletsDump ltMastOutletsDump1 = new LtMastOutletsDump();
 				ltMastOutletsDump1.setState(ltMastOutlets.getState());
 				ltMastOutletsDump1.setCity(ltMastOutlets.getCity());
 				ltMastOutletsDump1.setPin_code(ltMastOutlets.getPin_code());
-
+				ltMastOutletsDump1.setBeatId(ltMastOutlets.getBeatId());
+				
 				if (ltMastOutlets.getRegion() != null) {
 					ltMastOutletsDump1.setRegion(ltMastOutlets.getRegion());
 				}
@@ -326,14 +330,34 @@ LtMastOutletsDump ltMastOutletsDump1 = new LtMastOutletsDump();
 				ltMastOutletsDump1.setLastUpdateLogin(ltMastOutlets.getUserId());
 				ltMastOutletsDump1.setCreationDate(new Date());
 				ltMastOutletsDump1.setLastUpdateDate(new Date());
-
+				
 			
 			}else {
+				ltMastOutletsDump1.setDistributorId(ltMastOutlets.getDistributorId());
+				ltMastOutletsDump1.setOutletType(ltMastOutlets.getOutletType());
+				ltMastOutletsDump1.setOutletName(ltMastOutlets.getOutletName());
 				ltMastOutletsDump1.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
-				ltMastOutletsDump1.setStatus("PENDING_APPROVAL");
+				
+				ltMastOutletsDump1.setProprietorName(ltMastOutlets.getProprietorName());
+				ltMastOutletsDump1.setOutletChannel(ltMastOutlets.getOutletChannel());
+				ltMastOutletsDump1.setAddress1(ltMastOutlets.getAddress1());
+				ltMastOutletsDump1.setAddress2(ltMastOutlets.getAddress2());
+				ltMastOutletsDump1.setState(ltMastOutlets.getState());
+				ltMastOutletsDump1.setCity(ltMastOutlets.getCity());
+				ltMastOutletsDump1.setPin_code(ltMastOutlets.getPin_code());
+				ltMastOutletsDump1.setBeatId(ltMastOutlets.getBeatId());
+				ltMastOutletsDump1.setPriceList(ltMastOutlets.getPriceList());
+				
+				ltMastOutletsDump1.setOutletCode(ltMastOutlets.getOutletCode());
+				//ltMastOutletsDump1.setStatus("APPROVED");
+				//ltMastOutletsDump1.set
+				ltMastOutletsDump1.setStatus("APPROVED");
+				
+				ltMastOutletsDump1.setOrgId(ltMastOutlets.getOrgId());
 				ltMastOutletsDump1.setLastUpdatedBy(ltMastOutlets.getUserId());
 				ltMastOutletsDump1.setLastUpdateLogin(ltMastOutlets.getUserId());
 				ltMastOutletsDump1.setLastUpdateDate(new Date());
+				ltMastOutletsDump1.setOutletId(ltMastOutletsDump.getOutletId());
 			}}catch (Exception e) {
 			    // Log the exception or handle it accordingly
 			    e.printStackTrace();
@@ -465,13 +489,17 @@ try {
 		  LtMastOrganisations ltMastOrganisations =
 		  ltMastOutletDao.getOrganisationDetailsById(ltMastOutletsDump.getOrgId());
 		  System.out.println("ltMastOrganisations"+ltMastOrganisations);
-
+          
+		  Long id=1L;
+          Long storeId= ltMastOutletDao.getStoreIdFromBeat(ltMastOutletsDump.getBeatId());
+             storeId= storeId+id;
+             System.out.println("storeId Beat Sequence is --" + storeId);
 		  
 		  String url = "https://10.245.4.70:9014/siebel/v1.0/service/Siebel%20Outlet%20Integration/InsertOrUpdate?matchrequestformat=y";
          System.out.println("Url is---" + url);
 		  String method = "POST";
-          String contentType = "Content-Type: application/json";
-          String authorization = "Authorization: Basic TE9OQVJfVEVTVDpMb25hcjEyMw==";
+         // String contentType = "Content-Type: application/json";
+         // String authorization = "Authorization: Basic TE9OQVJfVEVTVDpMb25hcjEyMw==";
 
 		  
 		  JSONObject relatedOrganizationDetail = new JSONObject();
@@ -517,7 +545,11 @@ try {
 		  accounts.put("Name", ltMastOutletsDump.getOutletName());
 //		  accounts.put("Name", "Up South");
 //		  accounts.put("AT Territory","30801:AMDAVAD RURAl");
-		  accounts.put("Location", "Pimpri");
+//		  accounts.put("AT Territory", ltMastOutletsDump.getTerritory());
+		  accounts.put("Rule Attribute 1", ltMastOutletsDump.getBeatId());
+		  accounts.put("Store Size", storeId);
+//		  accounts.put("Location", "Pimpri");
+		  accounts.put("Location", ltMastOutletsDump.getProprietorName());
 		  accounts.put("ListOfBusiness Address", listOfBusinessAddress);
 		  accounts.put("ListOfRelated Organization", listOfRelatedOrganizations);
 		  
@@ -646,7 +678,7 @@ try {
         System.out.println("Final response = "+resCode+res);
         ltMastOutletsDump.setSiebelStatus(resCode);
         ltMastOutletsDump.setSiebelRemark(res);
-        
+        ltMastOutletsDump.setSiebelJsonpaylod(jsonPayload);
         
         ltMastOutletsDump.setStatus(ltMastOutletsDumps.getStatus());
 		ltMastOutletsDump.setLastUpdatedBy(ltMastOutletsDumps.getUserId());
@@ -878,5 +910,45 @@ try {
 		
 		return status;
 	}
+
+	@Override
+	public Status getAllStates() throws ServiceException, IOException {
+		Status status = new Status();
+		List<LtMastStates> list = ltMastOutletDao.getAllStates();
+		if (list != null) {
+			status.setCode(SUCCESS);
+			status.setMessage("RECORD FOUND SUCCESSFULLY");
+			status.setData(list);
+		} else {
+			status.setCode(FAIL);
+			status.setMessage("RECORD NOT FOUND");
+		}
+		return status;
+	}
+
+	
+	@Override
+	public Status getOutletById(String outletId) throws ServiceException, IOException {
+		
+			Status status = new Status();
+			try {
+			List<LtMastOutletsDump> list = ltMastOutletDao.getOutletById(outletId);
+			if (list != null) {
+				status.setCode(SUCCESS);
+				status.setMessage("RECORD FOUND SUCCESSFULLY");
+				status.setData(list);
+			} else {
+				status.setCode(FAIL);
+				status.setMessage("RECORD NOT FOUND");
+			}
+			
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+			return status;
+		}
+	
 	
 }

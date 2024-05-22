@@ -227,12 +227,13 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 	}
 	@Override
 	public Status dailySalesV2(String orgId, String userId) throws ServiceException {
+		Status status = new Status();
 		try {
 			List<DailySalesResponseDto> dailySalesList = dashboardDao.dailySalesV2(orgId,userId);
 			
 			//Long distId = dashboardDao.getDistributorIdByUserId(userId);
 			
-			Map<String,DailySalesResponseDto> dailySalesResponseDtoMap = new LinkedHashMap<String,DailySalesResponseDto>();
+/*			Map<String,DailySalesResponseDto> dailySalesResponseDtoMap = new LinkedHashMap<String,DailySalesResponseDto>();
 			LocalDate today = LocalDate.now();
 			int year = today.getYear();
 			int month = today.getMonthValue();
@@ -256,38 +257,42 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 			//Map<String,DailySalesResponseDto> dailySalesResponseMap = dashboardDao.getOrderAndLineCountDataV2(distId,userId,dailySalesResponseDtoMap);
 			
 			List<DailySalesResponseDto> dailySalesResponseDtoList= new ArrayList<DailySalesResponseDto>(dailySalesResponseDtoMap.values());
+	*/		
 			
-			Status status = new Status();
 			
-			if(!dailySalesResponseDtoList.isEmpty()) {
+			if(!dailySalesList.isEmpty()) {
 				status.setCode(SUCCESS);
 				status.setMessage("Success");
-				status.setData(dailySalesResponseDtoList);
+				status.setData(dailySalesList);
 			} else {
 				status.setCode(FAIL);
 				status.setMessage("FAIL");
-				status.setData(dailySalesResponseDtoList);
+				status.setData(dailySalesList);
 			}
 			return status;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null; 
+		return status; 
 	}
 	@Override
-	public Status monthlySalesV2(String orgId, String userId) throws ServiceException {
+	public List<MonthlyResponseDto> monthlySalesV2(String orgId, String userId) throws ServiceException {
+		Status status = new Status();
+		List<MonthlyResponseDto> monthlyResponseDtoList= new ArrayList <MonthlyResponseDto>();
 		try {
 			
 			List<MonthlyResponseDto> MonthlyResponseDtoList = dashboardDao.monthlySalesV2(orgId, userId);
-			
-			Map<String,MonthlyResponseDto> monthlyResponseDtoMap=new LinkedHashMap<String,MonthlyResponseDto>();
+			System.out.println("in service Impl =="+MonthlyResponseDtoList);
+/* comment on 20-May-24		Map<String,MonthlyResponseDto> monthlyResponseDtoMap=new LinkedHashMap<String,MonthlyResponseDto>();
 			
 			//Long distId = dashboardDao.getDistributorIdByUserId(userId);
 			String distId = dashboardDao.getDistributorIdByUserId(userId);
 			
 			for (int i = 11; i >= 0; i--) {
 				YearMonth date = YearMonth.now().minusMonths(i);
+//				System.out.println("in for loop date  == "+date);
 				String monthName = date.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH)+" "+date.getYear();
+//				System.out.println("in for loop monthName  == "+monthName);
 				MonthlyResponseDto monthlyResponseDto=new MonthlyResponseDto();
 				monthlyResponseDto.setMonth(monthName);
 				monthlyResponseDto.setMonthNo(String.valueOf(date.getMonthValue()));
@@ -305,22 +310,34 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 			}
 			Map<String,MonthlyResponseDto> monthlyResponseDto = dashboardDao.getCountDataForMonthlyDashboardV2(distId,userId,monthlyResponseDtoMap);
 			
-			List<MonthlyResponseDto> monthlyResponseDtoList= new ArrayList(monthlyResponseDto.values());
-			Status status = new Status();
-			if (!monthlyResponseDtoList.isEmpty()) {
+			List<MonthlyResponseDto> monthlyResponseDtoList1= new ArrayList<>(monthlyResponseDto.values());
+//			System.out.println("values = "+monthlyResponseDto.values());
+//			List<MonthlyResponseDto> monthlyResponseDtoList1= new ArrayList<>();
+//			System.out.println("List is "+monthlyResponseDtoList1);
+
+			//System.out.println("MonthlyResponseDtoList == "+MonthlyResponseDtoList);
+			//Status status = new Status();
+			  
+	 */
+			if (!MonthlyResponseDtoList.isEmpty()) {
+//				System.out.println("In if status");
+//				System.out.println("MonthlyResponseDtoList == "+MonthlyResponseDtoList);
+//				return monthlyResponseDtoList;
 				status.setCode(SUCCESS);
 				status.setMessage("Success");
 				status.setData(monthlyResponseDtoList);
-			} else {
+			} 
+			else {
+				//System.out.println("In else status");
 				status.setCode(FAIL);
 				status.setMessage("FAIL");
 				status.setData(monthlyResponseDtoList);
-			}
-			return status;
+			}//System.out.println("status1"+status);
+			return MonthlyResponseDtoList;
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		return null;
+		}//System.out.println("status"+status);
+		return monthlyResponseDtoList;
 
 	}
 	@Override
@@ -344,8 +361,8 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 				//if(distId != 0) {
 					OrderAndLineCountDto orderAndLineCountDto = dashboardDao.getCountDataForMonthlyDashboard(distId, String.format("%02d", date.getMonth().getValue()), userId);
 					monthlyResponseDto.setTotalEff(orderAndLineCountDto.getSalesPersonsCount());
-					monthlyResponseDto.setDbc(orderAndLineCountDto.getTotalOrderCount());
-					monthlyResponseDto.setTls(orderAndLineCountDto.getTotalLineItemCount());
+	monthlyResponseDto.setDbc(orderAndLineCountDto.getTotalOrderCount());
+	monthlyResponseDto.setTls(orderAndLineCountDto.getTotalLineItemCount());
 				//}
 			    monthlyResponseDtoMap.put(String.format("%02d", date.getMonth().getValue()), monthlyResponseDto);
 			}

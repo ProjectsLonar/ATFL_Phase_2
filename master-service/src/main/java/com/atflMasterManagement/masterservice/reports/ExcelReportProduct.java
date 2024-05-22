@@ -63,11 +63,14 @@ public class ExcelReportProduct {
 		styleTableRowRight.setBorderRight(BorderStyle.MEDIUM);
 		styleTableRowRight.setAlignment(HorizontalAlignment.RIGHT);
 		
+		System.out.println("productReportDataList123 = " + productReportDataList);
+		
 		for (Iterator iterator = productReportDataList.iterator(); iterator.hasNext();) {
 			ExcelDataProduct excelDataProduct = (ExcelDataProduct) iterator.next();
 			++rowIndex;
 			++srNo;
 			insertReportData(sheet, rowIndex, excelDataProduct, srNo,workbook,styleTableRow,styleTableRowRight);
+			System.out.println("excelDataProduct.getAmount()123 = " + excelDataProduct.getAmount());
 			totalRevenu = totalRevenu + excelDataProduct.getAmount();
 		}
 		++rowIndex;
@@ -271,7 +274,8 @@ public class ExcelReportProduct {
 		cell = row.createCell(4);
 		cell.setCellStyle(styleTableRowRight);
 		if (excelDataProduct.getPtrPrice() != null) {
-			cell.setCellValue(df.format(Double.parseDouble(excelDataProduct.getPtrPrice())));
+		//	cell.setCellValue(df.format(Double.parseDouble(excelDataProduct.getPtrPrice()))); original
+			cell.setCellValue(excelDataProduct.getPtrPrice());
 		}
 		cell = row.createCell(5);
 		cell.setCellStyle(styleTableRowRight);

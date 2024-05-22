@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -62,6 +63,19 @@ public class LtTemplateLines {
 	
 	@Column(name = "LAST_UPDATED_LOGIN")
 	String lastUpdatedLogin;
+
+	
+	@Transient
+	String listPrice;
+	
+	
+	public String getListPrice() {
+		return listPrice;
+	}
+
+	public void setListPrice(String listPrice) {
+		this.listPrice = listPrice;
+	}
 
 	public Long getTemplateLineId() {
 		return templateLineId;
@@ -182,7 +196,7 @@ public class LtTemplateLines {
 				+ ", productDescription=" + productDescription + ", ptrPrice=" + ptrPrice + ", quantity=" + quantity
 				+ ", availableQuantity=" + availableQuantity + ", creationDate=" + creationDate + ", createdBy="
 				+ createdBy + ", lastUpdatedDate=" + lastUpdatedDate + ", lastUpdatedBy=" + lastUpdatedBy
-				+ ", lastUpdatedLogin=" + lastUpdatedLogin + "]";
+				+ ", lastUpdatedLogin=" + lastUpdatedLogin + ", listPrice=" + listPrice + "]";
 	}
 	
 	

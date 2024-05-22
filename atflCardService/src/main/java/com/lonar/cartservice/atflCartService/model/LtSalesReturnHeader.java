@@ -69,6 +69,41 @@ public class LtSalesReturnHeader extends BaseClass {
 	@Transient
 	private String outletCode;
 	
+	@Column(name = "PRICE_LIST")
+	private String priceList;
+	
+	@Column(name = "TEST")
+	private String test;
+	
+	
+	@Column(name = "SIEBEL_JSONPAYLOAD")
+	private String siebelJsonpayload;
+	
+	
+	
+	public String getSiebelJsonpayload() {
+		return siebelJsonpayload;
+	}
+
+	public void setSiebelJsonpayload(String siebelJsonpayload) {
+		this.siebelJsonpayload = siebelJsonpayload;
+	}
+
+	public String getTest() {
+		return test;
+	}
+
+	public void setTest(String test) {
+		this.test = test;
+	}
+
+	public String getPriceList() {
+		return priceList;
+	}
+
+	public void setPriceList(String priceList) {
+		this.priceList = priceList;
+	}
 
 	public Long getSalesReturnHeaderId() {
 		return salesReturnHeaderId;
@@ -191,6 +226,7 @@ public class LtSalesReturnHeader extends BaseClass {
 		this.siebelRemark = siebelRemark;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "LtSalesReturnHeader [salesReturnHeaderId=" + salesReturnHeaderId + ", salesReturnNumber="
@@ -198,8 +234,10 @@ public class LtSalesReturnHeader extends BaseClass {
 				+ returnStatus + ", address=" + address + ", latitude=" + latitude + ", longitude=" + longitude
 				+ ", returnReason=" + returnReason + ", salesReturnDate=" + salesReturnDate + ", outletName="
 				+ outletName + ", beatName=" + beatName + ", siebelStatus=" + siebelStatus + ", siebelRemark="
-				+ siebelRemark + ", outletCode=" + outletCode + "]";
+				+ siebelRemark + ", outletCode=" + outletCode + ", priceList=" + priceList + ", test=" + test
+				+ ", siebelJsonpayload=" + siebelJsonpayload + "]";
 	}
+
 	
 	
 }

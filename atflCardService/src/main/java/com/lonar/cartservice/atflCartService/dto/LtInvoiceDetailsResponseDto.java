@@ -15,16 +15,25 @@ public class LtInvoiceDetailsResponseDto {
  private Long ptrPrice;
  private Long listPrice;
  private Long ptrBasePrice;
- private String invoiveNumber;
+ private String invoiceNumber;
  private Date invoiceDate;
  private String location;
  private Long totalAmount;
  private String priceListId;
  private String priceListName;
  private String beatName;
+  
+ private String inventoryId;
  
  
  
+ 
+public String getInventoryId() {
+	return inventoryId;
+}
+public void setInventoryId(String inventoryId) {
+	this.inventoryId = inventoryId;
+}
 public String getBeatName() {
 	return beatName;
 }
@@ -104,11 +113,11 @@ public Long getPtrBasePrice() {
 public void setPtrBasePrice(Long ptrBasePrice) {
 	this.ptrBasePrice = ptrBasePrice;
 }
-public String getInvoiveNumber() {
-	return invoiveNumber;
+public String getInvoiceNumber() {
+	return invoiceNumber;
 }
-public void setInvoiveNumber(String invoiveNumber) {
-	this.invoiveNumber = invoiveNumber;
+public void setInvoiceNumber(String invoiveNumber) {
+	this.invoiceNumber = invoiveNumber;
 }
 public Date getInvoiceDate() {
 	return invoiceDate;
@@ -144,15 +153,18 @@ public String getPriceListName() {
 public void setPriceListName(String priceListName) {
 	this.priceListName = priceListName;
 }
+
+
 @Override
 public String toString() {
 	return "LtInvoiceDetailsResponseDto [distributorName=" + distributorName + ", distributorCode=" + distributorCode
 			+ ", distributorId=" + distributorId + ", outletName=" + outletName + ", outletCode=" + outletCode
 			+ ", orderNumber=" + orderNumber + ", productCode=" + productCode + ", productName=" + productName
 			+ ", shippedQuantity=" + shippedQuantity + ", ptrPrice=" + ptrPrice + ", listPrice=" + listPrice
-			+ ", ptrBasePrice=" + ptrBasePrice + ", invoiveNumber=" + invoiveNumber + ", invoiceDate=" + invoiceDate
+			+ ", ptrBasePrice=" + ptrBasePrice + ", invoiceNumber=" + invoiceNumber + ", invoiceDate=" + invoiceDate
 			+ ", location=" + location + ", totalAmount=" + totalAmount + ", priceListId=" + priceListId
-			+ ", priceListName=" + priceListName + "]";
+			+ ", priceListName=" + priceListName + ", beatName=" + beatName + ", inventoryId=" + inventoryId + "]";
 }
+
 
 }

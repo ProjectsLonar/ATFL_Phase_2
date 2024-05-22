@@ -9,6 +9,16 @@ public class LtSalesReturnAvailability {
 	private String availabilityCode;
 	private String availability;
 	private String location;
+	
+	private String lotNumber;
+	
+		
+	public String getLotNumber() {
+		return lotNumber;
+	}
+	public void setLotNumber(String lotNumber) {
+		this.lotNumber = lotNumber;
+	}
 	public String getAvailabilityCode() {
 		return availabilityCode;
 	}
@@ -28,10 +38,13 @@ public class LtSalesReturnAvailability {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+	
+	
 	@Override
 	public String toString() {
 		return "LtSalesReturnAvailability [availabilityCode=" + availabilityCode + ", availability=" + availability
-				+ "]";
+				+ ", location=" + location + ", lotNumber=" + lotNumber + "]";
 	}
+	
 	
 }

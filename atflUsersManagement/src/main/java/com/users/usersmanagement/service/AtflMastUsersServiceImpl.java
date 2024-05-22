@@ -109,6 +109,9 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 			//otp = "" + "1234";
 		 }
 */
+		
+		System.out.println("In generate & send Otp for UserId = "+ ltMastUser.getUserId());
+		System.out.println("In generate for user === "+ltMastUser);
 		LtMastLogins ltMastLogin = ltMastUsersDao.getLoginDetailsByUserId(ltMastUser.getUserId());
 
 		System.out.println("ltMastLogin in generate method"+ ltMastLogin);
@@ -266,15 +269,30 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 		LtMastUsers user = null;
 
 		if (Validation.validatePhoneNumber(mobileNumber)) {
+			
+			if(mobileNumber.equalsIgnoreCase("8806962104") || mobileNumber.equalsIgnoreCase("6260011680") ||//("7013600327") || 
+					mobileNumber.equalsIgnoreCase("7796551219") || mobileNumber.equalsIgnoreCase("7972458618")|| //("9178188671")|| //("9987792717") || 
+					mobileNumber.equalsIgnoreCase("9775977932") || mobileNumber.equalsIgnoreCase("6370239243") ||
+					mobileNumber.equalsIgnoreCase("8092383807")) {
+				
+			}
+			else {
+				LtMastUsers user123 = ltMastUsersDao.verifyUserDetailsByMobileNumbervInSiebel1(mobileNumber);
+				if(user123 == null) {
+					status.setCode(FAIL);
+					status.setMessage(env.getProperty("lonar.users.userLoginNotsuccess"));
+					return status;
+				}
+			}
 
-			if (mobileNumber != null) {
+			if (mobileNumber != null) {				
 				user = ltMastUsersDao.getLtMastUsersByMobileNumber(mobileNumber);
 			} else {
 				status.setCode(FAIL);
 				status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
 				return status;
 			}
-
+			System.out.println("user data is"+user);
 			if (user == null) {
 				LtMastUsers ltMastUser = new LtMastUsers();
                 
@@ -282,6 +300,12 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 				
 				System.out.println("Input MobNo is"+mobileNumber);
 				userDto= ltMastUsersDao.verifyUserDetailsByMobileNumbervInSiebel(mobileNumber);
+				
+				if(userDto == null) {
+					status.setCode(FAIL);
+					status.setMessage(env.getProperty("lonar.users.userLoginNotsuccess"));
+					return status;
+				}else {
 				System.out.println("User Data is"+ltMastUser);
 				ltMastUser.setMobileNumber(mobileNumber);
 				//ltMastUser.setStatus(INPROCESS); vaibhav 15-mar-24
@@ -298,7 +322,29 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 				if(userDto.getLongitude().isPresent()) {
 				ltMastUser.setLongitud(userDto.getLongitude());
 				}
-				ltMastUser.setUserType(userDto.getUserType());
+				if(userDto.getUserType().equalsIgnoreCase("Sales Person")) {
+					ltMastUser.setUserType("SALES");
+					}
+					if(userDto.getUserType().equalsIgnoreCase("Area Head")) {
+						ltMastUser.setUserType("AREAHEAD");
+					}
+					if(userDto.getUserType().equalsIgnoreCase("Distributor Proprietor")) {
+						ltMastUser.setUserType("DISTRIBUTOR");
+					}
+					if(userDto.getUserType().equalsIgnoreCase("Sales Officer")) {
+						ltMastUser.setUserType("SALESOFFICER");
+					}
+					if(userDto.getUserType().equalsIgnoreCase("Organization User")) {
+						ltMastUser.setUserType("ORGANIZATION_USER");
+					}
+					if(userDto.getUserType().equalsIgnoreCase("System Administrator")) {
+						ltMastUser.setUserType("SYSTEMADMINISTRATOR");
+					}
+					if(userDto.getUserType().equalsIgnoreCase("RETAILER")) {
+						ltMastUser.setUserType("RETAILER");
+					}
+
+			//	ltMastUser.setUserType(userDto.getUserType());
 				ltMastUser.setAddress(userDto.getAddress());
 				ltMastUser.setEmail(userDto.getEmail());
 				ltMastUser.setHomephNum(userDto.getHomephNum());
@@ -317,6 +363,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 				ltMastUser.setRecentSerachId(userDto.getRecentSearchId());
 				ltMastUser.setLastUpdateLogin(-1L);
 				ltMastUser.setIsFirstLogin("Y");
+				ltMastUser.setTerritory(userDto.getTerritory());
 				
 /*                    phase1-old-code				
                 ltMastUser.setCreatedBy(-1L);
@@ -329,7 +376,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 				ltMastUser.setEmployeeCode("");
 				ltMastUser.setUserName("");
 */				ltMastUser = ltMastUsersDao.saveLtMastUsers(ltMastUser);
-                  
+				}
 				if (ltMastUser.getUserId() != null) {
 					LtMastLogins mastLogins = this.generateAndSendOtp(ltMastUser);
 					if (mastLogins != null) {

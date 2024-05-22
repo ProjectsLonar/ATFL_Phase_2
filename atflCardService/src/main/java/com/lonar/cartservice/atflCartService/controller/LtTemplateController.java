@@ -48,4 +48,21 @@ public class LtTemplateController implements CodeMaster {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 		}
 	}
+
+
+	@GetMapping(value = "/getTemplateAgainstDistributor/{distributorId}/{priceList}",produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getTemplateAgainstDistributor(@PathVariable String distributorId, 
+			@PathVariable String priceList) throws ServerException {
+		try {
+			
+			Status status = ltTemplateService.getTemplateAgainstDistributors(distributorId, priceList);
+			
+			return new ResponseEntity<Status>(status, HttpStatus.OK);
+		} catch (Exception e) {
+			//logger.error("Error Description :", e);
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+	}
+
+
 }

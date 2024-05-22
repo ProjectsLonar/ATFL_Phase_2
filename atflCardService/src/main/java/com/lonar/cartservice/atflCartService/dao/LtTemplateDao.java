@@ -21,8 +21,12 @@ public interface LtTemplateDao {
 	
 	LtTemplateLines saveLineData (LtTemplateLines ltTemplateLines)throws ServiceException;
 	
+	void deleteHeaderdetailsbytemplateid(String distributorId) throws ServiceException;
+
+	LtTemplateHeaders getTemplateAgainstDistributor12(String distributorId)throws ServiceException;
 	
-	
-	
+	List<LtTemplateLines> getProductDetailsAgainstheaderId(Long templateHeaderId, String priceList)throws ServerException;
+
+	LtTemplateHeaders getAllTemplateAgainstDistributors(String distId)throws ServerException;
 	
 }

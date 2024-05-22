@@ -106,7 +106,7 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			List<Long> userList = getUsersByDistributorId(userDetailsDto.getDistributorId());
 			query = env.getProperty("categoryRevenueDistributionForDistributor");
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "") + ") "
-					+ "group by lmpc.category_name,lmpc.category_id ";
+					+ "group by lmpc.category_name,lmpc.category_id,lsl.ptr_price,lsl.quantity  ";
 			
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 			
@@ -114,14 +114,14 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			List<String> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
 			query = env.getProperty("categoryRevenueDistributionForDistributor");
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "") + ") "
-					+ "group by lmpc.category_name,lmpc.category_id ";
+					+ "group by lmpc.category_name,lmpc.category_id, lsl.ptr_price,lsl.quantity  ";
 			
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 			
 			List<Long> userList = getUsersByMonthlySalesAH(userDetailsDto.getPositionId());
 			query = env.getProperty("categoryRevenueDistributionForDistributor");
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "") + ") "
-					+ "group by lmpc.category_name,lmpc.category_id ";
+					+ "group by lmpc.category_name,lmpc.category_id,lsl.ptr_price,lsl.quantity  ";
 			
 		}
 
@@ -238,10 +238,10 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			}
 			query = env.getProperty("monthlySalesForDistributorV2");
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-					+ ") group by to_char(lsh.last_update_date, 'DD-MON-YY')";
+					+ ") group by to_char(lsh.last_update_date, 'MON-YY')";
 					//+ "group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
 //					+ "group by  to_char(lsh.last_update_date at time zone 'IST', 'Mon YYYY') ";
-
+			System.out.println("monthly sales query = "+query);
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 
 //			List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
@@ -252,10 +252,10 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			query = env.getProperty("monthlySalesForDistributorV2");
 			
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-					+ ")group by to_char(lsh.last_update_date, 'DD-MON-YY')"; 
+					+ ")group by to_char(lsh.last_update_date, 'MON-YY')"; 
 					//+ "group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
 					//+ "group by  to_char(lsh.last_update_date at time zone 'IST', 'Mon YYYY') ";
-
+			System.out.println("monthly sales query = "+query);
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 
 			List<Long> userList = getUsersByMonthlySalesAH(userDetailsDto.getPositionId());
@@ -266,14 +266,16 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			query = env.getProperty("monthlySalesForDistributorV2");
 			
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-					+ ") group by to_char(lsh.last_update_date, 'DD-MON-YY')";
+					+ ") group by to_char(lsh.last_update_date, 'MON-YY')";
 					//+ "group by to_char(lsh.last_update_date, 'YYYY-MM-DD')";
 					//+ "group by  to_char(lsh.last_update_date at time zone 'IST', 'Mon YYYY') ";
-
+			System.out.println("monthly sales query = "+query);
 		}
 
 		List<MonthlyResponseDto> monthlySalesList = jdbcTemplate.query(query, new Object[] { },
 				new BeanPropertyRowMapper<MonthlyResponseDto>(MonthlyResponseDto.class));
+		System.out.println("monthly sales query = "+query);
+		System.out.println("monthlySalesList = "+monthlySalesList);
 		return monthlySalesList;
 	}
 
@@ -287,21 +289,26 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			query = env.getProperty("monthlySalesForDistributor");
 			query = query + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
 					+ ") order by lsh.header_id , lsh.last_update_date ";
+			System.out.println("monthly sales query = "+query);
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 			//List<Long> userList = getUsersBySalesOfficer(userId);
 			List<String> userList = getUsersBySalesOfficer(userId);
 			query = env.getProperty("monthlySalesForDistributor");
 			query = query + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
 					+ ") order by lsh.header_id , lsh.last_update_date ";
+			System.out.println("monthly sales query = "+query);
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 			List<Long> userList = getUsersByMonthlySalesAH(userDetailsDto.getPositionId());
 			query = env.getProperty("monthlySalesForDistributor");
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
 					+ ") order by lsh.header_id , lsh.last_update_date ";
+			System.out.println("monthly sales query = "+query);
 		}
 
 		List<DailyAndMonthlyDto> monthlySalesList = jdbcTemplate.query(query, new Object[] { orgId },
 				new BeanPropertyRowMapper<DailyAndMonthlyDto>(DailyAndMonthlyDto.class));
+		System.out.println("monthly sales query = "+query);
+		System.out.println("monthlySalesList is =="+monthlySalesList);
 		return monthlySalesList;
 	}
 
@@ -844,6 +851,7 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			List<MonthlyResponseDto> salesPersonCountList = jdbcTemplate.query(salesPersonsCountQuery,
 					new Object[] {},
 					new BeanPropertyRowMapper<MonthlyResponseDto>(MonthlyResponseDto.class));
+			System.out.println("query in count = "+salesPersonsCountQuery);
 			if (!salesPersonCountList.isEmpty()) {
 				for (MonthlyResponseDto monthlyResponseDto : salesPersonCountList) {
 					if (monthlyResponseDtoMap.containsKey(monthlyResponseDto.getMonth())) {
@@ -879,9 +887,9 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 				return null;
 			}
 			query = query + "and lmu.user_id in (" + userList.toString().replace("[", "").replace("]", "")
-					+ ") group by to_char(lsh.last_update_date, 'YYYY-MM-DD')  ";
-//					+ "group by to_char(lsh.last_update_date at time zone 'IST', 'Mon YYYY') ";
-
+//					+ ") group by to_char(lsh.last_update_date, 'YYYY-MM-DD')  ";
+					+ "group by to_char(lsh.last_update_date at time zone 'IST', 'Mon YYYY') ";
+			System.out.println("query in count = "+query);
 			List<MonthlyResponseDto> salesPersonCountList = jdbcTemplate.query(query,
 					new Object[] {},
 					new BeanPropertyRowMapper<MonthlyResponseDto>(MonthlyResponseDto.class));
@@ -923,13 +931,13 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			}
 			
 			salesPersonsCountQuery = salesPersonsCountQuery + "and lmu.user_id in (" + userList.toString().replace("[", "").replace("]", "")
-					+ ")group by to_char(lsh.last_update_date, 'YYYY-MM-DD') ";
-//					+ "group by to_char(lsh.last_update_date at time zone 'IST', 'Mon YYYY')";
+					//+ ")group by to_char(lsh.last_update_date, 'YYYY-MM-DD') ";
+					+ "group by to_char(lsh.last_update_date at time zone 'IST', 'Mon YYYY')";
 
 			List<MonthlyResponseDto> salesPersonCountList = jdbcTemplate.query(salesPersonsCountQuery,
 					new Object[] {},
 					new BeanPropertyRowMapper<MonthlyResponseDto>(MonthlyResponseDto.class));
-			
+			System.out.println("query in count = "+salesPersonsCountQuery);
 			
 			if (!salesPersonCountList.isEmpty()) {
 				for (MonthlyResponseDto monthlyResponseDto : salesPersonCountList) {
@@ -964,6 +972,7 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			List<MonthlyResponseDto> salesPersonCountList = jdbcTemplate.query(salesPersonsCountQuery,
 					new Object[] {distId},
 					new BeanPropertyRowMapper<MonthlyResponseDto>(MonthlyResponseDto.class));
+			System.out.println("query in count = "+salesPersonsCountQuery);
 			if (!salesPersonCountList.isEmpty()) {
 				for (MonthlyResponseDto monthlyResponseDto : salesPersonCountList) {
 					if (monthlyResponseDtoMap.containsKey(monthlyResponseDto.getMonth())) {
@@ -987,6 +996,8 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 //				}
 //			}
 		}
+		
+		System.out.println("values in count = "+monthlyResponseDtoMap);
 		return monthlyResponseDtoMap;
 	}
 }

@@ -44,7 +44,64 @@ public class SoLineDto {
 	private String priceListId;
 	private String headerPriceList;
 	
-		
+	
+	private Long headerId;
+	
+	private Long ptrBasePrice;
+	private String location;
+	private String inventoryId;
+	private String shippedQuantity;
+	private Long returnQuantity;
+	
+	
+	public Long getReturnQuantity() {
+		return returnQuantity;
+	}
+
+	public void setReturnQuantity(Long returnQuantity) {
+		this.returnQuantity = returnQuantity;
+	}
+
+	public String getShippedQuantity() {
+		return shippedQuantity;
+	}
+
+	public void setShippedQuantity(String shippedQuantity) {
+		this.shippedQuantity = shippedQuantity;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getInventoryId() {
+		return inventoryId;
+	}
+
+	public void setInventoryId(String inventoryId) {
+		this.inventoryId = inventoryId;
+	}
+
+	public Long getPtrBasePrice() {
+		return ptrBasePrice;
+	}
+
+	public void setPtrBasePrice(Long ptrBasePrice) {
+		this.ptrBasePrice = ptrBasePrice;
+	}
+
+	public Long getHeaderId() {
+		return headerId;
+	}
+
+	public void setHeaderId(Long headerId) {
+		this.headerId = headerId;
+	}
+
 	public String getHeaderPriceList() {
 		return headerPriceList;
 	}
@@ -310,6 +367,7 @@ public class SoLineDto {
 		this.inventoryQuantity = inventoryQuantity;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "SoLineDto [lineId=" + lineId + ", productId=" + productId + ", quantity=" + quantity + ", productCode="
@@ -322,8 +380,10 @@ public class SoLineDto {
 				+ secondaryUomValue + ", unitsPerCase=" + unitsPerCase + ", segment=" + segment + ", brand=" + brand
 				+ ", subBrand=" + subBrand + ", casePack=" + casePack + ", hsnCode=" + hsnCode + ", productImage="
 				+ productImage + ", thumbnailImage=" + thumbnailImage + ", eimStatus=" + eimStatus + ", priceListId="
-				+ priceListId + ", headerPriceList=" + headerPriceList + "]";
+				+ priceListId + ", headerPriceList=" + headerPriceList + ", headerId=" + headerId + ", ptrBasePrice="
+				+ ptrBasePrice + ", location=" + location + ", inventoryId=" + inventoryId + ", shippedQuantity="
+				+ shippedQuantity + ", returnQuantity=" + returnQuantity + "]";
 	}
-	
 
+	
 }

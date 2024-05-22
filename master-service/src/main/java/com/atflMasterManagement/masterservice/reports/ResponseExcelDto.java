@@ -10,7 +10,7 @@ public class ResponseExcelDto {
 	private String distributorId;
 	private String distributorName;
 	private String distributorCode;
-	private Long employeeId;
+	private String employeeId;
 	private String firstName;
 	private String lastName;
 	private String employeeCode;
@@ -26,6 +26,23 @@ public class ResponseExcelDto {
 	private String categoryName;
 	private String categoryDesc;
 	
+	private Long rnum;
+	private Long employeeId1;
+	
+	
+	
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+	public Long getRnum() {
+		return rnum;
+	}
+	public void setRnum(Long rnum) {
+		this.rnum = rnum;
+	}
 	public String getRegion() {
 		return region;
 	}
@@ -51,11 +68,11 @@ public class ResponseExcelDto {
 		this.distributorCode = distributorCode;
 	}
 	
-	public Long getEmployeeId() {
-		return employeeId;
+	public Long getEmployeeId1() {
+		return employeeId1;
 	}
-	public void setEmployeeId(Long employeeId) {
-		this.employeeId = employeeId;
+	public void setEmployeeId1(Long employeeId1) {
+		this.employeeId1 = employeeId1;
 	}
 	public String getFirstName() {
 		return firstName;
@@ -141,5 +158,20 @@ public class ResponseExcelDto {
 	public void setCategoryDesc(String categoryDesc) {
 		this.categoryDesc = categoryDesc;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return "ResponseExcelDto [region=" + region + ", distributorId=" + distributorId + ", distributorName="
+				+ distributorName + ", distributorCode=" + distributorCode + ", employeeId=" + employeeId
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", employeeCode=" + employeeCode
+				+ ", productId=" + productId + ", productCode=" + productCode + ", productName=" + productName
+				+ ", outletId=" + outletId + ", outletCode=" + outletCode + ", outletName=" + outletName + ", status="
+				+ status + ", categoryId=" + categoryId + ", categoryCode=" + categoryCode + ", categoryName="
+				+ categoryName + ", categoryDesc=" + categoryDesc + ", rnum=" + rnum + ", employeeId1=" + employeeId1
+				+ "]";
+	}
+	
 		
+	
 }

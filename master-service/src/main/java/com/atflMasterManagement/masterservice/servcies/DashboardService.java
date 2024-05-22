@@ -2,6 +2,8 @@ package com.atflMasterManagement.masterservice.servcies;
 
 import com.atflMasterManagement.masterservice.common.ServiceException;
 import com.atflMasterManagement.masterservice.model.Status;
+import com.atflMasterManagement.masterservice.dto.MonthlyResponseDto;
+import java.util.List;
 
 public interface DashboardService {
 
@@ -17,7 +19,7 @@ public interface DashboardService {
 
 	Status monthlySales(String orgId, String userId) throws ServiceException;
 	
-	Status monthlySalesV2(String orgId, String userId) throws ServiceException;
+	List<MonthlyResponseDto> monthlySalesV2(String orgId, String userId) throws ServiceException;
 	
 	Status dailySalesExcel(String orgId, String userId) throws ServiceException;
 

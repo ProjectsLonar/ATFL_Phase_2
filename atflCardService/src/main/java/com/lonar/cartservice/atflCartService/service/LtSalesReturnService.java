@@ -22,4 +22,12 @@ public interface LtSalesReturnService {
 
 	Status getInvoicePdfAgainstInvoiceNumber(RequestDto requestDto)throws ServerException;
 
+	Status getLotNumber(String prodId, String inventId)throws ServerException;
+
+	Status getSalesReturnForPendingAprroval(RequestDto requestDto)throws ServerException;
+	
+	StringBuilder getInvoicePdfAgainstInvoiceNumber1(RequestDto requestDto)throws ServerException;
+
+	Status getSalesReturnOrderAgainstReturnOrderNo(String returnOrderNo)throws ServerException;
+
 }

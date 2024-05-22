@@ -88,5 +88,26 @@ public class LtMastDistributorsController implements CodeMaster {
 		}
 }
 	
+
+	@RequestMapping(value="getUserDataByIdForValidation/{userId}", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getUserDataByIdForValidation(@PathVariable("userId")Long userId) throws ServerException{
+		try {
+			return new ResponseEntity<Status>(ltMastDistributorsService.getUserDataByIdForValidation(userId),HttpStatus.OK);
+		}catch(Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}			
+	}
+	
+	@RequestMapping(value="saveSeibelUserData/{userId}", method = RequestMethod.POST, produces= MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> saveSeibelUserData(@PathVariable("userId")Long userId) throws ServerException{
+		try {
+			return new ResponseEntity<Status>(ltMastDistributorsService.saveSeibelUserData(userId),HttpStatus.OK);
+		}catch(Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+		
+		
+	}
+	
 	
 }

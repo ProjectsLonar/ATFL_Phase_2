@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import com.atflMasterManagement.masterservice.common.ServiceException;
 import com.atflMasterManagement.masterservice.dto.ProductDto;
+import com.atflMasterManagement.masterservice.dto.TlEtlDto;
 import com.atflMasterManagement.masterservice.model.CodeMaster;
 //import com.atflMasterManagement.masterservice.model.LtMastProducts;
 import com.atflMasterManagement.masterservice.model.LtMastProducts;
@@ -200,6 +201,7 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	@Override
 	public List<ProductDto> getInStockProductAdmin(RequestDto requestDto) throws ServiceException, IOException {
 		try {
+			System.out.print("In dao getInStockProduct");
 			String query = env.getProperty("getInStockProductAdmin");
 			
 			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
@@ -286,6 +288,7 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	@Override
 	public List<ProductDto> getInStockProductWithInventory(RequestDto requestDto) throws ServiceException, IOException {
 		try {
+			System.out.print("In daoooo getInStockProduct");
 			String query = env.getProperty("getInStockProductWithInventory");
 			
 			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
@@ -306,7 +309,7 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 					new Object[] { requestDto.getOrgId(), requestDto.getProductId(), requestDto.getCategoryId(),
 							searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
 					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
-			
+			System.out.println("products dao is ======" +productsList);
 //			 return jdbcTemplate.query(query,new Object[] { requestDto.getOrgId(), requestDto.getProductId(), 
 //					 requestDto.getCategoryId(),searchField,requestDto.getOutletId(), requestDto.getLimit(), 
 //					 requestDto.getOffset()},
@@ -330,6 +333,7 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 					
 			if (!productsList.isEmpty()) {				return productsList;
 			}
+			System.out.println("products List is ======" +productsList);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -389,6 +393,62 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 		Long count = getJdbcTemplate().queryForObject(query, new Object[] { requestDto.getOrgId(), requestDto.getProductId(), requestDto.getCategoryId(),
 				searchField,requestDto.getOutletId() }, Long.class);
 		return count;
+	}
+
+	@Override
+	public List<ProductDto> getMultipleMrpForProduct(String distId, String outId, String prodId, String priceList)
+			throws ServiceException, IOException {
+		try{
+			String query = env.getProperty("getMultipleMrpForProduct");
+		    List<ProductDto> productList = jdbcTemplate.query(query,new Object[] { distId, outId, prodId, priceList },
+				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+		   if(productList!= null) 
+		    {
+			  return productList;
+		    }
+		}catch (Exception e) 
+		    {
+			  e.printStackTrace();
+		    }
+		return null;
+		
+	}
+
+	@Override
+	public List<TlEtlDto> getTlForProductDescription(String priceList, String productId)
+			throws ServiceException, IOException {
+		   
+		List<TlEtlDto> tlList = new ArrayList<TlEtlDto>();		
+		try {
+			String query = env.getProperty("getTlForProductDescription");
+			
+			tlList = jdbcTemplate.query(query, new Object[] {priceList,productId},
+					new BeanPropertyRowMapper<TlEtlDto>(TlEtlDto.class));
+			if(!tlList.isEmpty()) {
+				return tlList;
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}return tlList;
+	}
+
+	@Override
+	public List<TlEtlDto> getEtlForProductDescription(String priceList, String productId)
+			throws ServiceException, IOException {
+		List<TlEtlDto> etlList = new ArrayList<TlEtlDto>();		
+		try {
+			String query = env.getProperty("getEtlForProductDescription");
+			
+			etlList = jdbcTemplate.query(query, new Object[] {priceList,productId},
+					new BeanPropertyRowMapper<TlEtlDto>(TlEtlDto.class));
+			if(!etlList.isEmpty()) {
+				return etlList;
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}return etlList;
 	}
 
 	

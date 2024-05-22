@@ -48,6 +48,8 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 
 	@Override
 	public LtMastUsers getLtMastUsersByMobileNumber(String mobileNumber) throws ServiceException {
+		
+		
 		String query = env.getProperty("getLtMastUsersByMobileNumber");
 		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { mobileNumber.trim() },
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
@@ -56,6 +58,7 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 		else
 			return list.get(0);
 	}
+		
 
 	@Override
 	public LtMastUsers saveLtMastUsers(LtMastUsers ltMastUser) throws ServiceException {
@@ -270,4 +273,38 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 			return null;
 		}
 	}
+
+	@Override
+	public LtMastUsers getSiebelUsersByMobileNumber(String mobileNumber) throws ServiceException {
+		String query = env.getProperty("getSiebelUsersByMobileNumber");
+		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { mobileNumber.trim() },
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		if (list.isEmpty())
+			return null;
+		else
+			return list.get(0);
+	}
+	
+	@Override
+	public LtMastUsers verifyUserDetailsByMobileNumbervInSiebel1(String mobileNumber) throws ServiceException {
+		try {
+		String query = env.getProperty("verifyUserDetailsByMobileNumbervInSiebel");
+//		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { mobileNumber, mobileNumber,mobileNumber },
+//				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+//		
+		System.out.println("Input Dao MobNo is"+mobileNumber);
+		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] {mobileNumber},
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		System.out.println("User list is"+list);
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+		return list.get(0);
+	}
+		catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 }

@@ -41,4 +41,8 @@ public interface LtMastOutletService {
 	Status getOutletagainstBeat(BeatDetailsDto beatDetailsDto) throws ServiceException, IOException;
 	
 	Status getOutletAgainstBeat(BeatDetailsDto beatDetailsDto) throws ServerException;
+	
+	Status getAllStates() throws ServiceException, IOException;
+	
+	Status getOutletById(String outletId )throws ServiceException, IOException;
 }

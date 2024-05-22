@@ -101,4 +101,23 @@ String defaultoffset = env.getProperty("offset_value");
 		else
 			return null;
 	}
+
+	@Override
+	public void deletePromotionData(Long pramotionId) throws ServiceException {
+		// TODO Auto-generated method stub
+		String query = env.getProperty("deletePromotionDatabyId");
+		Object[] person = new Object[] { pramotionId };
+		jdbcTemplate.update(query, person);
+	}
+
+	@Override
+	public LtPromotion getPromotionData(Long pramotionId) throws ServiceException {
+		String query = env.getProperty("getPromotionDataById");
+		LtPromotion ltPromotion = jdbcTemplate.queryForObject(query, new Object[] { pramotionId },
+				new BeanPropertyRowMapper<LtPromotion>(LtPromotion.class));
+		if (ltPromotion!= null)
+			return ltPromotion;
+		else
+			return null;
+	}
 }

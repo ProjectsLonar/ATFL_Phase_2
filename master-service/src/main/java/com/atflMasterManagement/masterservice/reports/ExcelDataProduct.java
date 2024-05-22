@@ -65,4 +65,12 @@ public class ExcelDataProduct {
 		this.listPrice = listPrice;
 	}
 
+	@Override
+	public String toString() {
+		return "ExcelDataProduct [srNo=" + srNo + ", amount=" + amount + ", productName=" + productName
+				+ ", productCode=" + productCode + ", quantity=" + quantity + ", ptrPrice=" + ptrPrice + ", listPrice="
+				+ listPrice + "]";
+	}
+	
+
 }

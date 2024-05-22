@@ -8,6 +8,35 @@ public class MonthlyResponseDto {
 	private String dbc = "0";
 	private String tls = "0";
 
+/*	private Long sale =0L;
+	private Long dbc =0L;
+	private Long tls =0L;
+	
+	
+	public Long getSale() {
+		return sale;
+	}
+
+	public void setSale(Long sale) {
+		this.sale = sale;
+	}
+
+	public Long getDbc() {
+		return dbc;
+	}
+
+	public void setDbc(Long dbc) {
+		this.dbc = dbc;
+	}
+
+	public Long getTls() {
+		return tls;
+	}
+
+	public void setTls(Long tls) {
+		this.tls = tls;
+	}
+*/
 	public String getMonth() {
 		return month;
 	}
@@ -40,6 +69,8 @@ public class MonthlyResponseDto {
 		this.totalEff = totalEff;
 	}
 
+	
+
 	public String getDbc() {
 		return dbc;
 	}
@@ -56,4 +87,11 @@ public class MonthlyResponseDto {
 		this.tls = tls;
 	}
 
+	@Override
+	public String toString() {
+		return "MonthlyResponseDto [monthNo=" + monthNo + ", month=" + month + ", sale=" + sale + ", totalEff="
+				+ totalEff + ", dbc=" + dbc + ", tls=" + tls + "]";
+	}
+
+		
 }

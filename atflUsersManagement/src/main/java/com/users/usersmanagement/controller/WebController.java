@@ -111,14 +111,14 @@ public class WebController {
 		}
 		JSONObject notification = new JSONObject();
 		notification.put("title", "Pending activation");
-		notification.put("body", "A new retailer, "+pendingOutletName+" "+pendingOutletType + " has created a new profile and is pending activation. Please Activate" );
+		notification.put("body", "A new retailer, "+pendingOutletName+" "+pendingOutletType + " has created a new profile and is pending for activation. Please Activate" );
 		
 		JSONObject data = new JSONObject();
 		data.put("objectType", "retailer");
 		data.put("userId",  ltMastOutletsDump.getUserId()); 
-		//data.put("outletName",  ltMastOutletsDump.getOutletName());
+		data.put("outletName",  ltMastOutletsDump.getOutletName());
 		//data.put("outletType",  ltMastOutletsDump.getOutletType());
-		//data.put("outletId",  ltMastOutletsDump.getOutletId());
+		data.put("outletId",  ltMastOutletsDump.getOutletId());
 		data.put("click_action",  "FLUTTER_NOTIFICATION_CLICK");  
 		
 		body.put("notification", notification);

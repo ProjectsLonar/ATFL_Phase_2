@@ -2,6 +2,7 @@ package com.users.usersmanagement.dao;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.*;
 
 import javax.sql.DataSource;
 
@@ -14,8 +15,12 @@ import org.springframework.stereotype.Repository;
 
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.model.LtMastDistributors;
+import com.users.usersmanagement.model.LtMastUsers;
 import com.users.usersmanagement.model.NotificationDetails;
 import com.users.usersmanagement.model.RequestDto;
+import com.users.usersmanagement.model.SiebelDto;
+import com.users.usersmanagement.model.UserDto;
+import com.users.usersmanagement.model.LtTemplateHeader;
 import com.users.usersmanagement.repository.LtMastDistributorsRepository;
 
 @Repository
@@ -91,13 +96,15 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
-		System.out.println("requestDto" + requestDto);
+		System.out.println("requestDto in area head == " + requestDto);
 		
 		
 		String query = env.getProperty("getAllDistributorAgainstAreahead");
 		List<LtMastDistributors> ltMastDistributorsList = jdbcTemplate.query(query,
 				new Object[] {requestDto.getUserName(),searchField,requestDto.getLimit(),requestDto.getOffset() },
 				new BeanPropertyRowMapper<LtMastDistributors>(LtMastDistributors.class));
+		System.out.println("areahead == "+query);
+		System.out.println("ltMastDistributorsList result =="+ltMastDistributorsList);
 		if (!ltMastDistributorsList.isEmpty()) {
 			return ltMastDistributorsList;
 		}
@@ -129,4 +136,86 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 		}
 		return null;
 	}
+
+	@Override
+	public SiebelDto getUserDataByIdForValidation(Long userId) throws ServiceException {
+		try{
+			String query= env.getProperty("getUserDataByIdForValidation");
+		System.out.println(query); System.out.println(userId);
+		List<SiebelDto> siebelUserDataList= jdbcTemplate.query(query, new Object[] {userId}, 
+				new BeanPropertyRowMapper<SiebelDto>(SiebelDto.class));
+		System.out.println("query =" +query);
+		System.out.println("userData =" +siebelUserDataList);
+		if(!siebelUserDataList.isEmpty()) {
+			return siebelUserDataList.get(0);
+		}
+		return null;
+	}
+	catch(Exception e) {
+		e.printStackTrace();
+		return null;
+	}	
+	
+ }
+
+	@Override
+	public String getUserTypeByUserId(Long userId) throws ServiceException {
+		
+		String query = env.getProperty("getUserTypeByUserId");
+		String userType = jdbcTemplate.queryForObject(query, new Object[] {userId}, String.class);
+		return userType;
+	}
+
+	@Override
+	public List<LtMastDistributors> getAllDistributorAgainstSystemAdmin(RequestDto requestDto) throws ServiceException {
+		
+		List<LtMastDistributors> ltMastDistributorsList = new ArrayList<LtMastDistributors>();
+		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+		
+		if(requestDto.getOffset() == 0) {
+			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
+
+		String searchField = null;
+		if (requestDto.getSearchField() != null) {
+			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+		}
+		System.out.println("requestDto \n" + requestDto);
+		
+		
+		String query = env.getProperty("getAllDistributorAgainstSystemAdmin");
+		 ltMastDistributorsList = jdbcTemplate.query(query,
+				new Object[] {requestDto.getUserName(),searchField,requestDto.getLimit(),requestDto.getOffset() },
+				new BeanPropertyRowMapper<LtMastDistributors>(LtMastDistributors.class));
+		 System.out.println("ltMastDistributorsList \n" + ltMastDistributorsList);
+		// if (!ltMastDistributorsList.isEmpty()) {
+		//	return ltMastDistributorsList;
+		//} 
+		
+		String dist = "ALL";
+		String query1 = env.getProperty("getTemplateForAllDistributor");
+		List<LtMastDistributors> ltAllList = jdbcTemplate.query(query1,
+				new Object[] {dist, requestDto.getLimit(),requestDto.getOffset()},
+				new BeanPropertyRowMapper<LtMastDistributors>(LtMastDistributors.class));
+		System.out.println("ltAllList \n" + ltAllList);
+		if (!ltAllList.isEmpty()) {
+			ltMastDistributorsList.addAll(0,ltAllList);
+			return ltMastDistributorsList;
+			
+		 } 
+		 
+		System.out.println("Newwww ltMastDistributorsList" + ltMastDistributorsList);
+		return null;
+
+	}
+
+//	@Override
+//	public LtMastUsers saveSeibelUserData(LtMastUsers user, Long userId) throws ServiceException {
+//		String query =  env.getProperty("updateSeibelUserData");
+//		//Object value = new Object[] {outletSeq, distCode, beatName, outletCode};
+//		this.jdbcTemplate.update(query,user.getOutletId(),user.getRecentSearchId(),,,,,userId);
+//		//return null;
+//	}
 }

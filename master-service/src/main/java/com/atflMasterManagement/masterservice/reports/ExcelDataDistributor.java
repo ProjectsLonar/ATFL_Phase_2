@@ -84,4 +84,14 @@ public class ExcelDataDistributor {
 		this.distributorCrmCode = distributorCrmCode;
 	}
 
+	
+	@Override
+	public String toString() {
+		return "ExcelDataDistributor [distributorName=" + distributorName + ", distributorCode=" + distributorCode
+				+ ", distributorCrmCode=" + distributorCrmCode + ", categoryName=" + categoryName + ", categoryCode="
+				+ categoryCode + ", ptrPrice=" + ptrPrice + ", quantity=" + quantity + ", amount=" + amount
+				+ ", listPrice=" + listPrice + "]";
+	}
+
+	
 }

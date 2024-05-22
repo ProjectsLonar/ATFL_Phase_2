@@ -119,4 +119,48 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 	public LtTemplateLines saveLineData (LtTemplateLines ltTemplateLines)throws ServiceException{
 		return ltTemplateLinesRepository.save(ltTemplateLines);
 	}
+	
+	@Override
+	@Transactional
+	public void deleteHeaderdetailsbytemplateid(String distributorId) throws ServiceException {
+		String query = env.getProperty("deleteHeaderdetailsbytemplateid");
+		Object[] person = new Object[] { distributorId };
+		jdbcTemplate.update(query, person);
+	}
+	@Override
+	public LtTemplateHeaders getTemplateAgainstDistributor12(String distributorId) throws ServiceException {
+		String query = env.getProperty("getTemplateAgainstDistributor12");
+		List<LtTemplateHeaders> templateHeadersList = jdbcTemplate.query(query,
+				new Object[] {distributorId},
+				new BeanPropertyRowMapper<LtTemplateHeaders>(LtTemplateHeaders.class));
+		System.out.println("Hi I'm in query error..... "+templateHeadersList);
+		if (templateHeadersList.size()>0) {
+			return templateHeadersList.get(0);
+		}
+		return null;
+	}
+	
+	@Override
+	public List<LtTemplateLines> getProductDetailsAgainstheaderId(Long templateHeaderId, String priceList)throws ServerException{
+		String query = env.getProperty("getProductDetailsAgainstheaderId1");
+		List<LtTemplateLines> templateproductlist = jdbcTemplate.query(query,
+				new Object[] {templateHeaderId, priceList},
+				new BeanPropertyRowMapper<LtTemplateLines>(LtTemplateLines.class));
+		if (!templateproductlist.isEmpty()) {
+			return templateproductlist;
+		}
+		return null;
+	}
+	@Override
+	public LtTemplateHeaders getAllTemplateAgainstDistributors(String distId) throws ServerException {
+		String query = env.getProperty("getTemplateAgainstDistributors");
+		List<LtTemplateHeaders> templateHeadersList = jdbcTemplate.query(query, new Object[] {distId},
+				new BeanPropertyRowMapper<LtTemplateHeaders>(LtTemplateHeaders.class));
+		System.out.println("All tempalte query"+query);
+		System.out.println("All Template HeadersList =="+templateHeadersList);
+		if(!templateHeadersList.isEmpty()) {
+			return templateHeadersList.get(0);
+		}
+		return null;
+	}
 }

@@ -4,8 +4,11 @@ import java.util.List;
 
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.model.LtMastDistributors;
+import com.users.usersmanagement.model.LtMastUsers;
 import com.users.usersmanagement.model.NotificationDetails;
 import com.users.usersmanagement.model.RequestDto;
+import com.users.usersmanagement.model.UserDto;
+import com.users.usersmanagement.model.SiebelDto;
 
 public interface LtMastDistributorsDao {
 
@@ -19,5 +22,17 @@ public interface LtMastDistributorsDao {
 	
 	List<LtMastDistributors> getAllDistributorAgainstAreahead(RequestDto requestDto)throws ServiceException;
 	
-	List<NotificationDetails> getAllNotification(RequestDto requestDto) throws ServiceException; 
+	List<NotificationDetails> getAllNotification(RequestDto requestDto) throws ServiceException;
+
+	SiebelDto getUserDataByIdForValidation(Long userId)throws ServiceException;
+
+	String getUserTypeByUserId(Long userId)throws ServiceException;
+
+	List<LtMastDistributors> getAllDistributorAgainstSystemAdmin(RequestDto requestDto)throws ServiceException;
+
+	//LtMastUsers saveSeibelUserData(LtMastUsers user, Long userId)throws ServiceException;
+
+	
+
+	
 }

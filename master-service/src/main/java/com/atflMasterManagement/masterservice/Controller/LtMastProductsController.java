@@ -1,11 +1,13 @@
 package com.atflMasterManagement.masterservice.Controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,6 +58,8 @@ public class LtMastProductsController implements CodeMaster {
 	@RequestMapping(value = "/getInStockProduct", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> getInStockProduct(@RequestBody RequestDto requestDto) {
 		try {
+			
+			System.out.print("In Controller getInStockProduct");
 			return new ResponseEntity<Status>(ltMastProductService.getInStockProduct(requestDto), HttpStatus.OK);
 		} catch (Exception e) {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
@@ -71,4 +75,33 @@ public class LtMastProductsController implements CodeMaster {
 		}
 	}
 	
+	@RequestMapping(value = "/getMultipleMrpForProduct/{distId}/{outId}/{prodId}/{priceList}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getMultipleMrpForProduct(@PathVariable("distId") String distId, 
+			@PathVariable("outId") String outId, @PathVariable("prodId") String prodId, @PathVariable("priceList") String priceList) throws ServiceException, FileNotFoundException, IOException 
+	{
+		return new ResponseEntity<Status>(ltMastProductService.getMultipleMrpForProduct(distId, outId, prodId, priceList), HttpStatus.OK);	
+	}
+	
+	@RequestMapping(value= "/getTlForProductDescription/{priceList}/{productId}", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0")
+      public ResponseEntity<Status>  getTlForProductDescription(@PathVariable("priceList") String priceList, 
+    		                                                    @PathVariable("productId") String productId) throws ServiceException, IOException{	
+	    try {
+		       return new ResponseEntity<Status>(ltMastProductService.getTlForProductDescription(priceList,productId), HttpStatus.OK);
+	        }
+	    catch(Exception e) {
+	    	throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+	        }
+	    }
+	
+	@RequestMapping(value= "/getEtlForProductDescription/{priceList}/{productId}", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0")
+    public ResponseEntity<Status>  getEtlForProductDescription(@PathVariable("priceList") String priceList, 
+  		                                                    @PathVariable("productId") String productId) throws ServiceException, IOException{	
+	    try {
+		       return new ResponseEntity<Status>(ltMastProductService.getEtlForProductDescription(priceList,productId), HttpStatus.OK);
+	        }
+	    catch(Exception e) {
+	    	throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+	        }
+	    }
 }
+ 

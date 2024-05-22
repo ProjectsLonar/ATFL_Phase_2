@@ -3,6 +3,9 @@ package com.atflMasterManagement.masterservice.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+//import oracle.sql.DATE;
+import java.util.Date;
+
 @JsonInclude(Include.NON_NULL)
 public class ProductDto {
 	
@@ -61,7 +64,72 @@ public class ProductDto {
 		
 	private String prodShortDesc;
 	
+	private String inventoryName;
+	private String inventoryId;
+	private String outletCode;
+	private String outletName;
+	private String distributorName;
+	private String lotNumber;
+	private Date lotMaufacturingDate;
+	private String distributorCode;
+	private double MRP; 
 	
+		
+	
+	public String getInventoryId() {
+		return inventoryId;
+	}
+	public void setInventoryId(String inventoryId) {
+		this.inventoryId = inventoryId;
+	}
+	public String getLotNumber() {
+		return lotNumber;
+	}
+	public void setLotNumber(String lotNumber) {
+		this.lotNumber = lotNumber;
+	}
+	public Date getLotMaufacturingDate() {
+		return lotMaufacturingDate;
+	}
+	public void setLotMaufacturingDate(Date lotMaufacturingDate) {
+		this.lotMaufacturingDate = lotMaufacturingDate;
+	}
+	public double getMRP() {
+		return MRP;
+	}
+	public void setMRP(double mRP) {
+		MRP = mRP;
+	}
+	public String getInventoryName() {
+		return inventoryName;
+	}
+	public void setInventoryName(String inventoryName) {
+		this.inventoryName = inventoryName;
+	}
+	public String getOutletCode() {
+		return outletCode;
+	}
+	public void setOutletCode(String outletCode) {
+		this.outletCode = outletCode;
+	}
+	public String getOutletName() {
+		return outletName;
+	}
+	public void setOutletName(String outletName) {
+		this.outletName = outletName;
+	}
+	public String getDistributorName() {
+		return distributorName;
+	}
+	public void setDistributorName(String distributorName) {
+		this.distributorName = distributorName;
+	}
+	public String getDistributorCode() {
+		return distributorCode;
+	}
+	public void setDistributorCode(String distributorCode) {
+		this.distributorCode = distributorCode;
+	}
 	public String getProdShortDesc() {
 		return prodShortDesc;
 	}
@@ -377,9 +445,11 @@ public class ProductDto {
 				+ ", inventoryCode=" + inventoryCode + ", outletId=" + outletId + ", subcategory=" + subcategory
 				+ ", unitPerCase=" + unitPerCase + ", orderable=" + orderable + ", categoryId1=" + categoryId1
 				+ ", orgId1=" + orgId1 + ", locationName=" + locationName + ", distributorId=" + distributorId
-				+ ", prodShortDesc=" + prodShortDesc + "]";
-	}
+				+ ", prodShortDesc=" + prodShortDesc + ", inventoryName=" + inventoryName + ", inventoryId="
+				+ inventoryId + ", outletCode=" + outletCode + ", outletName=" + outletName + ", distributorName="
+				+ distributorName + ", lotNumber=" + lotNumber + ", lotMaufacturingDate=" + lotMaufacturingDate
+				+ ", distributorCode=" + distributorCode + ", MRP=" + MRP + "]";
+	}	
 	
-			
-
+					
 }

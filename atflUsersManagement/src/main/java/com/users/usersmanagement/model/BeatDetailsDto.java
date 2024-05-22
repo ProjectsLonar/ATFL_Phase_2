@@ -41,6 +41,8 @@ public class BeatDetailsDto {
 	String address2;
 	String address3;
 	String address4;
+	String address_3;
+	String address_4;
 	String landmark;
 	String country;
 	String state;
@@ -63,11 +65,38 @@ public class BeatDetailsDto {
 	Date lastUpdateDate;
 	String address1;
 	String outletChannel;
+	String name_position;
 	String position;
-	
+	String beatId;
 		
 	
-    public String getOutletId() {
+	
+	
+    public String getAddress_3() {
+		return address_3;
+	}
+	public void setAddress_3(String address_3) {
+		this.address_3 = address_3;
+	}
+	public String getAddress_4() {
+		return address_4;
+	}
+	public void setAddress_4(String address_4) {
+		this.address_4 = address_4;
+	}
+	public String getName_position() {
+		return name_position;
+	}
+	public void setName_position(String name_position) {
+		this.name_position = name_position;
+	}
+	public String getBeatId() {
+		return beatId;
+	}
+	public void setBeatId(String beatId) {
+		this.beatId = beatId;
+	}
+	public String getOutletId() {
 		return outletId;
 	}
 	public void setOutletId(String outletId) {
@@ -407,14 +436,16 @@ public List<OutletSequenceData> getOutletSequenceData() {
 				+ ", RULE_ATTRIB1=" + RULE_ATTRIB1 + ", searchField=" + searchField + ", limit=" + limit + ", offset="
 				+ offset + ", outletId=" + outletId + ", distributorId=" + distributorId + ", outletType=" + outletType
 				+ ", proprietorName=" + proprietorName + ", outletAddress=" + outletAddress + ", address2=" + address2
-				+ ", address3=" + address3 + ", address4=" + address4 + ", landmark=" + landmark + ", country="
-				+ country + ", state=" + state + ", city=" + city + ", pin_code=" + pin_code + ", region=" + region
-				+ ", area=" + area + ", territory=" + territory + ", outletGstn=" + outletGstn + ", phone=" + phone
-				+ ", email=" + email + ", primaryMobile=" + primaryMobile + ", status=" + status + ", startDate="
-				+ startDate + ", endDate=" + endDate + ", createdBy=" + createdBy + ", priceList=" + priceList
-				+ ", positionsId=" + positionsId + ", orgId=" + orgId + ", lastUpdateDate=" + lastUpdateDate
-				+ ", address1=" + address1 + ", outletChannel=" + outletChannel + ", position=" + position + "]";
+				+ ", address3=" + address3 + ", address4=" + address4 + ", address_3=" + address_3 + ", address_4="
+				+ address_4 + ", landmark=" + landmark + ", country=" + country + ", state=" + state + ", city=" + city
+				+ ", pin_code=" + pin_code + ", region=" + region + ", area=" + area + ", territory=" + territory
+				+ ", outletGstn=" + outletGstn + ", phone=" + phone + ", email=" + email + ", primaryMobile="
+				+ primaryMobile + ", status=" + status + ", startDate=" + startDate + ", endDate=" + endDate
+				+ ", createdBy=" + createdBy + ", priceList=" + priceList + ", positionsId=" + positionsId + ", orgId="
+				+ orgId + ", lastUpdateDate=" + lastUpdateDate + ", address1=" + address1 + ", outletChannel="
+				+ outletChannel + ", name_position=" + name_position + ", position=" + position + ", beatId=" + beatId
+				+ "]";
 	}
-		
+	
 	
 }

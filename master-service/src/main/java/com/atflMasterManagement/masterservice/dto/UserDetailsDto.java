@@ -43,6 +43,14 @@ public class UserDetailsDto {
 	public void setPositionId(String positionId) {
 		this.positionId = positionId;
 	}
+
+	
+	@Override
+	public String toString() {
+		return "UserDetailsDto [userType=" + userType + ", distributorId=" + distributorId + ", userId=" + userId
+				+ ", positionId=" + positionId + "]";
+	}
+	
 	
 	
 }

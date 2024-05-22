@@ -1,5 +1,6 @@
 package com.lonar.cartservice.atflCartService.dto;
 
+import java.sql.Clob;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,18 @@ public class SoHeaderDto {
 	private String address1;
 	private String city;	
 	
+	private String distributorName;
+	 private String distributorCode;
+	 private String distributorId;
+	 private String invoiceNumber;
+	 private Date invoiceDate;
+	 private Long totalAmount;
+	 private String priceListId;
+	 private String priceListName;
+	 
+	 private String beatName;
+	 
+	
 	
 	private List<SoLineDto> soLineDtoList;
 
@@ -37,10 +50,150 @@ public class SoHeaderDto {
 	private String beatId;
 	private String instockFlag;
 	private String headerPriceList;
-	
 	private int createdBy;
 	
 	
+	private String siebelStatus;
+	//private Clob siebelRemark;
+	private String siebelRemark;
+	private String siebelInvoicenumber;
+	private String siebelJsonpayload;
+	
+	private Date orderDate1;
+	private String inventoryId; 
+	 private String location;
+         
+	
+	
+	 
+	public String getDistributorName() {
+		return distributorName;
+	}
+
+	public void setDistributorName(String distributorName) {
+		this.distributorName = distributorName;
+	}
+
+	public String getDistributorCode() {
+		return distributorCode;
+	}
+
+	public void setDistributorCode(String distributorCode) {
+		this.distributorCode = distributorCode;
+	}
+
+	public String getDistributorId() {
+		return distributorId;
+	}
+
+	public void setDistributorId(String distributorId) {
+		this.distributorId = distributorId;
+	}
+
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+
+	public Date getInvoiceDate() {
+		return invoiceDate;
+	}
+
+	public void setInvoiceDate(Date invoiceDate) {
+		this.invoiceDate = invoiceDate;
+	}
+
+	public Long getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(Long totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public String getPriceListId() {
+		return priceListId;
+	}
+
+	public void setPriceListId(String priceListId) {
+		this.priceListId = priceListId;
+	}
+
+	public String getPriceListName() {
+		return priceListName;
+	}
+
+	public void setPriceListName(String priceListName) {
+		this.priceListName = priceListName;
+	}
+
+	public String getBeatName() {
+		return beatName;
+	}
+
+	public void setBeatName(String beatName) {
+		this.beatName = beatName;
+	}
+
+	public String getInventoryId() {
+		return inventoryId;
+	}
+
+	public void setInventoryId(String inventoryId) {
+		this.inventoryId = inventoryId;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public Date getOrderDate1() {
+		return orderDate1;
+	}
+
+	public void setOrderDate1(Date orderDate1) {
+		this.orderDate1 = orderDate1;
+	}
+
+	public String getSiebelJsonpayload() {
+		return siebelJsonpayload;
+	}
+
+	public void setSiebelJsonpayload(String siebelJsonpayload) {
+		this.siebelJsonpayload = siebelJsonpayload;
+	}
+
+	public String getSiebelStatus() {
+		return siebelStatus;
+	}
+
+	public void setSiebelStatus(String siebelStatus) {
+		this.siebelStatus = siebelStatus;
+	}
+
+	public String getSiebelRemark() {
+		return siebelRemark;
+	}
+
+	public void setSiebelRemark(String siebelRemark) {
+		this.siebelRemark = siebelRemark;
+	}
+
+	public String getSiebelInvoicenumber() {
+		return siebelInvoicenumber;
+	}
+
+	public void setSiebelInvoicenumber(String siebelInvoicenumber) {
+		this.siebelInvoicenumber = siebelInvoicenumber;
+	}
+
 	public int getCreatedBy() {
 		return createdBy;
 	}
@@ -241,10 +394,17 @@ public class SoHeaderDto {
 				+ outletName + ", outletCode=" + outletCode + ", outletAddress=" + outletAddress + ", customerId="
 				+ customerId + ", proprietorName=" + proprietorName + ", deliveryDate=" + deliveryDate + ", latitude="
 				+ latitude + ", longitude=" + longitude + ", userId=" + userId + ", remark=" + remark + ", address1="
-				+ address1 + ", city=" + city + ", soLineDtoList=" + soLineDtoList + ", priceList=" + priceList
-				+ ", beatId=" + beatId + ", instockFlag=" + instockFlag + ", headerPriceList=" + headerPriceList
-				+ ", createdBy=" + createdBy + "]";
+				+ address1 + ", city=" + city + ", distributorName=" + distributorName + ", distributorCode="
+				+ distributorCode + ", distributorId=" + distributorId + ", invoiceNumber=" + invoiceNumber
+				+ ", invoiceDate=" + invoiceDate + ", totalAmount=" + totalAmount + ", priceListId=" + priceListId
+				+ ", priceListName=" + priceListName + ", beatName=" + beatName + ", soLineDtoList=" + soLineDtoList
+				+ ", priceList=" + priceList + ", beatId=" + beatId + ", instockFlag=" + instockFlag
+				+ ", headerPriceList=" + headerPriceList + ", createdBy=" + createdBy + ", siebelStatus=" + siebelStatus
+				+ ", siebelRemark=" + siebelRemark + ", siebelInvoicenumber=" + siebelInvoicenumber
+				+ ", siebelJsonpayload=" + siebelJsonpayload + ", orderDate1=" + orderDate1 + ", inventoryId="
+				+ inventoryId + ", location=" + location + "]";
 	}
 
+	
 	
 }

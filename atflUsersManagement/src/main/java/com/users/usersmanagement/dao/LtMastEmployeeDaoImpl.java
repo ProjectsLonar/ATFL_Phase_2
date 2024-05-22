@@ -75,7 +75,8 @@ public class LtMastEmployeeDaoImpl implements LtMastEmployeeDao {
 		}
 
 		List<LtMastPositions> positionsList = jdbcTemplate.query(
-				query, new Object[] { requestDto.getDistributorId(), requestDto.getOrgId(), searchField,
+				query, new Object[] { requestDto.getDistributorId(), //requestDto.getOrgId(), 
+						searchField,
 						requestDto.getLimit(), requestDto.getOffset() },
 				new BeanPropertyRowMapper<LtMastPositions>(LtMastPositions.class));
 		if (!positionsList.isEmpty()) {

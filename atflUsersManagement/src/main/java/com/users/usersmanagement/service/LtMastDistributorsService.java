@@ -18,4 +18,8 @@ public interface LtMastDistributorsService {
 	
 	Status getAllNotification(RequestDto requestDto) throws ServerException, ServiceException;
 
+	Status getUserDataByIdForValidation(Long userId) throws ServerException, ServiceException;
+
+	Status saveSeibelUserData(Long userId)throws ServerException, ServiceException;
+
 }

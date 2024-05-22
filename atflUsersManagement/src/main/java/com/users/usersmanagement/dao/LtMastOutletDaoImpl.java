@@ -2,6 +2,8 @@ package com.users.usersmanagement.dao;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
@@ -22,9 +24,11 @@ import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastOutletsType;
 import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
+import com.users.usersmanagement.model.LtOutletDto;
 import com.users.usersmanagement.model.NotificationDetails;
 import com.users.usersmanagement.model.OutletSequenceData;
 import com.users.usersmanagement.model.RequestDto;
+import com.users.usersmanagement.model.LtMastStates;
 
 @Repository
 @PropertySource(value = "classpath:queries/userMasterQueries.properties", ignoreResourceNotFound = true)
@@ -57,7 +61,7 @@ public class LtMastOutletDaoImpl implements LtMastOutletDao, CodeMaster {
 	}
 
 	@Override
-	public List<LtMastOutlets> getOutlet(RequestDto requestDto) throws ServiceException, IOException {
+	public List<LtOutletDto> getOutlet(RequestDto requestDto) throws ServiceException, IOException {
 		String query = env.getProperty("getOutlet");
 		try {
 			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
@@ -78,10 +82,10 @@ public class LtMastOutletDaoImpl implements LtMastOutletDao, CodeMaster {
 			status = requestDto.getStatus().toUpperCase();
 		}
 
-		List<LtMastOutlets> ltMastOutletslist = jdbcTemplate.query(query,
-				new Object[] {status, requestDto.getDistributorId(), requestDto.getSalesPersonId(), requestDto.getOrgId(),
+		List<LtOutletDto> ltMastOutletslist = jdbcTemplate.query(query,
+				new Object[] {status, requestDto.getDistributorId(), requestDto.getOrgId(), requestDto.getSalesPersonId(),
 						searchField, requestDto.getLimit(), requestDto.getOffset() },
-				new BeanPropertyRowMapper<LtMastOutlets>(LtMastOutlets.class));
+				new BeanPropertyRowMapper<LtOutletDto>(LtOutletDto.class));
 		System.out.println("ltMastOutletslist"+ltMastOutletslist);
 		if (!ltMastOutletslist.isEmpty()) {
 			return ltMastOutletslist;
@@ -360,17 +364,33 @@ System.out.println("list"+list);
 		if (beatDetailsDto.getSearchField() != null) {
 			searchField = "%" + beatDetailsDto.getSearchField().toUpperCase() + "%";
 		}
-		//System.out.println("requestDto" + requestDto);
 		
-		
-		String query = env.getProperty("getOutletAgainstBeat");
+		String query = env.getProperty("getOutletAgainstBeat");		
 		List<BeatDetailsDto> List = jdbcTemplate.query(query,
 				new Object[] {beatDetailsDto.getBU_ID(), searchField, beatDetailsDto.getRULE_ATTRIB1(),
+						//beatDetailsDto.getBU_ID(), searchField, beatDetailsDto.getRULE_ATTRIB1(),
 						beatDetailsDto.getLimit(), beatDetailsDto.getOffset()},
 				new BeanPropertyRowMapper<BeatDetailsDto>(BeatDetailsDto.class));
+		
+		//System.out.println("First list is ="+List);
 		if (!List.isEmpty()) {
 			return List;
 		}
+		
+//		String query1 = env.getProperty("getOutletAgainstBeatFromOutletStgTable");
+//		List<BeatDetailsDto> List1 = jdbcTemplate.query(query1,
+//				new Object[] {beatDetailsDto.getBU_ID(), searchField, beatDetailsDto.getRULE_ATTRIB1(),
+//							  beatDetailsDto.getLimit(), beatDetailsDto.getOffset()},
+//				new BeanPropertyRowMapper<BeatDetailsDto>(BeatDetailsDto.class));
+//		
+//		System.out.println("Second list is ="+List1);
+//		
+//		if (!List.isEmpty() || List1.isEmpty()) {
+//			List<BeatDetailsDto> concatenatedList = Stream.concat(List.stream(), List1.stream())
+//				      .collect(Collectors.toList());
+//			return concatenatedList;
+//		}
+		
 		return null;
 	}
 	
@@ -386,6 +406,45 @@ System.out.println("list"+list);
 		}else {
 			return null;
 		}
+	}
+
+	@Override
+	public List<LtMastStates> getAllStates() throws ServiceException, IOException {
+             String query = env.getProperty("getAllStates");
+			 List<LtMastStates> list = jdbcTemplate.query(query,
+				new Object[] { },
+				new BeanPropertyRowMapper<LtMastStates>(LtMastStates.class));
+
+		if (!list.isEmpty()) {
+			return list;
+		}
+
+		return null;
+	}
+
+	@Override
+	public List<LtMastOutletsDump> getOutletById(String outletId) throws ServiceException, IOException {
+		String query = env.getProperty("getOutletById");
+		System.out.println("outletId"+outletId);
+
+		List<LtMastOutletsDump> list = jdbcTemplate.query(query,
+				new Object[] {outletId},
+				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+		System.out.println("query"+query);
+System.out.println("list"+list);
+		if (!list.isEmpty()) {
+			return list;
+		}
+
+		return null;
+	}
+
+	@Override
+	public Long getStoreIdFromBeat(String beatId) throws ServiceException, IOException {
+		
+		String query = env.getProperty("getStoreIdFromBeat");
+		Long storeId = jdbcTemplate.queryForObject(query,new Object[] {beatId}, Long.class);
+        return storeId;
 	}
 	
 }

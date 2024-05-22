@@ -116,6 +116,15 @@ public class LtMastOutletsDump extends BaseClass {
 	@Column(name = "DISTRIBUTOR_NAME")
 	String distributorName;
 
+	@Column(name = "SIEBEL_JSONPAYLOAD")
+	String siebelJsonpaylod;
+	
+	@Column(name = "BEAT_ID")
+	String beatId;
+	
+	//@Column(name = "CREATEDBY")
+	//String createdby;
+	
 	@Transient
 	String distributorCode;
 
@@ -144,6 +153,31 @@ public class LtMastOutletsDump extends BaseClass {
 	@Transient
 	Long userId;
 
+
+	
+	/*public String getCreatedby() {
+		return createdby;
+	}
+
+	public void setCreatedby(String createdby) {
+		this.createdby = createdby;
+	}*/
+
+	public String getBeatId() {
+		return beatId;
+	}
+
+	public void setBeatId(String beatId) {
+		this.beatId = beatId;
+	}
+
+	public String getSiebelJsonpaylod() {
+		return siebelJsonpaylod;
+	}
+
+	public void setSiebelJsonpaylod(String siebelJsonpaylod) {
+		this.siebelJsonpaylod = siebelJsonpaylod;
+	}
 
 	public Long getOutletId() {
 		return outletId;
@@ -457,6 +491,7 @@ public class LtMastOutletsDump extends BaseClass {
 		this.siebelRemark = siebelRemark;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "LtMastOutletsDump [outletId=" + outletId + ", orgId=" + orgId + ", outletCode=" + outletCode
@@ -468,12 +503,13 @@ public class LtMastOutletsDump extends BaseClass {
 				+ outletPan + ", licenceNo=" + licenceNo + ", positionsId=" + positionsId + ", phone=" + phone
 				+ ", email=" + email + ", primaryMobile=" + primaryMobile + ", priceList=" + priceList
 				+ ", outletChannel=" + outletChannel + ", siebelStatus=" + siebelStatus + ", siebelRemark="
-				+ siebelRemark + ", distributorName=" + distributorName + ", distributorCode=" + distributorCode
+				+ siebelRemark + ", distributorName=" + distributorName + ", siebelJsonpaylod=" + siebelJsonpaylod
+				+ ", beatId=" + beatId + ", distributorCode=" + distributorCode
 				+ ", distributorCrmCode=" + distributorCrmCode + ", distributorStatus=" + distributorStatus
 				+ ", employeeId=" + employeeId + ", empName=" + empName + ", employeeCode=" + employeeCode
 				+ ", outletAddress=" + outletAddress + ", userId=" + userId + "]";
 	}
 
-
-
+	
+			
 }

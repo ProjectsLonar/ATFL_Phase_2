@@ -176,4 +176,26 @@ public class LtMastOutletController implements CodeMaster {
 					}
             }
 	
+	
+	@GetMapping(value = "/getAllStates", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getAllStates() throws ServerException {
+		try {
+			return new ResponseEntity<Status>(ltMastOutletService.getAllStates(), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+
+	}
+	
+	
+	@GetMapping(value = "/getOutletById/{outletId}", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getOutletById(@PathVariable("outletId")String outletId) throws ServerException {
+		try {
+			return new ResponseEntity<Status>(ltMastOutletService.getOutletById(outletId), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+
+	}
+	
 }

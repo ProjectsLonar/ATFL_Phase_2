@@ -1,5 +1,7 @@
 package com.lonar.cartservice.atflCartService.dto;
 
+import java.sql.Clob;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -25,6 +27,36 @@ public class RequestDto {
 	private String salesReturnNumber;
 	private Double price;
 	private Double totalPrice;
+	
+	private Long loginId;
+	
+	String siebelStatus;
+	String siebelRemark; 
+	
+		
+	public String getSiebelStatus() {
+		return siebelStatus;
+	}
+
+	public void setSiebelStatus(String siebelStatus) {
+		this.siebelStatus = siebelStatus;
+	}
+
+	public String getSiebelRemark() {
+		return siebelRemark;
+	}
+
+	public void setSiebelRemark(String siebelRemark) {
+		this.siebelRemark = siebelRemark;
+	}
+
+	public Long getLoginId() {
+		return loginId;
+	}
+
+	public void setLoginId(Long loginId) {
+		this.loginId = loginId;
+	}
 
 	public String getOrgId() {
 		return orgId;
@@ -182,14 +214,18 @@ public class RequestDto {
 		this.totalPrice = totalPrice;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "RequestDto [orgId=" + orgId + ", distributorId=" + distributorId + ", salesPersonId=" + salesPersonId
 				+ ", outletId=" + outletId + ", orderNumber=" + orderNumber + ", status=" + status + ", details="
 				+ details + ", headerId=" + headerId + ", limit=" + limit + ", offset=" + offset + ", searchField="
 				+ searchField + ", customerId=" + customerId + ", userId=" + userId + ", invoiceNumber=" + invoiceNumber
-				+ ", returnStatus=" + returnStatus + ", salesReturnHeaderId=" + salesReturnHeaderId + "]";
+				+ ", returnStatus=" + returnStatus + ", salesReturnHeaderId=" + salesReturnHeaderId
+				+ ", salesReturnNumber=" + salesReturnNumber + ", price=" + price + ", totalPrice=" + totalPrice
+				+ ", loginId=" + loginId + ", siebelStatus=" + siebelStatus + ", siebelRemark=" + siebelRemark + "]";
 	}
 
+	
 	
 }

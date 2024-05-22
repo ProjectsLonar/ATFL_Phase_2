@@ -9,4 +9,8 @@ public interface LtPromotionDao {
 	List<LtPromotion> getPromotionDataV1(String orgId, Long limit, Long offset, Long userId) throws ServiceException;
 	
 	List<LtPromotion> getPromotionData(String orgId, Long limit, Long offset) throws ServiceException;
+
+	void deletePromotionData(Long pramotionId)throws ServiceException;
+
+	LtPromotion getPromotionData(Long pramotionId)throws ServiceException;
 }

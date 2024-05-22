@@ -1,5 +1,6 @@
 package com.lonar.cartservice.atflCartService.dto;
 
+import java.sql.Clob;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,77 @@ public class LtSalesReturnDto {
 	private Double price;
 	private String beatName;
 	
+	String priceList;
+	//String siebelStatus;
+	//Clob siebelRemark; 
 	
+	String orderNumber;
+	String inventoryId;
+	
+	String test;
+	String status;
+	
+			
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+
+	public String getInventoryId() {
+		return inventoryId;
+	}
+
+	public void setInventoryId(String inventoryId) {
+		this.inventoryId = inventoryId;
+	}
+
+	public String getTest() {
+		return test;
+	}
+
+	public void setTest(String test) {
+		this.test = test;
+	}
+
+//	public String getSiebelStatus() {
+//		return siebelStatus;
+//	}
+//
+//	public void setSiebelStatus(String siebelStatus) {
+//		this.siebelStatus = siebelStatus;
+//	}
+//
+//	public Clob getSiebelRemark() {
+//		return siebelRemark;
+//	}
+//
+//	public void setSiebelRemark(Clob siebelRemark) {
+//		this.siebelRemark = siebelRemark;
+//	}
+
+	public void setPriceList(String priceList) {
+		this.priceList = priceList;
+	}
+
+	public String getPriceList() {
+		return priceList;
+	}
+
+	public void setPricelist(String priceList) {
+		this.priceList = priceList;
+	}
+
 	List<LtSalesReturnLines> ltSalesReturnLines;
 
 	public Long getSalesReturnHeaderId() {
@@ -161,8 +232,6 @@ public class LtSalesReturnDto {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-
-	
 	
 	public String getBeatName() {
 		return beatName;
@@ -172,13 +241,18 @@ public class LtSalesReturnDto {
 		this.beatName = beatName;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "LtSalesReturnDto [salesReturnHeaderId=" + salesReturnHeaderId + ", salesReturnNumber="
 				+ salesReturnNumber + ", invoiceNumber=" + invoiceNumber + ", outletId=" + outletId + ", returnStatus="
 				+ returnStatus + ", address=" + address + ", latitude=" + latitude + ", longitude=" + longitude
 				+ ", returnReason=" + returnReason + ", salesReturnDate=" + salesReturnDate + ", outletName="
-				+ outletName + ", outletCode=" + outletCode + ", ltSalesReturnLines=" + ltSalesReturnLines + "]";
+				+ outletName + ", outletCode=" + outletCode + ", userId=" + userId + ", totalSalesreturnAmount="
+				+ totalSalesreturnAmount + ", price=" + price + ", beatName=" + beatName + ", priceList=" + priceList
+				+ ", orderNumber=" + orderNumber + ", inventoryId=" + inventoryId + ", test=" + test + ", status="
+				+ status + ", ltSalesReturnLines=" + ltSalesReturnLines + "]";
 	}
+
 
 }

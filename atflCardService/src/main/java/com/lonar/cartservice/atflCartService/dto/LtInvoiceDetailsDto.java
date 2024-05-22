@@ -11,7 +11,7 @@ public class LtInvoiceDetailsDto {
 	 private String outletName;
 	 private String outletCode;
 	 private String orderNumber;
-	 private String invoiveNumber;
+	 private String invoiceNumber;
 	 private Date invoiceDate;
 	 private String location;
 	 private Long totalAmount;
@@ -19,10 +19,19 @@ public class LtInvoiceDetailsDto {
 	 private String priceListName;
 	 
 	 private String beatName;
+	 private String inventoryId;
 	 
 	 private List <LtInvoiceDetailsLineDto> ltInvoiceDetailsLineDto;
+ 
+	 
+	public String getInventoryId() {
+		return inventoryId;
+	}
 
-	 	 
+	public void setInventoryId(String inventoryId) {
+		this.inventoryId = inventoryId;
+	}
+
 	public String getBeatName() {
 		return beatName;
 	}
@@ -81,12 +90,12 @@ public class LtInvoiceDetailsDto {
 		this.orderNumber = orderNumber;
 	}
 
-	public String getInvoiveNumber() {
-		return invoiveNumber;
+	public String getInvoiceNumber() {
+		return invoiceNumber;
 	}
 
-	public void setInvoiveNumber(String invoiveNumber) {
-		this.invoiveNumber = invoiveNumber;
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
 	}
 
 	public Date getInvoiceDate() {

@@ -11,7 +11,27 @@ public class CategoryRevenueDto {
 	private Long revenue = 0L;
 	private String dbc = "0";
 	
+	//private Long dbc1=0L;
+	String ptrPrice1;
+	
+	
 
+public String getPtrPrice1() {
+		return ptrPrice1;
+	}
+
+	public void setPtrPrice1(String ptrPrice1) {
+		this.ptrPrice1 = ptrPrice1;
+	}
+
+	/*	public Long getDbc1() {
+		return dbc1;
+	}
+
+	public void setDbc1(Long dbc1) {
+		this.dbc1 = dbc1;
+	}
+*/
 	public String getCategoryId() {
 		return categoryId;
 	}
@@ -48,7 +68,7 @@ public class CategoryRevenueDto {
 		return ptrPrice;
 	}
 
-	public void setPtrPrice(Long ptrPrice) {
+	public void setPtrPrice(Long ptrPrice1) {
 		this.ptrPrice = ptrPrice;
 	}
 
@@ -76,4 +96,13 @@ public class CategoryRevenueDto {
 		this.dbc = dbc;
 	}
 
+	@Override
+	public String toString() {
+		return "CategoryRevenueDto [categoryId=" + categoryId + ", categoryName=" + categoryName + ", listPrice="
+				+ listPrice + ", quantity=" + quantity + ", ptrPrice1=" + ptrPrice1 + ", categoryDesc=" + categoryDesc
+				+ ", revenue=" + revenue + ", dbc=" + dbc + ", ptrPrice=" + ptrPrice + "]";
+	}
+
+	
+		
 }

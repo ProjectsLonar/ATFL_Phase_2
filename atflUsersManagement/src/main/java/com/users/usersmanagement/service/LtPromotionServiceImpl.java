@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.sql.Timestamp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -80,13 +81,23 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 	@Override
 	public Status deletePromotionData(Long pramotionId) throws ServiceException {
 		Status status = new Status();
-		Optional<LtPromotion> ltPromotion = ltPromotionRepository.findById(pramotionId);
+		System.out.println("pramotion Id for delete == "+pramotionId);
+	/*	Optional<LtPromotion> ltPromotion = ltPromotionRepository.findById(pramotionId);
+		//System.out.println("promotion data to be deleted == "+ltPromotion);
 		if (ltPromotion.isPresent()) {
 			LtPromotion promotion = ltPromotion.get();
+			//System.out.println("promotion optional data to be deleted == "+ltPromotion.get());
 			promotion.setStatus(INACTIVE);
-			promotion.setLastUpdateDate(new Date());
+			//promotion.setLastUpdateDate(new Date());
 			ltPromotionRepository.save(promotion);
 			status = ltMastCommonMessageService.getCodeAndMessage(DELETE_SUCCESSFULLY);
+		} else {
+			status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
+		}*/
+		LtPromotion ltPromotion = promotionDao.getPromotionData(pramotionId);
+		if (ltPromotion!= null) {
+		promotionDao.deletePromotionData(pramotionId);
+		status = ltMastCommonMessageService.getCodeAndMessage(DELETE_SUCCESSFULLY);
 		} else {
 			status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
 		}
@@ -224,6 +235,69 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 	@Override
 	public Status editPromotion(LtPromotion ltPromotionObj) throws ServiceException {
 		Status status = new Status();
+		System.out.println("ReqBody is ltPromotionObj"+ltPromotionObj);
+		
+		try {
+//			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		String startDate = ltPromotionObj.getStartDate();
+//		String endDate = ltPromotionObj.getEndDate();
+//		Date date = dateFormat.parse(startDate);		
+//		Date date2 = dateFormat.parse(endDate);
+//		
+//		String pattern = "yyyy-MM-dd'T'HH:mm:ss";
+//
+//        // Create a SimpleDateFormat object with the pattern
+//        SimpleDateFormat dateFormat1 = new SimpleDateFormat(pattern);
+//
+//        // Format the Date object to a string
+//        String dateString = dateFormat1.format(date);
+//        String dateString2 = dateFormat1.format(date2);
+        
+//			DateFormat utcFormat = new SimpleDateFormat("dd-MMM-yy");
+//			//Date startDate = reportStartEndDateFormat.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getFromDate()));
+//			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH).withZone(ZoneId.systemDefault());
+//	        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MMM-yy", Locale.ENGLISH);
+//	            Instant instant = Instant.from(inputFormatter.parse(ltPromotionObj.getStartDate()));
+//	            String startDate = outputFormatter.format(instant.atZone(ZoneId.systemDefault()));
+//	            
+			DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+			Date date = (Date)formatter.parse(ltPromotionObj.getStartDate());
+			Date date1 = (Date)formatter.parse(ltPromotionObj.getEndDate());
+			SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+			String deliveryDate =outputFormat.format(date);
+			String deliveryDate1 =outputFormat.format(date1);
+			System.out.println("formatedDate : " + deliveryDate); 
+			
+			//System.out.println("Date ="+ excelReportDto.getFromDate()); System.out.println("NewDate=" +startDate);
+			//Date endDate = reportStartEndDateFormat.parse(DateTimeClass.getDateAndTimeFromUTCDate(excelReportDto.getToDate()));
+			//Instant instant1 = Instant.from(inputFormatter.parse(ltPromotionObj.getEndDate()));
+            //String endDate = outputFormatter.format(instant1.atZone(ZoneId.systemDefault()));
+			
+        //  String strStartDate = reportStartEndDateFormat.format(startDate);
+		//	String strEndDate = reportStartEndDateFormat.format(endDate);
+
+			String strStartDate = deliveryDate;
+			String strEndDate = deliveryDate1;
+
+        ltPromotionObj.setStartDate(strStartDate);
+        ltPromotionObj.setEndDate(strEndDate);
+        
+       //String timestampString = startDate; // Example timestamp string
+        //String timestampString1 = endDate;
+        
+            // Define the date format to match the timestamp string
+            
+            // Parse the timestamp string to a java.util.Date object
+            //Date parsedDate = dateFormat.parse(timestampString);
+            //Date parsedDate1 = dateFormat.parse(timestampString1);
+            // Convert the java.util.Date to a java.sql.Timestamp object
+            //Timestamp timestamp = new Timestamp(parsedDate.getTime());
+            //Timestamp timestamp1 = new Timestamp(parsedDate1.getTime());
+        }catch(Exception e) {e.printStackTrace();}
+        
+        
+        
+        
 		Optional<LtPromotion> ltPromotion = ltPromotionRepository.findById(ltPromotionObj.getPromotionId());
 		if (ltPromotion.isPresent()) {
 			LtPromotion promotion = ltPromotion.get();

@@ -14,12 +14,14 @@ import com.users.usersmanagement.model.LtMastPricelist;
 import com.users.usersmanagement.model.LtMastUsers;
 import com.users.usersmanagement.model.OutletSequenceData;
 import com.users.usersmanagement.model.RequestDto;
+import com.users.usersmanagement.model.LtOutletDto;
+import com.users.usersmanagement.model.LtMastStates;
 
 public interface LtMastOutletDao {
 
 	public LtMastUsers getMastDataByOutletId(String getMastDataByOutletId) throws ServiceException;
 
-	public List<LtMastOutlets> getOutlet(RequestDto requestDto) throws ServiceException, IOException;
+	public List<LtOutletDto> getOutlet(RequestDto requestDto) throws ServiceException, IOException;
 
 	public LtMastOutlets verifyOutlet(String outletCode, String distributorCrmCode) throws ServiceException;
 	
@@ -57,5 +59,10 @@ public interface LtMastOutletDao {
 	
 	public LtMastOutletsDump getoutletByIdAndCode(String outletCode)throws ServiceException, IOException;
 
+	public List<LtMastStates> getAllStates()throws ServiceException, IOException;
+
+	public List<LtMastOutletsDump> getOutletById(String outletId)throws ServiceException, IOException;
+
+	public Long getStoreIdFromBeat(String beatId)throws ServiceException, IOException;
 
 }

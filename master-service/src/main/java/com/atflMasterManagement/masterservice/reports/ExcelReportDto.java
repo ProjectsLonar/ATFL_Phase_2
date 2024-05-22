@@ -195,4 +195,17 @@ public class ExcelReportDto {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
+
+	
+	@Override
+	public String toString() {
+		return "ExcelReportDto [fromDate=" + fromDate + ", toDate=" + toDate + ", orgId=" + orgId + ", limit=" + limit
+				+ ", offset=" + offset + ", userId=" + userId + ", distributorCode=" + distributorCode
+				+ ", employeeCode=" + employeeCode + ", distributorId=" + distributorId + ", employeeId=" + employeeId
+				+ ", productId=" + productId + ", outletId=" + outletId + ", categoryId=" + categoryId + ", region="
+				+ region + ", priceList=" + priceList + ", productName=" + productName + ", outletCode=" + outletCode
+				+ ", status=" + status + ", searchField=" + searchField + ", categoryCode=" + categoryCode + "]";
+	}
+	
+	
 }

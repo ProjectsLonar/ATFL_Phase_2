@@ -52,7 +52,7 @@ public class LtPromotionController implements CodeMaster {
 		}
 	}
 	
-	@RequestMapping(value = "/editPromotion", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	@RequestMapping(value = "/editPromotion", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v2.0")
 	public ResponseEntity<Status> editPromotion(@RequestBody LtPromotion promotion) throws ServerException {
 		try {
 			return new ResponseEntity<Status>(ltPromotionService.editPromotion(promotion), HttpStatus.OK);

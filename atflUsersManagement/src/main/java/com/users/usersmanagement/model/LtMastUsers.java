@@ -91,6 +91,19 @@ public class LtMastUsers extends BaseClass {
 	@Column(name = "ISFIRSTLOGIN")
 	private String isFirstLogin;
 	
+	@Column(name = "TERRITORY")
+	private String territory;
+	
+	
+	
+	public String getTrrritory() {
+		return territory;
+	}
+
+	public void setTrrritory(String trrritory) {
+		this.territory = trrritory;
+	}
+
 	public String getIsFirstLogin() {
 		return isFirstLogin;
 	}
@@ -147,9 +160,6 @@ public class LtMastUsers extends BaseClass {
 	
 	@Transient
 	String position;
-	
-	@Transient 
-	private String territory;
 	
 	@Transient
 	private String inventoryLocationName;
@@ -559,12 +569,12 @@ public class LtMastUsers extends BaseClass {
 				+ ", Address=" + Address + ", email=" + email + ", alternateNo=" + alternateNo + ", latitude="
 				+ latitude + ", longitude=" + longitude + ", imageType=" + imageType + ", imageName=" + imageName
 				+ ", imageData=" + imageData + ", addressDetails=" + addressDetails + ", recentSerachId="
-				+ recentSerachId + ", token=" + token + ", isFirstLogin=" + isFirstLogin + ", distributorCode="
-				+ distributorCode + ", primaryMobile=" + primaryMobile + ", distributorCrmCode=" + distributorCrmCode
-				+ ", distributorName=" + distributorName + ", distributorAddress=" + distributorAddress
-				+ ", employeeId=" + employeeId + ", empName=" + empName + ", empCode=" + empCode + ", organisationCode="
-				+ organisationCode + ", organisationName=" + organisationName + ", outletName=" + outletName
-				+ ", outletCode=" + outletCode + ", outletAddress=" + outletAddress + ", proprietorName="
+				+ recentSerachId + ", token=" + token + ", isFirstLogin=" + isFirstLogin + ", territory=" + territory
+				+ ", distributorCode=" + distributorCode + ", primaryMobile=" + primaryMobile + ", distributorCrmCode="
+				+ distributorCrmCode + ", distributorName=" + distributorName + ", distributorAddress="
+				+ distributorAddress + ", employeeId=" + employeeId + ", empName=" + empName + ", empCode=" + empCode
+				+ ", organisationCode=" + organisationCode + ", organisationName=" + organisationName + ", outletName="
+				+ outletName + ", outletCode=" + outletCode + ", outletAddress=" + outletAddress + ", proprietorName="
 				+ proprietorName + ", orgStatus=" + orgStatus + ", position=" + position + ", territory=" + territory
 				+ ", inventoryLocationName=" + inventoryLocationName + ", priceList=" + priceList + ", recentSearchId="
 				+ recentSearchId + ", status=" + status + ", latitud=" + latitud + ", longitud=" + longitud

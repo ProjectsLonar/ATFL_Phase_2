@@ -13,4 +13,6 @@ public interface LtTemplateService {
 	Status getTemplateAgainstDistributors (String distributorId)throws ServerException;
 	
 	Status createTemplate(LtTemplateDto ltTemplateDto)throws ServerException, ServiceException;
+    
+	Status getTemplateAgainstDistributors (String distributorId, String priceList)throws ServerException;
 }
