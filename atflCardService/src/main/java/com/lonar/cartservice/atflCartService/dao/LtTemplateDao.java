@@ -28,5 +28,7 @@ public interface LtTemplateDao {
 	List<LtTemplateLines> getProductDetailsAgainstheaderId(Long templateHeaderId, String priceList)throws ServerException;
 
 	LtTemplateHeaders getAllTemplateAgainstDistributors(String distId)throws ServerException;
+
+	Long getAvailableQuantity(String distributorId, String productId)throws ServerException;
 	
 }

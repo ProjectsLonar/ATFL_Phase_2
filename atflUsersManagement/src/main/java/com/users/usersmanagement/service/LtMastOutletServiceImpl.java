@@ -537,6 +537,7 @@ try {
 		  
 		  JSONObject accounts = new JSONObject();
 		  accounts.put("Account Status", "Active");
+		  accounts.put("Price List", ltMastOutletsDump.getPriceList()); 
 		  accounts.put("Type", ltMastOutletsDump.getOutletType());
 //		  accounts.put("Type", "Retailer");
 		  accounts.put("Account Id", "1");

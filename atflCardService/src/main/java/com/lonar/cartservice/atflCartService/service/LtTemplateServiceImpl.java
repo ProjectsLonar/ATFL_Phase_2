@@ -143,8 +143,10 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 				
 				
 				List<LtTemplateLines> lineData = ltTemplateDto.getLtTemplateLines();
+				
 				for(LtTemplateLines lines:lineData) {
 					LtTemplateLines ltTemplateLines = new LtTemplateLines();
+					Long availableQuantity = ltTemplateDao.getAvailableQuantity(ltTemplateDto.getDistributorId(),lines.getProductId());
 					ltTemplateLines.setTemplateHeaderId(ltTemplateHeadersUpdated.getTemplateHeaderId());
 					ltTemplateLines.setSalesType(lines.getSalesType());
 					ltTemplateLines.setProductId(lines.getProductId());
@@ -152,7 +154,8 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 					ltTemplateLines.setProductDescription(lines.getProductDescription());
 					ltTemplateLines.setPtrPrice(lines.getPtrPrice());
 					ltTemplateLines.setQuantity(lines.getQuantity());
-					ltTemplateLines.setAvailableQuantity(lines.getAvailableQuantity());
+				//	ltTemplateLines.setAvailableQuantity(lines.getAvailableQuantity());  comment on 22-may-2024
+					ltTemplateLines.setAvailableQuantity(availableQuantity);
 					LtTemplateLines ltTemplateLinesupdated = ltTemplateDao.saveLineData(ltTemplateLines);
 				}
 			}

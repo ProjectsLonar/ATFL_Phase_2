@@ -260,10 +260,10 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 //	            Instant instant = Instant.from(inputFormatter.parse(ltPromotionObj.getStartDate()));
 //	            String startDate = outputFormatter.format(instant.atZone(ZoneId.systemDefault()));
 //	            
-			DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date = (Date)formatter.parse(ltPromotionObj.getStartDate());
 			Date date1 = (Date)formatter.parse(ltPromotionObj.getEndDate());
-			SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+			SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String deliveryDate =outputFormat.format(date);
 			String deliveryDate1 =outputFormat.format(date1);
 			System.out.println("formatedDate : " + deliveryDate); 

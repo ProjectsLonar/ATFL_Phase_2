@@ -163,4 +163,16 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 		}
 		return null;
 	}
+	@Override
+	public Long getAvailableQuantity(String distributorId, String productId) throws ServerException {
+		String query = env.getProperty("getAvailableQuantity");
+		Long quantity = jdbcTemplate.queryForObject(query, new Object[] {distributorId, productId},
+				(Long.class));
+		//System.out.println("All tempalte query"+query);
+		//System.out.println("All Template HeadersList =="+templateHeadersList);
+//		if(!templateHeadersList.isEmpty()) {
+//			return templateHeadersList.get(0);
+//		}
+		return quantity;
+	}
 }
