@@ -71,7 +71,8 @@ public class ExcelReportProduct {
 			++srNo;
 			insertReportData(sheet, rowIndex, excelDataProduct, srNo,workbook,styleTableRow,styleTableRowRight);
 			System.out.println("excelDataProduct.getAmount()123 = " + excelDataProduct.getAmount());
-			totalRevenu = totalRevenu + excelDataProduct.getAmount();
+			//if(excelDataProduct.getAmount()!= null) {
+			totalRevenu = totalRevenu + excelDataProduct.getAmount();//}
 		}
 		++rowIndex;
 		insertTotalRevenu(sheet, rowIndex, totalRevenu, workbook);
@@ -268,14 +269,14 @@ public class ExcelReportProduct {
 		}
 		cell = row.createCell(3);
 		cell.setCellStyle(styleTableRow);
-		if (excelDataProduct.getQuantity() != null) {
-			cell.setCellValue(excelDataProduct.getQuantity());
+		if (excelDataProduct.getQuantity1() != null) {
+			cell.setCellValue(excelDataProduct.getQuantity1());
 		}
 		cell = row.createCell(4);
 		cell.setCellStyle(styleTableRowRight);
-		if (excelDataProduct.getPtrPrice() != null) {
-		//	cell.setCellValue(df.format(Double.parseDouble(excelDataProduct.getPtrPrice()))); original
-			cell.setCellValue(excelDataProduct.getPtrPrice());
+		if (excelDataProduct.getPtrPrice1() != null) {
+			cell.setCellValue(df.format(Double.parseDouble(excelDataProduct.getPtrPrice1()))); //original
+		//	cell.setCellValue(excelDataProduct.getPtrPrice1());
 		}
 		cell = row.createCell(5);
 		cell.setCellStyle(styleTableRowRight);

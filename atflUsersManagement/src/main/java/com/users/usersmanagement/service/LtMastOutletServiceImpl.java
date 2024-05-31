@@ -603,8 +603,20 @@ try {
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
          con.setRequestMethod(method);
          con.setRequestProperty("Content-Type", "application/json");
-         con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpMb25hcjEyMw==");
+         //con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpMb25hcjEyMw=="); comment on 30-May-24 for auth 
 
+         String username;
+	        if(ltMastOutletsDumps.getMobileNumber()!= null) {
+	         username = ltMastOutletDao.getUserNameFromSiebel(ltMastOutletsDumps.getMobileNumber());
+	         }else {
+	         username = "VINAY.KUMAR6";}
+	        String password = "D10nysu$";
+	        String auth = username + ":" + password;
+	        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
+	        String authHeaderValue = "Basic " + new String(encodedAuth);
+	        System.out.println("This is user authHeaderValue"+authHeaderValue);
+	        con.setRequestProperty("Authorization", authHeaderValue);
+         
         // Enable output and set request body
         con.setDoOutput(true);
         try (OutputStream os = con.getOutputStream()) {

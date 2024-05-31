@@ -10,6 +10,9 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
+import javax.mail.internet.MimeMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
+
 
 @Service
 public class EmailService {
@@ -17,10 +20,16 @@ public class EmailService {
     @Autowired
     private JavaMailSender emailSender;
 
-    public void sendSimpleMessage(String to, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
+    public void sendSimpleMessage(String to, String subject, String text) throws MessagingException {
+        
+    	//SimpleMailMessage message = new SimpleMailMessage();   original code comment on 29-May-2024
+        
+    	MimeMessage message = emailSender.createMimeMessage(); 
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        
+/*        message.setTo(to);          this is original code comment on 29-May-2024
+          message.setSubject(subject);
+*/        
         text= "<html> <head> </head> <body>     <div style=\"margin-top: 0;background-color:#f4f4f4!important;color:#555; font-family: 'Open Sans', sans-serif;\"><div style=\"font-size: 14px;margin: 0px auto;max-width: 620px;margin-bottom: 20px;background:#c02e2e05;\">              <div style=\"padding: 0px 0px 9px 0px;width: 100%;color: #fff;font-weight:bold;font-size: 15px;line-height: 20px; width: 562px; margin: 0 auto;\">                 <center>                     <table border=\"0\" cellpadding=\"20\"cellspacing=\"0\" width=\"100%\">                         <tbody>                             <tr>                                 <td valign=\"top\" style=\"padding: 48px 48px 32px\">                                     <div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size: 14px;line-height: 150%;text-align:left\">                                          <p style=\"margin: 0 0 16px\">Dear Sir/Ma’am,</p>                                         <p style=\"margin: 0 0 16px\">MSO-29686-2425-967 has come for your approval. Please visit the app to approve/ reject the record.</p>    <h4 style=\"font-weight:bold\">Created by:Panchanan Rout</h4>  <h4 style=\"font-weight:bold\">Order Amount:0.0</h4>   <h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>  <p>Regards,</p><p>Lakshya App team.</p>                               <div style= \"margin-bottom: 40px\">                                                                                       </div>                                                                                                                       </div>                          </html>       </td>                             </tr>                         </tbody>                     </table>                 </center>             </div>            </div>      </div> </body>" ;
 //        text = text.replace("${salesOrder}", ltSoHeader.getOrderNumber());
 //        text = text.replace("${salespersonName}", salespersonName);
@@ -30,8 +39,13 @@ public class EmailService {
         //byte[] decodedBytes = Base64.getDecoder().decode(text);
         //String decodedString = new String(decodedBytes);
         
-      message.setText(text);
+//      message.setText(text);         original comment on 29-May-2024
      //   message.setText(decodedString);
+      
+      helper.setTo(to);
+      helper.setSubject(subject);
+      helper.setText(text, true); 
+      
         emailSender.send(message);
     }
     

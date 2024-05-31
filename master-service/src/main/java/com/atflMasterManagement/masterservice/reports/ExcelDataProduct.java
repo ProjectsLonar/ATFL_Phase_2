@@ -6,8 +6,8 @@ public class ExcelDataProduct {
 	private Double amount = 0D;
 	private String productName;
 	private String productCode;
-	private Long quantity = 0L;
-	private String ptrPrice;
+	private Long quantity1 = 0L;
+	private String ptrPrice1;
 	private String listPrice;
 
 	public int getSrNo() {
@@ -41,20 +41,20 @@ public class ExcelDataProduct {
 		this.productCode = productCode;
 	}
 
-	public Long getQuantity() {
-		return quantity;
+	public Long getQuantity1() {
+		return quantity1;
 	}
 
-	public void setQuantity(Long quantity) {
-		this.quantity = quantity;
+	public void setQuantity1(Long quantity1) {
+		this.quantity1 = quantity1;
 	}
 
-	public String getPtrPrice() {
-		return ptrPrice;
+	public String getPtrPrice1() {
+		return ptrPrice1;
 	}
 
-	public void setPtrPrice(String ptrPrice) {
-		this.ptrPrice = ptrPrice;
+	public void setPtrPrice1(String ptrPrice1) {
+		this.ptrPrice1 = ptrPrice1;
 	}
 
 	public String getListPrice() {
@@ -68,7 +68,7 @@ public class ExcelDataProduct {
 	@Override
 	public String toString() {
 		return "ExcelDataProduct [srNo=" + srNo + ", amount=" + amount + ", productName=" + productName
-				+ ", productCode=" + productCode + ", quantity=" + quantity + ", ptrPrice=" + ptrPrice + ", listPrice="
+				+ ", productCode=" + productCode + ", quantity1=" + quantity1 + ", ptrPrice1=" + ptrPrice1 + ", listPrice="
 				+ listPrice + "]";
 	}
 	

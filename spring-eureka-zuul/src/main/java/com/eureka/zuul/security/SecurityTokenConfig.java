@@ -92,6 +92,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/uam" + "/promotion" + "/getPromotionData/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
 				.antMatchers("/uam" + "/promotion" + "/deletePromotionData/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
 				.antMatchers("/uam" + "/promotion" + "/editPromotion/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
+				.antMatchers("/uam" + "/promotion" + "/editPromotionV1/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
 				
 				 .antMatchers("/uam" + "/outlets" + "/getAllUserMastData/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
 				 .antMatchers("/uam" + "/outlets" + "/getAllOutletType/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SUPERADMIN","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD","SALES", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
@@ -222,6 +223,8 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				 .antMatchers("/cart" + "/ltsalesreturn" + "/getSalesReturnForPendingAprroval/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
 				 .antMatchers("/cart" + "/ltsalesreturn" + "/getInvoicePdf/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR") 			 
 				 .antMatchers("/cart" + "/ltsalesreturn" + "/getSalesReturnOrderAgainstReturnOrderNo/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
+				 .antMatchers("/cart" + "/ltsoheaders" + "/getAvailableProductQuantity/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
+				 
 				 
 				 .antMatchers("/uam" + "/outlets" + "/getBeatDetailsAgainsDistirbutorCode/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
 				 .antMatchers("/uam" + "/outlets" + "/getOutletAgainstBeat/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")

@@ -27,6 +27,8 @@ public class JwtResponse {
 	private Date creationDate;
 	private Date lastUpdatedDate;
 	private String isFirstLogin;
+	
+	private String territory;
 
 	public JwtResponse() {
 		super();
@@ -35,7 +37,7 @@ public class JwtResponse {
 	public JwtResponse(String token, String type, String mobileNumber, List<String> roles, String status, Long userId,
 			String userType, String employeeCode, String orgId, String userName, String distributorId, String outletId,
 			String designation, String positionId, String notifyToken,String outletName,String distributorCode,String distributorName,
-			String proprietorName,String position,Date creationDate,Date lastUpdatedDate,String isFirstLogin) {
+			String proprietorName,String position,Date creationDate,Date lastUpdatedDate,String isFirstLogin, String territory) {
 		super();
 		this.token = token;
 		this.type = type;
@@ -60,7 +62,7 @@ public class JwtResponse {
 		this.creationDate = creationDate;
 		this.lastUpdatedDate = lastUpdatedDate;
 		this.isFirstLogin = isFirstLogin;
-	
+		this.territory= territory;
 	}
 	
 
@@ -248,6 +250,15 @@ public class JwtResponse {
 		this.isFirstLogin = isFirstLogin;
 	}
 
+	public String getTerritory() {
+		return territory;
+	}
+
+	public void setTerritory(String territory) {
+		this.territory = territory;
+	}
+
+	
 
 
 }

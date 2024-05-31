@@ -62,6 +62,28 @@ public class LtPromotionController implements CodeMaster {
 
 	}
 	
+	@RequestMapping(value = "/editPromotionV1", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v2.0")
+	public ResponseEntity<Status> editPromotionV1(@RequestParam("file") MultipartFile file, /* @RequestParam("promotion") String promotionStr, */
+			@RequestParam("promotionId") Long promotionId, @RequestParam("createdBy") String createdBy,
+			//@RequestParam("status") String status,
+			@RequestParam("promotionName") String promotionName,
+			@RequestParam("allTimeShowFlag") String allTimeShowFlag, @RequestParam("orgId") String orgId,
+			@RequestParam("startDate") String  startDate, 
+			@RequestParam("endDate") String  endDate
+			) throws ServerException {
+		try {
+			String status = "ACTIVE";
+			return new ResponseEntity<Status>(ltPromotionService.editPromotionV1(file, /* promotionStr, */
+					promotionId, createdBy,
+					status,  promotionName,
+					allTimeShowFlag, orgId,
+					startDate, endDate
+					), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+
+	}
 	
 	@RequestMapping(value = "/getPromotionDataV1/{orgId}/{limit}/{offset}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> getPromotionDataV1(@PathVariable("orgId") String orgId, @PathVariable("limit") Long limit,  @PathVariable("offset") Long offset,

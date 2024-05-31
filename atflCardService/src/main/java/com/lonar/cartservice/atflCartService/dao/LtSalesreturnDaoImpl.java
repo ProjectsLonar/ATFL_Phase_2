@@ -864,5 +864,12 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		return null;
 	}
 
+	@Override
+	public String getUserNameFromSiebel(String mobileNumber) throws ServerException {
+		String query = env.getProperty("getUserNameFromSiebel");
+		String userName = jdbcTemplate.queryForObject(query, new Object[] {mobileNumber}, String.class);
+		return userName;
+	}
+
 }
 

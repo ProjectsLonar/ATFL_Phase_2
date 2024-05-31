@@ -33,7 +33,16 @@ public class RequestDto {
 	String siebelStatus;
 	String siebelRemark; 
 	
-		
+	String mobileNumber;
+	
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
 	public String getSiebelStatus() {
 		return siebelStatus;
 	}
@@ -223,7 +232,8 @@ public class RequestDto {
 				+ searchField + ", customerId=" + customerId + ", userId=" + userId + ", invoiceNumber=" + invoiceNumber
 				+ ", returnStatus=" + returnStatus + ", salesReturnHeaderId=" + salesReturnHeaderId
 				+ ", salesReturnNumber=" + salesReturnNumber + ", price=" + price + ", totalPrice=" + totalPrice
-				+ ", loginId=" + loginId + ", siebelStatus=" + siebelStatus + ", siebelRemark=" + siebelRemark + "]";
+				+ ", loginId=" + loginId + ", siebelStatus=" + siebelStatus + ", siebelRemark=" + siebelRemark
+				+ ", mobileNumber=" + mobileNumber + "]";
 	}
 
 	

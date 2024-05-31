@@ -119,4 +119,14 @@ public class ExcelDataRegion {
 		this.listPrice = listPrice;
 	}
 
+	
+	@Override
+	public String toString() {
+		return "ExcelDataRegion [srNo=" + srNo + ", revenue=" + revenue + ", region=" + region + ", ptrPrice="
+				+ ptrPrice + ", quantity=" + quantity + ", distributorName=" + distributorName + ", distributorCode="
+				+ distributorCode + ", distributorCrmCode=" + distributorCrmCode + ", totalEff=" + totalEff + ", dbc="
+				+ dbc + ", tls=" + tls + ", distributorId=" + distributorId + ", listPrice=" + listPrice + "]";
+	}
+
+	
 }

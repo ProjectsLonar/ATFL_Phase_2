@@ -2,6 +2,7 @@ package com.users.usersmanagement.controller;
 
 import java.io.IOException;
 import java.rmi.ServerException;
+import java.util.concurrent.CompletableFuture;
 
 import javax.validation.Valid;
 
@@ -48,9 +49,11 @@ public class AtflMastUsersController implements CodeMaster {
 			// set logger request
 			String requestURL = "/sendOTP/" + mobileNumber;
 			Logging.setRequestLog(null, "sendOTP()", requestURL, "GET");
-			Status status = atflMastUsersService.sendOTPToUser(mobileNumber);
+			Status status = atflMastUsersService.sendOTPToUser(mobileNumber); //this is original comment on 29-May-2024 for optimization & async call
+//			CompletableFuture<Status> status = atflMastUsersService.sendOTPToUser(mobileNumber);
 			Logging.setResponceLog(status, "sendOTP()", requestURL, "GET");
 			return new ResponseEntity<Status>(status, HttpStatus.OK);
+//			return new ResponseEntity<CompletableFuture<Status>>(status, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("Error Description :", e);

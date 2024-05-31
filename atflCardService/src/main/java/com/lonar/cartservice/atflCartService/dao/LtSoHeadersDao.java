@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.DistributorDetailsDto;
+import com.lonar.cartservice.atflCartService.dto.QuantityCheck;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.ResponseDto;
 import com.lonar.cartservice.atflCartService.dto.SoHeaderDto;
@@ -98,4 +99,12 @@ public interface LtSoHeadersDao {
 	List<ResponseDto> getOrderV2RemovingPendingOrdersFromGetOrderV2(List<Long> headerIdList) throws ServiceException, IOException;
 
 	List<SoHeaderDto> getheaderByHeaderIdNew(List<Long> headerIdsList)throws ServiceException, IOException;
+
+	int[] batchInsert(List<String> sqlQueries);
+
+	List<QuantityCheck> quantityCheck(String distributorId, List<String> productIdList)throws ServiceException, IOException;
+
+	String getUserNameFromSiebel(String mobileNumber)throws ServiceException, IOException;
+
+	List<ResponseDto> getSoHeader11(RequestDto requestDto)throws ServiceException, IOException;
 }

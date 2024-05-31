@@ -30,4 +30,6 @@ public interface LtSoHeadersService {
 	Status getAllPendingOrders(RequestDto requestDto)throws ServiceException, IOException;
 
 	Status removingPendingOrdersFromGetOrderV2(RequestDto requestDto) throws ServiceException, IOException;
+
+	Status getAvailableProductQuantity(SoHeaderDto soHeaderDto)throws ServiceException, IOException;
 }

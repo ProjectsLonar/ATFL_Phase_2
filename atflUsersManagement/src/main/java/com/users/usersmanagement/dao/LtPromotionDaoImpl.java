@@ -1,5 +1,6 @@
 package com.users.usersmanagement.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -10,6 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.model.CodeMaster;
@@ -120,4 +122,27 @@ String defaultoffset = env.getProperty("offset_value");
 		else
 			return null;
 	}
+
+	@Override
+	public void deletePromotionDataById(Long promotionId) throws ServiceException {
+		String query = env.getProperty("deletePromotionDatabyId");
+		Object[] person = new Object[] { promotionId };
+		jdbcTemplate.update(query, person);
+		
+	}
+
+	@Override
+	public void updatePromotionData(MultipartFile file, String createdBy, String pramotionStatus, String promotionName,
+			String allTimeShowFlag, String orgId, String startDate, String endDate, String createdBy1,
+			String createdBy2, Long promotionId) {
+		String query = env.getProperty("updatePromotionData");
+		System.out.println(query+ file+ createdBy+ pramotionStatus+
+				 promotionName+ allTimeShowFlag+ orgId+ startDate+ endDate+ new Date().toString()+ createdBy1+ createdBy2+ promotionId );
+		
+		this.jdbcTemplate.update(query, file, createdBy, pramotionStatus,
+				 promotionName, allTimeShowFlag, orgId, startDate, endDate, //new Date().toString(), 
+				 createdBy1, createdBy2, promotionId );
+		
+	}
+
 }

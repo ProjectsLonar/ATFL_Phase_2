@@ -38,25 +38,29 @@ public class UserDetailsServiceImpl implements UserDetailsService, CodeMaster {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		try {
+			System.out.println("in loadUserByUsername method = "+new Date()+"\n");
 			LtMastUsers ltMastUser = ltMastUsersDao.getLtMastUsersByMobileNumber(username);
-			System.out.println("ltMastUser innn"+ltMastUser);
+			System.out.println("ltMastUser = "+ltMastUser+"\n");
 			LtMastUsers ltMastUserToken = ltMastUsersMap.get(username);
 			String userOTP = ltMastUserToken.getMobileNumber();
+			System.out.println("userOTP = "+userOTP);
 			ltMastUser.setTokenData(ltMastUserToken.getTokenData());
-
+			System.out.println("47. = "+ltMastUser+"\n");
 			ltMastUsersMap.put(username, ltMastUser);
-
+			System.out.println("49. = "+ltMastUsersMap+"\n");
 			// LtMastLogins ltMastLogins =new LtMastLogins();
 
 			if (ltMastUser.getStatus().equals("INACTIVE")) {
+				System.out.println("in get status = inactive");
 				// System.out.println("User is Inactive");
 				// throw new UsernameNotFoundException("Username: " + username + " is
 				// inactive");
 
 			}
-
+			
+			System.out.println("60. = "+new Date()+"\n");
 			LtMastLogins ltMastLogin = ltMastUsersDao.getLoginDetailsByUserId(ltMastUser.getUserId());
-
+			System.out.println("62. = "+new Date()+"\n");
 			String otp = "" + ltMastLogin.getOtp();
 
 			System.out.println("otp===>" + otp);
@@ -136,6 +140,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, CodeMaster {
 		} catch (Exception e) {
 			throw new UsernameNotFoundException("Username: " + username + " not found");
 		}
+		System.out.println("exit loadUserByUsername method = "+new Date());
 		return null;
 
 		// If user not found. Throw this exception.

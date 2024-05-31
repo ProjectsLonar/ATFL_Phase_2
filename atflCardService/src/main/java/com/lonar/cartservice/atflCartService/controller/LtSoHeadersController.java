@@ -2,6 +2,7 @@ package com.lonar.cartservice.atflCartService.controller;
 
 import java.io.IOException;
 import java.rmi.ServerException;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,6 +113,7 @@ public class LtSoHeadersController implements CodeMaster {
 		@RequestMapping(value = "/saveOrderV2", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 		public ResponseEntity<Status> saveOrderV2(@RequestBody SoHeaderDto soHeaderDto) throws ServerException {
 			try {
+				System.out.println("in save order v2 controller Line no 116" + new Date());
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(soHeaderDto);
 				String requestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(soHeaderDto);
@@ -123,7 +125,7 @@ public class LtSoHeadersController implements CodeMaster {
 				String jsonResponce = responceMapper.writeValueAsString(status);
 				String responeJson = responceMapper.writerWithDefaultPrettyPrinter().writeValueAsString(status);
 				logger.info("JSON Responce :"+ responeJson);
-				
+				System.out.println("in save order v2 controller Line no 128" + new Date());
 				return new ResponseEntity<Status>(status, HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("Error Description :", e);
@@ -225,5 +227,16 @@ public class LtSoHeadersController implements CodeMaster {
 				logger.error("Error Description :", e);
 				throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 			}
+		}
+		
+		
+		@GetMapping(value = "/getAvailableProductQuantity", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+		public ResponseEntity<Status> getAvailableProductQuantity(@RequestBody SoHeaderDto soHeaderDto) throws ServerException {
+			try {
+				return new ResponseEntity<Status>(ltSoHeadersService.getAvailableProductQuantity(soHeaderDto), HttpStatus.OK);
+			} catch (Exception e) {
+				throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+			}
+
 		}
 }

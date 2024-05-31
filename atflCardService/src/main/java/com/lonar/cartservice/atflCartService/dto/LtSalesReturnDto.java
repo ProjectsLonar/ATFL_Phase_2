@@ -37,7 +37,16 @@ public class LtSalesReturnDto {
 	String test;
 	String status;
 	
-			
+	String mobileNumber;
+	
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
 	public String getStatus() {
 		return status;
 	}
@@ -251,7 +260,7 @@ public class LtSalesReturnDto {
 				+ outletName + ", outletCode=" + outletCode + ", userId=" + userId + ", totalSalesreturnAmount="
 				+ totalSalesreturnAmount + ", price=" + price + ", beatName=" + beatName + ", priceList=" + priceList
 				+ ", orderNumber=" + orderNumber + ", inventoryId=" + inventoryId + ", test=" + test + ", status="
-				+ status + ", ltSalesReturnLines=" + ltSalesReturnLines + "]";
+				+ status + ", mobileNumber=" + mobileNumber + ", ltSalesReturnLines=" + ltSalesReturnLines + "]";
 	}
 
 

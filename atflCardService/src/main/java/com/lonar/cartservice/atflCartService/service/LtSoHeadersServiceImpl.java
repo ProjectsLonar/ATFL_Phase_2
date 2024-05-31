@@ -29,6 +29,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,8 +38,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -65,10 +70,13 @@ import com.lonar.cartservice.atflCartService.dao.LtSoHeadersDao;
 
 import com.lonar.cartservice.atflCartService.dto.DistributorDetailsDto;
 import com.lonar.cartservice.atflCartService.dto.OrderDetailsDto;
+import com.lonar.cartservice.atflCartService.dto.QuantityCheck;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.ResponseDto;
 import com.lonar.cartservice.atflCartService.dto.SoHeaderDto;
+import com.lonar.cartservice.atflCartService.dto.SoHeaderDtoPendingOrders;
 import com.lonar.cartservice.atflCartService.dto.SoLineDto;
+import com.lonar.cartservice.atflCartService.dto.SoLineDtoPendingOrders;
 import com.lonar.cartservice.atflCartService.model.CodeMaster;
 import com.lonar.cartservice.atflCartService.model.LtMastOutles;
 import com.lonar.cartservice.atflCartService.model.LtSoLines;
@@ -1505,6 +1513,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		
 		Status status = new Status();
 		try {
+			
 			if (soHeaderDto.getOutletId() != null) {
 				LtSoHeaders ltSoHeader = ltSoHeadersDao.checkHeaderStatusIsDraft(soHeaderDto.getOutletId());
 				LtSoHeaders checkOrder = null;
@@ -1514,7 +1523,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
                   
 				if (ltSoHeader == null && checkOrder == null && !soHeaderDto.getSoLineDtoList().isEmpty()) {
 					// Save header in draft status with line and Line data is not empty
-					status = saveSoHeadeLineInDraftV2(soHeaderDto);
+					status = saveSoHeadeLineInDraftV2(soHeaderDto);      //comment on 24-May-24 for optimization
+					
+					//status = isQuantityAvailable(soHeaderDto);
+					
 					//status = saveSoHeadeLineInDraftInternal(soHeaderDto);
 					return status;
 				} else if(ltSoHeader != null && ltSoHeader.getStatus().equalsIgnoreCase(DRAFT) && soHeaderDto.getOrderNumber() == null){
@@ -1527,6 +1539,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					//#### Delete Header confirm ??
 					//deleteSoHeaderLineEmpty(ltSoHeader.getHeaderId()); // 13 Aug 2020 Comment
 					ltSoHeadersDao.deleteLineDataByHeaderId(ltSoHeader.getHeaderId());
+					deleteSoHeaderLineEmpty(ltSoHeader.getHeaderId());
 					status.setCode(FAIL);
 					status.setMessage("DB status draft and no line data against header");
 					return status;
@@ -1535,6 +1548,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					if(ltSoHeader.getHeaderId()!= null) {
 						//deleteSoHeaderLineEmpty(ltSoHeader.getHeaderId());
 						ltSoHeadersDao.deleteLineDataByHeaderId(ltSoHeader.getHeaderId());
+						deleteSoHeaderLineEmpty(ltSoHeader.getHeaderId());
 					}
 					status.setCode(FAIL);
 					status.setMessage("No line data against header");
@@ -1557,7 +1571,101 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		return null;
 	}
 
-	
+	@Override 
+	public Status getAvailableProductQuantity(SoHeaderDto soHeaderDto)throws ServiceException, IOException {
+		System.out.println("is Qty called = "+new Date());
+		Status status = new Status();
+		//List<String> productIdList = new ArrayList<>();
+		try {
+			System.out.println("soHeaderDto = "+soHeaderDto.getSoLineDtoList());
+//		boolean isQuantity = true;
+//		List<String> productIdList = new ArrayList<>();
+//		for(SoLineDto soLineDto:soHeaderDto.getSoLineDtoList()) {
+//			productIdList.add(soLineDto.getProductId());
+//		}
+			
+		List<String> productIdList = soHeaderDto.getSoLineDtoList().stream()
+			    .map(SoLineDto::getProductId)
+			    .collect(Collectors.toList());
+		
+//		System.out.println("productIdList: " + productIdList);
+		
+	    List<QuantityCheck> productList = ltSoHeadersDao.quantityCheck(soHeaderDto.getDistributorId(),productIdList);
+//	    System.out.println("productList: " + productList);
+//	    System.out.println("size is: " + productList.size());
+	    
+	    if(productList.size()>0) {
+	    	status.setCode(RECORD_FOUND);
+	    	status.setMessage("Record found");
+	    	status.setData(productList);
+	    }
+	    else {
+	    	status.setCode(RECORD_NOT_FOUND);
+	    	status.setMessage("Record not found");
+	    	status.setData(productList);
+	    }
+	}catch(Exception e) {
+		e.printStackTrace();
+		status.setCode(RECORD_NOT_FOUND);
+    	status.setMessage("Record not found");
+    	status.setData(null);
+	}
+	    // Map to store product ID and its available quantity for quick lookup
+//	    Map<String, Long> productQuantityMap = new HashMap<>();
+//	    for (QuantityCheck product : productList) {
+//	        productQuantityMap.put(product.getProductId(), product.getQuantity());
+//	    }
+	    
+//	    Map<String, Long> productQuantityMap = productList.stream()
+//        .collect(Collectors.toMap(
+//            QuantityCheck::getProductId,
+//            QuantityCheck::getQuantity
+//        ));
+//	    System.out.println("productQuantityMap = "+productQuantityMap);
+//	    System.out.println("productQuantityMap = "+productQuantityMap.size());
+	    
+//	    for (SoLineDto soLineDto : soHeaderDto.getSoLineDtoList()) {
+//	        String productId = soLineDto.getProductId();
+//	        long requestedQuantity = soLineDto.getQuantity();
+//	        long availableQuantity = productQuantityMap.get(productId);
+// 
+//	        if (availableQuantity < requestedQuantity) {
+//	            // Quantity is not available or less than requested
+//	        	isQuantity = false;
+//	        	break;
+//	        }
+//	    }
+	    
+//	    isQuantity = soHeaderDto.getSoLineDtoList().stream()
+//	    	    .noneMatch(soLineDto -> {
+//	    	        String productId = soLineDto.getProductId();
+//	    	        long requestedQuantity = soLineDto.getQuantity();
+//	    	        long availableQuantity = productQuantityMap.get(productId);
+//	    	        // Treat availableQuantity as 0 if it is null
+//	    	        return availableQuantity < requestedQuantity;
+//	    	    });
+	    
+//	    System.out.println("isQuantity = "+isQuantity);
+//	    
+//	    if(isQuantity==false) {
+//	    	status.setCode(FAIL);
+//			status.setMessage("Requested quantity not available for one or more products.");
+//			return status;
+//	    }else {
+//	    	try {
+//				return saveSoHeadeLineInDraftV2(soHeaderDto);
+//			} catch (ServiceException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//	    }
+		return status;
+ 
+	}
+/* this is original method comment on 24-May-2024 for optimization	
 	private Status saveSoHeadeLineInDraftV2(SoHeaderDto soHeaderDto) throws ServiceException, IOException {
 		try {
 			System.out.println("Hi This is saveSoHeadeLineInDraftV2 ");
@@ -2290,6 +2398,952 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		return null; 
 	}
 
+*/ // this is end of original menthod comment on 24-may-2024 for optimization	
+	
+	private Status saveSoHeadeLineInDraftV2(SoHeaderDto soHeaderDto) throws ServiceException, IOException {
+		System.out.println("saveSoHeadeLineInDraftV2 = "+new Date());
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		
+		try {
+			System.out.println("Hi This is saveSoHeadeLineInDraftV2 ");
+			Status status = new Status();
+			// SaveOrderResponseDto saveOrderResponseDto = new SaveOrderResponseDto();
+			LtSoHeaders ltSoHeader = new LtSoHeaders();
+			
+			  LtMastUsers user = ltSoHeadersDao.getUserDetailsAgainsUserId(soHeaderDto.getUserId());
+			  System.out.println("This user issssssss" + user);
+			  if(user.getUserType().equalsIgnoreCase("RETAILER")) 
+			  {
+				  System.out.println("Hi This is RETAILER saveSoHeadeLineInDraftV2 ");
+				  // need to copy here old save order code
+				  try {				
+						
+						String orderNumber = genrateOrderNumber(soHeaderDto.getOutletId());
+						//System.out.println("orderNumber :: "+orderNumber);
+						
+						//Long orderNo = System.currentTimeMillis();
+						ltSoHeader.setOrderNumber(orderNumber);
+
+						if (soHeaderDto.getOutletId() != null) {
+							ltSoHeader.setOutletId(soHeaderDto.getOutletId());
+						}
+						if (soHeaderDto.getDeliveryDate() != null) {
+							ltSoHeader.setDeliveryDate(soHeaderDto.getDeliveryDate());
+						}
+						if (soHeaderDto.getLatitude() != null) {
+							ltSoHeader.setLatitude(soHeaderDto.getLatitude());
+						}
+						if (soHeaderDto.getLongitude() != null) {
+							ltSoHeader.setLongitude(soHeaderDto.getLongitude());
+						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setCreatedBy(soHeaderDto.getUserId());
+						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setLastUpdatedBy(soHeaderDto.getUserId());
+						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
+						}
+						if (soHeaderDto.getAddress() != null) {
+							ltSoHeader.setAddress(soHeaderDto.getAddress());
+						}
+						if (soHeaderDto.getRemark() != null) {
+							ltSoHeader.setRemark(soHeaderDto.getRemark());
+						}
+
+						ltSoHeader.setOrderDate(new Date()); //new Date()
+						ltSoHeader.setLastUpdateDate(new Date()); // new Date()
+						ltSoHeader.setCreationDate(new Date()); // new Date()
+						ltSoHeader.setStatus(DRAFT);
+
+						ltSoHeader = updateSoHeader(ltSoHeader);
+
+						List<SoLineDto> soLineDtoList = soHeaderDto.getSoLineDtoList();
+						
+					//	StringBuffer strQuery1 =  new StringBuffer();
+						
+					//	strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
+						
+					//	StringBuffer strQuery =  new StringBuffer();
+//						System.out.println("for retailer = "+new Date());
+//						for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) { //old dev take one line
+//							
+//							SoLineDto soLineDto = (SoLineDto) iterator.next();
+//							StringBuffer strQuery =  new StringBuffer();
+//							strQuery.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
+//
+//							strQuery.append("(");
+//
+//							//LtSoLines ltSoLines = new LtSoLines();
+//							
+//							if (ltSoHeader.getHeaderId() != null) {
+//								//ltSoLines.setHeaderId(ltSoHeader.getHeaderId());
+//								strQuery.append(ltSoHeader.getHeaderId()+",");
+//								
+//							}
+//							if (soLineDto.getProductId() != null) {
+//								//ltSoLines.setProductId(soLineDto.getProductId());
+//								strQuery.append("'"+soLineDto.getProductId()+"',");
+//							}
+//							if (soLineDto.getQuantity() != null) {
+//								//ltSoLines.setQuantity(soLineDto.getQuantity());
+//								strQuery.append(soLineDto.getQuantity()+",");
+//							}
+//							if (soLineDto.getListPrice() != null) {
+//								//ltSoLines.setListPrice(soLineDto.getListPrice());
+//								strQuery.append("'"+soLineDto.getListPrice()+"',");
+//							}
+//							if (soLineDto.getDeliveryDate() != null) {
+//								//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
+//								strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
+//							}
+//							strQuery.append("'"+DRAFT.toString()+"',");//Status
+//							
+//
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							
+//							strQuery.append("'"+new Date()+"',");//Created Date
+//							
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							
+//							strQuery.append("'"+new Date()+"',");//Last update date
+//							 
+//							if (soLineDto.getPtrPrice() != null) {
+//								//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
+//								strQuery.append("'"+soLineDto.getPtrPrice()+"'");
+//							}else {
+//								//ltSoLines.setPtrPrice(soLineDto.getListPrice());
+//								strQuery.append("'"+soLineDto.getListPrice()+"'");
+//							}
+//							
+//							//ltSoLines.setStatus(DRAFT);
+//							//ltSoLines.setLastUpdateDate(new Date());
+//							//ltSoLines.setCreationDate(new Date());
+//							strQuery.append(")");
+//							
+//							//ltSoLines = ltSoLinesRepository.save(ltSoLines);									
+//							String query = strQuery.toString();
+//							int n = ltSoHeadersDao.insertLine(query);
+							
+							
+
+							//old dev
+//							SoLineDto soLineDto = (SoLineDto) iterator.next();	
+//							StringBuffer strQuery =  new StringBuffer();
+//							strQuery.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,status,created_by,last_update_login,last_updated_by,ptr_price,eimstatus,delivery_date,creation_date,last_update_date) VALUES ");
+//							
+//							strQuery.append("(");
+//
+//							//LtSoLines ltSoLines = new LtSoLines();
+//							
+//							if (ltSoHeader.getHeaderId() != null) {
+//								//ltSoLines.setHeaderId(ltSoHeader.getHeaderId());
+//								strQuery.append(ltSoHeader.getHeaderId()+",");
+//								
+//							}
+//							if (soLineDto.getProductId() != null) {
+//								//ltSoLines.setProductId(soLineDto.getProductId());
+//								strQuery.append("'"+soLineDto.getProductId()+"',");
+//							}
+//							if (soLineDto.getQuantity() != null) {
+//								//ltSoLines.setQuantity(soLineDto.getQuantity());
+//								strQuery.append(soLineDto.getQuantity()+",");
+//							}
+//							if (soLineDto.getListPrice() != null) {
+//								//ltSoLines.setListPrice(soLineDto.getListPrice());
+//								strQuery.append("'"+soLineDto.getListPrice()+"',");
+//							}else {
+//								//ltSoLines.setPtrPrice(soLineDto.getListPrice());
+//								strQuery.append("'"+soLineDto.getListPrice()+"',");
+//							}
+//							strQuery.append("'"+DRAFT.toString()+"',");//Status
+//							
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							if (soLineDto.getPtrPrice() != null) {
+//								//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
+//								strQuery.append("'"+soLineDto.getPtrPrice()+"',");
+//							}else {
+//								//ltSoLines.setPtrPrice(soLineDto.getListPrice());
+//								strQuery.append("'"+soLineDto.getPtrPrice()+"',");
+//							}
+//						//	if(soLineDto.getEimStatus()!= null) {
+//							strQuery.append("'"+null+"',"); // eimstatus
+//						//	} 		
+//							if (soLineDto.getDeliveryDate() != null) {
+//								//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
+//								
+//								DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+//								Date date = (Date)formatter.parse(soLineDto.getDeliveryDate().toString());
+//								SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+//								String deliveryDate =outputFormat.format(date);
+//								System.out.println("formatedDate : " + deliveryDate); 
+//													
+//								strQuery.append("'"+deliveryDate+"',");
+//							//	strQuery.append("'"+"',");
+//								
+//							 //strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
+//							}
+//							
+//							DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+//							Date date = (Date)formatter.parse(ltSoHeader.getCreationDate().toString());
+//							Date date1 = (Date)formatter.parse(ltSoHeader.getLastUpdateDate().toString());
+//							SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+//							String crationDate =outputFormat.format(date);
+//							String lastUpdateDate =outputFormat.format(date1);
+//							System.out.println("crationDate : " + crationDate);
+//							System.out.println("lastUpdateDate : " + lastUpdateDate);
+//							
+//							//strQuery.append("'"+new Date()+"',");//Created Date
+//							strQuery.append("'"+crationDate+"',");  // set null for demo
+//							
+//							//strQuery.append("'"+new Date()+"'");//Last update date
+//							strQuery.append("'"+lastUpdateDate+"'"); // set null for demo
+//							
+//							//ltSoLines.setStatus(DRAFT);
+//							//ltSoLines.setLastUpdateDate(new Date());
+//							//ltSoLines.setCreationDate(new Date());
+////							strQuery.append("),");
+//							
+//							strQuery.append(")");
+//							String query = strQuery.toString();
+//							int n = ltSoHeadersDao.insertLine(query);
+//						
+//							
+//						}				
+//							System.out.println("Line insert successfully");
+//							System.out.println("for retailer for loop end = "+new Date());
+							//old dev
+							//new Dev 24-05-2024
+							
+						 System.out.println("Time calculation for inserting data for retailer 1824 === " + new Date());
+
+					        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+					        DateFormat inputFormatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+
+					        List<String> queries = new ArrayList<>();
+
+					        for (SoLineDto soLineDto : soLineDtoList) {
+					            StringBuilder strQuery = new StringBuilder();
+					            strQuery.append("INSERT INTO lt_so_lines (header_id, product_id, quantity, list_price, status, created_by, last_update_login, last_updated_by, ptr_price, eimstatus, delivery_date, creation_date, last_update_date) VALUES (");
+
+					            strQuery.append(ltSoHeader.getHeaderId() != null ? ltSoHeader.getHeaderId() : "NULL").append(", ");
+					            strQuery.append(soLineDto.getProductId() != null ? "'" + soLineDto.getProductId() + "'" : "NULL").append(", ");
+					            strQuery.append(soLineDto.getQuantity() != null ? soLineDto.getQuantity() : "NULL").append(", ");
+					            strQuery.append(soLineDto.getListPrice() != null ? "'" + soLineDto.getListPrice() + "'" : "NULL").append(", ");
+					            strQuery.append("'").append(DRAFT.toString()).append("', ");
+					            strQuery.append(soHeaderDto.getUserId() != null ? soHeaderDto.getUserId() : "NULL").append(", ");
+					            strQuery.append(soHeaderDto.getUserId() != null ? soHeaderDto.getUserId() : "NULL").append(", ");
+					            strQuery.append(soHeaderDto.getUserId() != null ? soHeaderDto.getUserId() : "NULL").append(", ");
+					            strQuery.append(soLineDto.getPtrPrice() != null ? "'" + soLineDto.getPtrPrice() + "'" : "'" + soLineDto.getListPrice() + "'").append(", ");
+					            strQuery.append("NULL, "); // eimstatus
+
+					            if (soLineDto.getDeliveryDate() != null) {
+					                try {
+					                    Date date = inputFormatter.parse(soLineDto.getDeliveryDate().toString());
+					                    String deliveryDate = outputFormat.format(date);
+					                    strQuery.append("'").append(deliveryDate).append("', ");
+					                } catch (Exception e) {
+					                    strQuery.append("NULL, ");
+					                }
+					            } else {
+					                strQuery.append("NULL, ");
+					            }
+
+					            try {
+					                String creationDate = outputFormat.format(inputFormatter.parse(ltSoHeader.getCreationDate().toString()));
+					                String lastUpdateDate = outputFormat.format(inputFormatter.parse(ltSoHeader.getLastUpdateDate().toString()));
+					                strQuery.append("'").append(creationDate).append("', ");
+					                strQuery.append("'").append(lastUpdateDate).append("')");
+					            } catch (Exception e) {
+					                strQuery.append("NULL, NULL)");
+					            }
+
+					            queries.add(strQuery.toString());
+					        }
+
+					        int[] updateCounts = ltSoHeadersDao.batchInsert(queries);
+
+					        System.out.println("Inserted " + updateCounts.length + " lines.");
+					        System.out.println("1873 = " + new Date());
+							//new dev
+//					    }
+							
+					//		sending notification & email for approve order
+							//if(ltSoHeader.getStatus().equalsIgnoreCase("PENDING_APPROVAL")){
+							//sendNotifications(ltSoHeader);
+							//}
+							//sendEmail("Siebel Issues", "Hello Shubham, This email coming from code .", "Shubham.magare@lonartech.com");
+					        
+					        //old dev
+//					        System.out.println("send mail start at = "+new Date());
+//							sendEmail(ltSoHeader);
+//							System.out.println("send mail end at = "+new Date());
+							//old dev
+					        
+					     // Asynchronously send the email
+					        System.out.println("ltSoHeader = "+ltSoHeader);
+					        final LtSoHeaders ltSoHeadersForMailSent = ltSoHeader;
+					        System.out.println("_________________________");
+					        System.out.println("ltSoHeadersForMailSent = "+ltSoHeadersForMailSent);
+			                CompletableFuture.runAsync(() -> {
+			                    try {
+			                        sendEmail(ltSoHeadersForMailSent);
+			                    } catch (Exception e) {
+			                        e.printStackTrace();
+			                    }
+			                }, executor);
+							
+					//    inserting save order data into siebel   
+							System.out.println("Hi This is in Draft RETAILER before saveOrderIntoSiebel ");
+							//if(ltSoHeader.getStatus().equalsIgnoreCase("APPROVED")){
+					//		saveOrderIntoSiebel(ltSoHeader, soHeaderDto);//}
+							System.out.println("Hi This is in Draft RETAILER after saveOrderIntoSiebel ");
+								  
+							RequestDto requestDto = new RequestDto();
+							requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
+							requestDto.setLimit(-1);
+							requestDto.setOffset(2);
+					//		requestDto.setUserId(0L);
+							status = getOrderV2(requestDto);
+							status.setCode(INSERT_SUCCESSFULLY);
+							status.setMessage("Insert Successfully");
+							//sendNotifications(ltSoHeader);
+							return status;
+						
+					} catch (Exception e) {
+						logger.error("Error Description :", e);
+						e.printStackTrace();
+					}
+					return null;
+				  				  
+				  
+			  }
+			  
+			  else  if(user.getUserType().equalsIgnoreCase(SALES) || user.getUserType().equalsIgnoreCase(DISTRIBUTOR) ||
+					    user.getUserType().equalsIgnoreCase(SYSTEMADMINISTRATOR))
+			    {
+				   // for Instock products order
+				  System.out.println("Hi This is Draft for instock saveSoHeadeLineInDraftV2 ");
+				  
+				  String defailtPriceList = ltSoHeadersDao.getDefaultPriceListAgainstOutletId(soHeaderDto.getOutletId());
+				  
+				   if(soHeaderDto.getInstockFlag().equals("Y")) {
+						
+					String orderNumber = genrateOrderNumber(soHeaderDto.getOutletId());
+					//System.out.println("orderNumber :: "+orderNumber);
+					
+					//Long orderNo = System.currentTimeMillis();
+					ltSoHeader.setOrderNumber(orderNumber);
+		            					
+					if (soHeaderDto.getOutletId() != null) {
+						ltSoHeader.setOutletId(soHeaderDto.getOutletId());
+					}
+					if (soHeaderDto.getDeliveryDate() != null) {
+						ltSoHeader.setDeliveryDate(soHeaderDto.getDeliveryDate());
+					}
+					if (soHeaderDto.getLatitude() != null) {
+						ltSoHeader.setLatitude(soHeaderDto.getLatitude());
+					}
+					if (soHeaderDto.getLongitude() != null) {
+						ltSoHeader.setLongitude(soHeaderDto.getLongitude());
+					}
+					if (soHeaderDto.getUserId() != null) {
+						ltSoHeader.setCreatedBy(soHeaderDto.getUserId());
+					}
+					if (soHeaderDto.getUserId() != null) {
+						ltSoHeader.setLastUpdatedBy(soHeaderDto.getUserId());
+					}
+					if (soHeaderDto.getUserId() != null) {
+						ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
+					}
+					if (soHeaderDto.getAddress() != null) {
+						ltSoHeader.setAddress(soHeaderDto.getAddress());
+					}
+					if (soHeaderDto.getRemark() != null) {
+						ltSoHeader.setRemark(soHeaderDto.getRemark());
+					}
+
+					ltSoHeader.setOrderDate(new Date()); //new Date()
+					ltSoHeader.setLastUpdateDate(new Date()); // new Date()
+					ltSoHeader.setCreationDate(new Date()); // new Date()
+					//ltSoHeader.setStatus(DRAFT);
+
+					if(soHeaderDto.getInstockFlag()!= null) {
+						ltSoHeader.setInStockFlag(soHeaderDto.getInstockFlag());
+					}
+					if(soHeaderDto.getPriceList()!= null) {
+						ltSoHeader.setPriceList(soHeaderDto.getPriceList());
+					}
+					
+				//	considering default priceList
+					if(!soHeaderDto.getPriceList().equals(defailtPriceList) ) {
+						ltSoHeader.setStatus(DRAFT);
+					}else {
+						//ltSoHeader.setStatus("APPROVED");
+						ltSoHeader.setStatus(DRAFT);
+					}
+					if(soHeaderDto.getBeatId()!= null) {
+						ltSoHeader.setBeatId(soHeaderDto.getBeatId());
+					}
+					
+					ltSoHeader = updateSoHeader(ltSoHeader);
+					System.out.println("saved ltSoHeader data is==" +ltSoHeader);
+					
+//					if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus().equals("APPROVED")  && 
+//							ltSoHeader.getInStockFlag().equals("Y") && ltSoHeader.getPriceList().equals("ALL_INDIA_RDS")) {
+//						// considering ALL_INDIA_RDS as default priceList
+//						// need to send this reqBody to siebel
+//						
+//					}else {
+//						// inStock order with different priceList need to send for approval to areHead
+//						sendNotifications(ltSoHeader);
+//					}		
+					
+					List<SoLineDto> soLineDtoList = soHeaderDto.getSoLineDtoList();
+					
+				//	StringBuffer strQuery1 =  new StringBuffer();
+					
+			//		strQuery1.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,delivery_date,status,created_by,creation_date,last_update_login,last_updated_by,last_update_date,ptr_price) VALUES ");
+					
+			//		StringBuffer strQuery =  new StringBuffer();
+					
+					//old dev
+					
+//					System.out.println("Time calculation for inserting data = "+new Date());
+//					System.out.println("1990 = "+new Date());
+//					for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
+//						
+//						SoLineDto soLineDto = (SoLineDto) iterator.next();
+//						StringBuffer strQuery =  new StringBuffer();
+//						strQuery.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,status,created_by,last_update_login,last_updated_by,ptr_price,eimstatus,delivery_date,creation_date,last_update_date) VALUES ");
+//						
+//						strQuery.append("(");
+//
+//						//LtSoLines ltSoLines = new LtSoLines();
+//						
+//						if (ltSoHeader.getHeaderId() != null) {
+//							//ltSoLines.setHeaderId(ltSoHeader.getHeaderId());
+//							strQuery.append(ltSoHeader.getHeaderId()+",");
+//							
+//						}
+//						if (soLineDto.getProductId() != null) {
+//							//ltSoLines.setProductId(soLineDto.getProductId());
+//							strQuery.append("'"+soLineDto.getProductId()+"',");
+//						}
+//						if (soLineDto.getQuantity() != null) {
+//							//ltSoLines.setQuantity(soLineDto.getQuantity());
+//							strQuery.append(soLineDto.getQuantity()+",");
+//						}
+//						if (soLineDto.getListPrice() != null) {
+//							//ltSoLines.setListPrice(soLineDto.getListPrice());
+//							strQuery.append("'"+soLineDto.getListPrice()+"',");
+//						}else {
+//							//ltSoLines.setPtrPrice(soLineDto.getListPrice());
+//							strQuery.append("'"+soLineDto.getListPrice()+"',");
+//						}
+//						strQuery.append("'"+DRAFT.toString()+"',");//Status
+//						
+//						if (soHeaderDto.getUserId() != null) {
+//							//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
+//							strQuery.append(soHeaderDto.getUserId()+",");
+//						}
+//						if (soHeaderDto.getUserId() != null) {
+//							//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
+//							strQuery.append(soHeaderDto.getUserId()+",");
+//						}
+//						if (soHeaderDto.getUserId() != null) {
+//							//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
+//							strQuery.append(soHeaderDto.getUserId()+",");
+//						}
+//						if (soLineDto.getPtrPrice() != null) {
+//							//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
+//							strQuery.append("'"+soLineDto.getPtrPrice()+"',");
+//						}else {
+//							//ltSoLines.setPtrPrice(soLineDto.getListPrice());
+//							strQuery.append("'"+soLineDto.getPtrPrice()+"',");
+//						}
+//					//	if(soLineDto.getEimStatus()!= null) {
+//						strQuery.append("'"+null+"',"); // eimstatus
+//					//	} 		
+//						if (soLineDto.getDeliveryDate() != null) {
+//							//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
+//							
+//							DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+//							Date date = (Date)formatter.parse(soLineDto.getDeliveryDate().toString());
+//							SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+//							String deliveryDate =outputFormat.format(date);
+//							System.out.println("formatedDate : " + deliveryDate); 
+//												
+//							strQuery.append("'"+deliveryDate+"',");
+//						//	strQuery.append("'"+"',");
+//							
+//						 //strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
+//						}
+//						
+//						DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+//						Date date = (Date)formatter.parse(ltSoHeader.getCreationDate().toString());
+//						Date date1 = (Date)formatter.parse(ltSoHeader.getLastUpdateDate().toString());
+//						SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+//						String crationDate =outputFormat.format(date);
+//						String lastUpdateDate =outputFormat.format(date1);
+//						System.out.println("crationDate : " + crationDate);
+//						System.out.println("lastUpdateDate : " + lastUpdateDate);
+//						
+//						//strQuery.append("'"+new Date()+"',");//Created Date
+//						strQuery.append("'"+crationDate+"',");  // set null for demo
+//						
+//						//strQuery.append("'"+new Date()+"'");//Last update date
+//						strQuery.append("'"+lastUpdateDate+"'"); // set null for demo
+//						
+//						//ltSoLines.setStatus(DRAFT);
+//						//ltSoLines.setLastUpdateDate(new Date());
+//						//ltSoLines.setCreationDate(new Date());
+////						strQuery.append("),");
+//						
+//						strQuery.append(")");
+//						//strQuery1 = strQuery1.append(strQuery);
+//						//ltSoLines = ltSoLinesRepository.save(ltSoLines);
+//						String query = strQuery.toString();
+//						int n = ltSoHeadersDao.insertLine(query);
+//					}
+//					System.out.println("2086 = "+new Date());
+					
+					//old dev
+					
+					// new dev
+					
+					System.out.println("Time calculation for inserting data for sales,distributor,sysAdmin= 2119" + new Date());
+
+			        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+			        DateFormat inputFormatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+
+			        List<String> queries = new ArrayList<>();
+
+			        for (SoLineDto soLineDto : soLineDtoList) {
+			            StringBuilder strQuery = new StringBuilder();
+			            strQuery.append("INSERT INTO lt_so_lines (header_id, product_id, quantity, list_price, status, created_by, last_update_login, last_updated_by, ptr_price, eimstatus, delivery_date, creation_date, last_update_date) VALUES (");
+
+			            strQuery.append(ltSoHeader.getHeaderId() != null ? ltSoHeader.getHeaderId() : "NULL").append(", ");
+			            strQuery.append(soLineDto.getProductId() != null ? "'" + soLineDto.getProductId() + "'" : "NULL").append(", ");
+			            strQuery.append(soLineDto.getQuantity() != null ? soLineDto.getQuantity() : "NULL").append(", ");
+			            strQuery.append(soLineDto.getListPrice() != null ? "'" + soLineDto.getListPrice() + "'" : "NULL").append(", ");
+			            strQuery.append("'").append(DRAFT.toString()).append("', ");
+			            strQuery.append(soHeaderDto.getUserId() != null ? soHeaderDto.getUserId() : "NULL").append(", ");
+			            strQuery.append(soHeaderDto.getUserId() != null ? soHeaderDto.getUserId() : "NULL").append(", ");
+			            strQuery.append(soHeaderDto.getUserId() != null ? soHeaderDto.getUserId() : "NULL").append(", ");
+			            strQuery.append(soLineDto.getPtrPrice() != null ? "'" + soLineDto.getPtrPrice() + "'" : "'" + soLineDto.getListPrice() + "'").append(", ");
+			            strQuery.append("NULL, "); // eimstatus
+
+			            if (soLineDto.getDeliveryDate() != null) {
+			                try {
+			                    Date date = inputFormatter.parse(soLineDto.getDeliveryDate().toString());
+			                    String deliveryDate = outputFormat.format(date);
+			                    strQuery.append("'").append(deliveryDate).append("', ");
+			                } catch (Exception e) {
+			                    strQuery.append("NULL, ");
+			                }
+			            } else {
+			                strQuery.append("NULL, ");
+			            }
+
+			            try {
+			                String creationDate = outputFormat.format(inputFormatter.parse(ltSoHeader.getCreationDate().toString()));
+			                String lastUpdateDate = outputFormat.format(inputFormatter.parse(ltSoHeader.getLastUpdateDate().toString()));
+			                strQuery.append("'").append(creationDate).append("', ");
+			                strQuery.append("'").append(lastUpdateDate).append("')");
+			            } catch (Exception e) {
+			                strQuery.append("NULL, NULL)");
+			            }
+
+			            queries.add(strQuery.toString());
+			        }
+
+			        int[] updateCounts = ltSoHeadersDao.batchInsert(queries);
+
+			        System.out.println("Inserted " + updateCounts.length + " lines.");
+			        System.out.println("2145 = " + new Date());
+			        
+			        //new dev
+			        
+					 System.out.print("This is default pl beforeeeeeeeeeee");
+				// ATFL Phase 2 siebel devlopement		  
+					try {
+						 if(ltSoHeader.getOrderNumber()!= null && ltSoHeader.getStatus().equals("APPROVED")  && 
+								ltSoHeader.getInStockFlag().equals("Y") && ltSoHeader.getPriceList()==defailtPriceList) {
+									
+							 System.out.println("Hi This is RETAILER instock saveSoHeadeLineInDraftV2 "); 
+							// sendEmail(ltSoHeader); 
+						// inserting save order data into siebel using saveOrderIntoSiebel()   
+							 System.out.print("This is Draft default pl before");
+							 //saveOrderIntoSiebel(ltSoHeader, soHeaderDto);
+							 System.out.print("This is Draft default pl after");						
+						// saveOutlet();  inserting the create outlet data into siebel using saveOutlet() 
+																	
+						}else {
+							
+						// inStock order with different priceList need to send for approval to areHead
+							//if(ltSoHeader.getStatus().equalsIgnoreCase("PENDING_APPROVAL")) {
+//							sendNotifications(ltSoHeader);//old dev
+							//}
+							System.out.println("I'm calling send email in sales, distributor, sysadmin ");
+//							sendEmail(ltSoHeader);//old dev
+							final LtSoHeaders ltSoHeaderForSentMail = ltSoHeader;
+							CompletableFuture.runAsync(() -> {
+			                    try {
+			                    	System.out.println("in ascyc method...");
+			                    	sendNotifications(ltSoHeaderForSentMail);
+			                        sendEmail(ltSoHeaderForSentMail);
+			                    } catch (Exception e) {
+			                        e.printStackTrace();
+			                    }
+			                }, executor);
+							
+						//    inserting save order data into siebel  if order is approved using sampleCode()   
+							System.out.println("Hi This is Draft Sales,distri & or before saveOrderIntoSiebel ");
+							//if(ltSoHeader.getStatus().equalsIgnoreCase("APPROVED")) 
+							//{
+						//	      saveOrderIntoSiebel(ltSoHeader, soHeaderDto);
+							//}
+							System.out.println("Hi This is Draft Not RETAILER after saveOrderIntoSiebel ");
+													
+						}
+						
+						RequestDto requestDto = new RequestDto();
+						requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
+						requestDto.setLimit(-1);
+						requestDto.setOffset(2);
+					//	requestDto.setLoginId(0L);
+						status = getOrderV2(requestDto);
+						
+						// saving salesPerson details in salesPersonLocation table
+						if(user.getUserType().equalsIgnoreCase(SALES)) {
+							
+							LtSalesPersonLocation ltSalesPersonLocation = new LtSalesPersonLocation();
+							
+							ltSalesPersonLocation.setBeatId(soHeaderDto.getBeatId());
+							ltSalesPersonLocation.setOutletId(soHeaderDto.getOutletId());
+							ltSalesPersonLocation.setOrderName(orderNumber);
+							ltSalesPersonLocation.setAddress(soHeaderDto.getAddress());
+							ltSalesPersonLocation.setLatitude(soHeaderDto.getLatitude());
+							ltSalesPersonLocation.setLongitude(soHeaderDto.getLongitude());
+							ltSalesPersonLocation.setCreatedBy(soHeaderDto.getUserId());
+							ltSalesPersonLocation.setLastUpdatedBy(soHeaderDto.getUserId());
+							ltSalesPersonLocation.setCreationDate(new Date());
+							ltSalesPersonLocation.setLastUpdateDate(new Date());
+							
+							ltSalesPersonLocationRepository.save(ltSalesPersonLocation);
+						}
+					   }
+						catch (Exception e) {
+							logger.error("Error Description :", e);
+							e.printStackTrace();
+						}
+			            status.setCode(INSERT_SUCCESSFULLY);
+						status.setMessage("Insert Successfully");
+						//sendNotifications(ltSoHeader);
+						return status;
+								
+				} 
+				// for Out_Of_Stock Products order	i.e. isInstockFlag ="N"
+					else {
+						System.out.println("Hi This is outof stock saveSoHeadeLineInDraftV2 ");
+						String orderNumber = genrateOrderNumber(soHeaderDto.getOutletId());
+						//System.out.println("orderNumber :: "+orderNumber);
+						
+						//Long orderNo = System.currentTimeMillis();
+						ltSoHeader.setOrderNumber(orderNumber);
+			            
+						
+						if (soHeaderDto.getOutletId() != null) {
+							ltSoHeader.setOutletId(soHeaderDto.getOutletId());
+						}
+						if (soHeaderDto.getDeliveryDate() != null) {
+							ltSoHeader.setDeliveryDate(soHeaderDto.getDeliveryDate());
+						}
+						if (soHeaderDto.getLatitude() != null) {
+							ltSoHeader.setLatitude(soHeaderDto.getLatitude());
+						}
+						if (soHeaderDto.getLongitude() != null) {
+							ltSoHeader.setLongitude(soHeaderDto.getLongitude());
+						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setCreatedBy(soHeaderDto.getUserId());
+						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setLastUpdatedBy(soHeaderDto.getUserId());
+						}
+						if (soHeaderDto.getUserId() != null) {
+							ltSoHeader.setLastUpdateLogin(soHeaderDto.getUserId());
+						}
+						if (soHeaderDto.getAddress() != null) {
+							ltSoHeader.setAddress(soHeaderDto.getAddress());
+						}
+						if (soHeaderDto.getRemark() != null) {
+							ltSoHeader.setRemark(soHeaderDto.getRemark());
+						}
+
+						ltSoHeader.setOrderDate(new Date()); //new Date()
+						ltSoHeader.setLastUpdateDate(new Date()); // new Date()
+						ltSoHeader.setCreationDate(new Date()); // new Date()
+						//ltSoHeader.setStatus(DRAFT);
+
+						 ltSoHeader.setStatus(DRAFT);
+					    						
+						if(soHeaderDto.getInstockFlag()!= null) {
+							ltSoHeader.setInStockFlag(soHeaderDto.getInstockFlag());
+						}
+						if(soHeaderDto.getBeatId()!= null) {
+							ltSoHeader.setBeatId(soHeaderDto.getBeatId());
+						}if(soHeaderDto.getPriceList()!= null) {
+							ltSoHeader.setPriceList(soHeaderDto.getPriceList());
+						}
+						
+						ltSoHeader = updateSoHeader(ltSoHeader);
+							
+						// send OutofStock order for approval to areHead
+						//	sendNotifications(ltSoHeader);
+						
+						List<SoLineDto> soLineDtoList = soHeaderDto.getSoLineDtoList();
+						
+						//StringBuffer strQuery1 =  new StringBuffer();
+							
+						//old dev
+//						for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
+//												
+//							SoLineDto soLineDto = (SoLineDto) iterator.next();	
+//							StringBuffer strQuery =  new StringBuffer();
+//							strQuery.append("insert into lt_so_lines (header_id,product_id,quantity,list_price,status,created_by,last_update_login,last_updated_by,ptr_price,eimstatus,delivery_date,creation_date,last_update_date) VALUES ");
+//							
+//							strQuery.append("(");
+//
+//							//LtSoLines ltSoLines = new LtSoLines();
+//							
+//							if (ltSoHeader.getHeaderId() != null) {
+//								//ltSoLines.setHeaderId(ltSoHeader.getHeaderId());
+//								strQuery.append(ltSoHeader.getHeaderId()+",");
+//								
+//							}
+//							if (soLineDto.getProductId() != null) {
+//								//ltSoLines.setProductId(soLineDto.getProductId());
+//								strQuery.append("'"+soLineDto.getProductId()+"',");
+//							}
+//							if (soLineDto.getQuantity() != null) {
+//								//ltSoLines.setQuantity(soLineDto.getQuantity());
+//								strQuery.append(soLineDto.getQuantity()+",");
+//							}
+//							if (soLineDto.getListPrice() != null) {
+//								//ltSoLines.setListPrice(soLineDto.getListPrice());
+//								strQuery.append("'"+soLineDto.getListPrice()+"',");
+//							}else {
+//								//strQuery.append("'"+null+"',");
+//								strQuery.append("'"+soLineDto.getListPrice()+"',");
+//							}
+//							strQuery.append("'"+DRAFT.toString()+"',");//Status
+//							
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setCreatedBy(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setLastUpdateLogin(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							if (soHeaderDto.getUserId() != null) {
+//								//ltSoLines.setLastUpdatedBy(soHeaderDto.getUserId());
+//								strQuery.append(soHeaderDto.getUserId()+",");
+//							}
+//							if (soLineDto.getPtrPrice() != null) {
+//								//ltSoLines.setPtrPrice(soLineDto.getPtrPrice());
+//								strQuery.append("'"+soLineDto.getPtrPrice()+"',");
+//							}else {
+//								//ltSoLines.setPtrPrice(soLineDto.getListPrice());
+//								strQuery.append("'"+soLineDto.getPtrPrice()+"',");
+//							}
+//						//	if(soLineDto.getEimStatus()!= null) {
+//							strQuery.append("'"+null+"',"); // eimstatus
+//						//	} 		
+//							if (soLineDto.getDeliveryDate() != null) {
+//								//ltSoLines.setDeliveryDate(soLineDto.getDeliveryDate());
+//								
+//								DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+//								Date date = (Date)formatter.parse(soLineDto.getDeliveryDate().toString());
+//								SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+//								String deliveryDate =outputFormat.format(date);
+//								System.out.println("formatedDate : " + deliveryDate); 
+//													
+//								strQuery.append("'"+deliveryDate+"',");
+//							//	strQuery.append("'"+"',");
+//								
+//							 //strQuery.append("'"+soLineDto.getDeliveryDate().toString()+"',");
+//							}
+//							
+//							DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+//							Date date = (Date)formatter.parse(ltSoHeader.getCreationDate().toString());
+//							Date date1 = (Date)formatter.parse(ltSoHeader.getLastUpdateDate().toString());
+//							SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+//							String crationDate =outputFormat.format(date);
+//							String lastUpdateDate =outputFormat.format(date1);
+//							System.out.println("crationDate : " + crationDate);
+//							System.out.println("lastUpdateDate : " + lastUpdateDate);
+//							
+//							//strQuery.append("'"+new Date()+"',");//Created Date
+//							strQuery.append("'"+crationDate+"',");  // set null for demo
+//							
+//							//strQuery.append("'"+new Date()+"'");//Last update date
+//							strQuery.append("'"+lastUpdateDate+"'"); // set null for demo
+//							
+//							//ltSoLines.setStatus(DRAFT);
+//							//ltSoLines.setLastUpdateDate(new Date());
+//							//ltSoLines.setCreationDate(new Date());
+////							strQuery.append("),");
+//							
+//							strQuery.append(")");
+//							String query = strQuery.toString();
+//							int n = ltSoHeadersDao.insertLine(query);
+//						}
+						//old dev
+						
+						//new dev
+						
+						System.out.println("Time calculation for inserting data for out of stock= 2402" + new Date());
+
+				        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+				        DateFormat inputFormatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+
+				        List<String> queries = new ArrayList<>();
+
+				        for (SoLineDto soLineDto : soLineDtoList) {
+				            StringBuilder strQuery = new StringBuilder();
+				            strQuery.append("INSERT INTO lt_so_lines (header_id, product_id, quantity, list_price, status, created_by, last_update_login, last_updated_by, ptr_price, eimstatus, delivery_date, creation_date, last_update_date) VALUES (");
+
+				            strQuery.append(ltSoHeader.getHeaderId() != null ? ltSoHeader.getHeaderId() : "NULL").append(", ");
+				            strQuery.append(soLineDto.getProductId() != null ? "'" + soLineDto.getProductId() + "'" : "NULL").append(", ");
+				            strQuery.append(soLineDto.getQuantity() != null ? soLineDto.getQuantity() : "NULL").append(", ");
+				            strQuery.append(soLineDto.getListPrice() != null ? "'" + soLineDto.getListPrice() + "'" : "NULL").append(", ");
+				            strQuery.append("'").append(DRAFT.toString()).append("', ");
+				            strQuery.append(soHeaderDto.getUserId() != null ? soHeaderDto.getUserId() : "NULL").append(", ");
+				            strQuery.append(soHeaderDto.getUserId() != null ? soHeaderDto.getUserId() : "NULL").append(", ");
+				            strQuery.append(soHeaderDto.getUserId() != null ? soHeaderDto.getUserId() : "NULL").append(", ");
+				            strQuery.append(soLineDto.getPtrPrice() != null ? "'" + soLineDto.getPtrPrice() + "'" : "'" + soLineDto.getListPrice() + "'").append(", ");
+				            strQuery.append("NULL, "); // eimstatus
+
+				            if (soLineDto.getDeliveryDate() != null) {
+				                try {
+				                    Date date = inputFormatter.parse(soLineDto.getDeliveryDate().toString());
+				                    String deliveryDate = outputFormat.format(date);
+				                    strQuery.append("'").append(deliveryDate).append("', ");
+				                } catch (Exception e) {
+				                    strQuery.append("NULL, ");
+				                }
+				            } else {
+				                strQuery.append("NULL, ");
+				            }
+
+				            try {
+				                String creationDate = outputFormat.format(inputFormatter.parse(ltSoHeader.getCreationDate().toString()));
+				                String lastUpdateDate = outputFormat.format(inputFormatter.parse(ltSoHeader.getLastUpdateDate().toString()));
+				                strQuery.append("'").append(creationDate).append("', ");
+				                strQuery.append("'").append(lastUpdateDate).append("')");
+				            } catch (Exception e) {
+				                strQuery.append("NULL, NULL)");
+				            }
+
+				            queries.add(strQuery.toString());
+				        }
+
+				        int[] updateCounts = ltSoHeadersDao.batchInsert(queries);
+
+				        System.out.println("Inserted " + updateCounts.length + " lines.");
+				        System.out.println("2451 = " + new Date());
+						
+						
+						// outOfStock order need to send for approval to areHead
+						//if(ltSoHeader.getStatus().equalsIgnoreCase("PENDING_APPROVAL")) {   
+						//sendNotifications(ltSoHeader);
+						//}
+						   //sendEmail(ltSoHeader);
+								
+						// ATFL Phase 2 siebel devlopement					
+						try {
+							//if(ltSoHeader.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
+								
+						  // inserting save order data into siebel using sampleCode() and update the order status to NEW 
+							System.out.println("Hi This is Draft outofStock order before saveOrderIntoSiebel ");
+							//if(ltSoHeader.getStatus().equalsIgnoreCase("APPROVED")) {
+					//		saveOrderIntoSiebel(ltSoHeader, soHeaderDto);//}
+							System.out.println("Hi This is Draft outofStock Order after saveOrderIntoSiebel ");	  
+							//}
+							
+							RequestDto requestDto = new RequestDto();
+							requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
+							requestDto.setLimit(-1);
+							requestDto.setOffset(2);
+						//	requestDto.setLoginId(0L);
+							status = getOrderV2(requestDto);
+							
+							// saving salesPerson details in salesPersonLocation table
+							if(user.getUserType().equalsIgnoreCase(SALES)) {
+								
+								LtSalesPersonLocation ltSalesPersonLocation = new LtSalesPersonLocation();
+								
+								ltSalesPersonLocation.setBeatId(soHeaderDto.getBeatId());
+								ltSalesPersonLocation.setOutletId(soHeaderDto.getOutletId());
+								ltSalesPersonLocation.setOrderName(orderNumber);
+								ltSalesPersonLocation.setAddress(soHeaderDto.getAddress());
+								ltSalesPersonLocation.setLatitude(soHeaderDto.getLatitude());
+								ltSalesPersonLocation.setLongitude(soHeaderDto.getLongitude());
+								ltSalesPersonLocation.setCreatedBy(soHeaderDto.getUserId());
+								ltSalesPersonLocation.setLastUpdatedBy(soHeaderDto.getUserId());
+								ltSalesPersonLocation.setCreationDate(new Date());
+								ltSalesPersonLocation.setLastUpdateDate(new Date());
+								
+								ltSalesPersonLocationRepository.save(ltSalesPersonLocation);
+							}
+						}catch (Exception e) {
+							logger.error("Error Description :", e);
+							e.printStackTrace();
+						}	
+							status.setCode(INSERT_SUCCESSFULLY);
+							status.setMessage("Insert Successfully");
+							return status;						
+					} 		  
+				  
+			  }
+						
+		}catch (Exception e) {
+			logger.error("Error Description :", e);
+			e.printStackTrace();
+		}finally {
+	        executor.shutdown();
+	        System.out.println("connection closed");
+	    }
+		return null;
+		
+	}	
+	
 	// New method for save order without notification
 	
 	private Status saveSoHeadeLineInDraftInternal(SoHeaderDto soHeaderDto) throws ServiceException, IOException {
@@ -3260,8 +4314,13 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         con.setRequestMethod(method);
 //         Set request headers
         con.setRequestProperty("Content-Type", "application/json");
-        String username = "VINAY.KUMAR6";
-        String password = "Welcome1";
+        //String username = "VINAY.KUMAR6";
+        //String password = "Welcome1";
+        String username;
+        if(soHeaderDto.getMobileNumber()!= null) {
+         username = ltSoHeadersDao.getUserNameFromSiebel(soHeaderDto.getMobileNumber());
+         }else {
+         username = "VINAY.KUMAR6";}String password = "D10nysu$";
         String auth = username + ":" + password;
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
         String authHeaderValue = "Basic " + new String(encodedAuth);
@@ -3344,6 +4403,343 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 
 }
 
+	
+	private void saveOutOfStockOrderIntoSiebel(LtSoHeaders ltSoHeader, SoHeaderDto soHeaderDto){
+		try {
+			
+			System.out.println("Hi I'm in Siebel Mehtod");
+			
+        //String url = "https://10.245.4.70:9014/siebel/v1.0/service/AT%20New%20Order%20Creation%20REST%20BS/CreateOrder?matchrequestformat=y";
+        String url = "https://10.245.4.70:9014/siebel/v1.0/service/AT%20New%20Order%20Creation%20REST%20BS/CreateOrder?matchrequestformat=y";
+        
+        String method = "POST";
+//        String contentType = "Content-Type: application/json";
+//        String authorization = "Authorization: Basic TE9OQVJfVEVTVDpMb25hcjEyMw=="; //LONAR_TEST:Lonar123
+//       String authorization = "Authorization: Basic VklOQVkuS1VNQVI2OldlbGNvbWUx"; //VINAY.KUMAR6:Welcome1
+                                                              
+        JSONObject lineItemObject = new JSONObject();
+		lineItemObject.put("Id", "1");
+//		lineItemObject.put("Product Id", soLineDto.getProductId());
+		lineItemObject.put("Product Id", "1-4XBK-2");   //"1-MZZR-1");     ////"1-4XBK-8");
+//		lineItemObject.put("Due Date", soLineDto.getDeliveryDate());
+		lineItemObject.put("Due Date", "04/16/2024");
+//  	lineItemObject.put("Item Price List Id", soLineDto.getPriceListId());
+//		lineItemObject.put("Item Price List Id", "1-475Z");
+		lineItemObject.put("Action Code", "New");
+//  	lineItemObject.put("Name", soLineDto.getProductName());
+//		lineItemObject.put("Name", "P02IAPKP040");  ///"P03RSPOP010");  ///"P02IAPKP040");
+//   	lineItemObject.put("Quantity", soLineDto.getQuantity());
+		lineItemObject.put("Quantity", "1");
+		
+		JSONArray lineItemArray = new JSONArray();
+		for (int i =0; i<lineItemObject.length(); i++) {
+			lineItemArray.put(lineItemObject);	
+		}
+		
+		List<SoLineDto> lineItem = soHeaderDto.getSoLineDtoList();
+////        for (int i =0; i<lineItem.size(); i++) {
+////        	 SoLineDto soLineList = new SoLineDto();
+////        	 String id = Integer.toString(i+1);   
+////        	 String prodId=  lineItem.get(i).getProductId();
+////        	 //String deliDate=  lineItem.get(i).getDeliveryDate().toString();
+////        	 DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+////				Date date = (Date)formatter.parse(lineItem.get(i).getDeliveryDate().toString());
+////				SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+////				String deliDate =outputFormat.format(date);
+////			//	System.out.println("formatedDate : " + deliveryDate);
+////        	 String prilst=  lineItem.get(i).getPriceListId();
+////        	 //String ActionCode= "New"; 
+////        	 String prodName=  lineItem.get(i).getProductName();
+////        	 String qty=  Long.toString(lineItem.get(i).getQuantity());
+////        	   
+////        	 //lineItem.add(soLineList);
+////        	 lineItemObject.put("Id",id);
+////        	 lineItemObject.put("Product Id",prodId);
+////        	 lineItemObject.put("Due Date",deliDate);
+////        	 lineItemObject.put("Item Price List Id",prilst);
+////        	 lineItemObject.put("Action Code","New");
+////        	 lineItemObject.put("Name",prodName);
+////        	 lineItemObject.put("Quantity",qty);
+////        	 
+////        	 lineItemArray.put(lineItemObject);
+////            }
+		
+        JSONArray listOfLineItem1 = new JSONArray();
+        
+        for (int i = 0; i < lineItem.size(); i++) {
+            JSONObject lineItem1 = new JSONObject();
+            lineItem1.put("Id", Integer.toString(i+1));
+            lineItem1.put("Product Id", lineItem.get(i).getProductId());
+//            lineItem1.put("Item Price List Id", lineItem.get(i).getPriceListId());
+                        
+            DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+			Date date = (Date)formatter.parse(lineItem.get(i).getDeliveryDate().toString());
+			SimpleDateFormat outputFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss"); //("dd/MM/yyyy hh:mm:ss");
+			String deliDate =outputFormat.format(date);
+            lineItem1.put("Due Date", deliDate);
+            lineItem1.put("Action Code", "New");
+            lineItem1.put("Quantity", Long.toString(lineItem.get(i).getQuantity()));
+//            lineItem1.put("Name", lineItem.get(i).getProductName());     // in table this is as product desc
+//              lineItem1.put("Name", lineItem.get(i).getProductDesc());  // in table this is as product name;
+            listOfLineItem1.put(lineItem1);
+        }   
+           System.out.println("listOfLineItem1 is === " +listOfLineItem1);
+        
+		JSONObject listOfLineItem = new JSONObject();
+		listOfLineItem.put("Line Item", listOfLineItem1);   ////lineItemArray); ////listOfLineItem1);
+		
+		SoHeaderDto soHeaders = new SoHeaderDto();
+		
+		JSONObject header = new JSONObject();
+		
+		DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yy");
+		Date date = (Date)formatter.parse(soHeaderDto.getDeliveryDate().toString());
+		SimpleDateFormat outputFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");  //("dd/MM/yyyy hh:mm:ss");
+		String deliDate =outputFormat.format(date);
+		System.out.println("formatedDate : " + deliDate);
+	
+//		header.put("Requested Ship Date", deliDate);
+		header.put("Requested Ship Date", "04/06/2024");
+		header.put("Order Type Id", "0-D14G");
+		header.put("Account Id", soHeaderDto.getOutletId());
+//		header.put("Account Id", "1-EEWE-430");      //"1-BRWN-27");
+		header.put("Status", "New");
+		header.put("Order Type", "Service Order");
+		header.put("Account", soHeaderDto.getOutletName());
+//		header.put("Account", "BHAVANI TRADERS");     //"SHREE MAHALAXMI KIRANA AND GENERAL STORE");
+		header.put("Currency Code", "INR");
+		header.put("Order Number", ltSoHeader.getOrderNumber());
+//		header.put("Order Number", "MSO-10791-2425-755");     ///"MSO-53623-2324-11");
+		header.put("Source Inventory Id", "1-2FPGVLJ");  //"1-27PLQ8" ); //"1-2FPGVLJ");//"1-2GR1JJ1");//"1-2C7QNZG");// "1-2KK4ILD"); );
+		header.put("ListOfLine Item", listOfLineItem);
+		//header.put("ListOfLine Item", listOfLineItem);
+		
+		JSONObject ListOfATOrdersIntegrationIO = new JSONObject();
+		ListOfATOrdersIntegrationIO.put("Header", header);
+		
+		JSONObject siebelMassage = new JSONObject();
+		siebelMassage.put("IntObjectFormat", "Siebel Hierarchical");
+		siebelMassage.put("MessageId", "");
+		siebelMassage.put("IntObjectName", "AT Orders Integration IO");
+		siebelMassage.put("MessageType", "Integration Object");
+		siebelMassage.put("ListOfAT Orders Integration IO", ListOfATOrdersIntegrationIO);
+		
+		JSONObject siebelMassages = new JSONObject();
+		siebelMassages.put("SubmitFlag", "Y");
+		siebelMassages.put("InvoiceFlag", "Y");
+		siebelMassages.put("SiebelMessage" , siebelMassage);
+		
+		String jsonPayload =siebelMassages.toString();
+   
+        String payload = "{\r\n    \"SubmitFlag\": \"\",\r\n    \"InvoiceFlag\": \"\",\r\n    \"SiebelMessage\": {\r\n        \"IntObjectFormat\": \"Siebel Hierarchical\",\r\n        \"MessageId\": \"\",\r\n        \"IntObjectName\": \"AT Orders Integration IO\",\r\n        \"MessageType\": \"Integration Object\",\r\n        \"ListOfAT Orders Integration IO\": {\r\n            \"Header\": {\r\n                \"Requested Ship Date\": \"04/03/2024 18:50:01\",\r\n                \"Order Type Id\": \"0-D14G\",\r\n                \"Account Id\": \"1-EEWE-430\",\r\n                \"Status\": \"New\",\r\n                \"Order Type\": \"Service Order\",\r\n                \"Account\": \"BHAVANI TRADERS\",\r\n                \"Currency Code\": \"INR\",\r\n                \"Order Number\": \"MSO-53624-2322-86\",\r\n                \"ListOfLine Item\": {\r\n                    \"Line Item\": {[listOfLineItem1]}\r\n                }\r\n            }\r\n        }\r\n    }\r\n}";
+        jsonPayload = payload;
+  
+//      Order Header data  
+        String outLid= "\"Account Id\":\""+ soHeaderDto.getOutletId()+"\"";
+        jsonPayload= jsonPayload.replace("\"Account Id\": \"1-EEWE-430\"", outLid);
+        System.out.print(" New outLid is :" + outLid);
+		
+		String outName= "\"Account\":\""+ soHeaderDto.getOutletName()+"\"";
+		jsonPayload=jsonPayload.replace("\"Account\": \"BHAVANI TRADERS\"", outName);
+		
+		String ordNo= "\"Order Number\":\""+ ltSoHeader.getOrderNumber()+"\"";
+		jsonPayload=jsonPayload.replace("\"Order Number\": \"MSO-53624-2322-86\"", ordNo);
+		
+		String reqShipDate= "\"Requested Ship Date\":\""+ deliDate+"\"";
+		jsonPayload=jsonPayload.replace("\"Requested Ship Date\": \"04/03/2024 18:50:01\"", reqShipDate);
+		
+		String itemString =listOfLineItem1.toString();
+		jsonPayload= jsonPayload.replace("{[listOfLineItem1]}", itemString);
+		
+//		Order Line Date
+		//String id= "\"Id\":\""+ id+"\"";
+		//jsonPayload.replace("\"Id\": \"1\"", id);
+		
+		//String prodId= "\"Product Id\":\""+ prodId+"\"";
+		//jsonPayload.replace("\"Product Id\": \"1-MZZR-1\"", prodId);
+		//System.out.print(" New prodId is :" + prodId);
+	
+		//String dueSDate= "\"Due Date\":\""+ deliDate+"\"";
+		//jsonPayload.replace("\"Due Date\": \"04/12/2024 18:50:01\"", dueSDate);
+		
+		//System.out.print(" New dueSDate is :" + dueSDate);
+		
+		//String quantity= "\"Quantity\":\""+ qty+"\"";
+		//jsonPayload.replace("\"Quantity\": \"04/03/2024 18:50:01\"", quantity);
+		//System.out.print(" New quantity is :" + quantity);
+		
+		
+		//		
+//		String jsonString = "{"
+//			    + "\"SubmitFlag\": \"Y\","
+//			    + "\"InvoiceFlag\": \"Y\","
+//			    + "\"SiebelMessage\": {"
+//			    +     "\"IntObjectFormat\": \"Siebel Hierarchical\","
+//			    +     "\"MessageId\": \"\","
+//			    +     "\"IntObjectName\": \"AT Orders Integration IO\","
+//			    +     "\"MessageType\": \"Integration Object\","
+//			    +     "\"ListOfAT Orders Integration IO\": {"
+//			    +         "\"Header\": {"
+//			    +             "\"Requested Ship Date\": \"04/03/2024 18:50:01\","
+//			    +             "\"Order Type Id\": \"0-D14G\","
+//			    +             "\"Account Id\": \"1-EEWE-430\","
+//			    +             "\"Status\": \"New\","
+//			    +             "\"Order Type\": \"Service Order\","
+//			    +             "\"Account\": \"BHAVANI TRADERS\","
+//			    +             "\"Currency Code\": \"INR\","
+//			    +             "\"Order Number\": \"MSO-53624-2324-69\","
+//			    +             "\"ListOfLine Item\": {"
+//			    +                 "\"Line Item\": ["
+//			    +                     "{"
+//			    +                         "\"Id\"= \"1\","
+//			    +                         "\"Product Id\": \"1-MZZR-1\","
+//			    +                         "\"Due Date\": \"04/12/2024 18:50:01\","
+//			    +                         "\"Action Code\": \"New\","
+//			    +                         "\"Quantity\": \"1\""
+//			    +                     "}"
+//			    +                 "]"
+//			    +             "}"
+//			    +         "}"
+//			    +     "}"
+//			    + "}";
+//
+//			// Now you can use the jsonString variable in your Java code
+//
+//		
+//		
+//		jsonString =siebelMassages.toString();
+		try {
+        System.out.println("jsonPayload =" +jsonPayload);     //(requestBody);
+		}catch(Exception e) {
+			logger.error("Error Description :", e);
+			e.printStackTrace();
+		}
+//        // Create URL object
+        URL obj = new URL(url);
+        System.out.println("url is..... = "+ url);
+//        // Add this line before opening the connection
+        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+            new javax.net.ssl.HostnameVerifier(){
+                public boolean verify(String hostname,
+                        javax.net.ssl.SSLSession sslSession) {
+                    return true;
+                }
+            });
+
+        TrustManager[] trustAllCertificates = new TrustManager[]{
+        	    new X509TrustManager() {
+        	        public X509Certificate[] getAcceptedIssuers() {
+        	            return null;
+        	        }
+        	        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+        	        }
+        	        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+        	        }
+        	    }
+        	};
+
+        	SSLContext sslContext = SSLContext.getInstance("SSL");
+        	sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
+        	HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+
+        
+//         Create HttpURLConnection object
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+//         Set request method
+        con.setRequestMethod(method);
+//         Set request headers
+        con.setRequestProperty("Content-Type", "application/json");
+        //String username = "VINAY.KUMAR6";
+        //String password = "Welcome1";
+        String username;
+        if(soHeaderDto.getMobileNumber()!= null) {
+         username = ltSoHeadersDao.getUserNameFromSiebel(soHeaderDto.getMobileNumber());
+         }else {
+         username = "VINAY.KUMAR6";}
+        String password = "D10nysu$";
+        String auth = username + ":" + password;
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
+        String authHeaderValue = "Basic " + new String(encodedAuth);
+        System.out.println("This is user authHeaderValue"+authHeaderValue);
+        con.setRequestProperty("Authorization", authHeaderValue);
+
+//         Enable output and set request body
+        con.setDoOutput(true);
+        try (OutputStream os = con.getOutputStream()) {
+            byte[] input = jsonPayload.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+        
+//      Get response code
+        int responseCode = con.getResponseCode();
+        String msg = con.getResponseMessage();
+        System.out.println("Response Code : " + responseCode);
+        System.out.println("Response Message : " + msg);
+        
+//      Read the response body
+        StringBuilder response = new StringBuilder();
+        BufferedReader reader;
+        InputStream inputStream;
+        if(responseCode >= 200 && responseCode < 300 ) {
+        	inputStream = con.getInputStream();
+        	reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String line;
+          while ((line = reader.readLine()) != null) {
+        	  System.out.println("line success response is="+line);
+              response.append(line);
+              System.out.println("success response is = " + response);
+          }
+          reader.close();
+  
+//           Show the response
+          System.out.println("Response Body: " + response.toString());
+
+        }else {
+        	     reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                 String line;
+                   while ((line = reader.readLine()) != null) 
+                 {
+      	            System.out.println("line error response is="+line);
+                    response.append(line);
+                 }        
+        	     inputStream = con.getErrorStream();
+        	     System.out.println("Error response: " + responseCode + " - " + msg);
+        	     System.out.println("Error Response Body: " + response);
+        	 }
+        
+//        // saving response details in to table 
+        //LtSoHeaders  ltSoHeader1 = new LtSoHeaders();
+        String resCode= Integer.toString(responseCode);
+        ltSoHeader.setSiebelStatus(resCode);
+        String res= response.toString();
+        ltSoHeader.setSiebelRemark(res);
+        ltSoHeader.setSiebelJsonpayload(jsonPayload);
+        
+        String invoiceNumber = null;
+//       // Create an ObjectMapper instance
+       ObjectMapper objectMapper = new ObjectMapper();
+       
+//       // Parse the response body into a JSON object
+       JsonNode rootNode = objectMapper.readTree(response.toString());
+//       // Access the "Invoice Number" field from the JSON object
+       if(rootNode!= null && responseCode ==200) {
+        invoiceNumber = rootNode.get("Invoice Number").asText();
+//       // Now you can use the invoiceNumber variable as needed
+       System.out.println("Invoice Number: " + invoiceNumber);
+             
+       ltSoHeader.setSiebelInvoiceNumber(invoiceNumber);
+       
+       //ltSoHeader1 = updateSoHeader(ltSoHeader1);
+		}ltSoHeader.setSiebelInvoiceNumber(invoiceNumber);
+              
+	} catch (Exception e) {
+		logger.error("Error Description :", e);
+        e.printStackTrace();
+    }
+
+}
+
+	
 /*	//public static void sendCreateOrderRequest() throws IOException {
 	private void saveOrderIntoSiebel(LtSoHeaders ltSoHeader, SoHeaderDto soHeaderDto)throws IOException{
         // Replace the URL below with the actual URL of your request
@@ -3512,6 +4908,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	
 	private Status updateSoHeadeLineInDraftV2(SoHeaderDto soHeaderDto, Long headerId, Date creationDate, Long createdBy)
 			throws ServiceException, IOException {
+		ExecutorService executor = Executors.newSingleThreadExecutor();
 		try {
 			
 			LtSoHeaders siebelData = ltSoHeadersDao.getSiebelDataById(headerId);
@@ -3599,14 +4996,27 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		
 		if(ltSoHeader.getStatus().equalsIgnoreCase("PENDING_APPROVAL")) {
 			System.out.print("Hi I'm in 1 in updateOrder for pending status ====");
-			sendNotifications(ltSoHeader);
-		    sendEmail(ltSoHeader);
+			
+			CompletableFuture.runAsync(() -> {
+                try {
+                	sendNotifications(ltSoHeader);
+                    sendEmail(ltSoHeader);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }, executor);
+			
+//			sendNotifications(ltSoHeader);   comment on 24-may-2024 for optimization
+//		    sendEmail(ltSoHeader);           comment on 24-may-2024 for optimization 
 	     }
 		
 		System.out.print("New Update siebel call before  ====" +ltSoHeader.getStatus());
-		if(ltSoHeader.getStatus().equalsIgnoreCase("APPROVED")) {
-			System.out.print("New Update siebel call in ====" +ltSoHeader.getStatus());
-		saveOrderIntoSiebel(ltSoHeader, soHeaderDto);
+		if(ltSoHeader.getInStockFlag().equalsIgnoreCase("N") &&  ltSoHeader.getStatus().equalsIgnoreCase("APPROVED")) {
+			System.out.print("New Update siebel out of stock order call in ====" +ltSoHeader.getStatus());
+		saveOutOfStockOrderIntoSiebel(ltSoHeader, soHeaderDto);
+		}else {
+			System.out.print("New Update siebel instock order call in ====" +ltSoHeader.getStatus());
+			saveOrderIntoSiebel(ltSoHeader, soHeaderDto);
 		}
 		System.out.print("New Update siebel call after ====" +ltSoHeader.getStatus());
 		
@@ -3695,8 +5105,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 //					//ltSoLines.setCreationDate(new Date());
 //					//ltSoLines = ltSoLinesRepository.save(ltSoLines);
 //				}
-			
-			for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
+		
+// this for loop commented on 23-May-2024 for code optimization purpose			
+/*			for (Iterator iterator = soLineDtoList.iterator(); iterator.hasNext();) {
 				
 				SoLineDto soLineDto = (SoLineDto) iterator.next();	
 				StringBuffer strQuery =  new StringBuffer();
@@ -3793,11 +5204,51 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				strQuery.append(")");
 				String query = strQuery.toString();
 				int n = ltSoHeadersDao.insertLine(query);
+			}*/
+			
+System.out.println("3820 = "+new Date());
+			
+			SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+		    List<String> queries = new ArrayList<>();
+ 
+		    for (SoLineDto soLineDto : soLineDtoList) {
+		        StringBuilder strQuery = new StringBuilder();
+		        strQuery.append("INSERT INTO lt_so_lines (header_id, product_id, quantity, list_price, status, created_by, last_update_login, last_updated_by, ptr_price, eimstatus, delivery_date, creation_date, last_update_date) VALUES (");
+ 
+		        strQuery.append(ltSoHeader.getHeaderId()).append(", ");
+		        strQuery.append("'").append(soLineDto.getProductId()).append("', ");
+		        strQuery.append(soLineDto.getQuantity()).append(", ");
+		        strQuery.append("'").append(soLineDto.getListPrice()).append("', ");
+		        strQuery.append("'").append(soHeaderDto.getStatus()).append("', ");
+		        strQuery.append(soHeaderDto.getUserId()).append(", ");
+		        strQuery.append(soHeaderDto.getUserId()).append(", ");
+		        strQuery.append(soHeaderDto.getUserId()).append(", ");
+		        strQuery.append("'").append(soLineDto.getPtrPrice()).append("', ");
+		        strQuery.append("NULL, "); // eimstatus
+ 
+		        if (soLineDto.getDeliveryDate() != null) {
+		            String deliveryDate = outputFormat.format(soLineDto.getDeliveryDate());
+		            strQuery.append("'").append(deliveryDate).append("', ");
+		        } else {
+		            strQuery.append("NULL, ");
+		        }
+ 
+		        String creationDate1 = outputFormat.format(ltSoHeader.getCreationDate());
+		        String lastUpdateDate = outputFormat.format(ltSoHeader.getLastUpdateDate());
+ 
+		        strQuery.append("'").append(creationDate1).append("', ");
+		        strQuery.append("'").append(lastUpdateDate).append("')");
+ 
+		        queries.add(strQuery.toString());
+		    }
+ 
+		    int[] updateCounts = ltSoHeadersDao.batchInsert(queries);
+ 
+		    System.out.println("Inserted " + updateCounts.length + " lines.");
+		    System.out.println("3864 = "+new Date());
+			
 			}
-			}
-		
-		
-		
+				
 		ltSoHeader.setSiebelInvoiceNumber(soHeaderDto.getSiebelInvoicenumber());
 		ltSoHeader.setSiebelStatus(soHeaderDto.getSiebelStatus());
 		//ltSoHeader.setSiebelRemark(soHeaderDto.getSiebelRemark());
@@ -3844,9 +5295,13 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		e.printStackTrace();
 		return null;
 		}
+		finally {
+			System.out.println("Connection closed in update");
+	        executor.shutdown();
+	    }
 	}
 
-	
+/*  this is	original method comment on 27-may-24 for optimization purpose
 	@Override
 	public Status getOrderV2(RequestDto requestDto) throws ServiceException, IOException {
 		try {
@@ -4079,85 +5534,259 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					System.out.println("SiebelRemark"+soHeaderDto.getSiebelRemark());
 					System.out.println(soHeaderDto.getSiebelInvoicenumber());
 					System.out.println("SiebelJsonpayload"+responseDto.getSiebelJsonpayload());*/
-					}catch(Exception e) {
-						logger.error("Error Description :", e);
-						e.printStackTrace();
-					}
-					if(responseDto.getBeatId()!= null) {
-					soHeaderDto.setBeatId(responseDto.getBeatId());
-					}
-					if(responseDto.getHeaderPriceList()!= null) {
-					soHeaderDto.setPriceList(responseDto.getHeaderPriceList());
-					}
-					
-					if (responseDto.getProprietorName() != null) {
-						soHeaderDto.setProprietorName(responseDto.getProprietorName());
-					}
-					if (responseDto.getRemark() != null) {
-						soHeaderDto.setRemark(responseDto.getRemark());
-					}
-					if (responseDto.getDeliveryDate() != null) {
-						soHeaderDto.setDeliveryDate(responseDto.getDeliveryDate());
-					}
-					if (responseDto.getUserId() != null) {
-						soHeaderDto.setUserId(responseDto.getUserId());
-					}
-					if (responseDto.getOutletAddress() != null) {
-						soHeaderDto.setOutletAddress(responseDto.getOutletAddress());
-					}
-					if (responseDto.getCustomerId() != null) {
-						soHeaderDto.setCustomerId(responseDto.getCustomerId());
-					}
-					if (responseDto.getAddress() != null) {
-						soHeaderDto.setAddress(responseDto.getAddress());
-					}
-					
-					if (responseDto.getCity() != null) { soHeaderDto.setCity(responseDto.getCity()); }
-					
-					if(responseDto.getBeatId()!= null) {
-						soHeaderDto.setBeatId(responseDto.getBeatId());
-					}
-					if(responseDto.getHeaderPriceList()!= null) {
-					soHeaderDto.setPriceList(responseDto.getHeaderPriceList());
-					}
-					
-					soHeaderDtoMap.put(responseDto.getHeaderId(), soHeaderDto);
+//					}catch(Exception e) {
+//						logger.error("Error Description :", e);
+//						e.printStackTrace();
+//					}
+//					if(responseDto.getBeatId()!= null) {
+//					soHeaderDto.setBeatId(responseDto.getBeatId());
+//					}
+//					if(responseDto.getHeaderPriceList()!= null) {
+//					soHeaderDto.setPriceList(responseDto.getHeaderPriceList());
+//					}
+//					
+//					if (responseDto.getProprietorName() != null) {
+//						soHeaderDto.setProprietorName(responseDto.getProprietorName());
+//					}
+//					if (responseDto.getRemark() != null) {
+//						soHeaderDto.setRemark(responseDto.getRemark());
+//					}
+//					if (responseDto.getDeliveryDate() != null) {
+//						soHeaderDto.setDeliveryDate(responseDto.getDeliveryDate());
+//					}
+//					if (responseDto.getUserId() != null) {
+//						soHeaderDto.setUserId(responseDto.getUserId());
+//					}
+//					if (responseDto.getOutletAddress() != null) {
+//						soHeaderDto.setOutletAddress(responseDto.getOutletAddress());
+//					}
+//					if (responseDto.getCustomerId() != null) {
+//						soHeaderDto.setCustomerId(responseDto.getCustomerId());
+//					}
+//					if (responseDto.getAddress() != null) {
+//						soHeaderDto.setAddress(responseDto.getAddress());
+//					}
+//					
+//					if (responseDto.getCity() != null) { soHeaderDto.setCity(responseDto.getCity()); }
+//					
+//					if(responseDto.getBeatId()!= null) {
+//						soHeaderDto.setBeatId(responseDto.getBeatId());
+//					}
+//					if(responseDto.getHeaderPriceList()!= null) {
+//					soHeaderDto.setPriceList(responseDto.getHeaderPriceList());
+//					}
+//					
+//					soHeaderDtoMap.put(responseDto.getHeaderId(), soHeaderDto);
+//
+//					List<SoLineDto> soLineDtoList = new ArrayList<SoLineDto>();
+//					if(soLineDto.getLineId() != null) {
+//						soLineDtoList.add(soLineDto);
+//					}
+//					soLineDtoMap.put(responseDto.getHeaderId(), soLineDtoList);
+//				}
+//
+//			}
+//			OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
+//
+//			List<SoHeaderDto> soHeaderDtoList = new ArrayList<SoHeaderDto>();
+//
+//			for (Map.Entry<Long, SoHeaderDto> entry : soHeaderDtoMap.entrySet()) {
+//				SoHeaderDto soHeaderDto = entry.getValue();
+//
+//				List<SoLineDto> soLineDtoList = soLineDtoMap.get(entry.getKey());
+//				soHeaderDto.setSoLineDtoList(soLineDtoList);
+//
+//				soHeaderDtoList.add(soHeaderDto);
+//			}
+//			orderDetailsDto.setSoHeaderDto(soHeaderDtoList);
+//
+//			if (!responseDtoList.isEmpty()) {
+//				status.setCode(RECORD_FOUND);// = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
+//				status.setData(orderDetailsDto);
+//				return status;
+//			}
+//			status.setCode(RECORD_NOT_FOUND); // status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
+//			status.setData(null);
+//			return status;
+//		} catch (Exception e) {
+//			logger.error("Error Description :", e);
+//			e.printStackTrace();
+//		} return null;
+//	}
 
-					List<SoLineDto> soLineDtoList = new ArrayList<SoLineDto>();
-					if(soLineDto.getLineId() != null) {
-						soLineDtoList.add(soLineDto);
-					}
-					soLineDtoMap.put(responseDto.getHeaderId(), soLineDtoList);
-				}
-
-			}
-			OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
-
-			List<SoHeaderDto> soHeaderDtoList = new ArrayList<SoHeaderDto>();
-
-			for (Map.Entry<Long, SoHeaderDto> entry : soHeaderDtoMap.entrySet()) {
-				SoHeaderDto soHeaderDto = entry.getValue();
-
-				List<SoLineDto> soLineDtoList = soLineDtoMap.get(entry.getKey());
-				soHeaderDto.setSoLineDtoList(soLineDtoList);
-
-				soHeaderDtoList.add(soHeaderDto);
-			}
-			orderDetailsDto.setSoHeaderDto(soHeaderDtoList);
-
-			if (!responseDtoList.isEmpty()) {
-				status.setCode(RECORD_FOUND);// = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
-				status.setData(orderDetailsDto);
-				return status;
-			}
-			status.setCode(RECORD_NOT_FOUND); // status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
-			status.setData(null);
-			return status;
-		} catch (Exception e) {
-			logger.error("Error Description :", e);
-			e.printStackTrace();
-		} return null;
-	}
+// this is end of original method comment on 27-may-2024 for optimization purpose	
+	
+	// this is new dev
+		public Status getOrderV2(RequestDto requestDto) throws ServiceException, IOException {
+			System.out.println("In getOrderV2 method = "+new Date());
+		    try {
+		        Status status = new Status();
+		        List<Long> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
+		        Long recordCount = ltSoHeadersDao.getRecordCount(requestDto);
+	 
+		        status.setTotalCount(recordCount);
+		        status.setRecordCount(recordCount);
+	 
+		        if (headerIdsList.isEmpty()) {
+		            status.setCode(RECORD_NOT_FOUND);
+		            status.setData("Record not found");
+		            return status;
+		        }
+	 
+		        List<ResponseDto> responseDtoList = ltSoHeadersDao.getOrderV2(headerIdsList);
+		        Map<Long, SoHeaderDto> soHeaderDtoMap = new LinkedHashMap<>();
+		        Map<Long, List<SoLineDto>> soLineDtoMap = new LinkedHashMap<>();
+	 
+//		        for (ResponseDto responseDto : responseDtoList) {
+//		            SoLineDto soLineDto = buildSoLineDto(responseDto);
+	//
+//		            soLineDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> new ArrayList<>());
+//		            if (soLineDto.getLineId() != null) {
+//		                soLineDtoMap.get(responseDto.getHeaderId()).add(soLineDto);
+//		            }
+	//
+//		            soHeaderDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> buildSoHeaderDto(responseDto));
+//		        }
+		        
+		        for (ResponseDto responseDto : responseDtoList) {
+		            SoLineDto soLineDto = buildSoLineDto(responseDto);
+	 
+		            // Add soLineDto to the soLineDtoMap only if lineId is not null
+		            if (soLineDto.getLineId() != null) {
+		                soLineDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> new ArrayList<>()).add(soLineDto);
+		            }
+	 
+		            // Add or update soHeaderDto in the soHeaderDtoMap
+		            soHeaderDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> buildSoHeaderDto(responseDto));
+		        }
+	 
+//		        List<SoHeaderDto> soHeaderDtoList = new ArrayList<>();
+//		        for (Map.Entry<Long, SoHeaderDto> entry : soHeaderDtoMap.entrySet()) {
+//		            SoHeaderDto soHeaderDto = entry.getValue();
+//		            soHeaderDto.setSoLineDtoList(soLineDtoMap.get(entry.getKey()));
+//		            soHeaderDtoList.add(soHeaderDto);
+//		        }
+		        
+		        List<SoHeaderDto> soHeaderDtoList = new ArrayList<>(soHeaderDtoMap.size());
+	 
+		        soHeaderDtoMap.forEach((headerId, soHeaderDto) -> {
+		            soHeaderDto.setSoLineDtoList(soLineDtoMap.get(headerId));
+		            soHeaderDtoList.add(soHeaderDto);
+		        });
+	 
+		        OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
+		        orderDetailsDto.setSoHeaderDto(soHeaderDtoList);
+	 
+		        if (!responseDtoList.isEmpty()) {
+		            status.setCode(RECORD_FOUND);
+		            status.setData(orderDetailsDto);
+		            System.out.println("Exit getOrderV2 method = "+new Date());
+		            return status;
+		        }
+	 
+		        status.setCode(RECORD_NOT_FOUND);
+		        status.setData(null);
+		        return status;
+		    } catch (Exception e) {
+		        logger.error("Error Description :", e);
+		        e.printStackTrace();
+		    }
+		    return null;
+		}
+	 
+		private SoLineDto buildSoLineDto(ResponseDto responseDto) {
+		    SoLineDto soLineDto = new SoLineDto();
+		    soLineDto.setLineId(responseDto.getLineId());
+		    soLineDto.setProductId(responseDto.getProductId());
+		    soLineDto.setQuantity(responseDto.getQuantity());
+		    soLineDto.setProductCode(responseDto.getProductCode());
+		    soLineDto.setProductDesc(responseDto.getProductDesc());
+		    soLineDto.setProductName(responseDto.getProductName());
+		    soLineDto.setPriceList(responseDto.getPriceList());
+		    soLineDto.setListPrice(determineListPrice(responseDto));
+		    soLineDto.setPtrPrice(determinePtrPrice(responseDto));
+		    soLineDto.setInventoryQuantity(responseDto.getInventoryQuantity());
+		    soLineDto.setDeliveryDate(responseDto.getDeliveryDate1());
+		    soLineDto.setOrgId(responseDto.getOrgId());
+		    soLineDto.setProductType(responseDto.getProductType());
+		    soLineDto.setPrimaryUom(responseDto.getPrimaryUom());
+		    soLineDto.setSecondaryUom(responseDto.getSecondaryUom());
+		    soLineDto.setSecondaryUomValue(responseDto.getSecondaryUomValue());
+		    soLineDto.setUnitsPerCase(responseDto.getUnitsPerCase());
+		    soLineDto.setProductImage(responseDto.getProductImage());
+		    soLineDto.setBrand(responseDto.getBrand());
+		    soLineDto.setSubBrand(responseDto.getSubBrand());
+		    soLineDto.setSegment(responseDto.getSegment());
+		    soLineDto.setCasePack(responseDto.getCasePack());
+		    soLineDto.setHsnCode(responseDto.getHsnCode());
+		    soLineDto.setThumbnailImage(responseDto.getThumbnailImage());
+		    return soLineDto;
+		}
+		
+		
+		private SoHeaderDto buildSoHeaderDto(ResponseDto responseDto) {
+		    SoHeaderDto soHeaderDto = new SoHeaderDto();
+		    soHeaderDto.setHeaderId(responseDto.getHeaderId());
+		    soHeaderDto.setOrderNumber(responseDto.getOrderNumber());
+		    soHeaderDto.setOrderDate(formatOrderDate(responseDto.getOrderDate()));
+		    soHeaderDto.setStatus(responseDto.getStatus());
+		    soHeaderDto.setAddress(responseDto.getAddress());
+		    soHeaderDto.setOutletName(responseDto.getOutletName());
+		    soHeaderDto.setOutletId(responseDto.getOutletId());
+		    soHeaderDto.setOutletCode(responseDto.getOutletCode());
+		    soHeaderDto.setLatitude(responseDto.getLatitude());
+		    soHeaderDto.setLongitude(responseDto.getLongitude());
+		    soHeaderDto.setInstockFlag(responseDto.getInstockFlag());
+		    soHeaderDto.setPriceList(responseDto.getHeaderPriceList());
+		    soHeaderDto.setSiebelRemark(responseDto.getSiebelRemark());
+		    soHeaderDto.setBeatId(responseDto.getBeatId());
+		    soHeaderDto.setProprietorName(responseDto.getProprietorName());
+		    soHeaderDto.setRemark(responseDto.getRemark());
+		    soHeaderDto.setDeliveryDate(responseDto.getDeliveryDate());
+		    soHeaderDto.setUserId(responseDto.getUserId());
+		    soHeaderDto.setOutletAddress(responseDto.getOutletAddress());
+		    soHeaderDto.setCustomerId(responseDto.getCustomerId());
+		    soHeaderDto.setCity(responseDto.getCity());
+		    return soHeaderDto;
+		}
+		
+		
+		private String formatOrderDate(Date orderDate) {
+		    final String ISO_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+		    final SimpleDateFormat sdf = new SimpleDateFormat(ISO_FORMAT);
+		    final TimeZone utc = TimeZone.getTimeZone("UTC");
+		    sdf.setTimeZone(utc);
+		    return sdf.format(orderDate);
+		}
+		
+		
+		private String determineListPrice(ResponseDto responseDto) {
+		    if (responseDto.getStatus().equalsIgnoreCase(DRAFT) ||
+		        responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL) ||
+		        responseDto.getStatus().equals("APPROVED")) {
+		        return responseDto.getListPrice();
+		    } else {
+		        return responseDto.getLinelistPrice();
+		    }
+		}
+	 
+		private String determinePtrPrice(ResponseDto responseDto) {
+		    if (responseDto.getPtrPrice() != null) {
+		        if ("Y".equalsIgnoreCase(responseDto.getPtrFlag())) {
+		            return determineListPrice(responseDto);
+		        } else {
+		            if (responseDto.getStatus().equalsIgnoreCase(DRAFT) ||
+		                responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL) ||
+		                responseDto.getStatus().equals("APPROVED")) {
+		                return responseDto.getPtrPrice();
+		            } else {
+		                return responseDto.getLinePtrPrice();
+		            }
+		        }
+		    }
+		    return null;
+		}//new dev
+	
 	
 	@Override
 	public Status locationSaveOnNoOrder(LtSalesPersonLocation ltSalesPersonLocation) throws ServiceException, IOException{
@@ -4447,17 +6076,20 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		} return null;
 	}
 
-	
+/* this is original code comment on 30-May-2024 for optimization 	
 	@Override
 	public Status getAllPendingOrders(RequestDto requestDto) throws ServiceException, IOException {
 		try {
-			System.out.println("in method getAllPendingOrders service line 4454 ="+ new Date());
+			System.out.println("in method getAllPendingOrders service line 4454 ="+ LocalDateTime.now());
 			Status status = new Status();
-			//System.out.println("Login Id is ="+requestDto.getLoginId());
+			System.out.println("Above getSoHeader query call at = "+ LocalDateTime.now());
 			List<Long> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
+			System.out.println("Below getSoHeader query call at = "+ LocalDateTime.now());
 			//System.out.print("headerIdsList is ====" +headerIdsList);
 			//System.out.print("requestDto data is =="+requestDto);
+			System.out.println("Above getRecordCount query call at = "+ LocalDateTime.now());
 			Long recordCount = ltSoHeadersDao.getRecordCount(requestDto);
+			System.out.println("Below getRecordCount query call at = "+ LocalDateTime.now());
 			//Long recordCount = (long) headerIdsList.size() + 1;
 			
 			System.out.println("headerIdsList====>"+headerIdsList.size());
@@ -4472,19 +6104,21 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			}
 			SoHeaderDto soHeaderDto1 = new SoHeaderDto();
 			Long headerId1;
+			System.out.println("Above getheaderByHeaderIdNew query call at = "+ LocalDateTime.now());
 			List<SoHeaderDto> soHeaderList = ltSoHeadersDao.getheaderByHeaderIdNew(headerIdsList);
+			System.out.println("Below getheaderByHeaderIdNew query call at = "+ LocalDateTime.now());
 			System.out.println("soHeaderListTTTTTTTT"+ soHeaderList);
 			// code for not showing pending_approval to himself
 			
 			List<Long> headerIdsListUpdated = new ArrayList<Long>();
 					if(!headerIdsList.isEmpty()) {
-						System.out.println("in method getAllPendingOrders service line 4478 ="+ new Date());
+						System.out.println("in if !headerIdsList.isEmpty() at ="+ LocalDateTime.now());
 						for(Long headerId:headerIdsList) {
-/*      comment on 22-May-24 for optimization							
+//      comment on 22-May-24 for optimization							
 							SoHeaderDto list = ltSoHeadersDao.getheaderByHeaderId(headerId);
-*/							
+//							
 							System.out.println("list headerId=="+headerId);
-			Optional<SoHeaderDto> list= soHeaderList.stream().filter(x->x.getHeaderId()==headerId).findFirst();
+			Optional<SoHeaderDto> list= soHeaderList.stream().filter(x->x.getHeaderId().equals(headerId)).findFirst();
 	
 							//System.out.println("listlistlist1=="+list.get().getHeaderId());
 							//System.out.println("list.getCreatedBy() is="+list.getCreatedBy());
@@ -4493,7 +6127,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			                //soHeaderDto1= list.get();
 			
 			                     if(list.isPresent()) {
-							if (!(list.get().getCreatedBy() == requestDto.getLoginId()) ) {//&& !list.getStatus().equalsIgnoreCase("PENDING_APPROVAL")) {
+			                    	 SoHeaderDto SoHeaderDto = list.get();
+							if (SoHeaderDto.getCreatedBy()!= requestDto.getLoginId() ) {//&& !list.getStatus().equalsIgnoreCase("PENDING_APPROVAL")) {
 										headerIdsListUpdated.add(headerId);
 										System.out.println("header Ids List Updated is="+headerIdsListUpdated);
 									}}
@@ -4505,8 +6140,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			List<ResponseDto> responseDtoList = new ArrayList<ResponseDto>();
 			
 		//	responseDtoList = ltSoHeadersDao.getOrderV2(headerIdsList);
-			
+			System.out.println("Above getOrderV2 query call at = "+ LocalDateTime.now());
 			responseDtoList = ltSoHeadersDao.getOrderV2(headerIdsListUpdated);
+			System.out.println("Below getOrderV2 query call at = "+ LocalDateTime.now());
 			
 			Map<Long, SoHeaderDto> soHeaderDtoMap = new LinkedHashMap<Long, SoHeaderDto>();
 			Map<Long, List<SoLineDto>> soLineDtoMap = new LinkedHashMap<Long, List<SoLineDto>>();
@@ -4515,7 +6151,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 //			System.out.println("UserId is ===="+requestDto.getUserId());
 //			List<ResponseDto> responseDtoList = responseDtoList1.stream().filter(X->X.getUserId()!=requestDto.getUserId()).collect(Collectors.toList());
 //			System.out.println("responseDto after filter is ===" +responseDtoList);
-			System.out.println("in method getAllPendingOrders service line 4507 ="+ new Date());
+			System.out.println("in method getAllPendingOrders service line 4507 ="+ LocalDateTime.now());
 			for (Iterator iterator = responseDtoList.iterator(); iterator.hasNext();) {
 				ResponseDto responseDto = (ResponseDto) iterator.next();
                 						
@@ -4752,18 +6388,128 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			if (!responseDtoList.isEmpty()) {
 				status.setCode(RECORD_FOUND);// = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
 				status.setData(orderDetailsDto);
-				System.out.println("in method getAllPendingOrders service line 4744 ="+ new Date());
+				System.out.println("Exit from  method getAllPendingOrders service line 4744 ="+ LocalDateTime.now());
 				return status;
 			}
 			status.setCode(RECORD_NOT_FOUND); // status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
 			status.setData(null);
+			System.out.println("Exit from record not found method getAllPendingOrders service line 4744 ="+ LocalDateTime.now());
 			return status;
 		} catch (Exception e) {
 			logger.error("Error Description :", e);
 			e.printStackTrace();
 		} return null;
 	}
-
+*/
+	
+	@Override
+	public Status getAllPendingOrders(RequestDto requestDto) throws ServiceException, IOException {
+		    try {
+		        System.out.println("In method getAllPendingOrders at =" + LocalDateTime.now());
+		        Status status = new Status();
+		        System.out.println("Above getSoHeader11 query call at =" + LocalDateTime.now());
+		        List<ResponseDto> responseList = ltSoHeadersDao.getSoHeader11(requestDto);
+		        System.out.println("Below getSoHeader11 query call at =" + LocalDateTime.now());
+		        System.out.println("headerIdsList size is = " + responseList.size());
+	 
+		        // Use a Map to store SoHeaderDtoPendingOrders and their corresponding SoLineDtoPendingOrders
+		        Map<Long, SoHeaderDtoPendingOrders> headerMap = new HashMap<>();
+		        Map<SoHeaderDtoPendingOrders, List<SoLineDtoPendingOrders>> resultMap = new HashMap<>();
+		        System.out.println("Above for loop "+LocalDateTime.now());
+		        for (ResponseDto response : responseList) {
+		            Long headerId = response.getHeaderId();
+	 
+		            // Extract header and line information from response
+		            SoHeaderDtoPendingOrders header = extractSoHeader(response);
+		            SoLineDtoPendingOrders line = extractSoLine(response);
+	 
+		            // If header is not in the map, add it
+		            if (!headerMap.containsKey(headerId)) {
+		                headerMap.put(headerId, header);
+		                resultMap.put(header, new ArrayList<>());
+		            }
+	 
+		            // Add line to the corresponding header's list
+		            resultMap.get(headerMap.get(headerId)).add(line);
+		        }
+		        System.out.println("Below for loop "+LocalDateTime.now());
+		        // Printing the map to verify
+		        resultMap.forEach((key, value) -> {
+		            System.out.println("Header: " + key + " -> Lines: " + value);
+		        });
+	 
+		        if (responseList.isEmpty()) {
+		            status.setCode(RECORD_NOT_FOUND);
+		            status.setData("Record not found");
+			        System.out.println("Exit from in if getAllPendingOrders at =" + LocalDateTime.now());
+		            return status;
+		        } else {
+		            status.setCode(SUCCESS);
+		            status.setData(resultMap);
+			        System.out.println("Exit from in else getAllPendingOrders at =" + LocalDateTime.now());
+		            return status;
+		        }
+		    } catch (Exception e) {
+		        logger.error("Error Description :", e);
+		        e.printStackTrace();
+		    }
+		    return null;
+		}
+		
+		private static SoHeaderDtoPendingOrders extractSoHeader(ResponseDto response) {
+		    return new SoHeaderDtoPendingOrders(
+		        response.getHeaderId(),
+		        response.getOrderNumber(),
+		        response.getOrderDate(),
+		        response.getStatus(),
+		        response.getStatus1(),
+		        response.getAddress(),
+		        response.getOutletId(),
+		        response.getOutletName(),
+		        response.getOutletCode(),
+		        response.getLatitude(),
+		        response.getLongitude(),
+		        response.getUserId(),
+		        response.getOutletAddress(),
+		        response.getProprietorName(),
+		        response.getDeliveryDate(),
+		        response.getInstockFlag()
+		    );
+		}
+		
+		private static SoLineDtoPendingOrders extractSoLine(ResponseDto response) {
+		    return new SoLineDtoPendingOrders(
+		        response.getLineId(),
+		        response.getProductId(),
+		        response.getQuantity(),
+		        response.getProductCode(),
+		        response.getProductDesc(),
+		        response.getProductName(),
+		        response.getListPrice(),
+		        response.getPriceList(),
+		        response.getPtrPrice(),
+		        response.getDeliveryDate1(),
+		        response.getLinelistPrice(),
+		        response.getLinePtrPrice(),
+		        response.getInventoryQuantity(),
+		        response.getOrgId(),
+		        response.getCategoryId(),
+		        response.getProductType(),
+		        response.getCategory(),
+		        response.getSubCategory(),
+		        response.getPrimaryUom(),
+		        response.getSecondaryUom(),
+		        response.getSecondaryUomValue(),
+		        response.getUnitsPerCase(),
+		        response.getSegment(),
+		        response.getBrand(),
+		        response.getCasePack(),
+		        response.getHsnCode(),
+		        response.getBeatId()
+		    );
+		}
+	
+	
 	@Override
 	public Status removingPendingOrdersFromGetOrderV2(RequestDto requestDto) throws ServiceException, IOException {
 			try {

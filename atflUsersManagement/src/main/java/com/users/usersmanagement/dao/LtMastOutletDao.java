@@ -65,4 +65,6 @@ public interface LtMastOutletDao {
 
 	public Long getStoreIdFromBeat(String beatId)throws ServiceException, IOException;
 
+	public String getUserNameFromSiebel(String mobileNumber)throws ServiceException, IOException;
+
 }

@@ -63,9 +63,17 @@ public class SoHeaderDto {
 	private String inventoryId; 
 	 private String location;
          
-	
+	private String mobileNumber;
 	
 	 
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
 	public String getDistributorName() {
 		return distributorName;
 	}
@@ -402,7 +410,7 @@ public class SoHeaderDto {
 				+ ", headerPriceList=" + headerPriceList + ", createdBy=" + createdBy + ", siebelStatus=" + siebelStatus
 				+ ", siebelRemark=" + siebelRemark + ", siebelInvoicenumber=" + siebelInvoicenumber
 				+ ", siebelJsonpayload=" + siebelJsonpayload + ", orderDate1=" + orderDate1 + ", inventoryId="
-				+ inventoryId + ", location=" + location + "]";
+				+ inventoryId + ", location=" + location + ", mobileNumber=" + mobileNumber + "]";
 	}
 
 	

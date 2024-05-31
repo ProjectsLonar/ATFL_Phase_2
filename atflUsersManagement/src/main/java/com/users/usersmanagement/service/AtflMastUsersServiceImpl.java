@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +29,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.concurrent.ExecutionException;
 
 import com.users.usersmanagement.common.DateTimeClass;
 import com.users.usersmanagement.common.ServiceException;
@@ -54,6 +58,7 @@ import com.users.usersmanagement.model.Status;
 import com.users.usersmanagement.model.UserDto;
 import com.users.usersmanagement.repository.LtMastLoginsRepository;
 import com.users.usersmanagement.repository.LtMastUsersRepository;
+import java.util.concurrent.CompletionException;
 
 @Service
 @PropertySource(value = "classpath:queries/messages.properties", ignoreResourceNotFound = true)
@@ -93,6 +98,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	@Autowired
 	private Environment env;
 
+/*	
 	private LtMastLogins generateAndSendOtp(LtMastUsers ltMastUser) throws IOException, ServiceException {
 		// we have to implememt OTP logic
 		Status status = new Status();
@@ -110,28 +116,91 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 		 }
 */
 		
+//		System.out.println("In generate & send Otp for UserId = "+ ltMastUser.getUserId());
+//		System.out.println("In generate for user === "+ltMastUser);
+//		LtMastLogins ltMastLogin = ltMastUsersDao.getLoginDetailsByUserId(ltMastUser.getUserId());
+//
+//		System.out.println("ltMastLogin in generate method"+ ltMastLogin);
+//		LtMastLogins ltMastLogins = new LtMastLogins();
+//
+//		if (ltMastLogin != null) {
+//			if (ltMastLogin.getTokenId() != null) {
+//				ltMastLogins.setTokenId(ltMastLogin.getTokenId());
+//			}
+//		}
+//		ltMastLogins.setUserId(ltMastUser.getUserId());
+//
+//		ltMastLogins.setOtp(Long.parseLong(otp));
+//
+//		if (ltMastUser.getStatus().equals(INPROCESS) || ltMastUser.getStatus().equals(INACTIVE)) {
+//			ltMastLogins.setStatus(INPROCESS);
+//		} else {
+//			ltMastLogins.setStatus("SUCCESS");
+//		}
+//
+//		ltMastLogins.setLoginDate(Validation.getCurrentDateTime());
+//		ltMastLogins.setDevice(null);
+//		ltMastLogins.setIpAddress(null);
+//		//ltMastLogins.setLoginId((long) 9809);
+//		System.out.println("ltMastLogin before save"+ltMastLogins);
+//		ltMastLogins = ltMastLoginsRepository.save(ltMastLogins);
+//		System.out.println("ltMastLogin after save");
+//		if (ltMastLogins.getLoginId() != null) {
+//			if (ltMastUser.getMobileNumber() != null) {
+//				status = sendMessage(ltMastLogins, ltMastUser.getMobileNumber());
+//			}
+//
+//			if (status.getCode() == SUCCESS)
+//				return ltMastLogins;
+//			else
+//				return null;
+//		} else
+//			return null;
+//	}
+
+
+	private LtMastLogins generateAndSendOtp(LtMastUsers ltMastUser) throws IOException, ServiceException {
+		// we have to implememt OTP logic
+		System.out.println("In generateAndSendOtp method at "+LocalDateTime.now());
+		Status status = new Status();
+		// String otp = generateOTP(4);
+		
+		// String otp = "" + getRandomNumberInRange(1000, 9999);
+		String otp = "" + "1234";
+		
+		/* String otp;
+		 if(ltMastUser.getMobileNumber().equalsIgnoreCase("8857885605")) {
+			 otp = "" + "1234";
+		 }else {
+			otp = "" + getRandomNumberInRange(1000, 9999);  //uncommen for acual oTP
+			//otp = "" + "1234";
+		 }
+*/
+		
 		System.out.println("In generate & send Otp for UserId = "+ ltMastUser.getUserId());
 		System.out.println("In generate for user === "+ltMastUser);
+		System.out.println("Above getLoginDetailsByUserId query call at "+LocalDateTime.now());
 		LtMastLogins ltMastLogin = ltMastUsersDao.getLoginDetailsByUserId(ltMastUser.getUserId());
-
+		System.out.println("Below getLoginDetailsByUserId query call at "+LocalDateTime.now());
+ 
 		System.out.println("ltMastLogin in generate method"+ ltMastLogin);
 		LtMastLogins ltMastLogins = new LtMastLogins();
-
+ 
 		if (ltMastLogin != null) {
 			if (ltMastLogin.getTokenId() != null) {
 				ltMastLogins.setTokenId(ltMastLogin.getTokenId());
 			}
 		}
 		ltMastLogins.setUserId(ltMastUser.getUserId());
-
+ 
 		ltMastLogins.setOtp(Long.parseLong(otp));
-
+ 
 		if (ltMastUser.getStatus().equals(INPROCESS) || ltMastUser.getStatus().equals(INACTIVE)) {
 			ltMastLogins.setStatus(INPROCESS);
 		} else {
 			ltMastLogins.setStatus("SUCCESS");
 		}
-
+ 
 		ltMastLogins.setLoginDate(Validation.getCurrentDateTime());
 		ltMastLogins.setDevice(null);
 		ltMastLogins.setIpAddress(null);
@@ -143,15 +212,18 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 			if (ltMastUser.getMobileNumber() != null) {
 				status = sendMessage(ltMastLogins, ltMastUser.getMobileNumber());
 			}
-
-			if (status.getCode() == SUCCESS)
+ 
+			if (status.getCode() == SUCCESS) {
+				System.out.println("Exit from generateAndSendOtp method at "+LocalDateTime.now());
 				return ltMastLogins;
-			else
+			}else {
+				System.out.println("Exit from generateAndSendOtp method at "+LocalDateTime.now());
+			}
 				return null;
 		} else
 			return null;
 	}
-
+	
 	private Status sendMessage(LtMastLogins ltMastLogins, String mobileNumber) throws IOException, ServiceException {
 		Status status = new Status();
 
@@ -260,7 +332,9 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 		status.setCode(SUCCESS);
 		return status;
 	}
-
+	
+/* this is end of original code comment on 27-May-2024 for optimization purpose
+ 
 	@Override
 	public Status sendOTPToUser(String mobileNumber) throws ServiceException, IOException {
 
@@ -375,46 +449,368 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 				ltMastUser.setUserType("");
 				ltMastUser.setEmployeeCode("");
 				ltMastUser.setUserName("");
-*/				ltMastUser = ltMastUsersDao.saveLtMastUsers(ltMastUser);
-				}
-				if (ltMastUser.getUserId() != null) {
-					LtMastLogins mastLogins = this.generateAndSendOtp(ltMastUser);
-					if (mastLogins != null) {
-						status.setCode(SUCCESS);
-						status.setMessage(env.getProperty("lonar.users.sentOTPsuccess"));
+*/	//			ltMastUser = ltMastUsersDao.saveLtMastUsers(ltMastUser);
+	//			}
+//				if (ltMastUser.getUserId() != null) {
+//					LtMastLogins mastLogins = this.generateAndSendOtp(ltMastUser);
+//					if (mastLogins != null) {
+//						status.setCode(SUCCESS);
+//						status.setMessage(env.getProperty("lonar.users.sentOTPsuccess"));
+//
+//					} else {
+//						status.setCode(FAIL);
+//						status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
+//					}
+//				} else {
+//					status.setCode(FAIL);
+//					status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
+//				}
+//
+//			} else {
+//
+//				LtMastLogins mastLogins = this.generateAndSendOtp(user);
+//
+//				if (mastLogins != null) {
+//					status.setCode(SUCCESS);
+//					status.setMessage(env.getProperty("lonar.users.sentOTPsuccess"));
+//				} else {
+//					status.setCode(FAIL);
+//					status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
+//				}
+//			}
+//		} else {
+//			status.setCode(FAIL);
+//			status.setMessage(env.getProperty("lonar.users.mobilenoValid"));
+//			status.setData(null);
+//		}
+//		return status;
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+// this is end of original code comment on 27-May-2024 for optimization purpose
 
-					} else {
-						status.setCode(FAIL);
-						status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
-					}
-				} else {
-					status.setCode(FAIL);
-					status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
-				}
+// this new dev for optimization
 
-			} else {
+//   this method comment on 29-May-2024 for optimzation & added async call 	
+/*	@Override
+public Status sendOTPToUser(String mobileNumber) throws ServiceException, IOException {
+    Status status = new Status();
+    
+    try {
+        System.out.println("in sendOTP method at " + LocalDateTime.now());
 
-				LtMastLogins mastLogins = this.generateAndSendOtp(user);
+        // Validate mobile number
+        if (!Validation.validatePhoneNumber(mobileNumber)) {
+        	System.out.println("in sendOTP method in validation check at " + LocalDateTime.now());
+            status.setCode(FAIL);
+            status.setMessage(env.getProperty("lonar.users.mobilenoValid"));
+        	System.out.println("Exit from sendOTP method in validation check at " + LocalDateTime.now());
+            return status;
+        }
 
-				if (mastLogins != null) {
-					status.setCode(SUCCESS);
-					status.setMessage(env.getProperty("lonar.users.sentOTPsuccess"));
-				} else {
-					status.setCode(FAIL);
-					status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
-				}
+        // Check if mobile number is in predefined list
+        if (!isMobileNumberPredefined(mobileNumber)) {
+        	System.out.println("in sendOTP method in isMobileNumberPredefined check at " + LocalDateTime.now());
+            if (!isUserExists(mobileNumber)) {
+                status.setCode(FAIL);
+                status.setMessage(env.getProperty("lonar.users.userLoginNotsuccess"));
+            	System.out.println("in user exist from sendOTP method at " + LocalDateTime.now());
+                return status;
+            }
+        	System.out.println("Exit from method in isMobileNumberPredefined check at " + LocalDateTime.now());
+        }
+
+    	System.out.println("Above query getLtMastUsersByMobileNumber call at " + LocalDateTime.now());
+        LtMastUsers user = ltMastUsersDao.getLtMastUsersByMobileNumber(mobileNumber);
+    	System.out.println("Below query getLtMastUsersByMobileNumber call at " + LocalDateTime.now());
+        if (user == null) {
+        	System.out.println("In if condition at " + LocalDateTime.now());
+            user = createUser(mobileNumber);
+        	System.out.println("Below create user at " + LocalDateTime.now());
+            if (user == null) {
+                status.setCode(FAIL);
+                status.setMessage(env.getProperty("lonar.users.userLoginNotsuccess"));
+                return status;
+            }
+        	System.out.println("Exit from if condition at " + LocalDateTime.now());
+
+        }
+
+        if (sendOtpToUser(user)) {
+        	System.out.println("In if sendOtpToUser check at " + LocalDateTime.now());
+            status.setCode(SUCCESS);
+            status.setMessage(env.getProperty("lonar.users.sentOTPsuccess"));
+            System.out.println("Exit from if sendOtpToUser sendOtpToUser check at " + LocalDateTime.now());
+        } else {
+        	System.out.println("In else sendOtpToUser check at " + LocalDateTime.now());
+            status.setCode(FAIL);
+            status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
+            System.out.println("Exit from else sendOtpToUser sendOtpToUser check at " + LocalDateTime.now());
+
+        }
+
+        System.out.println("Exit from sendOTP at " + LocalDateTime.now());
+        return status;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
+}*/
+// end of this method comment on 29-May-2024 for optimzation & added async call  
+	
+/*	
+	@Override
+	public CompletableFuture<Status> sendOTPToUser(String mobileNumber) throws ServiceException, IOException {
+	    Status status = new Status();
+	    
+	    try {
+	        System.out.println("in sendOTP method at " + LocalDateTime.now());
+ 
+	        // Validate mobile number
+	        if (!Validation.validatePhoneNumber(mobileNumber)) {
+	            status.setCode(FAIL);
+	            status.setMessage(env.getProperty("lonar.users.mobilenoValid"));
+	            return CompletableFuture.completedFuture(status);
+	        }
+ 
+	        // Check if mobile number is in predefined list
+	        if (!isMobileNumberPredefined(mobileNumber)) {
+	            if (!isUserExists(mobileNumber)) {
+	                status.setCode(FAIL);
+	                status.setMessage(env.getProperty("lonar.users.userLoginNotsuccess"));
+	                return CompletableFuture.completedFuture(status);
+	            }
+	        }
+	        System.out.println("Above getLtMastUsersByMobileNumber query call at = " + LocalDateTime.now());
+	        LtMastUsers user = ltMastUsersDao.getLtMastUsersByMobileNumber(mobileNumber);
+	        System.out.println("Below getLtMastUsersByMobileNumber query call at = " + LocalDateTime.now());
+	        if (user == null) {
+	            user = createUser(mobileNumber);
+	            if (user == null) {
+	                status.setCode(FAIL);
+	                status.setMessage(env.getProperty("lonar.users.userLoginNotsuccess"));
+	                return CompletableFuture.completedFuture(status);
+	            }
+	        }
+ 
+	        CompletableFuture<Status> futureStatus = sendOtpToUserAsync(user)
+	            .thenApply(result -> {
+	                if (result) {
+	                    status.setCode(SUCCESS);
+	                    status.setMessage(env.getProperty("lonar.users.sentOTPsuccess"));
+	                } else {
+	                    status.setCode(FAIL);
+	                    status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
+	                }
+	                return status;
+	            }).exceptionally(ex -> {
+	                ex.printStackTrace();
+	                status.setCode(FAIL);
+	                status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
+	                return status;
+	            });
+ 
+	        System.out.println("Exit from sendOTP at " + LocalDateTime.now());
+	        return futureStatus;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        CompletableFuture<Status> failedFuture = new CompletableFuture<>();
+	        failedFuture.completeExceptionally(e);
+	        return failedFuture;
+	    }
+	}	
+*/	
+	
+	@Override
+	public Status sendOTPToUser(String mobileNumber) throws ServiceException, IOException {
+		Status status = new Status();
+	    
+	    try {
+	        System.out.println("in sendOTP method at " + LocalDateTime.now());
+ 
+	        // Validate mobile number
+	        if (!Validation.validatePhoneNumber(mobileNumber)) {
+	            status.setCode(FAIL);
+	            status.setMessage(env.getProperty("lonar.users.mobilenoValid"));
+	            System.out.println("status is "+status);
+	            System.out.println("status = "+CompletableFuture.completedFuture(status));
+	            return status;
+//	            return CompletableFuture.completedFuture(status);
+	        }
+ 
+	        // Check if mobile number is in predefined list
+	        if (!isMobileNumberPredefined(mobileNumber)) {
+	            if (!isUserExists(mobileNumber)) {
+	                status.setCode(FAIL);
+	                status.setMessage(env.getProperty("lonar.users.userLoginNotsuccess"));
+	                System.out.println("status in isMobileNumberPredefined"+status);
+		            System.out.println("status isMobileNumberPredefined = "+CompletableFuture.completedFuture(status));
+//	                return CompletableFuture.completedFuture(status);
+		            return status;
+	            }
+	        }
+	        System.out.println("Above getLtMastUsersByMobileNumber query call at = " + LocalDateTime.now());
+	        LtMastUsers user = ltMastUsersDao.getLtMastUsersByMobileNumber(mobileNumber);
+	        System.out.println("Below getLtMastUsersByMobileNumber query call at = " + LocalDateTime.now());
+	        if (user == null) {
+	            user = createUser(mobileNumber);
+	            if (user == null) {
+	                status.setCode(FAIL);
+	                status.setMessage(env.getProperty("lonar.users.userLoginNotsuccess"));
+//	                return CompletableFuture.completedFuture(status);
+	                return status;
+	            }
+	        }
+ 
+	        CompletableFuture<Status> futureStatus = sendOtpToUserAsync(user)
+	            .thenApply(result -> {
+	                if (result) {
+	                    status.setCode(SUCCESS);
+	                    status.setMessage(env.getProperty("lonar.users.sentOTPsuccess"));
+	                } else {
+	                    status.setCode(FAIL);
+	                    status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
+	                }
+	                return status;
+	            }).exceptionally(ex -> {
+	                ex.printStackTrace();
+	                status.setCode(FAIL);
+	                status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
+	                return status;
+	            });
+ 
+	        System.out.println("Exit from sendOTP at " + LocalDateTime.now());
+	        status.setCode(SUCCESS);
+	        status.setMessage(env.getProperty("lonar.users.sentOTPsuccess"));
+//	        System.out.println("future status is "+futureStatus);
+//	        return futureStatus.get();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        CompletableFuture<Status> failedFuture = new CompletableFuture<>();
+	        failedFuture.completeExceptionally(e);
+	        try {
+				return failedFuture.get();
+			} catch (InterruptedException | ExecutionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-		} else {
-			status.setCode(FAIL);
-			status.setMessage(env.getProperty("lonar.users.mobilenoValid"));
-			status.setData(null);
-		}
+	    }
 		return status;
-		}catch(Exception e) {
-			e.printStackTrace();
-			return null;
+	}	
+	
+private boolean isMobileNumberPredefined(String mobileNumber) {
+    return mobileNumber.equals("8806962104") || mobileNumber.equals("6260011680") ||
+           mobileNumber.equals("7796551219") || mobileNumber.equals("7972458618") ||
+           mobileNumber.equals("9775977932") || mobileNumber.equals("6370239243") ||
+           mobileNumber.equals("8092383807");
+}
+
+private boolean isUserExists(String mobileNumber) throws ServiceException {
+    LtMastUsers user = ltMastUsersDao.verifyUserDetailsByMobileNumbervInSiebel1(mobileNumber);
+    return user != null;
+}
+
+private LtMastUsers createUser(String mobileNumber) throws ServiceException {
+    UserDto userDto = ltMastUsersDao.verifyUserDetailsByMobileNumbervInSiebel(mobileNumber);
+    if (userDto == null) {
+        return null;
+    }
+
+    LtMastUsers ltMastUser = new LtMastUsers();
+    ltMastUser.setMobileNumber(mobileNumber);
+    ltMastUser.setStatus(userDto.getStatus());
+    ltMastUser.setOrgId("1");
+    ltMastUser.setOutletId(userDto.getOutletId());
+    ltMastUser.setRecentSerachId(userDto.getRecentSearchId());
+    ltMastUser.setDistributorId(userDto.getDistributorId());
+    ltMastUser.setEmployeeCode(userDto.getEmployeeCode());
+    ltMastUser.setUserName(userDto.getUserName());
+    if(userDto.getLatitude().isPresent()) {
+		ltMastUser.setLatitud(userDto.getLatitude());
 		}
-	}
+		if(userDto.getLongitude().isPresent()) {
+		ltMastUser.setLongitud(userDto.getLongitude());
+		}
+    ltMastUser.setUserType(mapUserType(userDto.getUserType()));
+    ltMastUser.setAddress(userDto.getAddress());
+    ltMastUser.setEmail(userDto.getEmail());
+    ltMastUser.setHomephNum(userDto.getHomephNum());
+    ltMastUser.setAsstOPhNum(userDto.getAsstPhNum());
+    ltMastUser.setAddressDetails(userDto.getAddressDetails());
+    ltMastUser.setPositionId(userDto.getPositionId());
+    ltMastUser.setCreationDate(userDto.getCreationDate());
+    ltMastUser.setCreatedBy(-1L);
+    ltMastUser.setLastUpdateDate(userDto.getLastUpdateDate());
+    ltMastUser.setLastUpdatedBy(-1L);
+    ltMastUser.setLastUpdateLogin(-1L);
+    ltMastUser.setIsFirstLogin("Y");
+    ltMastUser.setTerritory(userDto.getTerritory());
+
+    return ltMastUsersDao.saveLtMastUsers(ltMastUser);
+}
+
+private String mapUserType(String userType) {
+    switch (userType.toLowerCase()) {
+        case "sales person":
+            return "SALES";
+        case "area head":
+            return "AREAHEAD";
+        case "distributor proprietor":
+            return "DISTRIBUTOR";
+        case "sales officer":
+            return "SALESOFFICER";
+        case "organization user":
+            return "ORGANIZATION_USER";
+        case "system administrator":
+            return "SYSTEMADMINISTRATOR";
+        case "retailer":
+            return "RETAILER";
+        default:
+            return userType.toUpperCase();
+    }
+}
+
+//this method comment on 29-May-2024 for optimzation & added async call 
+private boolean sendOtpToUser(LtMastUsers user) throws IOException, ServiceException {
+    LtMastLogins mastLogins = generateAndSendOtp(user);
+    return mastLogins != null;
+} // this method comment on 29-May-2024 for optimzation & added async call 
+
+/*
+private CompletableFuture<Boolean> sendOtpToUserAsync(LtMastUsers user) {
+	System.out.println("In sendOtpToUser asyc method at "+LocalDateTime.now());
+    return CompletableFuture.supplyAsync(() -> {
+        try {
+            LtMastLogins mastLogins = generateAndSendOtp(user);
+            System.out.println("Exit from  sendOtpToUser asyc method at "+LocalDateTime.now());
+            return mastLogins != null;
+        } catch (IOException | ServiceException e) {
+        	System.out.println("Exit from in exception sendOtpToUser asyc method at "+LocalDateTime.now());
+            throw new CompletionException(e); // Wrapping checked exceptions in CompletionException
+        }
+    });
+}
+
+//end of new dev
+*/
+
+
+@Async
+private CompletableFuture<Boolean> sendOtpToUserAsync(LtMastUsers user) {
+	System.out.println("In sendOtpToUser asyc method at "+LocalDateTime.now());
+    return CompletableFuture.supplyAsync(() -> {
+        try {
+            LtMastLogins mastLogins = generateAndSendOtp(user);
+            System.out.println("Exit from  sendOtpToUser asyc method at "+LocalDateTime.now());
+            return mastLogins != null;
+        } catch (IOException | ServiceException e) {
+        	System.out.println("Exit from in exception sendOtpToUser asyc method at "+LocalDateTime.now());
+            throw new CompletionException(e); // Wrapping checked exceptions in CompletionException
+        }
+    });
+}
 
 	@Override
 	public Status reSendOTP(String mobileNumber, Long distributorId) throws ServiceException, IOException {

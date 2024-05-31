@@ -1,6 +1,7 @@
 package com.users.usersmanagement.service;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.web.multipart.MultipartFile;
 

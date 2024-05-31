@@ -44,19 +44,25 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 	public ResponceEntity login(String mobileNumber,String otp, HttpServletResponse response) throws ServiceException {
 		ResponceEntity entity = new ResponceEntity();
 		Status status = new Status();
+		System.out.println("in login service "+new Date());
 		LtMastUsers ltMastUser = ltMastUsersDao.getLtMastUsersByMobileNumber(mobileNumber);
+		System.out.println("ltMastUser = "+ltMastUser);
 		LtMastLogins ltMastLogins =new LtMastLogins();
+		System.out.println("ltMastUser.getStatus() = "+ltMastUser.getStatus());
 		if (ltMastUser.getStatus().equals("INACTIVE")) {
 			entity.setCode(FAIL);
 			entity.setMessage("User is Inactive");
 			return entity;
 		}
+		System.out.println("Above ltMastLogin = "+new Date());
 		LtMastLogins ltMastLogin = ltMastUsersDao.getLoginDetailsByUserId(ltMastUser.getUserId());
-
+		System.out.println("Below ltMastLogin = "+new Date());
+		
+		System.out.println("ltMastLogin = "+ltMastLogin);
 		if (ltMastLogin != null) {
-
+			System.out.println("in ltMastLogin not null");
 			if (ltMastLogin.getOtp().equals(otp)) {
-
+				System.out.println("in otp equals");
 				ltMastLogin.setStatus(SUCCESS_LOGIN);
 				ltMastLogin.setLoginDate(new Date());
 				ltMastLogins = ltMastLoginsRepository.save(ltMastLogin);
@@ -90,7 +96,7 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 		if (status.getCode() == SUCCESS) {
 			System.out.println("login success");
 		}
-
+		System.out.println("End of login service = "+new Date());
 		return entity;
 	}
 

@@ -21,4 +21,8 @@ public interface LtPromotionService {
 	Status deletePromotionData(Long pramotionId) throws ServiceException;
 	
 	Status editPromotion(LtPromotion ltPromotion) throws ServiceException;
+	
+	Status editPromotionV1(MultipartFile file, Long promotionId, String createdBy, String status, String promotionName,
+			String allTimeShowFlag, String orgId, String startDate, String endDate)
+			throws ServiceException, ParseException;
 }

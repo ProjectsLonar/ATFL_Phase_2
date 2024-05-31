@@ -1,7 +1,7 @@
 package com.users.usersmanagement.model;
-
+//
 import java.util.Date;
-
+//
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,15 +9,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
+//
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
+//
 @Entity
 @Table(name = "lt_promotion")
 @JsonInclude(Include.NON_NULL)
 public class LtPromotion {
-
+//
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_PROMOTION_S")
 	@SequenceGenerator(name = "LT_PROMOTION_S", sequenceName = "LT_PROMOTION_S", allocationSize = 1)
@@ -35,15 +36,17 @@ public class LtPromotion {
 
 	@Column(name = "image_name")
 	private String imageName;
-
+//
 	@Column(name = "image_data")
 	private String imageData;
 
 	@Column(name = "start_date")
-	private String startDate;
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+	private Date startDate;
 
 	@Column(name = "end_date")
-	private String endDate;
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+	private Date endDate;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -65,8 +68,8 @@ public class LtPromotion {
 	
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
-
-	
+//
+//	
 	@Column(name = "start_date_1")
 	private Date startDate1;
 
@@ -138,19 +141,19 @@ public class LtPromotion {
 		this.imageData = imageData;
 	}
 
-	public String getStartDate() {
+	public Date getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(String startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-	public String getEndDate() {
+	public Date getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(String endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
@@ -222,3 +225,6 @@ public class LtPromotion {
 	
 	
 }
+
+
+

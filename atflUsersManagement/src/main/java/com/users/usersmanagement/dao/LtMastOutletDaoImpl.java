@@ -446,5 +446,12 @@ System.out.println("list"+list);
 		Long storeId = jdbcTemplate.queryForObject(query,new Object[] {beatId}, Long.class);
         return storeId;
 	}
+
+	@Override
+	public String getUserNameFromSiebel(String mobileNumber) throws ServiceException, IOException {
+		String query = env.getProperty("getUserNameFromSiebel");
+		String userName = jdbcTemplate.queryForObject(query, new Object[] {mobileNumber}, String.class);
+		return userName;
+	}
 	
 }

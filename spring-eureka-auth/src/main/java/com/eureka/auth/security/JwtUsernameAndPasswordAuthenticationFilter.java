@@ -168,7 +168,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 							ltMastUser.getOutletId(), ltMastUser.getDesignation(), ltMastUser.getPositionId(),
 							ltMastUser.getTokenData(),ltMastUser.getOutletName(),ltMastUser.getDistributorCode(),
 							ltMastUser.getDistributorName(),ltMastUser.getProprietorName(),ltMastUser.getPosition(),
-							ltMastUser.getCreationDate(),ltMastUser.getLastUpdateDate(),ltMastUser.getIsFirstLogin());
+							ltMastUser.getCreationDate(),ltMastUser.getLastUpdateDate(),ltMastUser.getIsFirstLogin(),
+							ltMastUser.getTerritory());
 
 					status.setData(jwtResponse);
 
@@ -191,7 +192,6 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public boolean checkAPIVersionAuth(String ltversionauth) {

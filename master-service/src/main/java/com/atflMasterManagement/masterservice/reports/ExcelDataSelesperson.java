@@ -10,8 +10,8 @@ public class ExcelDataSelesperson {
 	private String outletName;
 	private Double revenue;
 	private String outletId;
-	private String ptrPrice;
-	private Long quantity;
+	private String ptrPrice1;
+	private Long quantity1;
 	private String employeeId;
 	private String distributorId;
 	private String distributorCode;
@@ -24,12 +24,21 @@ public class ExcelDataSelesperson {
 	private String status;
 	private String orderDate;
 	private String orderNumber;
-	private String listPrice ;
+	private String listPrice1 ;
 	
 	private String productCode;
 	private String productDesc;
 	private String productName;
 	
+	private Double total = 0D;
+	
+	
+	public Double getTotal() {
+		return total;
+	}
+	public void setTotal(Double total) {
+		this.total = total;
+	}
 	public Long getUserId() {
 		return userId;
 	}
@@ -86,17 +95,17 @@ public class ExcelDataSelesperson {
 		this.outletId = outletId;
 	}
 	
-	public String getPtrPrice() {
-		return ptrPrice;
+	public String getPtrPrice1() {
+		return ptrPrice1;
 	}
-	public void setPtrPrice(String ptrPrice) {
-		this.ptrPrice = ptrPrice;
+	public void setPtrPrice1(String ptrPrice1) {
+		this.ptrPrice1 = ptrPrice1;
 	}
-	public Long getQuantity() {
-		return quantity;
+	public Long getQuantity1() {
+		return quantity1;
 	}
-	public void setQuantity(Long quantity) {
-		this.quantity = quantity;
+	public void setQuantity1(Long quantity1) {
+		this.quantity1 = quantity1;
 	}
 	public String getEmployeeId() {
 		return employeeId;
@@ -165,11 +174,11 @@ public class ExcelDataSelesperson {
 		this.orderNumber = orderNumber;
 	}
 	
-	public String getListPrice() {
-		return listPrice;
+	public String getListPrice1() {
+		return listPrice1;
 	}
-	public void setListPrice(String listPrice) {
-		this.listPrice = listPrice;
+	public void setListPrice1(String listPrice1) {
+		this.listPrice1 = listPrice1;
 	}
 	public String getProductName() {
 		return productName;
@@ -189,4 +198,20 @@ public class ExcelDataSelesperson {
 	public void setDistributorCrmCode(String distributorCrmCode) {
 		this.distributorCrmCode = distributorCrmCode;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return "ExcelDataSelesperson [userId=" + userId + ", Title=" + Title + ", srNo=" + srNo + ", salesPersonName="
+				+ salesPersonName + ", employeeCode=" + employeeCode + ", positionCode=" + positionCode
+				+ ", outletName=" + outletName + ", revenue=" + revenue + ", outletId=" + outletId + ", ptrPrice1="
+				+ ptrPrice1 + ", quantity1=" + quantity1 + ", employeeId=" + employeeId + ", distributorId="
+				+ distributorId + ", distributorCode=" + distributorCode + ", distributorName=" + distributorName
+				+ ", position=" + position + ", outletCode=" + outletCode + ", distributorCrmCode=" + distributorCrmCode
+				+ ", outletAddress=" + outletAddress + ", status=" + status + ", orderDate=" + orderDate
+				+ ", orderNumber=" + orderNumber + ", listPrice1=" + listPrice1 + ", productCode=" + productCode
+				+ ", productDesc=" + productDesc + ", productName=" + productName + ", total=" + total + "]";
+	}
+	
+	
 }

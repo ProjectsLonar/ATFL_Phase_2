@@ -154,6 +154,7 @@ public class LtMastOutletsDump extends BaseClass {
 	Long userId;
 
 
+	String mobileNumber;
 	
 	/*public String getCreatedby() {
 		return createdby;
@@ -162,6 +163,14 @@ public class LtMastOutletsDump extends BaseClass {
 	public void setCreatedby(String createdby) {
 		this.createdby = createdby;
 	}*/
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
 
 	public String getBeatId() {
 		return beatId;
@@ -504,12 +513,11 @@ public class LtMastOutletsDump extends BaseClass {
 				+ ", email=" + email + ", primaryMobile=" + primaryMobile + ", priceList=" + priceList
 				+ ", outletChannel=" + outletChannel + ", siebelStatus=" + siebelStatus + ", siebelRemark="
 				+ siebelRemark + ", distributorName=" + distributorName + ", siebelJsonpaylod=" + siebelJsonpaylod
-				+ ", beatId=" + beatId + ", distributorCode=" + distributorCode
-				+ ", distributorCrmCode=" + distributorCrmCode + ", distributorStatus=" + distributorStatus
-				+ ", employeeId=" + employeeId + ", empName=" + empName + ", employeeCode=" + employeeCode
-				+ ", outletAddress=" + outletAddress + ", userId=" + userId + "]";
+				+ ", beatId=" + beatId + ", distributorCode=" + distributorCode + ", distributorCrmCode="
+				+ distributorCrmCode + ", distributorStatus=" + distributorStatus + ", employeeId=" + employeeId
+				+ ", empName=" + empName + ", employeeCode=" + employeeCode + ", outletAddress=" + outletAddress
+				+ ", userId=" + userId + ", mobileNumber=" + mobileNumber + "]";
 	}
 
-	
 			
 }

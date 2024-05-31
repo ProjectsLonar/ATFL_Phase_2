@@ -19,7 +19,7 @@ public interface DashboardService {
 
 	Status monthlySales(String orgId, String userId) throws ServiceException;
 	
-	List<MonthlyResponseDto> monthlySalesV2(String orgId, String userId) throws ServiceException;
+	Status monthlySalesV2(String orgId, String userId) throws ServiceException;
 	
 	Status dailySalesExcel(String orgId, String userId) throws ServiceException;
 

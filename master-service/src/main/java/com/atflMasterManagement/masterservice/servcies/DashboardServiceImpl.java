@@ -276,7 +276,7 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 		return status; 
 	}
 	@Override
-	public List<MonthlyResponseDto> monthlySalesV2(String orgId, String userId) throws ServiceException {
+	public Status monthlySalesV2(String orgId, String userId) throws ServiceException {
 		Status status = new Status();
 		List<MonthlyResponseDto> monthlyResponseDtoList= new ArrayList <MonthlyResponseDto>();
 		try {
@@ -325,19 +325,20 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 //				return monthlyResponseDtoList;
 				status.setCode(SUCCESS);
 				status.setMessage("Success");
-				status.setData(monthlyResponseDtoList);
+				status.setData(MonthlyResponseDtoList);
 			} 
 			else {
 				//System.out.println("In else status");
 				status.setCode(FAIL);
 				status.setMessage("FAIL");
-				status.setData(monthlyResponseDtoList);
+				status.setData(MonthlyResponseDtoList);
 			}//System.out.println("status1"+status);
-			return MonthlyResponseDtoList;
+			//return MonthlyResponseDtoList;
+			return status;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}//System.out.println("status"+status);
-		return monthlyResponseDtoList;
+		return status;
 
 	}
 	@Override

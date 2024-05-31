@@ -158,10 +158,10 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 
 				if (productReportDataMap.get(excelDataProduct.getProductCode()) != null) {
 					ExcelDataProduct excelDataProductObj = productReportDataMap.get(excelDataProduct.getProductCode());
-					Long quantity = (excelDataProductObj.getQuantity() + excelDataProduct.getQuantity());
-					excelDataProductObj.setQuantity(quantity);
-					Double revenu = (excelDataProduct.getQuantity()
-							* Double.parseDouble(excelDataProduct.getPtrPrice()));
+					Long quantity = (excelDataProductObj.getQuantity1() + excelDataProduct.getQuantity1());
+					excelDataProductObj.setQuantity1(quantity);
+					Double revenu = (excelDataProduct.getQuantity1()
+							* Double.parseDouble(excelDataProduct.getPtrPrice1()));
 					revenu = excelDataProductObj.getAmount() + revenu;
 					excelDataProductObj.setAmount(revenu);
 					productReportDataMap.put(excelDataProduct.getProductCode(), excelDataProductObj);
@@ -169,10 +169,10 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 					ExcelDataProduct excelDataProductObj = new ExcelDataProduct();
 					excelDataProductObj.setProductCode(excelDataProduct.getProductCode());
 					excelDataProductObj.setProductName(excelDataProduct.getProductName());
-					excelDataProductObj.setPtrPrice(excelDataProduct.getPtrPrice());
-					excelDataProductObj.setQuantity(excelDataProduct.getQuantity());
-					Double revenu = (excelDataProduct.getQuantity()
-							* Double.parseDouble(excelDataProduct.getPtrPrice()));
+					excelDataProductObj.setPtrPrice1(excelDataProduct.getPtrPrice1());
+					excelDataProductObj.setQuantity1(excelDataProduct.getQuantity1());
+					Double revenu = (excelDataProduct.getQuantity1()
+							* Double.parseDouble(excelDataProduct.getPtrPrice1()));
 					revenu = excelDataProductObj.getAmount() + revenu;
 					excelDataProductObj.setAmount(revenu);
 					productReportDataMap.put(excelDataProduct.getProductCode(), excelDataProductObj);
@@ -384,9 +384,9 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 
 					outletReportDataMap.put(mapKey, excelDataOutlet);
 				}
-			}
+			}}
 			List<ExcelDataOutlet> excelDataProductList = new ArrayList(outletReportDataMap.values());
-
+			
 		if (!excelDataProductList.isEmpty()) {
 				//if (!outletReportDataList.isEmpty()) {
 				status = createExcelOutletReport(excelDataProductList, excelReportDto);
@@ -395,7 +395,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 				status.setCode(FAIL);
 			}
 		
-			}} catch (Exception e) {
+			} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return status;
@@ -814,6 +814,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 				status.setCode(FAIL);
 				return status;
 			}
+			//System.out.println("Hi i'm in serviceImpl dats is ="+ regionReportDataList);
 			List<ExcelDataRegion> regionReportDataList2 = ltReportDao.getSalesOrderLineCount2(regionReportDataList,
 					excelReportDto);
 
@@ -826,6 +827,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("Hi i'm in serviceImpl status is ="+ status);
 		return status;
 	}
 

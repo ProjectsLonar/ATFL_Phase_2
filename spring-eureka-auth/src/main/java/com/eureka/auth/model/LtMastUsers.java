@@ -89,6 +89,18 @@ public class LtMastUsers extends BaseClass {
 	@Column(name = "ISFIRSTLOGIN")
 	private String isFirstLogin;
 	
+	@Column(name = "TERRITORY")
+	private String territory;
+	
+	
+	public String getTerritory() {
+		return territory;
+	}
+
+	public void setTerritory(String territory) {
+		this.territory = territory;
+	}
+
 	public String getIsFirstLogin() {
 		return isFirstLogin;
 	}
@@ -458,8 +470,9 @@ public class LtMastUsers extends BaseClass {
 				+ ", Address=" + Address + ", email=" + email + ", alternateNo=" + alternateNo + ", latitude="
 				+ latitude + ", longitude=" + longitude + ", imageType=" + imageType + ", imageName=" + imageName
 				+ ", imageData=" + imageData + ", addressDetails=" + addressDetails + ", recentSerachId="
-				+ recentSerachId + ", tokenData=" + tokenData + ", distributorCode=" + distributorCode + ", primaryMobile="
-				+ primaryMobile + ", distributorCrmCode=" + distributorCrmCode + ", distributorName=" + distributorName
+				+ recentSerachId + ", tokenData=" + tokenData + ", isFirstLogin=" + isFirstLogin + ", territory="
+				+ territory + ", distributorCode=" + distributorCode + ", primaryMobile=" + primaryMobile
+				+ ", distributorCrmCode=" + distributorCrmCode + ", distributorName=" + distributorName
 				+ ", distributorAddress=" + distributorAddress + ", employeeId=" + employeeId + ", empName=" + empName
 				+ ", empCode=" + empCode + ", organisationCode=" + organisationCode + ", organisationName="
 				+ organisationName + ", outletName=" + outletName + ", outletCode=" + outletCode + ", outletAddress="
@@ -467,6 +480,6 @@ public class LtMastUsers extends BaseClass {
 				+ position + "]";
 	}
 
-
+	
 	
 }

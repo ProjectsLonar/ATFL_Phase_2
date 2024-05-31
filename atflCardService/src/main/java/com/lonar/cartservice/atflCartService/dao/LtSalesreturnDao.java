@@ -106,4 +106,6 @@ public interface LtSalesreturnDao {
 
 	List<SoHeaderDto> getSoHeaderDataNew(List<String> salesReturnInvoice, RequestDto requestDto)throws ServerException;
 
+	String getUserNameFromSiebel(String mobileNumber)throws ServerException;
+
 }

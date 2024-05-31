@@ -645,8 +645,14 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 		        con.setRequestProperty("Content-Type", "application/json");
 		        //con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpMb25hcjEyMw==");
 
-		        String username = "VINAY.KUMAR6";
-		        String password = "Welcome1";
+		       // String username = "VINAY.KUMAR6";
+		       // String password = "Welcome1";
+		        String username;
+		        if(ltSalesReturnDto.getMobileNumber()!= null) {
+		         username = ltSalesreturnDao.getUserNameFromSiebel(ltSalesReturnDto.getMobileNumber());
+		         }else {
+		         username = "VINAY.KUMAR6";}
+		        String password = "D10nysu$";
 		        String auth = username + ":" + password;
 		        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
 		        String authHeaderValue = "Basic " + new String(encodedAuth);
@@ -722,7 +728,11 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 		        //System.out.println("Save Response after Body: " + res);
 		        
 		        ltSalesReturnHeader.setSiebelJsonpayload(jsonPayload);
-                   
+                  /* if(resCode.equalsIgnoreCase("200")) {
+                	   ltSalesReturnHeader.setStatus("APPROVED");
+                   }else {
+                	   ltSalesReturnHeader.setStatus("PENDING_APPROVAL");
+                   }*/
 		        ltSalesReturnHeader = updateSalesReturnHeader(ltSalesReturnHeader);
 		        
 			}
@@ -1036,6 +1046,8 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				ltSalesReturnHeaderDto.setOutletName(responseDtoList1.getOutletName());
 				ltSalesReturnHeaderDto.setPriceList(responseDtoList1.getPriceList());
 								
+				ltSalesReturnHeaderDto.setSiebelRemark(responseDtoList1.getSiebelRemark());
+				
 				List<LtSalesReturnLines> ltSalesReturnLineDto1 = new ArrayList<LtSalesReturnLines>();
 				//int line=0;
 				//System.out.println("I'm in for loop above 2222222222");
@@ -1255,16 +1267,16 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 					  //SoHeaderDto1 = ltSalesreturnDao.getSoHeaderData(salesReturnInvoice.get(i), requestDto);
 					final int ii = i;
 				//	System.out.println("In loop for SoLineDataList  " +SoLineDataList);
-					System.out.println("In loop for salesReturnInvoice.get(ii)  " +salesReturnInvoice.get(ii) +
-							"in method getInvoices service"+ new Date() + "this is datwe & time "+d1);
+				//	System.out.println("In loop for salesReturnInvoice.get(ii)  " +salesReturnInvoice.get(ii) +
+				//			"in method getInvoices service"+ new Date() + "this is datwe & time "+d1);
 					Optional<SoHeaderDto> soHeaderDto1= SoHeaderDtoList.stream().filter(x->x.getSiebelInvoicenumber().equalsIgnoreCase(salesReturnInvoice.get(ii))).findFirst();
 				//	System.out.println("in method getInvoices service line 1259"+ new Date() + "this is datwe & time line 1259 "+d1);
               //     System.out.println("In loop for SoHeaderDto12  " +soHeaderDto1.get());
                    SoHeaderDto1 = soHeaderDto1.get();
                    
-                   //System.out.println("In loop for SoHeaderDto12  " +SoHeaderDto1);
+                   System.out.println("In loop for SoHeaderDto12  " +SoHeaderDto1);
 					
-					//System.out.println("In loop for HeaderId "+SoHeaderDto12.getHeaderId());
+					System.out.println("In loop for HeaderId "+SoHeaderDto1.getHeaderId() + SoHeaderDto1.getBeatId() +SoHeaderDto1.getBeatName() );
 					if(SoHeaderDto1== null) {
 						continue;
 					}
@@ -1274,7 +1286,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 					
 					//List<SoLineDto> SoLineData = ltSalesreturnDao.getSoLineData(SoHeaderDto1.getSiebelInvoicenumber(), requestDto);
 					final Long soHeader= SoHeaderDto1.getHeaderId();
-					List<SoLineDto> SoLineData= SoLineDataList.stream().filter(x->x.getHeaderId()==soHeader).collect(Collectors.toList());
+					List<SoLineDto> SoLineData= SoLineDataList.stream().filter(x->x.getHeaderId().equals(soHeader)).collect(Collectors.toList());
 					
 					
 					//List<SoLineDto> SoLineData = ltSalesreturnDao.getSoLineData(SoHeaderDto12.getHeaderId(), requestDto);
@@ -1296,6 +1308,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 					System.out.println("In loop for soHeaderDtoList1.get().getBeatName();  " +soHeaderDtoList1);
 					if(soHeaderDtoList1.isPresent()) {
 					beatName=soHeaderDtoList1.get().getBeatId();
+					soHeaderDto.setBeatId(beatName);
 					}
 						//beatName = "AYYAPPANTHANGAL";
 					//}
@@ -1305,7 +1318,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 					
 					Long id1 = SoHeaderDto1.getHeaderId();
 					soHeaderDto.setHeaderId(id1);
-					soHeaderDto.setDistributorCode(SoHeaderDto1.getDistributorCode());
+//					soHeaderDto.setDistributorCode(SoHeaderDto1.getDistributorCode());
 					soHeaderDto.setDistributorCode(SoHeaderDto1.getDistributorCode());
 					soHeaderDto.setDistributorName(SoHeaderDto1.getDistributorName());
 										
@@ -1325,6 +1338,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 					
 					//soHeaderDto.setBeatName(beatName.get(i));          //(SoHeaderDto1.getBeatName());
 					//soHeaderDto.setBeatId(SoHeaderDto1.getBeatId()); // as Beat Name
+					//System.out.println("beat Name is  ====" + SoHeaderDto1.getBeatId());
 					//soHeaderDto.setStatus(SoHeaderDto1.getStatus());
 					
 					if(SoLineData== null) {
@@ -1841,8 +1855,14 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 	            // Enable output and set request body
 	            */
 	            con.setRequestProperty("Content-Type", "application/json");
-	            String username = "VINAY.KUMAR6";
-	            String password = "Welcome1";
+	            //String username = "VINAY.KUMAR6";
+	            //String password = "Welcome1";
+	            String username;
+	            if(requestDto.getMobileNumber()!= null) {
+	             username = ltSalesreturnDao.getUserNameFromSiebel(requestDto.getMobileNumber());
+	             }else {
+	             username = "VINAY.KUMAR6";}
+	            String password = "D10nysu$";
 	            String auth = username + ":" + password;
 	            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
 	            String authHeaderValue = "Basic " + new String(encodedAuth);

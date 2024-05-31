@@ -67,10 +67,10 @@ public class DashboardController implements CodeMaster {
 	}
 	
 	@RequestMapping(value = "/monthlySales/{orgId}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
-	public ResponseEntity<List<MonthlyResponseDto>> monthlySales(@PathVariable("orgId") String orgId, @PathVariable("userId") String userId)
+	public ResponseEntity<Status> monthlySales(@PathVariable("orgId") String orgId, @PathVariable("userId") String userId)
 			throws ServiceException {
 		try {
-			return new ResponseEntity<List<MonthlyResponseDto>>(dashboardService.monthlySalesV2(orgId, userId), HttpStatus.OK);
+			return new ResponseEntity<Status>(dashboardService.monthlySalesV2(orgId, userId), HttpStatus.OK);
 		} catch (Exception e) {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 		}
