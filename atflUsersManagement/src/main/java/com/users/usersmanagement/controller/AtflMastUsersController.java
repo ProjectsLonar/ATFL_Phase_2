@@ -175,6 +175,25 @@ public class AtflMastUsersController implements CodeMaster {
 		}
 
 	}
+	
+	@RequestMapping(value = "/deselectOutletForNoOrder/{userId}/{searchId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> deselectOutletForNoOrder(@PathVariable("userId") Long userId,
+			@PathVariable("searchId") String searchId) throws ServiceException, IOException {
+
+		try {
+			String requestURL = "/setSelectedOutlet/" + userId + "/" + searchId;
+			Logging.setRequestLog(null, "setSelectedOutlet()", requestURL, "GET");
+			Status status = atflMastUsersService.saveRecentSearchId1(userId, searchId);
+			Logging.setResponceLog(status, "setSelectedOutlet()", requestURL, "GET");
+			return new ResponseEntity<Status>(status, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("Error Description :", e);
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+
+	}
+
 
 	@RequestMapping(value = "/getPersonaldetailsById/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> getPersonaldetailsById(@PathVariable("userId") Long userId)

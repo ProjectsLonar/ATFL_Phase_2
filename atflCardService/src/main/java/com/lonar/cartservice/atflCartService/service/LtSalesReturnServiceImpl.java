@@ -15,13 +15,24 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -72,6 +83,7 @@ import com.lonar.cartservice.atflCartService.model.LtSalesReturnStatus;
 import com.lonar.cartservice.atflCartService.model.Status;
 import com.lonar.cartservice.atflCartService.repository.LtSalesRetrunLinesRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSalesReturnRepository;
+
 import com.lonar.cartservice.atflCartService.controller.WebController;
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
 import com.lonar.cartservice.atflCartService.model.LtMastUsers;
@@ -97,6 +109,155 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 	@Autowired
 	private WebController webController;
 	
+	
+	
+private void sendEmail(LtSalesReturnHeader ltSalesReturnHeader, LtMastUsers user) {
+	/*		
+		List<LtMastUsers> ltMastAllUsers = ltSalesreturnDao.getAllUsersForEmail(ltSalesReturnHeader.getOutletId());
+		
+		if(!ltMastAllUsers.isEmpty()) 
+		      {			
+			 System.out.println("Hi I'm in send email outlet");
+			 System.out.println("ltMastAllUsersList is "+ ltMastAllUsers);
+					for(Iterator iterator = ltMastAllUsers.iterator(); iterator.hasNext();) 
+					{
+						LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
+						System.out.println(user.getTokenData());
+						
+						String subject = "OUTLET_APPROVAL";
+					    String userName = ltSalesreturnDao.getUserNameAgainsUserId(ltSalesReturnHeader.getCreatedBy());
+					    System.out.println("userName for Email = "+userName+"...Ok");
+					      
+					      String salespersonName=userName;
+					      
+					      String outletName = ltMastOutletsDumpupdated.getOutletName();
+					      System.out.println("outletName is"+ outletName);
+						  String text = "";
+					      
+					      if(ltMastUsers.getEmail()!= null) {
+					      String to= ltMastUsers.getEmail();
+					      System.out.println("Above sendSimpleMessage");
+					      try {
+							sendSimpleMessageWithAuth(to,subject,text,outletName,salespersonName);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+			          }
+					}
+		}
+	*/	
+	}
+	
+
+public void sendSimpleMessageWithAuth(String to, String subject, String text,String outletName,String salespersonName) throws MessagingException {
+//  MimeMessage message = emailSender.createMimeMessage();
+//  MimeMessageHelper helper = new MimeMessageHelper(message, true);
+  Map<String,String> map = new HashMap<String,String>();
+  System.out.println("in sendSimpleMessageWithAuth");
+  String host = "14.140.146.196";    // "smtp.gmail.com";         
+  String port = "25";//  "587";         
+  String mailFrom = "noreply@atfoods.com";  //"atfl4867@gmail.com";         
+  String password = "Welcome12";    //"vjug xicp wiuw fakw";         
+  // Outgoing email information
+  String mailTo = to;        
+  String subject1 = "SALES_ORDER_APPROVAL";   
+//  text = "<html><head></head><body><h1>Greetings!</h1><p>We hope this message finds you well.</p></body></html>";
+//  String salesOrder ="myOrder123";
+//  String salespersonName = "Vaibhav";
+//  String totalAmount= "100";
+  text = "<html> <head> </head> <body>"
+          + "<div style=\"margin-top:0;background-color:#f4f4f4!important;color:#555; font-family: 'Open Sans', sans-serif;\">"
+          + "<div style=\"font-size:14px;margin:0px auto;max-width:620px;margin-bottom:20px;background:#c02e2e05;\">"
+          + "<div style=\"padding: 0px 0px 9px 0px;width:100%;color: #fff;font-weight:bold;font-size:15px;line-height: 20px; width:562px; margin:0 auto;\">"
+          + "<center><table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\"><tbody><tr><td valign=\"top\" style=\"padding:48px 48px 32px\">"
+          + "<div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left\">"
+          + "<p style=\"margin:0 0 16px\">Dear Sir/Ma’am,</p>"
+          + "<p style=\"margin:0 0 16px\">An outlet has come for your approval. Please go to the app to approve/reject the outlet.</p>"
+          + "<h4 style=\"font-weight:bold\">Outlet Name:"+ salespersonName +"</h4>"
+          + "<h4 style=\"font-weight:bold\">Created by:"+ salespersonName +"</h4>"
+          + "<h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>"
+          + "<p>Regards,</p><p>Lakshya App team.</p>"
+          + "<div style= \"margin-bottom:40px\"></div></div></td></tr></tbody></table></center></div></div></div>"
+          + "</body> </html>";
+  
+  String message = text;
+  String result = String.join("   ", host,mailFrom,password,mailTo,subject1,message);
+  System.out.println("Port = "+port);
+	System.out.println("result in method = "+result);
+  try {
+
+      System.out.println("Port = "+port);
+  	System.out.println("result in try = "+result);
+  	   sendEmail(host, port, mailFrom, password, mailTo, subject1, message);
+//      map.put("status", "true");
+//      map.put("message", "Email sent successfully to: "+ to);
+  } catch (Exception ex) {
+      System.out.println("Port = "+port);
+  	System.out.println("result in catch = "+result);
+      System.out.println("Failed to send email to: " + to);
+      map.put("status", "false");
+      map.put("message", "Failed to send email to: "+to);
+      ex.printStackTrace(); // Log the stack trace for debugging
+  }
+  
+}
+
+
+private void sendEmail(String host, String port, String mailFrom, String password, String mailTo, String subject1,
+		String message)throws AddressException, MessagingException {
+	   	// Set up mail server properties
+	   	System.out.println("in sendEmail");
+	   	Map<String,String> map = new HashMap<String,String>();
+	   	Properties properties = new Properties();         
+	   	properties.put("mail.smtp.host", host);   
+	   	System.out.println("Above Port in sendEmail = "+port);
+	   	properties.put("mail.smtp.socketFactory.port", port);
+	   	System.out.println("Below Port in sendEmail = "+port);
+	   	properties.put("mail.smtp.auth", "true");         
+	   	properties.put("mail.smtp.starttls.enable", "true"); 
+	   	
+	   	properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+	   	properties.put("mail.smtp.ssl.ciphersuites", "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384");
+	   	properties.put("mail.smtp.ssl.enable", "false");
+	   	properties.put("mail.transport.protocol", "smtp");
+	   	properties.put("mail.smtp.sendpartial", "true");
+	   	properties.put("mail.smtp.ssl.trust", host);
+	   	
+	   	properties.put("mail.debug", "true");
+	   	System.out.println("below properties");
+	   	// Create a mail session
+	   	Authenticator auth = new Authenticator() { 
+	   		public PasswordAuthentication getPasswordAuthentication() { 
+	   			return new PasswordAuthentication(mailFrom, password);           
+	   			}       
+	   		};
+	       	System.out.println("below Authenticator");
+	   		Session session = Session.getInstance(properties, auth); 
+	       	System.out.println("below session");
+	   		// Create the email message
+	   		Message message1 = new MimeMessage(session); 
+	   		message1.setFrom(new InternetAddress(mailFrom)); 
+	   		message1.setRecipient(Message.RecipientType.TO, new InternetAddress(mailTo)); 
+	   		message1.setSubject(subject1); 
+//	   		message.setText(messageBody);
+	           message1.setContent(message, "text/html; charset=utf-8");
+	   		// Send the email 
+	       	System.out.println("Above Transport");
+	       	try {
+	       		Transport.send(message1);
+	       		System.out.println("Success...");
+	       		map.put("status", "101");
+	       		map.put("message", "Email sent successfully to: "+ mailTo);
+	       	}catch(Exception ex) {
+	       		System.out.println("Failed...");
+	       		map.put("status", "102");
+	               map.put("message", "Failed to send email to: "+ mailTo);
+	       		ex.printStackTrace();
+	       	}
+	       	System.out.println("Below Transport");
+	       	
+	   }
+
 	@Override
 	public Status saveSalesReturn(LtSalesReturnDto ltSalesReturnDto) throws ServerException{
 		try {
@@ -325,6 +486,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 						//System.out.println("Hi this is before notification");
 			webController.sendSalesReturnNotification(ltSalesReturnHeader, user);
 			            //System.out.println("Hi this is after notification");
+			          sendEmail(ltSalesReturnHeader, user);
 					}
 				  }
 				}
@@ -338,6 +500,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 						//System.out.println("Hi this is before notification");
 			webController.sendSalesReturnNotification(ltSalesReturnHeader, user);
 			            //System.out.println("Hi this is after notification");
+			sendEmail(ltSalesReturnHeader, user);
 					}
 				  }
 				}
@@ -351,6 +514,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 						//System.out.println("Hi this is before notification");
 			webController.sendSalesReturnNotification(ltSalesReturnHeader, user);
 			            //System.out.println("Hi this is after notification");
+			sendEmail(ltSalesReturnHeader, user);
 					}
 				  }
 				}
@@ -718,21 +882,21 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 		        
 		        //LtSalesReturnHeader ltSalesReturnHeader = new LtSalesReturnHeader();
 		        String resCode = Integer.toString(responseCode);
-		        //System.out.println("Save Response before Body: " + resCode);
+		        System.out.println("Save Response before Body: " + resCode);
 		        ltSalesReturnHeader.setSiebelStatus(resCode);
-		        //System.out.println("Save Response after Body: " + resCode);
+		        System.out.println("Save Response after Body: " + resCode);
 
 		        String res = response.toString();
-		        //System.out.println("Save Response before Body: " + res);
+		        System.out.println("Save Response before Body: " + res);
 		        ltSalesReturnHeader.setSiebelRemark(res);
-		        //System.out.println("Save Response after Body: " + res);
+		        System.out.println("Save Response after Body: " + res);
 		        
 		        ltSalesReturnHeader.setSiebelJsonpayload(jsonPayload);
-                  /* if(resCode.equalsIgnoreCase("200")) {
+                   if(resCode.equalsIgnoreCase("200")) {
                 	   ltSalesReturnHeader.setStatus("APPROVED");
                    }else {
                 	   ltSalesReturnHeader.setStatus("PENDING_APPROVAL");
-                   }*/
+                   }
 		        ltSalesReturnHeader = updateSalesReturnHeader(ltSalesReturnHeader);
 		        
 			}
@@ -900,7 +1064,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 		System.out.println("requestDto"+requestDto);
 		List<Long> IdsList = ltSalesreturnDao.getSalesReturnHeader(requestDto);
 		Long recordCount = ltSalesreturnDao.getSalesReturnRecordCount(requestDto);
-		//System.out.println("IdsList"+IdsList +" "+recordCount);
+		System.out.println("IdsList"+IdsList +" "+recordCount);
 		status.setTotalCount(recordCount);
 		status.setRecordCount(recordCount);
 		if(IdsList== null) {
@@ -1024,12 +1188,12 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 				ResponseDto	ltSalesReturnHeaderDto = new ResponseDto();
 				
 				List<LtSalesReturnLines> salesReturnLineData = ltSalesreturnDao.getSalesReturnLineDataForApproval(IdsList.get(i), requestDto);
-				System.out.println("sales Return Line Data ==-------== "+salesReturnLineData);
+				//System.out.println("sales Return Line Data ==-------== "+salesReturnLineData);
 				
 				//List<LtSalesReturnResponseDto> salesReturnHeaderData = ltSalesreturnDao.getSalesReturnForPendingAprroval1(salesReturnHeaderId.get(i));
 				ResponseDto responseDtoList1 = ltSalesreturnDao.getSalesReturnForAprroval1(IdsList.get(i), requestDto);
 				
-				//System.out.println("sales Return Header Data ==-------== "+salesReturnHeaderData);
+				System.out.println("sales Return Header Data ==-------== "+ responseDtoList1);//salesReturnHeaderData);
 				Long id1 = responseDtoList1.getSalesReturnHeaderId();
 				//System.out.println("sales Return Header IDDDDDDDDDD" + id1);
 				//if(id1!= null) {
@@ -1994,6 +2158,7 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
             	  LtSalesReturnLineDto.setTotalPrice(LtSalesReturnResponseDto1.get(i).getTotalPrice());
             	  LtSalesReturnLineDto.setLotNumber(LtSalesReturnResponseDto1.get(i).getLotNumber());
             	  LtSalesReturnLineDto.setStatus1(LtSalesReturnResponseDto1.get(i).getStatus1());
+            	  LtSalesReturnLineDto.setLocation(LtSalesReturnResponseDto1.get(i).getLocation());
             	  
             	  salesLineList.add(LtSalesReturnLineDto);
               }

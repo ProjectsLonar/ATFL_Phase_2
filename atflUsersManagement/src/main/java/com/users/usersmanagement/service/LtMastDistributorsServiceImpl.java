@@ -256,14 +256,15 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 		}
 			}
 			List<LtMastDistributors> distributorList = ltMastDistributorsDao.getAllDistributorAgainstSystemAdmin(requestDto);
+			System.out.println("distributorList Admin =="+distributorList);
 			if (distributorList != null) {
 				status.setCode(SUCCESS);
 				status.setMessage("RECORD FOUND SUCCESSFULLY");
 				status.setData(distributorList);
-			} else {
-				status.setCode(FAIL);
-				status.setMessage("RECORD NOT FOUND");
-			}
+			} //else {
+				//status.setCode(FAIL);
+				//status.setMessage("RECORD NOT FOUND");
+			//}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

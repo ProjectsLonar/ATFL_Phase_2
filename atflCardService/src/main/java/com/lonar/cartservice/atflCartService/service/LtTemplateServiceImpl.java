@@ -93,7 +93,7 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 				ltTemplateDto.setTemplateHeaderId(null);
 			}
 			
-			//System.out.println("Disrtibutor Id ===== "+ ltTemplateHeader12.getDistributorId());
+			System.out.println("Disrtibutor Id ===== "+ ltTemplateHeader12.getDistributorId());
 			if(ltTemplateDto.getTemplateHeaderId() ==null) {
 				//System.out.println("Hi I'm in if ");
 				//System.out.println("Checking Disrtibutor Id ===== "+ ltTemplateDto.getDistributorId() +"&&&" + ltTemplateHeader12.getDistributorId());
@@ -112,7 +112,7 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			ltTemplateHeadersUpdated = ltTemplateDao.saveheaderData(ltTemplateHeaders);
 			
 			}
-		else {//System.out.println("Hi I'm in else ");
+		else {System.out.println("Hi I'm in else ");
 			
 			System.out.println("Hi input Data......."+ ltTemplateDto.getDistributorId()+" Hi New data"+
 					ltTemplateDto.getTemplateHeaderId());

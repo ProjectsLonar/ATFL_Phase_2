@@ -20,14 +20,18 @@ public class SoHeaderDtoPendingOrders {
     Date deliveryDate;
     String instockFlag;
  
-    // Constructor, getters, and setters can be generated here
+    String priceList;
+    String BeatId;
+    
+	// Constructor, getters, and setters can be generated here
     public SoHeaderDtoPendingOrders() {
 		super();
 	}
-    
+ 
 	public SoHeaderDtoPendingOrders(Long headerId, String orderNumber, Date orderDate, String status, String status1,
 			String address, String outletId, String outletName, String outletCode, String latitude, String longitude,
-			Long userId, String outletAddress, String proprietorName, Date deliveryDate, String instockFlag) {
+			Long userId, String outletAddress, String proprietorName, Date deliveryDate, String instockFlag,
+			String priceList, String BeatId) {
 		super();
 		this.headerId = headerId;
 		this.orderNumber = orderNumber;
@@ -45,10 +49,26 @@ public class SoHeaderDtoPendingOrders {
 		this.proprietorName = proprietorName;
 		this.deliveryDate = deliveryDate;
 		this.instockFlag = instockFlag;
+		this.priceList = priceList;
+		this.BeatId = BeatId;
 	}
- 
-	
- 
+
+	public String getPriceList() {
+		return priceList;
+	}
+
+	public void setPriceList(String priceList) {
+		this.priceList = priceList;
+	}
+
+	public String getBeatId() {
+		return BeatId;
+	}
+
+	public void setBeatId(String BeatId) {
+		this.BeatId = BeatId;
+	}
+
 	public Long getHeaderId() {
 		return headerId;
 	}
@@ -190,16 +210,17 @@ public class SoHeaderDtoPendingOrders {
     public int hashCode() {
         return Objects.hash(headerId);
     }
- 
+
 	@Override
 	public String toString() {
-		return "SoHeaderDtoPendingOrders [headerId=" + headerId + ", orderNumber=" + orderNumber + ", orderDate=" + orderDate
-				+ ", status=" + status + ", status1=" + status1 + ", address=" + address + ", outletId=" + outletId
-				+ ", outletName=" + outletName + ", outletCode=" + outletCode + ", latitude=" + latitude
+		return "SoHeaderDtoPendingOrders [headerId=" + headerId + ", orderNumber=" + orderNumber + ", orderDate="
+				+ orderDate + ", status=" + status + ", status1=" + status1 + ", address=" + address + ", outletId="
+				+ outletId + ", outletName=" + outletName + ", outletCode=" + outletCode + ", latitude=" + latitude
 				+ ", longitude=" + longitude + ", userId=" + userId + ", outletAddress=" + outletAddress
 				+ ", proprietorName=" + proprietorName + ", deliveryDate=" + deliveryDate + ", instockFlag="
-				+ instockFlag + "]";
+				+ instockFlag + ", priceList=" + priceList + ", beatId=" + BeatId + "]";
 	}
+ 
 	
 	
 }

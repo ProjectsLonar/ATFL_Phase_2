@@ -20,4 +20,8 @@ public interface LtPromotionDao {
 
 	void updatePromotionData(MultipartFile file, String createdBy, String pramotionStatus,
 			String promotionName, String allTimeShowFlag, String orgId, String startDate, String endDate, String createdBy1, String createdBy2, Long promotionId);
+
+	LtPromotion getImageFileDataById(Long promotionId)throws ServiceException;
+
+	LtPromotion getAllPromotionDataById(Long promotionId)throws ServiceException;
 }

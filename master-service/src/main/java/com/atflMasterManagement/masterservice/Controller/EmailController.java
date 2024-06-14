@@ -1,5 +1,7 @@
 package com.atflMasterManagement.masterservice.Controller;
 
+import java.util.Map;
+
 import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +21,15 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
-    @PostMapping(value="/send-email", produces= MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
-    public void sendEmail(@RequestBody EmailRequest emailRequest)throws MessagingException {
-        emailService.sendSimpleMessage(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getText());
-    }
+//    @PostMapping(value="/send-email", produces= MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
+//    public void sendEmail(@RequestBody EmailRequest emailRequest)throws MessagingException {
+//        emailService.sendSimpleMessage(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getText());
+//    }
+    
+  @PostMapping(value="/send-email", produces= MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
+  public Map<String,String> sendEmail(@RequestBody EmailRequest emailRequest)throws MessagingException {
+      return emailService.sendSimpleMessageWithAuth(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getText());
+  }
    
     @PostMapping("/sendEmail")   //this api is for testing purpose
     public void sendEmail1(@RequestBody EmailRequest emailRequest) {

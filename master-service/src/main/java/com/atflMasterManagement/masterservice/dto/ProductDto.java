@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 //import oracle.sql.DATE;
 import java.util.Date;
+import java.util.List;
 
 @JsonInclude(Include.NON_NULL)
 public class ProductDto {
@@ -74,8 +75,16 @@ public class ProductDto {
 	private String distributorCode;
 	private double MRP; 
 	
-		
+	List<Double> MRP1;
 	
+	
+	
+	public List<Double> getMRP1() {
+		return MRP1;
+	}
+	public void setMRP1(List<Double> mRP1) {
+		MRP1 = mRP1;
+	}
 	public String getInventoryId() {
 		return inventoryId;
 	}
@@ -448,8 +457,9 @@ public class ProductDto {
 				+ ", prodShortDesc=" + prodShortDesc + ", inventoryName=" + inventoryName + ", inventoryId="
 				+ inventoryId + ", outletCode=" + outletCode + ", outletName=" + outletName + ", distributorName="
 				+ distributorName + ", lotNumber=" + lotNumber + ", lotMaufacturingDate=" + lotMaufacturingDate
-				+ ", distributorCode=" + distributorCode + ", MRP=" + MRP + "]";
-	}	
+				+ ", distributorCode=" + distributorCode + ", MRP=" + MRP + ", MRP1=" + MRP1 + "]";
+	}
+	
 	
 					
 }

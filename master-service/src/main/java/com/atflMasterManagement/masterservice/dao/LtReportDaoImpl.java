@@ -94,8 +94,8 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 					return null;
 				}
 				query = env.getProperty("getReportDataBySalesPersonDistributor");
-				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") order by lsh.order_number desc";
+				query = query + " and lsv.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
+						+ ") order by lsv.order_number desc";
 				System.out.println("Fullquery =" +query);
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 
@@ -105,8 +105,8 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 					return null;
 				}
 				query = env.getProperty("getReportDataBySalesPersonDistributor");
-				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") order by lsh.order_number desc";
+				query = query + " and lsv.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
+						+ ") order by lsv.order_number desc";
 				System.out.println("SALESOFFICER Fullquery =" +query);
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 
@@ -117,12 +117,14 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				}
 
 				query = env.getProperty("getReportDataBySalesPersonDistributor");
-				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") order by lsh.order_number desc";
+				query = query + " and lsv.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
+						+ ") order by lsv.order_number desc";
 				System.out.println("AREAHEAD query =" +query);
-			}else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR")) {
+			}
+			else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR") ||
+					(userDetailsDto.getUserType().equalsIgnoreCase("ORGANIZATION_USER"))) {
 				List<ExcelDataSelesperson> dataList = jdbcTemplate.query(query,
-						new Object[] { excelReportDto.getStatus(), excelReportDto.getOrgId(),
+						new Object[] { excelReportDto.getStatus(), //excelReportDto.getOrgId(),
 								excelReportDto.getDistributorId(), //excelReportDto.getEmployeeId(), 
 								startDate, endDate,
 								strStartDate, strEndDate },
@@ -133,8 +135,22 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 								return dataList;
 							}
 			}
+				else if (userDetailsDto.getUserType().equalsIgnoreCase("SALES")) {
+				List<ExcelDataSelesperson> dataList = jdbcTemplate.query(query,
+						new Object[] { excelReportDto.getStatus(), //excelReportDto.getOrgId(),
+								excelReportDto.getDistributorId(), //excelReportDto.getEmployeeId(), 
+								startDate, endDate,
+								strStartDate, strEndDate },
+						new BeanPropertyRowMapper<ExcelDataSelesperson>(ExcelDataSelesperson.class));
+				System.out.println("SALES Fullquery =" +query);
+				if (dataList != null) {
+				      System.out.print("result="+dataList);
+								return dataList;
+							}
+			}
+			
 			List<ExcelDataSelesperson> dataList = jdbcTemplate.query(query,
-					new Object[] { excelReportDto.getStatus(), excelReportDto.getOrgId(),
+					new Object[] { excelReportDto.getStatus(), //excelReportDto.getOrgId(),
 							excelReportDto.getDistributorId(), excelReportDto.getEmployeeId(), 
 							startDate, endDate,
 							strStartDate, strEndDate },
@@ -228,10 +244,11 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 			}
 			System.out.println("Hi i'm in Dao query is = "+query);
 			List<ExcelDataRegion> dataList = jdbcTemplate.query(query,
-					new Object[] { excelReportDto.getRegion(), excelReportDto.getDistributorId(), startDate, endDate,
-							strStartDate, strEndDate },
+					new Object[] { excelReportDto.getDistributorId(), startDate, endDate,
+							strStartDate, strEndDate, excelReportDto.getRegion(), excelReportDto.getDistributorId(),
+							startDate, endDate, strStartDate, strEndDate },
 					new BeanPropertyRowMapper<ExcelDataRegion>(ExcelDataRegion.class));
-			System.out.println("Hi i'm in Dao query dataList is = "+dataList);
+			System.out.println("Hi i'm in Dao query dataList is = "+dataList.size());
 			if (dataList != null) {
 				return dataList;
 			}
@@ -402,7 +419,8 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				} 
 				
 				
-				else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR")) {
+				else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR") ||
+						userDetailsDto.getUserType().equalsIgnoreCase("ORGANIZATION_USER")) {
 					String query = env.getProperty("getReportDataByDistributorAdmin");
 					System.out.println("Hi i'm in Dao query = "+ query);
 					List<ExcelDataDistributor> dataList = jdbcTemplate.query(query,
@@ -487,6 +505,18 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				System.out.println("Hi i'm in Dao AREAHEAD query is = "+query);
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
 						+ ") order by lsh.last_update_date desc";
+			}else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR")||
+					(userDetailsDto.getUserType().equalsIgnoreCase("ORGANIZATION_USER"))) {
+				
+				System.out.println("Hi i'm in Dao query is = "+query);
+				
+				List<ExcelDataOutlet> dataList = jdbcTemplate.query(query,
+						new Object[] { excelReportDto.getOrgId(), excelReportDto.getOutletId(),
+								excelReportDto.getDistributorId(), status, startDate, endDate, strStartDate, strEndDate },
+						new BeanPropertyRowMapper<ExcelDataOutlet>(ExcelDataOutlet.class));
+				if (dataList != null) {
+					return dataList;
+				}
 			}
 
 			System.out.println("Hi i'm in Dao query is = "+query);
@@ -494,6 +524,7 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 					new Object[] { excelReportDto.getOrgId(), excelReportDto.getOutletId(),
 							excelReportDto.getDistributorId(), status, startDate, endDate, strStartDate, strEndDate },
 					new BeanPropertyRowMapper<ExcelDataOutlet>(ExcelDataOutlet.class));
+			System.out.println("dataList size is = "+dataList.size());
 			if (dataList != null) {
 				return dataList;
 			}
@@ -532,49 +563,80 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 System.out.println("ReqData is ="+excelReportDto + "UserId is = "+excelReportDto.getUserId());
 				UserDetailsDto userDetailsDto = getUserTypeAndDisId(excelReportDto.getUserId());
 				System.out.println("userDetailsDto"+userDetailsDto);
-				if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
+//				if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
+//
+//					//List<Long> userList = getDistributorIdByAH(userDetailsDto.getPositionId());
+//					List<String> userList = getDistributorIdByAH(userDetailsDto.getPositionId());
+//					System.out.println("userList AREAHEAD"+userList);
+//					
+//					query = env.getProperty("getSearchDistributorForRegionOther");
+//					
+//					String userList1 = userList.stream().map(disId->"?").collect(Collectors.joining(", "));
+//					
+//					params = new ArrayList<>();
+//					 
+//				    params.add(excelReportDto.getOrgId().toString());
+//					params.add(regionStr);
+//					params.add(searchFieldStr);
+//				    params.addAll(userList);
+//				    params.add(excelReportDto.getLimit()); 
+//				    params.add(excelReportDto.getOffset());
+//				    
+//					query = query + " and lmd.distributor_id in ("+userList1+") order by distributor_id asc ) a OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+//					System.out.println("userList AREAHEAD query"+query);
+//					
+//				} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
+//
+//				//	List<Long> userList = getDistributorIdBySO(userDetailsDto.getPositionId());
+//					List<String> userList = getDistributorIdBySO(userDetailsDto.getPositionId());
+//					System.out.println("userList SALESOFFICER userList"+userList);
+//					
+//					String userList12 = userList.stream().map(disId->"?").collect(Collectors.joining(", "));
+//					params = new ArrayList<>();
+//					 
+//				    params.add(excelReportDto.getOrgId().toString());
+//					params.add(regionStr);
+//					params.add(searchFieldStr);
+//				    params.addAll(userList);
+//				    params.add(excelReportDto.getLimit()); 
+//				    params.add(excelReportDto.getOffset());
+//				    
+//					
+//					query = env.getProperty("getSearchDistributorForRegionOther");
+//					query = query + " and lmd.distributor_id in ("+userList12+") order by distributor_id asc ) a OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+//					System.out.println("userList SALESOFFICER query"+query);
+//				}
+				 if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR") ||
+						userDetailsDto.getUserType().equalsIgnoreCase("ORGANIZATION_USER") ||
+						userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD) ||
+						userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 
-					//List<Long> userList = getDistributorIdByAH(userDetailsDto.getPositionId());
-					List<String> userList = getDistributorIdByAH(userDetailsDto.getPositionId());
-					System.out.println("userList AREAHEAD"+userList);
-					
-					query = env.getProperty("getSearchDistributorForRegionOther");
-					
-					String userList1 = userList.stream().map(disId->"?").collect(Collectors.joining(", "));
-					
-					params = new ArrayList<>();
-					 
-				    params.add(excelReportDto.getOrgId().toString());
-					params.add(regionStr);
-					params.add(searchFieldStr);
-				    params.addAll(userList);
-				    params.add(excelReportDto.getLimit()); 
-				    params.add(excelReportDto.getOffset());
-				    
-					query = query + " and lmd.distributor_id in ("+userList1+") order by distributor_id asc ) a OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-					System.out.println("userList AREAHEAD query"+query);
-					
-				} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
-
-				//	List<Long> userList = getDistributorIdBySO(userDetailsDto.getPositionId());
-					List<String> userList = getDistributorIdBySO(userDetailsDto.getPositionId());
-					System.out.println("userList SALESOFFICER userList"+userList);
-					
-					String userList12 = userList.stream().map(disId->"?").collect(Collectors.joining(", "));
-					params = new ArrayList<>();
-					 
-				    params.add(excelReportDto.getOrgId().toString());
-					params.add(regionStr);
-					params.add(searchFieldStr);
-				    params.addAll(userList);
-				    params.add(excelReportDto.getLimit()); 
-				    params.add(excelReportDto.getOffset());
-				    
-					
-					query = env.getProperty("getSearchDistributorForRegionOther");
-					query = query + " and lmd.distributor_id in ("+userList12+") order by distributor_id asc ) a OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-					System.out.println("userList SALESOFFICER query"+query);
-				}
+					//	List<Long> userList = getDistributorIdBySO(userDetailsDto.getPositionId());
+					///	List<String> userList = getDistributorIdBySO(userDetailsDto.getPositionId());
+					//	System.out.println("userList SALESOFFICER userList"+userList);
+						
+					//	String userList12 = userList.stream().map(disId->"?").collect(Collectors.joining(", "));
+					//	params = new ArrayList<>();
+						 
+					//    params.add(excelReportDto.getOrgId().toString());
+					//	params.add(regionStr);
+					//	params.add(searchFieldStr);
+					//    params.addAll(userList);
+					//    params.add(excelReportDto.getLimit()); 
+					//    params.add(excelReportDto.getOffset());
+					    
+						
+						query = env.getProperty("getSearchDistributorForSysAdmin");
+						List<DistributorDto> dataList = jdbcTemplate.query(query, new Object[] {
+								excelReportDto.getOrgId(),
+								regionStr, searchFieldStr,
+							excelReportDto.getLimit(),
+							excelReportDto.getOffset()},
+								new BeanPropertyRowMapper<DistributorDto>(DistributorDto.class));
+						if (dataList != null) {
+							return dataList;
+						}
+					}
 			}
 
 						System.out.println("In query"+query);
@@ -979,7 +1041,8 @@ System.out.println("ReqData is ="+excelReportDto + "UserId is = "+excelReportDto
 				if (dataList != null) {
 					return dataList;
 				}
-			} else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR")) {
+			} else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR") ||
+					userDetailsDto.getUserType().equalsIgnoreCase("ORGANIZATION_USER")) {
 				 dataList = jdbcTemplate.query(query,
 						new Object[] { excelReportDto.getProductId(), startDate, endDate, strStartDate, strEndDate },
 						new BeanPropertyRowMapper<ExcelDataProduct>(ExcelDataProduct.class));

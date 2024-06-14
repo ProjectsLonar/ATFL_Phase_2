@@ -145,4 +145,26 @@ String defaultoffset = env.getProperty("offset_value");
 		
 	}
 
+	@Override
+	public LtPromotion getImageFileDataById(Long promotionId) throws ServiceException {
+		String query = env.getProperty("getImageFileDataById");
+		LtPromotion ltPromotion = jdbcTemplate.queryForObject(query, new Object[] { promotionId },
+				new BeanPropertyRowMapper<LtPromotion>(LtPromotion.class));
+		if (ltPromotion!= null)
+			return ltPromotion;
+		else
+			return null;
+	}
+
+	@Override
+	public LtPromotion getAllPromotionDataById(Long promotionId) throws ServiceException {
+		String query = env.getProperty("getAllPromotionDataById");
+		LtPromotion ltPromotion = jdbcTemplate.queryForObject(query, new Object[] { promotionId },
+				new BeanPropertyRowMapper<LtPromotion>(LtPromotion.class));
+		if (ltPromotion!= null)
+			return ltPromotion;
+		else
+			return null;
+	}
+
 }

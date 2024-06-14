@@ -41,6 +41,7 @@ public class ExcelReportOutlet {
 	public static void headerData(SXSSFWorkbook workbook, Sheet sheet, ExcelReportDto excelReportDto,
 			List<ExcelDataOutlet> outletReportDataList, String logoPath)
 			throws FileNotFoundException, IOException {
+		System.out.println("In header data "+outletReportDataList.size());
 		int rowIndex = 0;
 		//imageAdd(workbook, sheet, logoPath, rowIndex);//Remove for NNF
 		//rowIndex = 5;//Remove for NNF

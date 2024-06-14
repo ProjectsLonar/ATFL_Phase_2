@@ -726,6 +726,295 @@ System.out.println("Query is "+query);
 		}return null;
 	}
 	
+	
+	@Override
+	public List<ResponseDto> getSoHeader111(RequestDto requestDto) throws ServiceException, IOException {
+		//System.out.println("In getSoHeader111 dao method at = "+LocalDateTime.now());
+		try {
+		String query = env.getProperty("getOrderHeaderV13");
+       
+		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+		
+		if(requestDto.getOffset() == 0) {
+			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
+		
+		String headerId = null;
+		if(requestDto.getHeaderId() !=null) {
+			headerId = requestDto.getHeaderId().toString();
+				}
+		
+		
+		String searchField = null;
+		if (requestDto.getSearchField() != null) {
+			
+			String searchStr = requestDto.getSearchField().toUpperCase();
+			
+			String dayStr = "";
+		    String yearStr = "";
+			if(searchStr.contains("JAN")) {
+				 String[] arr = searchStr.trim().split("JAN");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-01-"+dayStr+"%";
+				
+			}else if (searchStr.contains("FEB")) {
+				 String[] arr = searchStr.trim().split("FEB");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-02-"+dayStr+"%";
+				
+			}else if (searchStr.contains("MAR")) {
+				 String[] arr = searchStr.trim().split("MAR");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-03-"+dayStr+"%";
+				
+			}else if (searchStr.contains("APR")) {
+				 String[] arr = searchStr.trim().split("APR");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-04-"+dayStr+"%";
+				
+			}else if (searchStr.contains("MAY")) {
+				 String[] arr = searchStr.trim().split("MAY");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-05-"+dayStr+"%";
+				
+			}else if (searchStr.contains("JUN")) {
+				 String[] arr = searchStr.trim().split("JUN");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-06-"+dayStr+"%";
+				
+			}else if (searchStr.contains("JUL")) {
+				 String[] arr = searchStr.trim().split("JUL");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-07-"+dayStr+"%";
+				
+			}else if (searchStr.contains("AUG")) {
+				 String[] arr = searchStr.trim().split("AUG");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-08-"+dayStr+"%";
+				
+			}else if (searchStr.contains("SEP")) {
+				 String[] arr = searchStr.trim().split("SEP");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-09-"+dayStr+"%";
+			}else if (searchStr.contains("OCT")) {
+				 String[] arr = searchStr.trim().split("OCT");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-10-"+dayStr+"%";
+				
+			}else if (searchStr.contains("NOV")) {
+				 String[] arr = searchStr.trim().split("NOV");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-11-"+dayStr+"%";
+			}else if (searchStr.contains("DEC")) {
+				 String[] arr = searchStr.trim().split("DEC");
+			        for (String st : arr)
+			        {
+			        	 if(st.trim().length() == 2) {
+			        		 dayStr = st.trim();
+			        	 }else {
+			        		 yearStr = st.trim();
+			        	 }
+			        }
+				searchField = "%"+yearStr+"-12-"+dayStr+"%";
+			}else {
+				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+			}
+		}
+		System.out.println("searchField :: "+searchField);
+		
+		List<ResponseDto> headerIdslist = null;	
+		
+		//Long headerId =0l;
+		//System.out.println("Above getUserTypeAndDisId dao method at = "+LocalDateTime.now());
+		UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
+		//System.out.println("Below getUserTypeAndDisId dao method at = "+LocalDateTime.now());
+		
+		System.out.println("userDetailsDto = "+userDetailsDto);
+		
+		if (userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
+			System.out.println("In distributor");		
+			//System.out.println("Above getUsersByDistributorId dao method at = "+LocalDateTime.now());
+			List<Long> userList = getUsersByDistributorId(userDetailsDto.getDistributorId());
+			//System.out.println("Below getUsersByDistributorId dao method at = "+LocalDateTime.now());
+			System.out.println("userList = "+userList);
+			
+			if(!userList.isEmpty() && userList != null) {
+				System.out.println("In if distributor");
+				query = query + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
+				        + ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx'))  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+			}else {
+				System.out.println("In else distributor");
+				//query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  where rownum BETWEEN ? AND ? ";
+				query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx'))  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY  ";
+			}
+			
+			System.out.println("Query = " +query);
+			//System.out.println("Above query dao method at = "+LocalDateTime.now());
+			headerIdslist = jdbcTemplate.query(query, new Object[] {
+					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+					searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
+           },new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+			//System.out.println("Below query dao method at = "+LocalDateTime.now());
+			System.out.println("headerIdslist in Dao = "+headerIdslist);
+			return headerIdslist;
+			
+		}else if(userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(SALES)) {
+			System.out.println("In Sales Person");
+			List<String> outletList = getOutletIdsByPositionId(userDetailsDto.getPositionId());
+			
+			if(!outletList.isEmpty() && outletList != null) {
+				String outletListString = outletList.stream()
+                        .map(id -> "'" + id + "'")
+                        .collect(Collectors.joining(", "));
+				System.out.println("In if of Sales Person");
+				query = query + " and lsh.outlet_id in (" + outletListString +
+				 ")  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+			}else {
+				System.out.println("In else of Sales Person");
+				query = query +"  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+			}
+			
+			System.out.print("Query = "+query);
+			//System.out.println("Above query dao method at = "+LocalDateTime.now());
+ 
+			headerIdslist = jdbcTemplate.query(query, new Object[] {
+					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+					searchField,requestDto.getLimit(), requestDto.getOffset()
+           },new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+			//System.out.println("Below query dao method at = "+LocalDateTime.now());
+ 
+			return headerIdslist;
+			
+		}else {
+			System.out.println("in else");
+			query = query + "and COALESCE(lsh.outlet_id ,'xx') =  COALESCE(? ,COALESCE(lsh.outlet_id,'xx')) ORDER BY STATUS_O, CDATE DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+			
+			System.out.println(requestDto.getHeaderId());
+			System.out.println(query);  
+ 
+          // System.out.println("Above else dao query at = "+LocalDateTime.now());
+           String result = String.join("  ", requestDto.getDistributorId(), requestDto.getStatus(),requestDto.getOrderNumber(),searchField,requestDto.getOutletId());
+           System.out.println("result = "+result);
+           System.out.println(requestDto.getLimit());
+           System.out.println(requestDto.getOffset());
+		//	System.out.println("Above query dao method at = "+LocalDateTime.now());
+ 
+           headerIdslist = jdbcTemplate.query(query, new Object[] {
+					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+					searchField,requestDto.getOutletId(),requestDto.getLimit(),requestDto.getOffset()
+           },new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+		//	System.out.println("Below query dao method at = "+LocalDateTime.now());
+ 
+           System.out.println("headerIdslist below = "+headerIdslist);
+         //  System.out.println("Below else dao query at = "+LocalDateTime.now());
+           System.out.println("headerIdsSSSS "+headerIdslist);
+           System.out.println("Query is "+query);
+        //   System.out.println("Exit from dao method at = "+LocalDateTime.now());
+           return headerIdslist;
+		
+		}
+		
+//		 NamedParameterJdbcTemplate namedParameterJdbcTemplate=new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
+//         
+//         MapSqlParameterSource parameters = new MapSqlParameterSource();
+//         
+//         parameters.addValue("distributorId", requestDto.getDistributorId());
+//         parameters.addValue("status", requestDto.getStatus());
+//         parameters.addValue("orderNumber", requestDto.getOrderNumber());
+//         parameters.addValue("searchField", searchField);
+//         parameters.addValue("outletId", requestDto.getOutletId());
+//         parameters.addValue("limit", requestDto.getLimit());
+//         parameters.addValue("offset", requestDto.getOffset());
+//         
+//         System.out.println("headerIdslist = "+headerIdslist);
+//         
+//         headerIdslist = namedParameterJdbcTemplate.query(query, parameters, new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+//         return headerIdslist;
+		}catch(Exception e) {
+			logger.error("Error Description :", e);
+			e.printStackTrace();
+		}return null;
+	}
+	
 	@Override
 	public List<ResponseDto> getOrderV1(List<Long> headerIdList) throws ServiceException, IOException {
 		try {

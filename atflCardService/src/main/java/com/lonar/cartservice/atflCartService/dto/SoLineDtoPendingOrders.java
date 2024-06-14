@@ -29,7 +29,7 @@ public class SoLineDtoPendingOrders {
     String brand;
     String casePack;
     String hsnCode;
-    String beatId;
+    String BeatId;
     
 	public SoLineDtoPendingOrders() {
 		super();
@@ -41,7 +41,7 @@ public class SoLineDtoPendingOrders {
 			String linelistPrice, String linePtrPrice, String inventoryQuantity, String orgId, String categoryId,
 			String productType, String category, String subCategory, String primaryUom, String secondaryUom,
 			String secondaryUomValue, String unitsPerCase, String segment, String brand, String casePack,
-			String hsnCode, String beatId) {
+			String hsnCode, String BeatId) {
 		super();
 		this.lineId = lineId;
 		this.productId = productId;
@@ -69,7 +69,7 @@ public class SoLineDtoPendingOrders {
 		this.brand = brand;
 		this.casePack = casePack;
 		this.hsnCode = hsnCode;
-		this.beatId = beatId;
+		this.BeatId = BeatId;
 	}
  
 	public Long getLineId() {
@@ -333,12 +333,12 @@ public class SoLineDtoPendingOrders {
  
  
 	public String getBeatId() {
-		return beatId;
+		return BeatId;
 	}
  
  
 	public void setBeatId(String beatId) {
-		this.beatId = beatId;
+		this.BeatId = beatId;
 	}
  
  
@@ -352,7 +352,7 @@ public class SoLineDtoPendingOrders {
 				+ categoryId + ", productType=" + productType + ", category=" + category + ", subCategory="
 				+ subCategory + ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom + ", secondaryUomValue="
 				+ secondaryUomValue + ", unitsPerCase=" + unitsPerCase + ", segment=" + segment + ", brand=" + brand
-				+ ", casePack=" + casePack + ", hsnCode=" + hsnCode + ", beatId=" + beatId + "]";
+				+ ", casePack=" + casePack + ", hsnCode=" + hsnCode + ", beatId=" + BeatId + "]";
 	}
  
 	

@@ -110,7 +110,8 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 				String promotionName, String allTimeShowFlag, String orgId, String startDate, String endDate)
 				throws ServiceException, ParseException {
 			Status status = new Status();
-
+			System.out.println("ReqBody =" +file+"\n"+promotionId+"\n"+createdBy+"\n"+pramotionStatus+"\n"+promotionName+"\n"+
+					allTimeShowFlag+"\n"+orgId+"\n"+startDate +"\n"+endDate);
 			try {
 
 				LtPromotion ltPromotion = new LtPromotion();
@@ -140,6 +141,8 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 //       		       
 				//String dateString = "2024-03-11T18:30:00";
 		        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+//		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+		        
 		        LocalDateTime sDate = LocalDateTime.parse(startDate, formatter);
 		        //System.out.println("Parsed date and time: " + sDate);
 		        Date sDate1 = java.sql.Timestamp.valueOf(sDate);
@@ -161,10 +164,12 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 				
 				
 				if (startDate != null) {
-					ltPromotion.setStartDate1(sDate1);
+					ltPromotion.setStartDate1("");
+					ltPromotion.setStartDate(sDate1);
 				}
 				if (endDate != null) {
-					ltPromotion.setEndDate1(eDate1);
+					ltPromotion.setEndDate1("");
+					ltPromotion.setEndDate(eDate1);
 				}
 
 				ltPromotion.setCreationDate(new Date());
@@ -172,7 +177,15 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 				
 				String fileUploadPath = env.getProperty("fileUploadPath");
 				String fileDownloadPath = env.getProperty("fileDownloadPath");
-				String imgDownloadPath = fileDownloadPath+""+ file.getOriginalFilename();
+				String imgDownloadPath = "";
+				if(file==null) {
+					LtPromotion ltPromotionforEdit = promotionDao.getPromotionData(promotionId);
+					imgDownloadPath = fileDownloadPath+""+ ltPromotionforEdit.getImageName();
+				}
+				else {
+					imgDownloadPath = fileDownloadPath+""+ file.getOriginalFilename();
+				}
+				
 				
 				File dir = new File(fileUploadPath);
 				if (!dir.exists()) {
@@ -184,45 +197,82 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 					}
 				}
 				
-				if (!file.isEmpty()) {
+				if (file != null && !file.isEmpty()) {
 					byte[] bytes = file.getBytes();
 					BufferedOutputStream buffStream = new BufferedOutputStream(
 							new FileOutputStream(new File(fileUploadPath +  file.getOriginalFilename())));
 					buffStream.write(bytes);
 					buffStream.close();
+					ltPromotion.setImageName(file.getOriginalFilename());
+					ltPromotion.setImageType(file.getContentType());
+
 				}
-				ltPromotion.setImageName(file.getOriginalFilename());
+				else {
+					LtPromotion ltPromotionforEdit = promotionDao.getPromotionData(promotionId);
+//					byte[] bytes = file.getBytes();
+//					BufferedOutputStream buffStream = new BufferedOutputStream(
+//							new FileOutputStream(new File(fileUploadPath +  ltPromotionforEdit.getImageName())));
+//					buffStream.write(bytes);
+//					buffStream.close();
+					ltPromotion.setImageName(ltPromotionforEdit.getImageName());
+					ltPromotion.setImageType(ltPromotionforEdit.getImageType());
+
+				}
+				//ltPromotion.setImageName(file.getOriginalFilename());
 				ltPromotion.setImageData(imgDownloadPath);
-				ltPromotion.setImageType(file.getContentType());
+				//ltPromotion.setImageType(file.getContentType());
+//				System.out.println("file content type = "+file.getContentType()); 
+
+				
 
 				Optional<LtPromotion> promotionObj = ltPromotionRepository.findById(promotionId);
+				
 				LtPromotion ltPromotionObjFromDB = null;
 
-				if (promotionObj.isPresent()) {
+				if (promotionObj.isPresent()) {  
 					ltPromotionObjFromDB = promotionObj.get();
 				}
 
-				if (ltPromotionObjFromDB != null) {
-					if (file.isEmpty() || file == null) {
+				if (ltPromotionObjFromDB != null) {     					
+//					if (file.isEmpty() || file == null) {
+					if (file == null || file.isEmpty()) {
 						Optional<LtPromotion> ltPromotionImg = ltPromotionRepository.findById(ltPromotion.getPromotionId());
 						if (ltPromotionImg.isPresent()) {
+							System.out.println("in edit ltPromotionImg" + ltPromotionImg); 
 							LtPromotion promotionImg = ltPromotionImg.get();
-
+							
+							System.out.println("Above ltPromotionImg.get()"+promotionImg.getImageName()); 
 							ltPromotion.setImageName(promotionImg.getImageName());
+							System.out.println("promotionImg.getImageName()"+promotionImg.getImageName()); 
+							
+							System.out.println("Above promotionImg.getImageData()"+ promotionImg.getImageData());
 							ltPromotion.setImageData(promotionImg.getImageData());
+							System.out.println("promotionImg.getImageData()"+ promotionImg.getImageData()); 
+							
+							System.out.println("Above promotionImg.getImageType()"+promotionImg.getImageType());
 							ltPromotion.setImageType(promotionImg.getImageType());
+							System.out.println("promotionImg.getImageType()"+promotionImg.getImageType()); 
+							
+							 
 						}
 					}
-
+					
+						ltPromotion.setStartDate(sDate1);
+						ltPromotion.setEndDate(eDate1);
+					
+					System.out.println("ltPromotion 1237"+ltPromotion);
 					ltPromotion = ltPromotionRepository.save(ltPromotion);
+					//System.out.println("ltPromotion 8347333"+ltPromotion);
 					status.setCode(UPDATE_SUCCESSFULLY);
 					status.setMessage("Update Successfully");
-					// status.setData(ltPromotion);
+					 //status.setData(ltPromotion);
 				} else {
+					//System.out.println("ltPromotion 12373478347333"+ltPromotion);
 					ltPromotion = ltPromotionRepository.save(ltPromotion);
+					//System.out.println("ltPromotion 123333"+ltPromotion);
 					status.setCode(INSERT_SUCCESSFULLY);
 					status.setMessage("Insert Successfully");
-					// status.setData(ltPromotion);
+					 //status.setData(ltPromotion);
 				}
 				return status;
 
@@ -405,15 +455,16 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
         
 	}
 		
-	
+/*
 	@Override
-	public Status editPromotionV1(MultipartFile file, Long promotionId, String createdBy, String pramotionStatus,
+	public Status editPromotionV1(MultipartFile file, 
+			Long promotionId, String createdBy, String pramotionStatus,
 			String promotionName, String allTimeShowFlag, String orgId, String startDate, String endDate)
 			throws ServiceException, ParseException {
 		Status status = new Status();
 
 		try {
-			
+			System.out.println("ReqBody =" +file+"\n"+promotionId+createdBy+pramotionStatus+promotionName+allTimeShowFlag+orgId+startDate);
 			//	promotionDao.deletePromotionDataById(promotionId);
 			
 			LtPromotion ltPromotion = promotionDao.getPromotionData(promotionId);
@@ -459,140 +510,20 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 				status.setMessage("Update Successfully");
 				// status.setData(ltPromotion);
 				
-				//promotionDao.updatePromotionData(file, createdBy, pramotionStatus,
-				//	 promotionName, allTimeShowFlag, orgId, startDate, endDate, createdBy, createdBy, promotionId);
+				promotionDao.updatePromotionData(file, createdBy, pramotionStatus,
+					 promotionName, allTimeShowFlag, orgId, startDate, endDate, createdBy, createdBy, promotionId);
 			status = ltMastCommonMessageService.getCodeAndMessage(UPDATE_SUCCESSFULLY);
 			}} else {
 				status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
 			}
-			return status;
-			
-/*			LtPromotion ltPromotion = new LtPromotion();
-
-			if (promotionId != null) {
-				ltPromotion.setPromotionId(promotionId);
-			}
-			if (createdBy != null) {
-				ltPromotion.setCreatedBy(createdBy);
-			}
-			if (pramotionStatus != null) {
-				ltPromotion.setStatus(pramotionStatus);
-			}
-			if (promotionName != null) {
-				ltPromotion.setPromotionName(promotionName);
-			}
-			if (allTimeShowFlag != null) {
-				ltPromotion.setAllTimeShowFlag(allTimeShowFlag);
-			}
-			if (orgId != null) {
-				ltPromotion.setOrgId(orgId);
-			}
-
-//			Date sDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"))
-//					.parse(startDate.replaceAll("Z$", "+0000"));
-//			Date eDate = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(endDate.replaceAll("Z$", "+0000"));
-//   		       
-			//String dateString = "2024-03-11T18:30:00";
-	        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-	        LocalDateTime sDate = LocalDateTime.parse(startDate, formatter);
-	        //System.out.println("Parsed date and time: " + sDate);
-	        Date sDate1 = java.sql.Timestamp.valueOf(sDate);
-	        
-	        LocalDateTime eDate = LocalDateTime.parse(endDate, formatter);
-	        //System.out.println("Parsed date and time: " + eDate);
-	        Date eDate1 = java.sql.Timestamp.valueOf(eDate);
-	        
-//			String strStartDate = startDate;
-//			String strEndDate = endDate;
-
-			
-//			if (startDate != null) {
-//				ltPromotion.setStartDate(sDate);
-//			}
-//			if (endDate != null) {
-//				ltPromotion.setEndDate(eDate);
-//			}
-			
-			
-			if (startDate != null) {
-				ltPromotion.setStartDate1(sDate1);
-			}
-			if (endDate != null) {
-				ltPromotion.setEndDate1(eDate1);
-			}
-
-			ltPromotion.setCreationDate(new Date());
-			ltPromotion.setLastUpdateDate(new Date());
-			
-			String fileUploadPath = env.getProperty("fileUploadPath");
-			String fileDownloadPath = env.getProperty("fileDownloadPath");
-			String imgDownloadPath = fileDownloadPath+""+ file.getOriginalFilename();
-			
-			File dir = new File(fileUploadPath);
-			if (!dir.exists()) {
-				dir.mkdirs();
-				if (!dir.isDirectory()) {
-					status.setCode(NO_DIRECTIVE_EXISTS); 
-					status.setMessage("No Directive Exists");
-					return status;
-				}
-			}
-			
-			if (!file.isEmpty()) {
-				byte[] bytes = file.getBytes();
-				BufferedOutputStream buffStream = new BufferedOutputStream(
-						new FileOutputStream(new File(fileUploadPath +  file.getOriginalFilename())));
-				buffStream.write(bytes);
-				buffStream.close();
-			}
-			ltPromotion.setImageName(file.getOriginalFilename());
-			ltPromotion.setImageData(imgDownloadPath);
-			ltPromotion.setImageType(file.getContentType());
-
-			Optional<LtPromotion> promotionObj = ltPromotionRepository.findById(promotionId);
-			LtPromotion ltPromotionObjFromDB = null;
-
-			if (promotionObj.isPresent()) {
-				ltPromotionObjFromDB = promotionObj.get();
-			}
-
-			if (ltPromotionObjFromDB != null) {
-				if (file.isEmpty() || file == null) {
-					Optional<LtPromotion> ltPromotionImg = ltPromotionRepository.findById(ltPromotion.getPromotionId());
-					if (ltPromotionImg.isPresent()) {
-						LtPromotion promotionImg = ltPromotionImg.get();
-
-						ltPromotion.setImageName(promotionImg.getImageName());
-						ltPromotion.setImageData(promotionImg.getImageData());
-						ltPromotion.setImageType(promotionImg.getImageType());
-					}
-				}
-
-				ltPromotion = ltPromotionRepository.save(ltPromotion);
-				status.setCode(UPDATE_SUCCESSFULLY);
-				status.setMessage("Update Successfully");
-				// status.setData(ltPromotion);
-			} else {
-				ltPromotion = ltPromotionRepository.save(ltPromotion);
-				status.setCode(INSERT_SUCCESSFULLY);
-				status.setMessage("Insert Successfully");
-				// status.setData(ltPromotion);
-			}
-			return status;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return ltMastCommonMessageService.getCodeAndMessage(INSERT_FAIL);
-		}
-*/
-		
+			return status; 
 		}catch(Exception e) {
 			e.printStackTrace();
 			
 		}
 		return status;
   }
-
+*/
 
 private Date parseDate(String dateStr, SimpleDateFormat formatter) throws ParseException {
     if (dateStr == null || dateStr.isEmpty()) {
@@ -600,6 +531,145 @@ private Date parseDate(String dateStr, SimpleDateFormat formatter) throws ParseE
     }
     return formatter.parse(dateStr);
 }
+
+//  this code is comment on 10-Jun-24 bcz upload promotion code work for both save & update 
+@Override
+public Status editPromotionV1(MultipartFile file, Long promotionId, String createdBy, String pramotionStatus,
+		String promotionName, String allTimeShowFlag, String orgId, String startDate, String endDate)
+		throws ServiceException, ParseException {
+	Status status = new Status();
+	System.out.println("ReqBody =" +file+"\n"+promotionId+"\n"+createdBy+"\n"+pramotionStatus+"\n"+promotionName+"\n"+
+	allTimeShowFlag+"\n"+orgId+"\n"+startDate+"\n"+endDate);
 	
+	try {
+		System.out.println("file data is = "+file.getSize());
+		LtPromotion imageFileData =  promotionDao.getImageFileDataById(promotionId);
+		System.out.println("imageFileData1 =" +imageFileData.getImageName());
+		System.out.println("imageFileData2 =" +imageFileData.getImageData());
+		System.out.println("imageFileData3 =" +imageFileData.getImageType());
+		promotionDao.deletePromotionData(promotionId);
+		LtPromotion ltPromotion = new LtPromotion();
+
+		if (promotionId != null) {
+			ltPromotion.setPromotionId(promotionId);
+		}
+		if (createdBy != null) {
+			ltPromotion.setCreatedBy(createdBy);
+		}
+		if (pramotionStatus != null) {
+			ltPromotion.setStatus(pramotionStatus);
+		}
+		if (promotionName != null) {
+			ltPromotion.setPromotionName(promotionName);
+		}
+		if (allTimeShowFlag != null) {
+			ltPromotion.setAllTimeShowFlag(allTimeShowFlag);
+		}
+		if (orgId != null) {
+			ltPromotion.setOrgId(orgId);
+		}
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime sDate = LocalDateTime.parse(startDate, formatter);
+        Date sDate1 = java.sql.Timestamp.valueOf(sDate);
+
+        LocalDateTime eDate = LocalDateTime.parse(endDate, formatter);
+        Date eDate1 = java.sql.Timestamp.valueOf(eDate);
+
+        ltPromotion.setStartDate1("");
+        ltPromotion.setEndDate1("");
+
+		ltPromotion.setCreationDate(new Date());
+		ltPromotion.setLastUpdateDate(new Date());
+		
+		String fileUploadPath = env.getProperty("fileUploadPath");
+		String fileDownloadPath = env.getProperty("fileDownloadPath");
+		//String imgDownloadPath =null;
+		//if(file.getOriginalFilename()!=null) {
+		String imgDownloadPath = fileDownloadPath+""+ file.getOriginalFilename();
+		//}
+		File dir = new File(fileUploadPath);
+		if (!dir.exists()) {
+			dir.mkdirs();
+			if (!dir.isDirectory()) {
+				status.setCode(NO_DIRECTIVE_EXISTS); 
+				status.setMessage("No Directive Exists");
+				return status;
+			}
+		}
+		
+		if (!file.isEmpty()) {
+			byte[] bytes = file.getBytes();
+			BufferedOutputStream buffStream = new BufferedOutputStream(
+					new FileOutputStream(new File(fileUploadPath +  file.getOriginalFilename())));
+			buffStream.write(bytes);
+			buffStream.close();
+			System.out.println("file data isss = "+file.getSize() + buffStream);
+		}
+		
+//		ltPromotion.setImageName(file.getOriginalFilename()); this is original code
+		//if(imgDownloadPath!= null) {
+//		ltPromotion.setImageData(imgDownloadPath);            this is original code     
+		//}
+//		ltPromotion.setImageType(file.getContentType());      this is original code  
+
+		if(file.getOriginalFilename()!= null) {
+			ltPromotion.setImageName(file.getOriginalFilename());
+			}else {
+		            ltPromotion.setImageName(imageFileData.getImageName()); 
+		}if(imgDownloadPath.equalsIgnoreCase("")) {
+			ltPromotion.setImageData(imgDownloadPath);
+		}else {  
+		        ltPromotion.setImageData(imageFileData.getImageData());}
+		if(file.getContentType()!= null) {
+			ltPromotion.setImageType(file.getContentType());
+		}else {
+			    ltPromotion.setImageType(imageFileData.getImageType());}
+		
+		
+		Optional<LtPromotion> promotionObj = ltPromotionRepository.findById(promotionId);
+		LtPromotion ltPromotionObjFromDB = null;
+
+		if (promotionObj.isPresent()) {
+			ltPromotionObjFromDB = promotionObj.get();
+		}
+
+		if (ltPromotionObjFromDB != null) {
+			if (file.isEmpty() || file == null) {
+				Optional<LtPromotion> ltPromotionImg = ltPromotionRepository.findById(ltPromotion.getPromotionId());
+				if (ltPromotionImg.isPresent()) {
+					LtPromotion promotionImg = ltPromotionImg.get();
+
+					ltPromotion.setImageName(promotionImg.getImageName());   //old logic comment on 07-June-2024
+					ltPromotion.setImageData(promotionImg.getImageData());
+					ltPromotion.setImageType(promotionImg.getImageType());
+					
+					/*System.out.println("imageFileData4 =" +imageFileData.getImageName());
+					System.out.println("imageFileData5 =" +imageFileData.getImageData());
+					System.out.println("imageFileData6 =" +imageFileData.getImageType());
+					ltPromotion.setImageName(imageFileData.getImageName());   
+					ltPromotion.setImageData(imageFileData.getImageData());
+					ltPromotion.setImageType(imageFileData.getImageType());*/
+				}
+			}
+
+			ltPromotion = ltPromotionRepository.save(ltPromotion);
+			status.setCode(UPDATE_SUCCESSFULLY);
+			status.setMessage("Update Successfully");
+			// status.setData(ltPromotion);
+		} else {
+			ltPromotion = ltPromotionRepository.save(ltPromotion);
+			status.setCode(INSERT_SUCCESSFULLY);
+			status.setMessage("Insert Successfully");
+			// status.setData(ltPromotion);
+		}
+		return status;
+
+	} catch (IOException e) {
+		e.printStackTrace();
+		return ltMastCommonMessageService.getCodeAndMessage(INSERT_FAIL);
+	}
+}
+
 	
 }

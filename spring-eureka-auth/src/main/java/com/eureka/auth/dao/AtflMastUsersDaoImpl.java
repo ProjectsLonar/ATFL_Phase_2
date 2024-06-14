@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.eureka.auth.model.LtMastLogins;
 import com.eureka.auth.model.LtMastUsers;
 import com.eureka.auth.model.LtVersion;
+import com.eureka.auth.model.UserLoginDto;
 import com.eureka.auth.repository.LtMastUsersRepository;
 
 @Repository
@@ -40,11 +41,25 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 	@Autowired
 	LtMastUsersRepository ltMastUsersRepository;
 
+	//This is original method commented by Rohan for optimization on 3 June 2024
 	@Override
 	public LtMastUsers getLtMastUsersByMobileNumber(String mobileNumber) throws ServiceException {
 		String query = env.getProperty("getLtMastUsersByMobileNumber");
 		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { mobileNumber.trim() },
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		System.out.println("list"+list);
+		if (list.isEmpty())
+			return null;
+		else
+			return list.get(0);
+	}
+	
+	//This is optimized method created by Rohan for optimization on 3 June 2024
+	@Override
+	public UserLoginDto getLtMastUsersByMobileNumber1(String mobileNumber) throws ServiceException {
+		String query = env.getProperty("getLtMastUsersByMobileNumber");
+		List<UserLoginDto> list = jdbcTemplate.query(query, new Object[] { mobileNumber.trim() },
+				new BeanPropertyRowMapper<UserLoginDto>(UserLoginDto.class));
 		System.out.println("list"+list);
 		if (list.isEmpty())
 			return null;

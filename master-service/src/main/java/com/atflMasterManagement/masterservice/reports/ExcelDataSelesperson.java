@@ -11,7 +11,9 @@ public class ExcelDataSelesperson {
 	private Double revenue;
 	private String outletId;
 	private String ptrPrice1;
+	private String ptrPrice;
 	private Long quantity1;
+	private Long quantity;
 	private String employeeId;
 	private String distributorId;
 	private String distributorCode;
@@ -25,6 +27,7 @@ public class ExcelDataSelesperson {
 	private String orderDate;
 	private String orderNumber;
 	private String listPrice1 ;
+	private String listPrice ;
 	
 	private String productCode;
 	private String productDesc;
@@ -32,7 +35,41 @@ public class ExcelDataSelesperson {
 	
 	private Double total = 0D;
 	
+	private String lastUpdateDate;
+	private String lastUpdatedBy;
 	
+	
+	
+	public String getPtrPrice() {
+		return ptrPrice;
+	}
+	public void setPtrPrice(String ptrPrice) {
+		this.ptrPrice = ptrPrice;
+	}
+	public Long getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(Long quantity) {
+		this.quantity = quantity;
+	}
+	public String getListPrice() {
+		return listPrice;
+	}
+	public void setListPrice(String listPrice) {
+		this.listPrice = listPrice;
+	}
+	public String getLastUpdateDate() {
+		return lastUpdateDate;
+	}
+	public void setLastUpdateDate(String lastUpdateDate) {
+		this.lastUpdateDate = lastUpdateDate;
+	}
+	public String getLastUpdatedBy() {
+		return lastUpdatedBy;
+	}
+	public void setLastUpdatedBy(String lastUpdatedBy) {
+		this.lastUpdatedBy = lastUpdatedBy;
+	}
 	public Double getTotal() {
 		return total;
 	}
@@ -198,20 +235,22 @@ public class ExcelDataSelesperson {
 	public void setDistributorCrmCode(String distributorCrmCode) {
 		this.distributorCrmCode = distributorCrmCode;
 	}
-	
-	
 	@Override
 	public String toString() {
 		return "ExcelDataSelesperson [userId=" + userId + ", Title=" + Title + ", srNo=" + srNo + ", salesPersonName="
 				+ salesPersonName + ", employeeCode=" + employeeCode + ", positionCode=" + positionCode
 				+ ", outletName=" + outletName + ", revenue=" + revenue + ", outletId=" + outletId + ", ptrPrice1="
-				+ ptrPrice1 + ", quantity1=" + quantity1 + ", employeeId=" + employeeId + ", distributorId="
-				+ distributorId + ", distributorCode=" + distributorCode + ", distributorName=" + distributorName
-				+ ", position=" + position + ", outletCode=" + outletCode + ", distributorCrmCode=" + distributorCrmCode
-				+ ", outletAddress=" + outletAddress + ", status=" + status + ", orderDate=" + orderDate
-				+ ", orderNumber=" + orderNumber + ", listPrice1=" + listPrice1 + ", productCode=" + productCode
-				+ ", productDesc=" + productDesc + ", productName=" + productName + ", total=" + total + "]";
+				+ ptrPrice1 + ", ptrPrice=" + ptrPrice + ", quantity1=" + quantity1 + ", quantity=" + quantity
+				+ ", employeeId=" + employeeId + ", distributorId=" + distributorId + ", distributorCode="
+				+ distributorCode + ", distributorName=" + distributorName + ", position=" + position + ", outletCode="
+				+ outletCode + ", distributorCrmCode=" + distributorCrmCode + ", outletAddress=" + outletAddress
+				+ ", status=" + status + ", orderDate=" + orderDate + ", orderNumber=" + orderNumber + ", listPrice1="
+				+ listPrice1 + ", listPrice=" + listPrice + ", productCode=" + productCode + ", productDesc="
+				+ productDesc + ", productName=" + productName + ", total=" + total + ", lastUpdateDate="
+				+ lastUpdateDate + ", lastUpdatedBy=" + lastUpdatedBy + "]";
 	}
+	
+	
 	
 	
 }

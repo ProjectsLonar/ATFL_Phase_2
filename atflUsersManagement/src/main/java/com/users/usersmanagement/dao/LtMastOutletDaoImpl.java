@@ -454,4 +454,11 @@ System.out.println("list"+list);
 		return userName;
 	}
 	
+	@Override
+	public String getUserNameAgainsUserId(Long createdBy) throws ServiceException, IOException {
+		String query= env.getProperty("getUserNameAgainsUserId");
+		String userName= jdbcTemplate.queryForObject(query, new Object[] {createdBy}, String.class);
+		return userName;
+	}
+	
 }

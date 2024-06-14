@@ -1443,6 +1443,34 @@ try {
 	}
 
 	@Override
+	public Status saveRecentSearchId1(Long userId, String serachId) throws ServiceException {
+		Status status = new Status();
+
+		LtMastUsers ltMastUser = ltMastUsersDao.getUserById(userId);
+		System.out.println("ltMastUser"+ltMastUser);
+		if (ltMastUser != null) {
+
+			ltMastUser.setOutletId("");
+			ltMastUser.setOutletCode("");
+			ltMastUser.setOutletName("");
+			ltMastUser.setRecentSerachId("");
+//			ltMastUser.setRecentSearchId("");
+			ltMastUser.setLastUpdatedBy(userId);
+			ltMastUser.setLastUpdateLogin(userId);
+			ltMastUser.setLastUpdateDate(DateTimeClass.getCurrentDateTime());
+			System.out.println("DateTimeClass.getCurrentDateTime()");
+//			ltMastUser.setRecentSerachId(serachId);
+			ltMastUser = ltMastUsersDao.saveLtMastUsers(ltMastUser);
+			status = ltMastCommonMessageService.getCodeAndMessage(INSERT_SUCCESSFULLY);
+			status.setData(userResponce(ltMastUser));
+			return status;
+		}
+		status = ltMastCommonMessageService.getCodeAndMessage(INSERT_FAIL);
+		status.setData(null);
+		return status;
+	}
+	
+	@Override
 	public Status getAllUsersData() throws ServiceException {
 		Status status = new Status();
 		List<LtMastUsers> ltMastUserList = ltMastUsersDao.getAllUsersData();

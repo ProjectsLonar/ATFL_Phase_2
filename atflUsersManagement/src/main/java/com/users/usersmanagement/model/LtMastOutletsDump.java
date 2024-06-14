@@ -153,7 +153,7 @@ public class LtMastOutletsDump extends BaseClass {
 	@Transient
 	Long userId;
 
-
+	@Transient   
 	String mobileNumber;
 	
 	/*public String getCreatedby() {

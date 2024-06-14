@@ -42,6 +42,7 @@ public class ResponseDto {
 	private String siebelInvoicenumber;
 	private String siebelJsonpayload;
 	
+//	private String beatId;
 	
 	// Line Data
 	private Long lineId;
@@ -115,6 +116,7 @@ public class ResponseDto {
 
 
 	String Test;
+	
 	
 		
 	public String getTest() {
@@ -442,8 +444,8 @@ public class ResponseDto {
 	public String getBeatId() {
 		return BeatId;
 	}
-	public void setBeatId(String beatId) {
-		BeatId = beatId;
+	public void setBeatId(String BeatId) {
+		this.BeatId = BeatId;
 	}
 	public String getHeaderPriceList() {
 		return headerPriceList;

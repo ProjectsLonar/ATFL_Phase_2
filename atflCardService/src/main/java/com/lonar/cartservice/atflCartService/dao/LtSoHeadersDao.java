@@ -107,4 +107,6 @@ public interface LtSoHeadersDao {
 	String getUserNameFromSiebel(String mobileNumber)throws ServiceException, IOException;
 
 	List<ResponseDto> getSoHeader11(RequestDto requestDto)throws ServiceException, IOException;
+
+	List<ResponseDto> getSoHeader111(RequestDto requestDto)throws ServiceException, IOException;
 }

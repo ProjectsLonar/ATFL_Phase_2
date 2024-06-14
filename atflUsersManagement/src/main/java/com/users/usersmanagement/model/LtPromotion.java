@@ -60,6 +60,9 @@ public class LtPromotion {
 	@Column(name = "CREATION_DATE")
 	private Date creationDate;
 	
+	@Column(name = "CREATION_DATE_1")
+	private String creationDate1;
+	
 	@Column(name = "LAST_UPDATE_LOGIN")
 	private String lastUpdateLogin;
 	
@@ -68,28 +71,50 @@ public class LtPromotion {
 	
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
+	
+	@Column(name = "LAST_UPDATE_DATE_1")
+	private String lastUpdateDate1;
 //
 //	
 	@Column(name = "start_date_1")
-	private Date startDate1;
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+	private String startDate1;
 
 	@Column(name = "end_date_1")
-	private Date endDate1;
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+	private String endDate1;
 	
 	
-	public Date getStartDate1() {
+	
+	public String getCreationDate1() {
+		return creationDate1;
+	}
+
+	public void setCreationDate1(String creationDate1) {
+		this.creationDate1 = creationDate1;
+	}
+
+	public String getLastUpdateDate1() {
+		return lastUpdateDate1;
+	}
+
+	public void setLastUpdateDate1(String lastUpdateDate1) {
+		this.lastUpdateDate1 = lastUpdateDate1;
+	}
+
+	public String getStartDate1() {
 		return startDate1;
 	}
 
-	public void setStartDate1(Date startDate1) {
+	public void setStartDate1(String startDate1) {
 		this.startDate1 = startDate1;
 	}
 
-	public Date getEndDate1() {
+	public String getEndDate1() {
 		return endDate1;
 	}
 
-	public void setEndDate1(Date endDate1) {
+	public void setEndDate1(String endDate1) {
 		this.endDate1 = endDate1;
 	}
 
@@ -218,10 +243,12 @@ public class LtPromotion {
 		return "LtPromotion [promotionId=" + promotionId + ", promotionName=" + promotionName + ", orgId=" + orgId
 				+ ", imageType=" + imageType + ", imageName=" + imageName + ", imageData=" + imageData + ", startDate="
 				+ startDate + ", endDate=" + endDate + ", status=" + status + ", allTimeShowFlag=" + allTimeShowFlag
-				+ ", createdBy=" + createdBy + ", creationDate=" + creationDate + ", lastUpdateLogin=" + lastUpdateLogin
-				+ ", lastUpdatedBy=" + lastUpdatedBy + ", lastUpdateDate=" + lastUpdateDate + ", startDate1="
-				+ startDate1 + ", endDate1=" + endDate1 + "]";
+				+ ", createdBy=" + createdBy + ", creationDate=" + creationDate + ", creationDate1=" + creationDate1
+				+ ", lastUpdateLogin=" + lastUpdateLogin + ", lastUpdatedBy=" + lastUpdatedBy + ", lastUpdateDate="
+				+ lastUpdateDate + ", lastUpdateDate1=" + lastUpdateDate1 + ", startDate1=" + startDate1 + ", endDate1="
+				+ endDate1 + "]";
 	}
+
 	
 	
 }

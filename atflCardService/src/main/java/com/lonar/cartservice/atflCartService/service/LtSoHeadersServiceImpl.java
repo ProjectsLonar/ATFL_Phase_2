@@ -40,6 +40,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -77,6 +78,7 @@ import com.lonar.cartservice.atflCartService.dto.SoHeaderDto;
 import com.lonar.cartservice.atflCartService.dto.SoHeaderDtoPendingOrders;
 import com.lonar.cartservice.atflCartService.dto.SoLineDto;
 import com.lonar.cartservice.atflCartService.dto.SoLineDtoPendingOrders;
+import com.lonar.cartservice.atflCartService.dto.ResponsePendingOrdersDto;
 import com.lonar.cartservice.atflCartService.model.CodeMaster;
 import com.lonar.cartservice.atflCartService.model.LtMastOutles;
 import com.lonar.cartservice.atflCartService.model.LtSoLines;
@@ -95,8 +97,13 @@ import com.lonar.cartservice.atflCartService.repository.LtSoHeadersRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSoLinesRepository;
 //import com.lonar.cartservice.atflCartService.service.EmailService;
 import javax.mail.*;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 import java.util.Base64;
 
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -633,9 +640,14 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						      for (String str : amount) {
 						    	  if(str.equals("null")) {
 						    		  str= "0";
+						    		  double number = Double.parseDouble(str);
+						    		  sum = sum+number;
 						    	  }
-						             double number = Double.parseDouble(str);
-						            sum = sum+number;
+						    	  else {
+						    		  double number = Double.parseDouble(str);
+						    		  sum = sum+number;
+						    	  }
+						           
 						        }
 						      String totalAmount= String.valueOf(sum);
 						      System.out.print("amount for Email" +totalAmount);
@@ -645,13 +657,23 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					      String salespersonName=userName;
 					      //String totalAmount=  Double.toString(amt);
 					      
+					      String salesOrder = ltSoHeader.getOrderNumber();
+						     String text = "";
+					      
 					      body = body.replace("${salesOrder}", ltSoHeader.getOrderNumber());
 					      body = body.replace("${salespersonName}", salespersonName);
 					      body = body.replace("${totalAmount}", totalAmount);
 					      if(ltMastUsers.getEmail()!= null) {
 					      String to= ltMastUsers.getEmail();
 //					    emailService.sendSimpleMessage(to, subject, body);
-					      sendEmail1( subject, body, to);
+					     // sendEmail1( subject, body, to);
+							try {
+								sendSimpleMessageWithAuth(to,subject,text,salesOrder,salespersonName,totalAmount);
+							} catch (MessagingException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
 			          }
 			     }
 		      }
@@ -676,9 +698,14 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						      for (String str : amount) {
 						    	  if(str.equals("null")) {
 						    		  str= "0";
+						    		  double number = Double.parseDouble(str);
+						    		  sum = sum+number;
 						    	  }
-						             double number = Double.parseDouble(str);
-						            sum = sum+number;
+						    	  else {
+						    		  double number = Double.parseDouble(str);
+						    		  sum = sum+number;
+						    	  }
+						           
 						        }
 						      String totalAmount= String.valueOf(sum);
 						      System.out.print("amount for Email" +totalAmount);
@@ -688,13 +715,23 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						      String salespersonName=userName;
 						     // String totalAmount=  Double.toString(amt);
 						      
+						      String salesOrder = ltSoHeader.getOrderNumber();
+							     String text = "";
+						      
 						      body = body.replace("${salesOrder}", ltSoHeader.getOrderNumber());
 						      body = body.replace("${salespersonName}", salespersonName);
 						      body = body.replace("${totalAmount}", totalAmount);
 						      if(ltMastUsers2.getEmail()!= null) {
 						      String to= ltMastUsers2.getEmail();
 //						    emailService.sendSimpleMessage(to, subject, body);
-						      sendEmail1( subject, body, to);
+						     // sendEmail1( subject, body, to);
+								try {
+									sendSimpleMessageWithAuth(to,subject,text,salesOrder,salespersonName,totalAmount);
+								} catch (MessagingException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+
 				          }
 				           
 			     }
@@ -720,9 +757,14 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						      for (String str : amount) {
 						    	  if(str.equals("null")) {
 						    		  str= "0";
+						    		  double number = Double.parseDouble(str);
+						    		  sum = sum+number;
 						    	  }
-						             double number = Double.parseDouble(str);
-						            sum = sum+number;
+						    	  else {
+						    		  double number = Double.parseDouble(str);
+						    		  sum = sum+number;
+						    	  }
+						           
 						        }
 						      String totalAmount= String.valueOf(sum);
 						      System.out.print("amount for Email" +totalAmount);
@@ -731,13 +773,23 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						      String salespersonName=userName;
 						     // String totalAmount= Double.toString(amt);
 						      
+						      String salesOrder = ltSoHeader.getOrderNumber();
+							     String text = "";
+						      
 						      body = body.replace("${salesOrder}", ltSoHeader.getOrderNumber());
 						      body = body.replace("${salespersonName}", salespersonName);
 						      body = body.replace("${totalAmount}", totalAmount);
 						      if(ltMastUsers2.getEmail()!= null) {
 						      String to= ltMastUsers2.getEmail();
 //						    emailService.sendSimpleMessage(to, subject, body);
-						      sendEmail1( subject, body, to);
+						     // sendEmail1( subject, body, to);
+								try {
+									sendSimpleMessageWithAuth(to,subject,text,salesOrder,salespersonName,totalAmount);
+								} catch (MessagingException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+
 				          }
 			     }
 		      }
@@ -746,13 +798,13 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			if(userType.equalsIgnoreCase("SALES") || userType.equalsIgnoreCase("DISTRIBUTOR")) {
 				System.out.println("Hi I'm in send email SALES SALES");
 				// send salesOrder approval notification to areHead if order is outOfStock
-//				System.out.println("In-Notif"+areaHeadUserList);
-//				System.out.println("In-Notif"+ltSoHeader.getInStockFlag());
-//				System.out.println("In-Notif"+ltSoHeader.getStatus());
-//				System.out.println("In-Notif"+ltSoHeader.getOrderNumber());
+				System.out.println("In-Notif"+areaHeadUserList);
+				System.out.println("In-Notif"+ltSoHeader.getInStockFlag());
+				System.out.println("In-Notif"+ltSoHeader.getStatus());
+				System.out.println("In-Notif"+ltSoHeader.getOrderNumber());
 //				System.out.println();
 				if(!areaHeadUserList.isEmpty() && !ltSoHeader.getInStockFlag().equalsIgnoreCase("Y") 
-						&&	ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null) 
+						&&	ltSoHeader.getStatus().equalsIgnoreCase("PENDING_APPROVAL") && ltSoHeader.getOrderNumber()!= null) 
 					{	
 						for(Iterator iterator = areaHeadUserList.iterator(); iterator.hasNext();) {
 							LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
@@ -773,9 +825,14 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						      for (String str : amount) {
 						    	  if(str.equals("null")) {
 						    		  str= "0";
+						    		  double number = Double.parseDouble(str);
+						    		  sum = sum+number;
 						    	  }
-						             double number = Double.parseDouble(str);
-						            sum = sum+number;
+						    	  else {
+						    		  double number = Double.parseDouble(str);
+						    		  sum = sum+number;
+						    	  }
+						           
 						        }
 						      String totalAmount= String.valueOf(sum);
 						      System.out.print("amount for Email" +totalAmount);
@@ -784,33 +841,43 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						      String salespersonName=userName;
 						     // String totalAmount= Double.toString(amt);
 						      
+						      String salesOrder = ltSoHeader.getOrderNumber();
+							     String text = "";
+						      
 						      body = body.replace("${salesOrder}", ltSoHeader.getOrderNumber());
 						      body = body.replace("${salespersonName}", salespersonName);
 						      body = body.replace("${totalAmount}", totalAmount);
 						      if(ltMastUsers.getEmail()!= null) {
 						      String to= ltMastUsers.getEmail();
 //						      emailService.sendSimpleMessage(to, subject, body);
-						      sendEmail1( subject, body, to);
+						      //sendEmail1( subject, body, to);
+						      try {
+								sendSimpleMessageWithAuth(to,subject,text,salesOrder,salespersonName,totalAmount);
+							} catch (MessagingException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						      
 				          }
 						}
 				}// send salesOrder approval notification to areHead if order is inStock & priceList is not default
 				 if(!areaHeadUserList.isEmpty() && !ltSoHeader.getInStockFlag().equalsIgnoreCase("N") 
-						 && ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null 
-						 && !ltSoHeader.getPriceList().equals(defailtPriceList)) 
+						 && ltSoHeader.getStatus().equalsIgnoreCase("PENDING_APPROVAL") && ltSoHeader.getOrderNumber()!= null 
+						 )//&& !ltSoHeader.getPriceList().equals(defailtPriceList)) 
 				      {			
 					 System.out.println("Hi I'm in send email SALESssss");
 							for(Iterator iterator = areaHeadUserList.iterator(); iterator.hasNext();) {
 								LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
-								System.out.print(ltMastUsers.getTokenData());
+								System.out.println(ltMastUsers.getTokenData());
 								
 								String subject = "EMAIL_SALES_ORDER_APPROVAL_MAILBODY";
 							      
 							     // String body = ltSoHeadersDao.getEmailBody(subject);
 								//String body= "<html> <head> </head> <body>     <div style=\"margin-top: 0;background-color:#f4f4f4!important;color:#555; font-family: 'Open Sans', sans-serif;\"><div style=\"font-size: 14px;margin: 0px auto;max-width: 620px;margin-bottom: 20px;background:#c02e2e05;\">              <div style=\"padding: 0px 0px 9px 0px;width: 100%;color: #fff;font-weight:bold;font-size: 15px;line-height: 20px; width: 562px; margin: 0 auto;\">                 <center>                     <table border=\"0\" cellpadding=\"20\"cellspacing=\"0\" width=\"100%\">                         <tbody>                             <tr>                                 <td valign=\"top\" style=\"padding: 48px 48px 32px\">                                     <div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size: 14px;line-height: 150%;text-align:left\">                                          <p style=\"margin: 0 0 16px\">Dear Sir/Ma’am,</p>                                         <p style=\"margin: 0 0 16px\">MSO-29686-2425-967 has come for your approval. Please visit the app to approve/ reject the record.</p>    <h4 style=\"font-weight:bold\">Created by:Panchanan Rout</h4>  <h4 style=\"font-weight:bold\">Order Amount:0.0</h4>   <h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>  <p>Regards,</p><p>Lakshya App team.</p>                               <div style= \"margin-bottom: 40px\">                                                                                       </div>                                                                                                                       </div>                          </html>       </td>                             </tr>                         </tbody>                     </table>                 </center>             </div>            </div>      </div> </body>" ;
 								String body= "EMAIL For SALES ORDER APPROVAL";
-								System.out.print("Email body"+body);
+								System.out.println("Email body"+body);
 							      String userName = ltSoHeadersDao.getUserNameAgainsUserId(ltSoHeader.getCreatedBy());
-							      System.out.print("userName for Email"+userName);
+							      System.out.println("userName for Email = "+userName+"...Ok");
 							      
 							      //List<Double> amount = ltSoHeadersDao.getTotalAmount(ltSoHeader.getHeaderId());
 							      //System.out.println("amount is........" + amount);
@@ -822,14 +889,23 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							      for (String str : amount) {
 							    	  if(str.equals("null")) {
 							    		  str= "0";
+							    		  double number = Double.parseDouble(str);
+							    		  sum = sum+number;
 							    	  }
-							             double number = Double.parseDouble(str);
-							            sum = sum+number;
+							    	  else {
+							    		  double number = Double.parseDouble(str);
+							    		  sum = sum+number;
+							    	  }
+							           
 							        }
 							      String totalAmount= String.valueOf(sum);
-							      System.out.print("amount for Email" +totalAmount);
+							      System.out.println("amount for Email" +totalAmount);
 							      //System.out.print("amount for Email"+amt);
 							      String salespersonName=userName;
+							      
+							      String salesOrder = ltSoHeader.getOrderNumber();
+								     String text = "";
+							      
 							      //String totalAmount= Double.toString(amt);
 							      //String body= "<html> <head> </head> <body>     <div style=\"margin-top: 0;background-color:#f4f4f4!important;color:#555; font-family: 'Open Sans', sans-serif;\"><div style=\"font-size: 14px;margin: 0px auto;max-width: 620px;margin-bottom: 20px;background:#c02e2e05;\">              <div style=\"padding: 0px 0px 9px 0px;width: 100%;color: #fff;font-weight:bold;font-size: 15px;line-height: 20px; width: 562px; margin: 0 auto;\">                 <center>                     <table border=\"0\" cellpadding=\"20\"cellspacing=\"0\" width=\"100%\">                         <tbody>                             <tr>                                 <td valign=\"top\" style=\"padding: 48px 48px 32px\">                                     <div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size: 14px;line-height: 150%;text-align:left\">                                          <p style=\"margin: 0 0 16px\">Dear Sir/Ma’am,</p>                                         <p style=\"margin: 0 0 16px\">MSO-29686-2425-967 has come for your approval. Please visit the app to approve/ reject the record.</p>    <h4 style=\"font-weight:bold\">Created by:Panchanan Rout</h4>  <h4 style=\"font-weight:bold\">Order Amount:0.0</h4>   <h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>  <p>Regards,</p><p>Lakshya App team.</p>                               <div style= \"margin-bottom: 40px\">                                                                                       </div>                                                                                                                       </div>                          </html>       </td>                             </tr>                         </tbody>                     </table>                 </center>             </div>            </div>      </div> </body>" ;
 							      body = body.replace("${salesOrder}", ltSoHeader.getOrderNumber());
@@ -837,15 +913,22 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							      body = body.replace("${totalAmount}", totalAmount);
 							      if(ltMastUsers.getEmail()!= null) {
 							      String to= ltMastUsers.getEmail();
-//							      emailService.sendSimpleMessage(to, subject, body);
-							      sendEmail1( subject, body, to);
+							      //emailService.sendSimpleMessage(to, subject, body);
+							      System.out.println("Above sendSimpleMessage");
+							      //sendSimpleMessage("rohan.pacharne@lonartech.com", "Order", "My first order");
+							      try {
+									sendSimpleMessageWithAuth(to,subject,text,salesOrder,salespersonName,totalAmount);
+								} catch (MessagingException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 					          }
 							}
 				} //send salesOrder approval notification to sysAdmin if order is outOfStock
 				//System.out.println();
 				
 				 if(!sysAdminUserList.isEmpty() && !ltSoHeader.getInStockFlag().equalsIgnoreCase("Y") && 
-						ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null) 
+						ltSoHeader.getStatus().equalsIgnoreCase("PENDING_APPROVAL") && ltSoHeader.getOrderNumber()!= null) 
 				{	
 			   // System.out.println("In-Notif"+sysAdminUserList);
 				//System.out.println("In-Notif"+ltSoHeader.getInStockFlag());
@@ -871,9 +954,14 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						      for (String str : amount) {
 						    	  if(str.equals("null")) {
 						    		  str= "0";
+						    		  double number = Double.parseDouble(str);
+						    		  sum = sum+number;
 						    	  }
-						             double number = Double.parseDouble(str);
-						            sum = sum+number;
+						    	  else {
+						    		  double number = Double.parseDouble(str);
+						    		  sum = sum+number;
+						    	  }
+						           
 						        }
 						      String totalAmount= String.valueOf(sum);
 						      System.out.print("amount for Email" +totalAmount);
@@ -883,19 +971,28 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						      String salespersonName=userName;
 						     // String totalAmount= Double.toString(amt);
 						      
+						      String salesOrder = ltSoHeader.getOrderNumber();
+							     String text = "";
+						      
 						      body = body.replace("${salesOrder}", ltSoHeader.getOrderNumber());
 						      body = body.replace("${salespersonName}", salespersonName);
 						      body = body.replace("${totalAmount}", totalAmount);
 						      if(ltMastUsers.getEmail()!= null) {
 						      String to= ltMastUsers.getEmail();
 //					        emailService.sendSimpleMessage(to, subject, body);
-						      sendEmail1( subject, body, to);
+						     // sendEmail1( subject, body, to);
+						      try {
+								sendSimpleMessageWithAuth(to,subject,text,salesOrder,salespersonName,totalAmount);
+							} catch (MessagingException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 				          }
 							
 						}
 				}// send salesOrder approval notification to sysAdmin if order is inStock & priceList is not default
 				  if(!sysAdminUserList.isEmpty() && !ltSoHeader.getInStockFlag().equalsIgnoreCase("N") && 
-						  ltSoHeader.getStatus()=="DRAFT" && ltSoHeader.getOrderNumber()!= null 
+						  ltSoHeader.getStatus().equalsIgnoreCase("PENDING_APPROVAL") && ltSoHeader.getOrderNumber()!= null 
 						  && !ltSoHeader.getPriceList().equals(defailtPriceList)) 
 				      {			
 					  System.out.println("Hi I'm in send email SALES SALESsssssss");
@@ -920,9 +1017,14 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							      for (String str : amount) {
 							    	  if(str.equals("null")) {
 							    		  str= "0";
+							    		  double number = Double.parseDouble(str);
+							    		  sum = sum+number;
 							    	  }
-							             double number = Double.parseDouble(str);
-							            sum = sum+number;
+							    	  else {
+							    		  double number = Double.parseDouble(str);
+							    		  sum = sum+number;
+							    	  }
+							          
 							        }
 							      String totalAmount= String.valueOf(sum);
 							      System.out.print("amount for Email" +totalAmount);
@@ -932,13 +1034,22 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							      String salespersonName=userName;
 							     // String totalAmount= Double.toString(amt);
 							      
+							     String salesOrder = ltSoHeader.getOrderNumber();
+							     String text = "";
+							      
 							      body = body.replace("${salesOrder}", ltSoHeader.getOrderNumber());
 							      body = body.replace("${salespersonName}", salespersonName);
 							      body = body.replace("${totalAmount}", totalAmount);
 							      if(ltMastUsers.getEmail()!= null) {
 							      String to= ltMastUsers.getEmail();
 //							      emailService.sendSimpleMessage(to, subject, body);
-							      sendEmail1( subject, body, to);
+//							      sendEmail1( subject, body, to);
+							      try {
+									sendSimpleMessageWithAuth(to,subject,text,salesOrder,salespersonName,totalAmount);
+								} catch (MessagingException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 					          }
 								
 							}
@@ -947,18 +1058,140 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			}
 			
 	}
-		
 	
-//	public void sendSimpleMessage(String to, String subject, String text) {
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(to);
-//        message.setSubject(subject);
-//        
-//        message.setText(text);
-//        emailSender.send(message);
+	
+	 public void sendSimpleMessageWithAuth(String to, String subject, String text,String salesOrder,String salespersonName,String totalAmount) throws MessagingException {
+//       MimeMessage message = emailSender.createMimeMessage();
+//       MimeMessageHelper helper = new MimeMessageHelper(message, true);
+       Map<String,String> map = new HashMap<String,String>();
+       System.out.println("in sendSimpleMessageWithAuth");
+       String host = "14.140.146.196";    // "smtp.gmail.com";         
+       String port = "25";//  "587";         
+       String mailFrom = "noreply@atfoods.com";  //"atfl4867@gmail.com";         
+       String password = "Welcome12";    //"vjug xicp wiuw fakw";         
+       // Outgoing email information
+       String mailTo = to;        
+       String subject1 = "SALES_ORDER_APPROVAL";   
+//       text = "<html><head></head><body><h1>Greetings!</h1><p>We hope this message finds you well.</p></body></html>";
+//       String salesOrder ="myOrder123";
+//       String salespersonName = "Vaibhav";
+//       String totalAmount= "100";
+        text = "<html><head></head><body>"
+               + "<div style=\"margin-top:0;background-color:#f4f4f4!important;color:#555;font-family:'Open Sans',sans-serif;\">"
+               + "<div style=\"font-size:14px;margin:0px auto;max-width:620px;margin-bottom:20px;background:#c02e2e05;\">"
+               + "<div style=\"padding:0px 0px 9px 0px;width:100%;color:#fff;font-weight:bold;font-size:15px;line-height:20px;width:562px;margin:0 auto;\">"
+               + "<center><table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\"><tbody><tr><td valign=\"top\" style=\"padding:48px 48px 32px\">"
+               + "<div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left\">"
+               + "<p style=\"margin:0 0 16px\">Dear Sir/Ma’am,</p>"
+               + "<p style=\"margin:0 0 16px\">" + salesOrder + " has come for your approval. Please visit the app to approve/ reject the record.</p>"
+               + "<h4 style=\"font-weight:bold\">Created by:" + salespersonName + "</h4>"
+               + "<h4 style=\"font-weight:bold\">Order Amount:" + totalAmount + "</h4>"
+               + "<h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>"
+               + "<p>Regards,</p><p>Lakshya App team.</p>"
+               + "<div style=\"margin-bottom:40px\"></div></div></td></tr></tbody></table></center></div></div></div></body></html>";
+       
+       String message = text;
+       String result = String.join("   ", host,mailFrom,password,mailTo,subject1,message);
+       System.out.println("Port = "+port);
+   	System.out.println("result in method = "+result);
+       try {
+//           helper.setTo(to);
+//           helper.setSubject(subject);
+//           helper.setText(text, true); // true indicates HTML content
+//           emailSender.send(message);
+           System.out.println("Port = "+port);
+       	System.out.println("result in try = "+result);
+       	   sendEmail(host, port, mailFrom, password, mailTo, subject1, message);
+//           map.put("status", "true");
+//           map.put("message", "Email sent successfully to: "+ to);
+       } catch (MailException ex) {
+           System.out.println("Port = "+port);
+       	System.out.println("result in catch = "+result);
+           System.out.println("Failed to send email to: " + to);
+           map.put("status", "false");
+           map.put("message", "Failed to send email to: "+to);
+           ex.printStackTrace(); // Log the stack trace for debugging
+       }
+       
+   }
+   
+   
+   public static void sendEmail(String host, String port, final String userName, final String password, String toAddress,String subject, String messageBody) throws AddressException, MessagingException {         
+   	// Set up mail server properties
+   	System.out.println("in sendEmail");
+   	Map<String,String> map = new HashMap<String,String>();
+   	Properties properties = new Properties();         
+   	properties.put("mail.smtp.host", host);   
+   	System.out.println("Above Port in sendEmail = "+port);
+   	properties.put("mail.smtp.socketFactory.port", port);
+   	System.out.println("Below Port in sendEmail = "+port);
+   	properties.put("mail.smtp.auth", "true");         
+   	properties.put("mail.smtp.starttls.enable", "true"); 
+   	
+//   	if ("465".equals(port)) {
+//        properties.put("mail.smtp.socketFactory.port", port);
+//        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+//        properties.put("mail.smtp.socketFactory.fallback", "false");
 //    }
+    
+   	properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+   	properties.put("mail.smtp.ssl.ciphersuites", "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384");
+   	properties.put("mail.smtp.ssl.enable", "false");
+   	properties.put("mail.transport.protocol", "smtp");
+   	properties.put("mail.smtp.sendpartial", "true");
+   	properties.put("mail.smtp.ssl.trust", host);
+   	
+   	properties.put("mail.debug", "true");
+   	System.out.println("below properties");
+   	// Create a mail session
+   	Authenticator auth = new Authenticator() { 
+   		public PasswordAuthentication getPasswordAuthentication() { 
+   			return new PasswordAuthentication(userName, password);           
+   			}       
+   		};
+       	System.out.println("below Authenticator");
+   		Session session = Session.getInstance(properties, auth); 
+       	System.out.println("below session");
+   		// Create the email message
+   		Message message = new MimeMessage(session); 
+   		message.setFrom(new InternetAddress(userName)); 
+   		message.setRecipient(Message.RecipientType.TO, new InternetAddress(toAddress)); 
+   		message.setSubject(subject); 
+//   		message.setText(messageBody);
+           message.setContent(messageBody, "text/html; charset=utf-8");
+   		// Send the email 
+       	System.out.println("Above Transport");
+       	try {
+       		Transport.send(message);
+       		System.out.println("Success...");
+       		map.put("status", "101");
+       		map.put("message", "Email sent successfully to: "+ toAddress);
+       	}catch(Exception ex) {
+       		System.out.println("Failed...");
+       		map.put("status", "102");
+               map.put("message", "Failed to send email to: "+ toAddress);
+       		ex.printStackTrace();
+       	}
+       	System.out.println("Below Transport");
+       	
+   }
 	
-		 
+		
+/*	
+	public void sendSimpleMessage(String to, String subject, String text) {
+		System.out.println("In sendSimpleMessage");
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        
+        message.setText(text);
+        emailSender.send(message);
+        System.out.println(to+" "+subject+" "+text);
+        System.out.println("Exit from sendSimpleMessage");
+    }
+*/	
+	
+
 	    public static void sendEmail1(String subject, String text, String to) throws IOException {
 	    	System.out.println("Hi I'm in send email1111...");
 	        CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -991,18 +1224,48 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	            httpPost.addHeader("Content-Type", "application/json");
 	            //to= "Shubham.magare@lonartech.com";
 	            // Create JSON payload
+	            subject = "EMAIL_SALES_ORDER_APPROVAL_MAILBODY";
+	            to= "rohan.pacharne@lonartech.com";
+	            String salesOrder ="myOrder123";
+	            String salespersonName = "Vaibhav";
+	            String totalAmount= "100";
+	             text = "<html><head></head><body>"
+	                    + "<div style=\"margin-top:0;background-color:#f4f4f4!important;color:#555;font-family:'Open Sans',sans-serif;\">"
+	                    + "<div style=\"font-size:14px;margin:0px auto;max-width:620px;margin-bottom:20px;background:#c02e2e05;\">"
+	                    + "<div style=\"padding:0px 0px 9px 0px;width:100%;color:#fff;font-weight:bold;font-size:15px;line-height:20px;width:562px;margin:0 auto;\">"
+	                    + "<center><table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\"><tbody><tr><td valign=\"top\" style=\"padding:48px 48px 32px\">"
+	                    + "<div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left\">"
+	                    + "<p style=\"margin:0 0 16px\">Dear Sir/Ma’am,</p>"
+	                    + "<p style=\"margin:0 0 16px\">" + salesOrder + " has come for your approval. Please visit the app to approve/ reject the record.</p>"
+	                    + "<h4 style=\"font-weight:bold\">Created by:" + salespersonName + "</h4>"
+	                    + "<h4 style=\"font-weight:bold\">Order Amount:" + totalAmount + "</h4>"
+	                    + "<h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>"
+	                    + "<p>Regards,</p><p>Lakshya App team.</p>"
+	                    + "<div style=\"margin-bottom:40px\"></div></div></td></tr></tbody></table></center></div></div></div></body></html>";
+
+	            
 	            String jsonPayload = "{\"subject\": \"" + subject + "\", \"text\": \"" + text + "\", \"to\": \"" + to + "\"}";
 	            System.out.println("Hi I'm in send email1111... jsonPayload" + jsonPayload);
 	            StringEntity entity = new StringEntity(jsonPayload, ContentType.APPLICATION_JSON);
-	            httpPost.setEntity(entity);
-	 
+	            System.out.println("entity1"+entity); 
+                httpPost.setEntity(entity);
+                System.out.println("entity2"+entity); 
+                
 	            // Execute the request
 	            CloseableHttpResponse response = httpClient.execute(httpPost);
+	            System.out.println("response1"+response);
 	            try {
-	                HttpEntity responseEntity = response.getEntity();
-	                // Print response if needed
-	                if (responseEntity != null) {
-	                    System.out.println(EntityUtils.toString(responseEntity));
+	            	int statusCode = response.getStatusLine().getStatusCode();
+	            	if (statusCode >= 200 && statusCode < 300) {
+	                    HttpEntity responseEntity = response.getEntity();
+	                    if (responseEntity != null) {
+	                        String responseString = EntityUtils.toString(responseEntity);
+	                        System.out.println("Email sent successfully. Response: " + responseString);
+	                    } else {
+	                        System.out.println("Email sent successfully. No response content.");
+	                    }
+	                } else {
+	                    System.out.println("Failed to send email. HTTP error code: " + statusCode);
 	                }
 	            } finally {
 	                response.close();
@@ -1011,6 +1274,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	            httpClient.close();
 	        }
 	    }
+	    
 	 
 //	    public static void main(String[] args) {
 //	        try {
@@ -4972,9 +5236,11 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		if(soHeaderDto.getBeatId()!= null) {
 			ltSoHeader.setBeatId(soHeaderDto.getBeatId());
 		}
+		System.out.println("Above if = "+soHeaderDto.getPriceList());
 		if(soHeaderDto.getPriceList()!= null) {
 			ltSoHeader.setPriceList(soHeaderDto.getPriceList());
 		}
+		System.out.println("below if ="+soHeaderDto.getPriceList());
 		if(soHeaderDto.getInstockFlag()!= null) {
 			ltSoHeader.setInStockFlag(soHeaderDto.getInstockFlag());
 		}
@@ -5737,7 +6003,7 @@ System.out.println("3820 = "+new Date());
 		    soHeaderDto.setLatitude(responseDto.getLatitude());
 		    soHeaderDto.setLongitude(responseDto.getLongitude());
 		    soHeaderDto.setInstockFlag(responseDto.getInstockFlag());
-		    soHeaderDto.setPriceList(responseDto.getHeaderPriceList());
+		    soHeaderDto.setPriceList(responseDto.getPriceList());
 		    soHeaderDto.setSiebelRemark(responseDto.getSiebelRemark());
 		    soHeaderDto.setBeatId(responseDto.getBeatId());
 		    soHeaderDto.setProprietorName(responseDto.getProprietorName());
@@ -5795,7 +6061,6 @@ System.out.println("3820 = "+new Date());
 		ltSalesPersonLocation.setCreationDate(new Date());
 		ltSalesPersonLocation.setLastUpdateDate(new Date());
 		ltSalesPersonLocation.setLastUpdatedBy(ltSalesPersonLocation.getUserId());
-		
 		
 		LtSalesPersonLocation list = ltSoHeadersDao.locationSaveOnNoOrder(ltSalesPersonLocation);
 		if (list != null) {
@@ -6401,7 +6666,8 @@ System.out.println("3820 = "+new Date());
 		} return null;
 	}
 */
-	
+
+/* this is 1st optimized code comment on 03-June-2024 for optimization	
 	@Override
 	public Status getAllPendingOrders(RequestDto requestDto) throws ServiceException, IOException {
 		    try {
@@ -6455,7 +6721,92 @@ System.out.println("3820 = "+new Date());
 		    }
 		    return null;
 		}
-		
+*/		
+	
+	public Status getAllPendingOrders(RequestDto requestDto) throws ServiceException, IOException {
+	    try {
+	        System.out.println("In method getAllPendingOrders at =" + LocalDateTime.now());
+	        Status status = new Status();
+	        System.out.println("Above getSoHeader11 query call at =" + LocalDateTime.now());
+	        List<ResponseDto> responseList = ltSoHeadersDao.getSoHeader111(requestDto);
+	        System.out.println("Below getSoHeader11 query call at =" + LocalDateTime.now());
+	        System.out.println("headerIdsList size is = " + responseList.size());
+ 
+	        // Use a Map to store SoHeaderDtoPendingOrders and their corresponding SoLineDtoPendingOrders
+	        Map<Long, SoHeaderDtoPendingOrders> headerMap = new HashMap<>();
+	        Map<SoHeaderDtoPendingOrders, List<SoLineDtoPendingOrders>> resultMap = new HashMap<>();
+	        System.out.println("Above for loop "+LocalDateTime.now());
+	        for (ResponseDto response : responseList) {
+	            Long headerId = response.getHeaderId();
+ 
+	            // Extract header and line information from response
+	            SoHeaderDtoPendingOrders header = extractSoHeader(response);
+	            SoLineDtoPendingOrders line = extractSoLine(response);
+ 
+	            // If header is not in the map, add it
+	            if (!headerMap.containsKey(headerId)) {
+	                headerMap.put(headerId, header);
+	                resultMap.put(header, new ArrayList<>());
+	            }
+//
+//	            // Add line to the corresponding header's list
+	            resultMap.get(headerMap.get(headerId)).add(line);
+	        }
+	        System.out.println("Below for loop "+LocalDateTime.now());
+	        // Printing the map to verify
+	        resultMap.forEach((key, value) -> {
+	            System.out.println("Header: " + key + " -> Lines: " + value);
+	        });
+	        
+	        List<ResponsePendingOrdersDto> ordersList = new ArrayList<>();
+	        for (Map.Entry<SoHeaderDtoPendingOrders, List<SoLineDtoPendingOrders>> entry : resultMap.entrySet()) {
+	            SoHeaderDtoPendingOrders header = entry.getKey();
+	            List<SoLineDtoPendingOrders> lines = entry.getValue();
+	            ResponsePendingOrdersDto responseHeader = new ResponsePendingOrdersDto();
+	            responseHeader.setHeaderId(header.getHeaderId());
+	            responseHeader.setOrderNumber(header.getOrderNumber());
+	            responseHeader.setOrderDate(header.getOrderDate());
+	            responseHeader.setStatus(header.getStatus());
+	            responseHeader.setStatus1(header.getStatus1());
+	            responseHeader.setAddress(header.getAddress());
+	            responseHeader.setOutletId(header.getOutletId());
+	            responseHeader.setOutletName(header.getOutletName());
+	            responseHeader.setOutletCode(header.getOutletCode());
+	            responseHeader.setLatitude(header.getLatitude());
+	            responseHeader.setUserId(header.getUserId());
+	            responseHeader.setOutletAddress(header.getOutletAddress());
+	            responseHeader.setProprietorName(header.getProprietorName());
+	            responseHeader.setDeliveryDate(header.getDeliveryDate());
+	            responseHeader.setInstockFlag(header.getInstockFlag());
+	            responseHeader.setBeatId(header.getBeatId());
+	            responseHeader.setPriceList(header.getPriceList());;
+	            responseHeader.setOrderLinesItems(lines);
+	            ordersList.add(responseHeader);
+	        }
+
+	        // Print the results
+	        for (ResponsePendingOrdersDto order : ordersList) {
+	            System.out.println(order);
+	        }
+ 
+	        if (responseList.isEmpty()) {
+	            status.setCode(RECORD_NOT_FOUND);
+	            status.setData("Record not found");
+		        System.out.println("Exit from in if getAllPendingOrders at =" + LocalDateTime.now());
+	            return status;
+	        } else {
+	            status.setCode(SUCCESS);
+	            status.setData(ordersList);
+		        System.out.println("Exit from in else getAllPendingOrders at =" + LocalDateTime.now());
+	            return status;
+	        }
+	    } catch (Exception e) {
+	        logger.error("Error Description :", e);
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+	
 		private static SoHeaderDtoPendingOrders extractSoHeader(ResponseDto response) {
 		    return new SoHeaderDtoPendingOrders(
 		        response.getHeaderId(),
@@ -6473,7 +6824,9 @@ System.out.println("3820 = "+new Date());
 		        response.getOutletAddress(),
 		        response.getProprietorName(),
 		        response.getDeliveryDate(),
-		        response.getInstockFlag()
+		        response.getInstockFlag(),
+		        response.getPriceList(),
+		        response.getBeatId()
 		    );
 		}
 		

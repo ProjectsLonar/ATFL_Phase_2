@@ -230,7 +230,7 @@ public class LtSoHeadersController implements CodeMaster {
 		}
 		
 		
-		@GetMapping(value = "/getAvailableProductQuantity", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+		@PostMapping(value = "/getAvailableProductQuantity", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 		public ResponseEntity<Status> getAvailableProductQuantity(@RequestBody SoHeaderDto soHeaderDto) throws ServerException {
 			try {
 				return new ResponseEntity<Status>(ltSoHeadersService.getAvailableProductQuantity(soHeaderDto), HttpStatus.OK);

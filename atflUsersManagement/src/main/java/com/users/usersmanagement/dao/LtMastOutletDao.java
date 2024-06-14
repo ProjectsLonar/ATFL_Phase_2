@@ -67,4 +67,6 @@ public interface LtMastOutletDao {
 
 	public String getUserNameFromSiebel(String mobileNumber)throws ServiceException, IOException;
 
+	public String getUserNameAgainsUserId(Long createdBy)throws ServiceException, IOException;
+
 }

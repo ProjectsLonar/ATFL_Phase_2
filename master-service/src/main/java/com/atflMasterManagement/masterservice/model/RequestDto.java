@@ -15,6 +15,17 @@ public class RequestDto {
 	private String userId;
 	private String userType;
 
+	String priceList;
+	
+	
+	public String getPriceList() {
+		return priceList;
+	}
+
+	public void setPriceList(String priceList) {
+		this.priceList = priceList;
+	}
+
 	public String getCatId() {
 		return catId;
 	}
@@ -111,13 +122,15 @@ public class RequestDto {
 		this.userType = userType;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "RequestDto [catId=" + catId + ", orgId=" + orgId + ", distId=" + distId + ", outletId=" + outletId
 				+ ", limit=" + limit + ", offset=" + offset + ", searchField=" + searchField + ", productId="
 				+ productId + ", categoryId=" + categoryId + ", subCategoryId=" + subCategoryId + ", userId=" + userId
-				+ ", userType=" + userType + "]";
+				+ ", userType=" + userType + ", priceList=" + priceList + "]";
 	}
+
 	
 
 }

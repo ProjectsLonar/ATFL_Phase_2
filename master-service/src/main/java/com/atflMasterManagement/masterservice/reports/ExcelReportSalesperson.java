@@ -83,7 +83,10 @@ public class ExcelReportSalesperson {
 			//value1 = (excelDataSelesperson.getQuantity()+"*"+excelDataSelesperson.getListPrice());
 			}
 	//		totalRevenu = totalRevenu + value;    origin
-			totalRevenu = totalRevenu + excelDataSelesperson.getTotal();
+			if(excelDataSelesperson.getTotal()!= null) {
+			totalRevenu = totalRevenu + excelDataSelesperson.getTotal();}else {
+				totalRevenu = totalRevenu + 0.0;
+			}
 		}
 
 		++rowIndex;

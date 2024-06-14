@@ -62,5 +62,7 @@ public interface AtflMastUsersService {
 	Status getInactiveUsers() throws ServiceException;
 	
 	MobileSupportedVersionResponseDto isMobileSupportedVersion(MobileSupportedVersionRequestDto requestDto)throws ServiceException;
+
+	Status saveRecentSearchId1(Long userId, String searchId)throws ServiceException;
 	
 }

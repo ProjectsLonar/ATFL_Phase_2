@@ -207,7 +207,7 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 		 } 
 		 
 		System.out.println("Newwww ltMastDistributorsList" + ltMastDistributorsList);
-		return null;
+		return ltMastDistributorsList;
 
 	}
 

@@ -222,7 +222,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 		Status status = new Status();
 		try {
 			List<ExcelDataOutlet> outletReportDataList = ltReportDao.getOutletReportData(excelReportDto);
-			System.out.println("Hi i'm in serviceImpl query dats is = "+outletReportDataList);
+			System.out.println("Hi i'm in serviceImpl query dats is = "+outletReportDataList.size());
 			if (outletReportDataList == null || outletReportDataList.isEmpty()) {
 				status.setMessage("Report data not available");
 				status.setCode(FAIL);
@@ -236,6 +236,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 
 				String mapKey = excelDataOutletObj.getOrderNumber().trim() + "_"
 						+ excelDataOutletObj.getStatus().trim();
+				System.out.println("mapKey = "+mapKey);
 
 				if (outletReportDataMap.get(mapKey) != null) {
 					ExcelDataOutlet excelDataOutlet = outletReportDataMap.get(mapKey);
@@ -386,6 +387,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 				}
 			}}
 			List<ExcelDataOutlet> excelDataProductList = new ArrayList(outletReportDataMap.values());
+			System.out.println("excelDataProductList size = "+excelDataProductList.size());
 			
 		if (!excelDataProductList.isEmpty()) {
 				//if (!outletReportDataList.isEmpty()) {
@@ -814,12 +816,12 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 				status.setCode(FAIL);
 				return status;
 			}
-			//System.out.println("Hi i'm in serviceImpl dats is ="+ regionReportDataList);
-			List<ExcelDataRegion> regionReportDataList2 = ltReportDao.getSalesOrderLineCount2(regionReportDataList,
-					excelReportDto);
+			System.out.println("Hi i'm in serviceImpl dats is ="+ regionReportDataList.get(0).getTotalEff());
+			//List<ExcelDataRegion> regionReportDataList2 = ltReportDao.getSalesOrderLineCount2(regionReportDataList,
+			//		excelReportDto);
 
-			if (!regionReportDataList2.isEmpty()) {
-				status = createExcelRegionReport(regionReportDataList2, excelReportDto);
+			if (!regionReportDataList.isEmpty()) {
+				status = createExcelRegionReport(regionReportDataList, excelReportDto);
 			} else {
 				status.setMessage("Fail");
 				status.setCode(FAIL);
