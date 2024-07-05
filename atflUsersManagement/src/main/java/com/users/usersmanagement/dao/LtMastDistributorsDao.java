@@ -1,5 +1,6 @@
 package com.users.usersmanagement.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.users.usersmanagement.common.ServiceException;
@@ -29,6 +30,10 @@ public interface LtMastDistributorsDao {
 	String getUserTypeByUserId(Long userId)throws ServiceException;
 
 	List<LtMastDistributors> getAllDistributorAgainstSystemAdmin(RequestDto requestDto)throws ServiceException;
+
+	NotificationDetails deleteNotificationAfter72Hours(Date cutoffDate)throws ServiceException;
+
+	void updateReadNotificationFlag(int notificationId)throws ServiceException;
 
 	//LtMastUsers saveSeibelUserData(LtMastUsers user, Long userId)throws ServiceException;
 

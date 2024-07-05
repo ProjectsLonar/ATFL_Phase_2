@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -88,7 +89,24 @@ public class LtMastDistributorsController implements CodeMaster {
 		}
 }
 	
-
+	@DeleteMapping(value = "/deleteNotificationAfter72Hours", produces = MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
+  public ResponseEntity<Status> deleteNotificationAfter72Hours()throws ServerException {
+	  try {
+		  return new ResponseEntity<Status>(ltMastDistributorsService.deleteNotificationAfter72Hours(), HttpStatus.OK);
+	  }catch(Exception e) {
+		  throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+	  }	
+  }
+	
+	@PostMapping(value = "updateReadNotificationFlag", produces = MediaType.APPLICATION_JSON_VALUE, headers ="X-API-Version=v1.0")
+	public ResponseEntity<Status> updateReadNotificationFlag(@RequestBody RequestDto requestDto) throws ServerException{
+		try {
+		return new ResponseEntity<Status>(ltMastDistributorsService.updateReadNotificationFlag(requestDto), HttpStatus.OK);
+	}catch(Exception e) {
+		throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+	}
+	}
+	
 	@RequestMapping(value="getUserDataByIdForValidation/{userId}", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE, headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> getUserDataByIdForValidation(@PathVariable("userId")Long userId) throws ServerException{
 		try {

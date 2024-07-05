@@ -3,7 +3,9 @@ package com.lonar.cartservice.atflCartService.dao;
 import java.io.IOException;
 import java.rmi.ServerException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.sql.DataSource;
@@ -473,6 +475,44 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		
 	}
 
+
+	@Override
+	public List<LtSalesReturnLineDto> getSalesReturnLineData(List<Long> long1, RequestDto requestDto) throws ServerException {
+		
+		try{String query = env.getProperty("getSalesReturnLineData");
+//		String searchField = null;
+//		if (requestDto.getSearchField()!= null) {
+//			searchField= "%" +requestDto.getSearchField().toUpperCase()+ "%";
+//		}
+		
+		if(requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+		
+		if(requestDto.getOffset() == 0 ) {
+			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
+
+		query = query + "  AND lsrh.SALES_RETURN_HEADER_ID IN ( " + long1.toString().replace("[", "").replace("]", "")
+				+ " ) order by lsrh.SALES_RETURN_DATE desc" ;
+		
+		List<LtSalesReturnLineDto> salesReturnData = jdbcTemplate.query(query,new Object[] {//long1
+				//requestDto.getLimit(), requestDto.getOffset()
+				}, 
+				new BeanPropertyRowMapper<LtSalesReturnLineDto>(LtSalesReturnLineDto.class));
+		//System.out.println("salesReturnList == "+salesReturnList);
+		if(!salesReturnData.isEmpty()) {
+			return salesReturnData;
+		}
+		}catch(Exception e) 
+		    {
+			 e.printStackTrace();
+			}
+		return null;
+		
+	}
+
+	
 	@Override
 	public LtSalesReturnResponseDto getSalesReturnForPendingAprroval1(Long salesReturnHeaderId, RequestDto requestDto)
 			throws ServerException {
@@ -735,6 +775,10 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	public String getUserNameAgainsUserId(Long userId) throws ServerException {
 		String query= env.getProperty("getUserNameAgainsUserIdForSalesReturn");
 		String userName= jdbcTemplate.queryForObject(query, new Object[] {userId}, String.class);
+//		if(userName.equalsIgnoreCase("")||userName.equalsIgnoreCase(null) ) {
+//			userName ="Test Name";
+//		}
+		System.out.println("userName"+userName);
 		return userName;
 	}
 
@@ -871,5 +915,101 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		return userName;
 	}
 
+	
+	@Override
+	public List<ResponseDto> getSalesReturnForAprroval_Opt(List<Long> salesReturnHeaderId, RequestDto requestDto) throws ServerException {
+		try{
+			String query = env.getProperty("getSalesReturnForAprroval1");
+ 
+			if(requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0 ) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
+			
+			// Construct the IN clause with the list of IDs
+	        String inClause = salesReturnHeaderId.toString().replace("[", "").replace("]", "");
+ 
+	        query = query + " AND lsrh.SALES_RETURN_HEADER_ID IN (" + inClause + ") " +
+	                      "ORDER BY SALES_RETURN_DATE  DESC " +
+	                      "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+			
+		List<ResponseDto> salesReturnHeaderList = jdbcTemplate.query(query,new Object[] {
+				requestDto.getLimit(), requestDto.getOffset()
+				}, new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+		//System.out.println("salesReturnList == "+salesReturnList);
+		if(!salesReturnHeaderList.isEmpty()) {
+			return salesReturnHeaderList;
+		}
+		}catch(Exception e)
+		    {
+			 e.printStackTrace();
+			}
+		return null;
+	}
+	
+	
+	@Override
+	public Map<Long, List<LtSalesReturnLines>> getSalesReturnLinesForApproval_Opt(List<Long> long1, RequestDto requestDto) throws ServerException {
+	    Map<Long, List<LtSalesReturnLines>> salesReturnLinesMap = new HashMap<>();
+	    try {
+	        String query = env.getProperty("getSalesReturnLineDataForApproval");
+ 
+	        if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+	            requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+	        }
+ 
+	        if (requestDto.getOffset() == 0) {
+	            requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+	        }
+ 
+	        // Construct the IN clause with the list of IDs
+	        String inClause = long1.toString().replace("[", "").replace("]", "");
+ 
+	        query = query + " AND lsrh.SALES_RETURN_HEADER_ID IN (" + inClause + ") " +
+	                      "ORDER BY lsrh.SALES_RETURN_DATE DESC " +
+	                      "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+	        System.out.println(requestDto.getOffset());
+	        System.out.println(requestDto.getLimit());
+	        List<LtSalesReturnLines> salesReturnLines = jdbcTemplate.query(
+	            query,
+	            new Object[]{requestDto.getLimit(),requestDto.getOffset() },
+	            new BeanPropertyRowMapper<LtSalesReturnLines>(LtSalesReturnLines.class)
+	        );
+ 
+	        System.out.println("Query = "+query);
+	        System.out.println("salesReturnLines = "+salesReturnLines);
+	        System.out.println("salesReturnLines size is = "+salesReturnLines.size());
+	        for (LtSalesReturnLines line : salesReturnLines) {
+	            salesReturnLinesMap.computeIfAbsent(line.getSalesReturnHeaderId(), k -> new ArrayList<>()).add(line);
+	        }
+ 
+	        if (!salesReturnLinesMap.isEmpty()) {
+	            return salesReturnLinesMap;
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw new ServerException("Error fetching sales return lines", e);
+	    }
+	    return salesReturnLinesMap;
+	}
+	
+	
+	@Override
+	public List<LtMastUsers> getAllUsersForEmail(String outletId) throws ServerException {
+			String query = env.getProperty("getAllUsersForEmail");
+			List<LtMastUsers> ltMastUserslist = jdbcTemplate.query(query,
+					new Object[] {outletId },
+					new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+
+			if (!ltMastUserslist.isEmpty()) {
+				return ltMastUserslist;
+			}else {
+				return null;
+			}
+	}
+	
 }
 

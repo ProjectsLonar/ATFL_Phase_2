@@ -1,9 +1,12 @@
 package com.lonar.cartservice.atflCartService.service;
 
 import java.rmi.ServerException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,12 +37,34 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 	public Status getTemplateAgainstDistributor(String distributorId, Long templateHeaderId)throws ServerException{
 
 		Status status = new Status();
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetTemplateAgainstDistributor = 0;
+		long outQuerygetTemplateAgainstDistributor = 0;
+		long inQuerygetProductDetailsAgainstheaderId = 0;
+		long outQuerygetProductDetailsAgainstheaderId = 0;
+//		long inQuerygetInStockProductCountForAdmin = 0;
+//		long outQuerygetInStockProductCountForAdmin = 0;
+//		long inQuerygetMultipleMrpForProduct = 0;
+//		long outQuerygetMultipleMrpForProduct = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
+		
 		try {
+			inQuerygetTemplateAgainstDistributor = System.currentTimeMillis();
 		LtTemplateHeaders templateHeaders = ltTemplateDao.getTemplateAgainstDistributor(distributorId,templateHeaderId);
+		outQuerygetTemplateAgainstDistributor = System.currentTimeMillis();
+		
 		List<LtTemplateLines> templateLineDetails = new ArrayList<LtTemplateLines>();
 		LtTemplateDto ltTemplateDto = new LtTemplateDto();
 		if(templateHeaders !=null) {
+			
+			inQuerygetProductDetailsAgainstheaderId = System.currentTimeMillis();
 			templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId(templateHeaders.getTemplateHeaderId());
+			outQuerygetProductDetailsAgainstheaderId = System.currentTimeMillis();
+			
 			ltTemplateDto.setTemplateHeaderId(templateHeaders.getTemplateHeaderId());
 			ltTemplateDto.setDistributorId(templateHeaders.getDistributorId());
 			ltTemplateDto.setStatus(templateHeaders.getStatus());
@@ -61,6 +86,19 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
 			status.setData(ltTemplateDto);
+			
+			timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetTemplateAgainstDistributor,outQuerygetTemplateAgainstDistributor));
+			timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetProductDetailsAgainstheaderId,outQuerygetProductDetailsAgainstheaderId));
+//			timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetInStockProductCountForAdmin, outQuerygetInStockProductCountForAdmin));
+//			timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetMultipleMrpForProduct, outQuerygetMultipleMrpForProduct));
+//			timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+//			timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+			
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
+	        
 		} else {
 			status.setCode(FAIL);
 			status.setMessage("RECORD NOT FOUND");
@@ -76,24 +114,46 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 	
 	public Status createTemplate(LtTemplateDto ltTemplateDto)throws ServerException, ServiceException{
 		Status status = new Status();
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetTemplateAgainstDistributor12 = 0;
+		long outQuerygetTemplateAgainstDistributor12 = 0;
+		long inQuerydeletelinedetailsbytemplateid = 0;
+		long outQuerydeletelinedetailsbytemplateid = 0;
+		long inQuerydeleteHeaderdetailsbytemplateid = 0;
+		long outQuerydeleteHeaderdetailsbytemplateid = 0;
+		long inQuerygetTemplateAgainstDistributor = 0;
+		long outQuerygetTemplateAgainstDistributor = 0;
+		long inQuerygetProductDetailsAgainstheaderId = 0;
+		long outQuerygetProductDetailsAgainstheaderId = 0;
+		long inQuerydeletelinedetailsbytemplateid2 = 0;
+		long outQuerydeletelinedetailsbytemplateid2 = 0;
 		try {
 		if(ltTemplateDto !=null) {
 			LtTemplateHeaders ltTemplateHeaders = new LtTemplateHeaders();
 			LtTemplateHeaders ltTemplateHeadersUpdated = null;
 			
+			inQuerygetTemplateAgainstDistributor12 = System.currentTimeMillis();
 			LtTemplateHeaders ltTemplateHeader12 = ltTemplateDao.getTemplateAgainstDistributor12(ltTemplateDto.getDistributorId());
+			inQuerygetTemplateAgainstDistributor12 = System.currentTimeMillis();
 			
 			if((ltTemplateHeader12 !=null)){				
 			//ltTemplateDto.setTemplateHeaderId(ltTemplateHeader12.getTemplateHeaderId());
+				inQuerydeletelinedetailsbytemplateid = System.currentTimeMillis();
 				ltTemplateDao.deletelinedetailsbytemplateid(ltTemplateHeader12.getTemplateHeaderId());
+				outQuerydeletelinedetailsbytemplateid = System.currentTimeMillis();
+				
+				inQuerydeleteHeaderdetailsbytemplateid = System.currentTimeMillis();
 				ltTemplateDao.deleteHeaderdetailsbytemplateid(ltTemplateHeader12.getDistributorId());
+				outQuerydeleteHeaderdetailsbytemplateid = System.currentTimeMillis();
+				
 			ltTemplateDto.setTemplateHeaderId(null);
 			}
 			else {
 				ltTemplateDto.setTemplateHeaderId(null);
 			}
 			
-			System.out.println("Disrtibutor Id ===== "+ ltTemplateHeader12.getDistributorId());
+		//	System.out.println("Disrtibutor Id ===== "+ ltTemplateHeader12.getDistributorId());
 			if(ltTemplateDto.getTemplateHeaderId() ==null) {
 				//System.out.println("Hi I'm in if ");
 				//System.out.println("Checking Disrtibutor Id ===== "+ ltTemplateDto.getDistributorId() +"&&&" + ltTemplateHeader12.getDistributorId());
@@ -116,9 +176,11 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			
 			System.out.println("Hi input Data......."+ ltTemplateDto.getDistributorId()+" Hi New data"+
 					ltTemplateDto.getTemplateHeaderId());
+			inQuerygetTemplateAgainstDistributor = System.currentTimeMillis();
 				LtTemplateHeaders ltTemplateHeader = ltTemplateDao.getTemplateAgainstDistributor(ltTemplateDto.getDistributorId(),
 														ltTemplateDto.getTemplateHeaderId());
-				
+				outQuerygetTemplateAgainstDistributor = System.currentTimeMillis();
+
 				//System.out.println("QueryHeaderId= "+ltTemplateHeader.getTemplateHeaderId());
 				//System.out.println("ReqHeaderId"+ltTemplateDto.getTemplateHeaderId() + "\n"+ltTemplateHeader +"\n" +ltTemplateDto);
 				ltTemplateHeaders.setDistributorId(ltTemplateDto.getDistributorId());
@@ -136,9 +198,14 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 				ltTemplateHeadersUpdated = ltTemplateDao.saveheaderData(ltTemplateHeaders);
 			}
 			if(ltTemplateHeadersUpdated !=null) {
+				inQuerygetProductDetailsAgainstheaderId = System.currentTimeMillis();
 				List<LtTemplateLines> productList = ltTemplateDao.getProductDetailsAgainstheaderId(ltTemplateHeadersUpdated.getTemplateHeaderId());
+				outQuerygetProductDetailsAgainstheaderId = System.currentTimeMillis();
+
 				if(productList !=null) {
+					inQuerydeletelinedetailsbytemplateid2 = System.currentTimeMillis();
 				ltTemplateDao.deletelinedetailsbytemplateid(ltTemplateHeadersUpdated.getTemplateHeaderId());
+				outQuerydeletelinedetailsbytemplateid2 = System.currentTimeMillis();
 				}
 				
 				
@@ -165,6 +232,19 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 				status.setCode(INSERT_SUCCESSFULLY);
 				status.setMessage("INSERT_SUCCESSFULLY");
 				status.setData(status1.getData());
+				
+				timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetTemplateAgainstDistributor12,outQuerygetTemplateAgainstDistributor12));
+				timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerydeletelinedetailsbytemplateid,outQuerydeletelinedetailsbytemplateid));
+				timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerydeleteHeaderdetailsbytemplateid, outQuerydeleteHeaderdetailsbytemplateid));
+				timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetTemplateAgainstDistributor, outQuerygetTemplateAgainstDistributor));
+				timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetProductDetailsAgainstheaderId,outQuerygetProductDetailsAgainstheaderId));
+				timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerydeletelinedetailsbytemplateid2,outQuerydeletelinedetailsbytemplateid2));
+				
+				long methodOut = System.currentTimeMillis();
+				System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+		        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+		        status.setTimeDifference(timeDifference);
+				
 			}else {
 				status.setCode(INSERT_FAIL);
 				status.setMessage("Fail To Insert");
@@ -182,14 +262,35 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 	public Status getTemplateAgainstDistributors (String distributorId)throws ServerException{
 
 		Status status = new Status();
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetTemplateAgainstDistributors = 0;
+		long outQuerygetTemplateAgainstDistributors = 0;
+		long inQuerygetProductDetailsAgainstheaderId = 0;
+		long outQuerygetProductDetailsAgainstheaderId = 0;
+		long inQuerygetAllTemplateAgainstDistributors = 0;
+		long outQuerygetAllTemplateAgainstDistributors = 0;
+		long inQuerygetProductDetailsAgainstheaderId2 = 0;
+		long outQuerygetProductDetailsAgainstheaderId2 = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
+		
 		try {
 			System.out.println("distributorId"+distributorId);
+			inQuerygetTemplateAgainstDistributors = System.currentTimeMillis();
 		LtTemplateHeaders templateHeaders = ltTemplateDao.getTemplateAgainstDistributors(distributorId);
+		outQuerygetTemplateAgainstDistributors = System.currentTimeMillis();
 		System.out.println(templateHeaders);
 		List<LtTemplateLines> templateLineDetails = new ArrayList<LtTemplateLines>();
 		LtTemplateDto ltTemplateDto = new LtTemplateDto();
 		if(templateHeaders !=null) {
+			
+			inQuerygetProductDetailsAgainstheaderId = System.currentTimeMillis();
 			templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId(templateHeaders.getTemplateHeaderId());
+			outQuerygetProductDetailsAgainstheaderId = System.currentTimeMillis();
+			
 			System.out.println(templateLineDetails);
 			ltTemplateDto.setTemplateHeaderId(templateHeaders.getTemplateHeaderId());
 			ltTemplateDto.setDistributorId(templateHeaders.getDistributorId());
@@ -214,8 +315,14 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			status.setMessage("RECORD NOT FOUND");
 		}else {
 			String distId = "ALL";
+			outQuerygetAllTemplateAgainstDistributors = System.currentTimeMillis();
 		    LtTemplateHeaders getAllTemplateHeaders = ltTemplateDao.getAllTemplateAgainstDistributors(distId);
+			outQuerygetAllTemplateAgainstDistributors = System.currentTimeMillis(); 
+			
+			inQuerygetProductDetailsAgainstheaderId2 = System.currentTimeMillis();
 		    templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId(getAllTemplateHeaders.getTemplateHeaderId());
+			inQuerygetProductDetailsAgainstheaderId2 = System.currentTimeMillis();
+
 		    System.out.println(templateLineDetails);
 		    ltTemplateDto.setTemplateHeaderId(getAllTemplateHeaders.getTemplateHeaderId());
 		    ltTemplateDto.setDistributorId(getAllTemplateHeaders.getDistributorId());
@@ -244,6 +351,19 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
 			status.setData(ltTemplateDto);
+			
+			timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetTemplateAgainstDistributors,outQuerygetTemplateAgainstDistributors));
+			timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetProductDetailsAgainstheaderId,outQuerygetProductDetailsAgainstheaderId));
+			timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetAllTemplateAgainstDistributors, outQuerygetAllTemplateAgainstDistributors));
+			timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetProductDetailsAgainstheaderId2, outQuerygetProductDetailsAgainstheaderId2));
+//			timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+//			timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+			
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
+			
 		} else {
 			status.setCode(FAIL);
 			status.setMessage("RECORD NOT FOUND");
@@ -255,20 +375,55 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 	
 	}
 
+	public String timeDiff(long startTime,long endTime) {
+		// Step 4: Calculate the time difference in milliseconds
+        long durationInMillis = endTime - startTime;
+ 
+        // Step 5: Convert the duration into a human-readable format
+        long seconds = durationInMillis / 1000;
+        long milliseconds = durationInMillis % 1000;
+ 
+        String formattedDuration = String.format(
+            "%d seconds, %d milliseconds",
+            seconds, milliseconds
+        );
+		return formattedDuration;
+	}
 
 	@Override
 	@Transactional
 	public Status getTemplateAgainstDistributors (String distributorId, String priceList)throws ServerException{
 
 		Status status = new Status();
+		
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetTemplateAgainstDistributors = 0;
+		long outQuerygetTemplateAgainstDistributors = 0;
+		long inQuerygetProductDetailsAgainstheaderId = 0;
+		long outQuerygetProductDetailsAgainstheaderId = 0;
+		long inQuerygetAllTemplateAgainstDistributors = 0;
+		long outQuerygetAllTemplateAgainstDistributors = 0;
+		long inQuerygetProductDetailsAgainstheaderId2 = 0;
+		long outQuerygetProductDetailsAgainstheaderId2 = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
 		try {
 			System.out.println("distributorId"+distributorId);
+			inQuerygetTemplateAgainstDistributors = System.currentTimeMillis();
 		LtTemplateHeaders templateHeaders = ltTemplateDao.getTemplateAgainstDistributors(distributorId);
+		outQuerygetTemplateAgainstDistributors = System.currentTimeMillis();
+
 		System.out.println(templateHeaders);
 		List<LtTemplateLines> templateLineDetails = new ArrayList<LtTemplateLines>();
 		LtTemplateDto ltTemplateDto = new LtTemplateDto();
 		if(templateHeaders !=null) {
+			inQuerygetProductDetailsAgainstheaderId = System.currentTimeMillis(); 
 			templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId(templateHeaders.getTemplateHeaderId(), priceList);
+			outQuerygetProductDetailsAgainstheaderId = System.currentTimeMillis(); 
+
 			System.out.println(templateLineDetails);
 			ltTemplateDto.setTemplateHeaderId(templateHeaders.getTemplateHeaderId());
 			ltTemplateDto.setDistributorId(templateHeaders.getDistributorId());
@@ -293,8 +448,12 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			status.setMessage("RECORD NOT FOUND");
 		}else {
 			String distId = "ALL";
+			inQuerygetAllTemplateAgainstDistributors = System.currentTimeMillis();
 			LtTemplateHeaders getAllTemplateHeaders = ltTemplateDao.getAllTemplateAgainstDistributors(distId);
+			outQuerygetAllTemplateAgainstDistributors = System.currentTimeMillis();
+			inQuerygetProductDetailsAgainstheaderId2 = System.currentTimeMillis(); 
 			templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId(getAllTemplateHeaders.getTemplateHeaderId(), priceList);
+			outQuerygetProductDetailsAgainstheaderId2 = System.currentTimeMillis();
 			System.out.println(templateLineDetails);
 			ltTemplateDto.setTemplateHeaderId(getAllTemplateHeaders.getTemplateHeaderId());
 			ltTemplateDto.setDistributorId(getAllTemplateHeaders.getDistributorId());
@@ -324,6 +483,17 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
 			status.setData(ltTemplateDto);
+			timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetTemplateAgainstDistributors,outQuerygetTemplateAgainstDistributors));
+			timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetProductDetailsAgainstheaderId,outQuerygetProductDetailsAgainstheaderId));
+			timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetAllTemplateAgainstDistributors, outQuerygetAllTemplateAgainstDistributors));
+			timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetProductDetailsAgainstheaderId2, outQuerygetProductDetailsAgainstheaderId2));
+		//	timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+		//	timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+			
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
 		} else {
 			status.setCode(FAIL);
 			status.setMessage("RECORD NOT FOUND");

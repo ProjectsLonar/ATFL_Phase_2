@@ -1,12 +1,64 @@
 package com.lonar.cartservice.atflCartService.service;
 
-import javax.net.ssl.TrustManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.net.ssl.X509TrustManager;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.cert.X509Certificate;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TimeZone;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+
+import oracle.jdbc.OracleResultSet;
+import oracle.jdbc.rowset.OracleCachedRowSet;
+import org.springframework.jdbc.core.ConnectionCallback;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import javax.sql.DataSource;
+import javax.sql.rowset.CachedRowSet;
+
+import java.sql.Connection;
+import java.sql.Statement;
+
+//import com.lonar.cartservice.atflCartService.service.EmailService;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import org.springframework.jdbc.core.ConnectionCallback;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -16,73 +68,38 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import java.io.IOException;
-
-import java.nio.charset.StandardCharsets;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.TimeZone;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-import javax.net.ssl.HttpsURLConnection;
-
-import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
-import com.lonar.cartservice.atflCartService.common.BusinessException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.controller.WebController;
 import com.lonar.cartservice.atflCartService.dao.LtSoHeadersDao;
-
 import com.lonar.cartservice.atflCartService.dto.DistributorDetailsDto;
+import com.lonar.cartservice.atflCartService.dto.LtOrderLineDataGt;
 import com.lonar.cartservice.atflCartService.dto.OrderDetailsDto;
 import com.lonar.cartservice.atflCartService.dto.QuantityCheck;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.ResponseDto;
+import com.lonar.cartservice.atflCartService.dto.ResponsePendingOrdersDto;
 import com.lonar.cartservice.atflCartService.dto.SoHeaderDto;
 import com.lonar.cartservice.atflCartService.dto.SoHeaderDtoPendingOrders;
 import com.lonar.cartservice.atflCartService.dto.SoLineDto;
 import com.lonar.cartservice.atflCartService.dto.SoLineDtoPendingOrders;
-import com.lonar.cartservice.atflCartService.dto.ResponsePendingOrdersDto;
 import com.lonar.cartservice.atflCartService.model.CodeMaster;
 import com.lonar.cartservice.atflCartService.model.LtMastOutles;
-import com.lonar.cartservice.atflCartService.model.LtSoLines;
-import com.lonar.cartservice.atflCartService.model.LtTemplateLines;
 
 //import com.lonar.cartservice.atflCartService.model.LtMastOutlets;
 
@@ -95,17 +112,8 @@ import com.lonar.cartservice.atflCartService.repository.LtMastOutletRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSalesPersonLocationRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSoHeadersRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSoLinesRepository;
-//import com.lonar.cartservice.atflCartService.service.EmailService;
-import javax.mail.*;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
-import java.util.Base64;
-
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import oracle.jdbc.OracleTypes;
 
 
 @Service
@@ -138,6 +146,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+    private JdbcTemplate jdbcTemplate;
 	
 	private static final Logger logger = LoggerFactory.getLogger(LtSoHeadersServiceImpl.class);
 
@@ -1776,13 +1787,25 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	public Status saveOrderV2(SoHeaderDto soHeaderDto) throws ServiceException, IOException {
 		
 		Status status = new Status();
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerycheckHeaderStatusIsDraft = 0;
+		long outQuerycheckHeaderStatusIsDraft = 0;
+		long inQuerycheckOrderStatus = 0;
+		long outQuerycheckOrderStatus = 0;
+		
+		
 		try {
 			
 			if (soHeaderDto.getOutletId() != null) {
+				inQuerycheckHeaderStatusIsDraft = System.currentTimeMillis();
 				LtSoHeaders ltSoHeader = ltSoHeadersDao.checkHeaderStatusIsDraft(soHeaderDto.getOutletId());
+				outQuerycheckHeaderStatusIsDraft = System.currentTimeMillis();
 				LtSoHeaders checkOrder = null;
 				if (soHeaderDto.getOrderNumber() != null && soHeaderDto.getOrderNumber() != "") {
+					inQuerycheckOrderStatus = System.currentTimeMillis();
 					checkOrder = ltSoHeadersDao.checkOrderStatus(soHeaderDto.getOrderNumber());
+					outQuerycheckOrderStatus = System.currentTimeMillis();
 				}
                   
 				if (ltSoHeader == null && checkOrder == null && !soHeaderDto.getSoLineDtoList().isEmpty()) {
@@ -1792,6 +1815,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					//status = isQuantityAvailable(soHeaderDto);
 					
 					//status = saveSoHeadeLineInDraftInternal(soHeaderDto);
+					long methodOut = System.currentTimeMillis();
+					System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+			        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+			        status.setTimeDifference(timeDifference);
 					return status;
 				} else if(ltSoHeader != null && ltSoHeader.getStatus().equalsIgnoreCase(DRAFT) && soHeaderDto.getOrderNumber() == null){
 					// Status Draft and Order Number null
@@ -1821,6 +1848,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				else {
 					synchronized(this){
 						status = updateSoHeadeLineInDraftV2(soHeaderDto, checkOrder.getHeaderId(), checkOrder.getCreationDate(), checkOrder.getCreatedBy());
+						long methodOut = System.currentTimeMillis();
+						System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+				        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+				        status.setTimeDifference(timeDifference);
 						return status;
 					}
 				}
@@ -2668,13 +2699,29 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		System.out.println("saveSoHeadeLineInDraftV2 = "+new Date());
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetUserDetailsAgainsUserId = 0;
+		long outQuerygetUserDetailsAgainsUserId = 0;
+		long inQuerygetDefaultPriceListAgainstOutletId = 0;
+		long outQuerygetDefaultPriceListAgainstOutletId = 0;
+//		long inQuerygetInStockProductCountForAdmin = 0;
+//		long outQuerygetInStockProductCountForAdmin = 0;
+//		long inQuerygetMultipleMrpForProduct = 0;
+//		long outQuerygetMultipleMrpForProduct = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
+		
 		try {
 			System.out.println("Hi This is saveSoHeadeLineInDraftV2 ");
 			Status status = new Status();
 			// SaveOrderResponseDto saveOrderResponseDto = new SaveOrderResponseDto();
 			LtSoHeaders ltSoHeader = new LtSoHeaders();
-			
+			inQuerygetUserDetailsAgainsUserId = System.currentTimeMillis();
 			  LtMastUsers user = ltSoHeadersDao.getUserDetailsAgainsUserId(soHeaderDto.getUserId());
+			  outQuerygetUserDetailsAgainsUserId = System.currentTimeMillis();
 			  System.out.println("This user issssssss" + user);
 			  if(user.getUserType().equalsIgnoreCase("RETAILER")) 
 			  {
@@ -2990,7 +3037,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
 							requestDto.setLimit(-1);
 							requestDto.setOffset(2);
-					//		requestDto.setUserId(0L);
+							//requestDto.setUserId(soHeaderDto.getUserId());
 							status = getOrderV2(requestDto);
 							status.setCode(INSERT_SUCCESSFULLY);
 							status.setMessage("Insert Successfully");
@@ -3011,9 +3058,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			    {
 				   // for Instock products order
 				  System.out.println("Hi This is Draft for instock saveSoHeadeLineInDraftV2 ");
-				  
+				  inQuerygetDefaultPriceListAgainstOutletId = System.currentTimeMillis();
 				  String defailtPriceList = ltSoHeadersDao.getDefaultPriceListAgainstOutletId(soHeaderDto.getOutletId());
-				  
+				  outQuerygetDefaultPriceListAgainstOutletId = System.currentTimeMillis();
+
 				   if(soHeaderDto.getInstockFlag().equals("Y")) {
 						
 					String orderNumber = genrateOrderNumber(soHeaderDto.getOutletId());
@@ -3299,6 +3347,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
 						requestDto.setLimit(-1);
 						requestDto.setOffset(2);
+					//	requestDto.setUserId(soHeaderDto.getUserId());
 					//	requestDto.setLoginId(0L);
 						status = getOrderV2(requestDto);
 						
@@ -3565,6 +3614,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
 							requestDto.setLimit(-1);
 							requestDto.setOffset(2);
+						//	requestDto.setUserId(soHeaderDto.getUserId());
 						//	requestDto.setLoginId(0L);
 							status = getOrderV2(requestDto);
 							
@@ -3590,8 +3640,20 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							logger.error("Error Description :", e);
 							e.printStackTrace();
 						}	
+						
 							status.setCode(INSERT_SUCCESSFULLY);
 							status.setMessage("Insert Successfully");
+							timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetUserDetailsAgainsUserId,outQuerygetUserDetailsAgainsUserId));
+							timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetDefaultPriceListAgainstOutletId,outQuerygetDefaultPriceListAgainstOutletId));
+//							timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetInStockProductCountForAdmin, outQuerygetInStockProductCountForAdmin));
+//							timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetMultipleMrpForProduct, outQuerygetMultipleMrpForProduct));
+//							timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+//							timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+//							
+							long methodOut = System.currentTimeMillis();
+							System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+					        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+					        status.setTimeDifference(timeDifference);
 							return status;						
 					} 		  
 				  
@@ -4586,6 +4648,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
          }else {
          username = "VINAY.KUMAR6";}String password = "D10nysu$";
         String auth = username + ":" + password;
+        System.out.println("Siebel auth is = "+auth);
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
         String authHeaderValue = "Basic " + new String(encodedAuth);
         System.out.println("This is user authHeaderValue"+authHeaderValue);
@@ -5173,19 +5236,38 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	private Status updateSoHeadeLineInDraftV2(SoHeaderDto soHeaderDto, Long headerId, Date creationDate, Long createdBy)
 			throws ServiceException, IOException {
 		ExecutorService executor = Executors.newSingleThreadExecutor();
-		try {
-			
-			LtSoHeaders siebelData = ltSoHeadersDao.getSiebelDataById(headerId);
-			
-			
-		int lineDeleteStatus = ltSoHeadersDao.deleteLineDataByHeaderIdAndReturnStatus(headerId);
 		
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetSiebelDataById = 0;
+		long outQuerygetSiebelDataById = 0;
+		long inQuerydeleteLineDataByHeaderIdAndReturnStatus = 0;
+		long outQuerydeleteLineDataByHeaderIdAndReturnStatus = 0;
+		long inQuerygetMobileNumber = 0;
+		long outQuerygetMobileNumber = 0;
+		long inQuerybatchInsert = 0;
+		long outQuerybatchInsert = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
+		
+		try {
+			inQuerygetSiebelDataById = System.currentTimeMillis();
+			LtSoHeaders siebelData = ltSoHeadersDao.getSiebelDataById(headerId);
+			outQuerygetSiebelDataById = System.currentTimeMillis();
+			
+			inQuerydeleteLineDataByHeaderIdAndReturnStatus = System.currentTimeMillis();
+		int lineDeleteStatus = ltSoHeadersDao.deleteLineDataByHeaderIdAndReturnStatus(headerId);
+		outQuerydeleteLineDataByHeaderIdAndReturnStatus = System.currentTimeMillis();
+
 		
 		Status status = new Status();
 		LtSoHeaders ltSoHeader = new LtSoHeaders();
-		
+		inQuerygetMobileNumber = System.currentTimeMillis();
 		String mobileNumber = ltSoHeadersDao.getMobileNumber(soHeaderDto.getUserId());
-
+		outQuerygetMobileNumber = System.currentTimeMillis();
+		
 		ltSoHeader.setHeaderId(headerId);
 		ltSoHeader.setOutletId(soHeaderDto.getOutletId());
 		
@@ -5507,9 +5589,10 @@ System.out.println("3820 = "+new Date());
  
 		        queries.add(strQuery.toString());
 		    }
- 
+		    inQuerybatchInsert = System.currentTimeMillis();
 		    int[] updateCounts = ltSoHeadersDao.batchInsert(queries);
- 
+		    outQuerybatchInsert = System.currentTimeMillis();
+		    
 		    System.out.println("Inserted " + updateCounts.length + " lines.");
 		    System.out.println("3864 = "+new Date());
 			
@@ -5535,7 +5618,7 @@ System.out.println("3820 = "+new Date());
 			}
 			requestDto.setLimit(-1);
 			requestDto.setOffset(2);
-			
+		//	requestDto.setUserId(soHeaderDto.getUserId());
 			status = getOrderV2(requestDto);
 			
 			OrderDetailsDto orderDetailsDtoStatus=(OrderDetailsDto) status.getData();
@@ -5550,6 +5633,19 @@ System.out.println("3820 = "+new Date());
 			//}
 			System.out.print("New Update siebel call after ====" +ltSoHeaderUpdated.getStatus());
 			status.setData(orderDetailsDtoStatus);
+			
+			timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetSiebelDataById,outQuerygetSiebelDataById));
+			timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerydeleteLineDataByHeaderIdAndReturnStatus,outQuerydeleteLineDataByHeaderIdAndReturnStatus));
+			timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetMobileNumber, outQuerygetMobileNumber));
+			timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerybatchInsert, outQuerybatchInsert));
+//			timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+//			timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+			
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
+			
 			status.setCode(UPDATE_SUCCESSFULLY);
 			status.setMessage("Update Successfully");
 			return status;
@@ -5882,14 +5978,18 @@ System.out.println("3820 = "+new Date());
 
 // this is end of original method comment on 27-may-2024 for optimization purpose	
 	
-	// this is new dev
+/*	// this is new dev comment on 18-June-2024 for api time difference calculation
 		public Status getOrderV2(RequestDto requestDto) throws ServiceException, IOException {
-			System.out.println("In getOrderV2 method = "+new Date());
+			System.out.println("In getOrderV2 method = "+LocalDateTime.now());
 		    try {
 		        Status status = new Status();
+		        System.out.println("Above getSoHeader query call method at = "+LocalDateTime.now());
 		        List<Long> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
+		        System.out.println("header Ids List = "+ headerIdsList);
+		        System.out.println("Below getSoHeader query call method at = "+LocalDateTime.now());
+		        System.out.println("Above getRecordCount query call method at = "+LocalDateTime.now());
 		        Long recordCount = ltSoHeadersDao.getRecordCount(requestDto);
-	 
+		        System.out.println("Below getRecordCount query call method at = "+LocalDateTime.now());
 		        status.setTotalCount(recordCount);
 		        status.setRecordCount(recordCount);
 	 
@@ -5898,8 +5998,9 @@ System.out.println("3820 = "+new Date());
 		            status.setData("Record not found");
 		            return status;
 		        }
-	 
+		        System.out.println("Above headerIdsList getOrderV2 query call method at = "+LocalDateTime.now()); 
 		        List<ResponseDto> responseDtoList = ltSoHeadersDao.getOrderV2(headerIdsList);
+		        System.out.println("Below headerIdsList getOrderV2 query call method at = "+LocalDateTime.now());
 		        Map<Long, SoHeaderDto> soHeaderDtoMap = new LinkedHashMap<>();
 		        Map<Long, List<SoLineDto>> soLineDtoMap = new LinkedHashMap<>();
 	 
@@ -5946,12 +6047,13 @@ System.out.println("3820 = "+new Date());
 		        if (!responseDtoList.isEmpty()) {
 		            status.setCode(RECORD_FOUND);
 		            status.setData(orderDetailsDto);
-		            System.out.println("Exit getOrderV2 method = "+new Date());
+		            System.out.println("Exit from getOrderV2 method = "+LocalDateTime.now());
 		            return status;
 		        }
 	 
 		        status.setCode(RECORD_NOT_FOUND);
 		        status.setData(null);
+		        System.out.println("Exit from getOrderV2 method = "+LocalDateTime.now());
 		        return status;
 		    } catch (Exception e) {
 		        logger.error("Error Description :", e);
@@ -5959,7 +6061,697 @@ System.out.println("3820 = "+new Date());
 		    }
 		    return null;
 		}
-	 
+*/
+	
+//* this is original code comment on 27-June-2024 to use procedure 	
+	public Status getOrderV2(RequestDto requestDto) throws ServiceException, IOException {
+		System.out.println("In getOrderV2 method = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetSoHeader = 0;
+		long outQuerygetSoHeader = 0;
+		long inQuerygetRecordCount = 0;
+		long outQuerygetRecordCount = 0;
+		long inQuerygetOrderV2 = 0;
+		long outQuerygetOrderV2 = 0;
+	    try {
+	        Status status = new Status();
+	        inQuerygetSoHeader = System.currentTimeMillis();
+	        System.out.println("Above getSoHeader query call method at = "+LocalDateTime.now());
+	        List<Long> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
+	        outQuerygetSoHeader = System.currentTimeMillis();
+	        System.out.println("Below getSoHeader query call method at = "+LocalDateTime.now());
+	        inQuerygetRecordCount = System.currentTimeMillis();
+	        System.out.println("Above getRecordCount query call method at = "+LocalDateTime.now());
+	        Long recordCount = ltSoHeadersDao.getRecordCount(requestDto);
+	        outQuerygetRecordCount = System.currentTimeMillis();
+	        System.out.println("Below getRecordCount query call method at = "+LocalDateTime.now());
+	        
+	        status.setTotalCount(recordCount);
+	        status.setRecordCount(recordCount);
+
+	        if (headerIdsList.isEmpty()) {
+	            status.setCode(RECORD_NOT_FOUND);
+	            status.setData("Record not found");
+	            return status;
+	        }
+
+	        inQuerygetOrderV2 = System.currentTimeMillis();
+	        System.out.println("Above headerIdsList getOrderV2 query call method at = "+LocalDateTime.now());
+	        List<ResponseDto> responseDtoList = ltSoHeadersDao.getOrderV2(headerIdsList);
+	        outQuerygetOrderV2 = System.currentTimeMillis();
+	        System.out.println("Below headerIdsList getOrderV2 query call method at = "+LocalDateTime.now());
+	        Map<Long, SoHeaderDto> soHeaderDtoMap = new LinkedHashMap<>();
+	        Map<Long, List<SoLineDto>> soLineDtoMap = new LinkedHashMap<>();
+
+//	        for (ResponseDto responseDto : responseDtoList) {
+//	            SoLineDto soLineDto = buildSoLineDto(responseDto);
+//
+//	            soLineDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> new ArrayList<>());
+//	            if (soLineDto.getLineId() != null) {
+//	                soLineDtoMap.get(responseDto.getHeaderId()).add(soLineDto);
+//	            }
+//
+//	            soHeaderDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> buildSoHeaderDto(responseDto));
+//	        }
+	        
+	        for (ResponseDto responseDto : responseDtoList) {
+	            SoLineDto soLineDto = buildSoLineDto(responseDto);
+
+	            // Add soLineDto to the soLineDtoMap only if lineId is not null
+	            if (soLineDto.getLineId() != null) {
+	                soLineDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> new ArrayList<>()).add(soLineDto);
+	            }
+
+	            // Add or update soHeaderDto in the soHeaderDtoMap
+	            soHeaderDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> buildSoHeaderDto(responseDto));
+	        }
+
+//	        List<SoHeaderDto> soHeaderDtoList = new ArrayList<>();
+//	        for (Map.Entry<Long, SoHeaderDto> entry : soHeaderDtoMap.entrySet()) {
+//	            SoHeaderDto soHeaderDto = entry.getValue();
+//	            soHeaderDto.setSoLineDtoList(soLineDtoMap.get(entry.getKey()));
+//	            soHeaderDtoList.add(soHeaderDto);
+//	        }
+	        
+	        List<SoHeaderDto> soHeaderDtoList = new ArrayList<>(soHeaderDtoMap.size());
+
+	        soHeaderDtoMap.forEach((headerId, soHeaderDto) -> {
+	            soHeaderDto.setSoLineDtoList(soLineDtoMap.get(headerId));
+	            soHeaderDtoList.add(soHeaderDto);
+	        });
+
+	        OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
+	        orderDetailsDto.setSoHeaderDto(soHeaderDtoList);
+
+	        if (!responseDtoList.isEmpty()) {
+	            status.setCode(RECORD_FOUND);
+	            status.setData(orderDetailsDto);
+	            timeDifference.put("QuerygetSoHeader", timeDiff(inQuerygetSoHeader,outQuerygetSoHeader));
+	            timeDifference.put("QuerygetRecordCount", timeDiff(inQuerygetRecordCount,outQuerygetRecordCount));
+	            timeDifference.put("QuerygetOrderV2", timeDiff(inQuerygetOrderV2,outQuerygetOrderV2));
+	            System.out.println("Exit from getOrderV2 method = "+LocalDateTime.now());
+	            long methodOut = System.currentTimeMillis();
+	            timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	            status.setTimeDifference(timeDifference);
+	            return status;
+	        }
+
+	        status.setCode(RECORD_NOT_FOUND);
+	        status.setData(null);
+            System.out.println("Exit from getOrderV2 method = "+LocalDateTime.now());
+	        return status;
+	    } catch (Exception e) {
+	        logger.error("Error Description :", e);
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+//	this is end of original code comment on 27-June-2024 to use procedure //
+	
+/*	
+	public Status getOrderV2(RequestDto requestDto) throws ServiceException, IOException {
+		System.out.println("In getOrderV2 method = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetSoHeader = 0;
+		long outQuerygetSoHeader = 0;
+		long inQuerygetRecordCount = 0;
+		long outQuerygetRecordCount = 0;
+		long inQuerygetOrderV2 = 0;
+		long outQuerygetOrderV2 = 0;
+	    try {
+	        Status status = new Status();
+	        //inQuerygetSoHeader = System.currentTimeMillis();
+	        //System.out.println("Above getSoHeader query call method at = "+LocalDateTime.now());
+	        List<Long> headerIdsList = ltSoHeadersDao.getSoHeaderFromProcedure();
+	        //outQuerygetSoHeader = System.currentTimeMillis();
+	        //System.out.println("Below getSoHeader query call method at = "+LocalDateTime.now());
+	        //inQuerygetRecordCount = System.currentTimeMillis();
+	        //System.out.println("Above getRecordCount query call method at = "+LocalDateTime.now());
+	        //Long recordCount = ltSoHeadersDao.getRecordCount(requestDto);
+	        //outQuerygetRecordCount = System.currentTimeMillis();
+	        //System.out.println("Below getRecordCount query call method at = "+LocalDateTime.now());
+	        
+	        //status.setTotalCount(recordCount);
+	        //status.setRecordCount(recordCount);
+
+	        if (headerIdsList.isEmpty()) {
+	            status.setCode(RECORD_NOT_FOUND);
+	            status.setData("Record not found");
+	            return status;
+	        }
+
+	        //inQuerygetOrderV2 = System.currentTimeMillis();
+	        //System.out.println("Above headerIdsList getOrderV2 query call method at = "+LocalDateTime.now());
+	        List<ResponseDto> responseDtoList = ltSoHeadersDao.getOrderV2FromProcedure(headerIdsList);
+	       // outQuerygetOrderV2 = System.currentTimeMillis();
+	       // System.out.println("Below headerIdsList getOrderV2 query call method at = "+LocalDateTime.now());
+	        Map<Long, SoHeaderDto> soHeaderDtoMap = new LinkedHashMap<>();
+	        Map<Long, List<SoLineDto>> soLineDtoMap = new LinkedHashMap<>();
+
+//	        for (ResponseDto responseDto : responseDtoList) {
+//	            SoLineDto soLineDto = buildSoLineDto(responseDto);
+//
+//	            soLineDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> new ArrayList<>());
+//	            if (soLineDto.getLineId() != null) {
+//	                soLineDtoMap.get(responseDto.getHeaderId()).add(soLineDto);
+//	            }
+//
+//	            soHeaderDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> buildSoHeaderDto(responseDto));
+//	        }
+	        
+	        for (ResponseDto responseDto : responseDtoList) {
+	            SoLineDto soLineDto = buildSoLineDto(responseDto);
+
+	            // Add soLineDto to the soLineDtoMap only if lineId is not null
+	            if (soLineDto.getLineId() != null) {
+	                soLineDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> new ArrayList<>()).add(soLineDto);
+	            }
+
+	            // Add or update soHeaderDto in the soHeaderDtoMap
+	            soHeaderDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> buildSoHeaderDto(responseDto));
+	        }
+
+//	        List<SoHeaderDto> soHeaderDtoList = new ArrayList<>();
+//	        for (Map.Entry<Long, SoHeaderDto> entry : soHeaderDtoMap.entrySet()) {
+//	            SoHeaderDto soHeaderDto = entry.getValue();
+//	            soHeaderDto.setSoLineDtoList(soLineDtoMap.get(entry.getKey()));
+//	            soHeaderDtoList.add(soHeaderDto);
+//	        }
+	        
+	        List<SoHeaderDto> soHeaderDtoList = new ArrayList<>(soHeaderDtoMap.size());
+
+	        soHeaderDtoMap.forEach((headerId, soHeaderDto) -> {
+	            soHeaderDto.setSoLineDtoList(soLineDtoMap.get(headerId));
+	            soHeaderDtoList.add(soHeaderDto);
+	        });
+
+	        OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
+	        orderDetailsDto.setSoHeaderDto(soHeaderDtoList);
+
+	        if (!responseDtoList.isEmpty()) {
+	            status.setCode(RECORD_FOUND);
+	            status.setData(orderDetailsDto);
+	            timeDifference.put("QuerygetSoHeader", timeDiff(inQuerygetSoHeader,outQuerygetSoHeader));
+	            timeDifference.put("QuerygetRecordCount", timeDiff(inQuerygetRecordCount,outQuerygetRecordCount));
+	            timeDifference.put("QuerygetOrderV2", timeDiff(inQuerygetOrderV2,outQuerygetOrderV2));
+	            System.out.println("Exit from getOrderV2 method = "+LocalDateTime.now());
+	            long methodOut = System.currentTimeMillis();
+	            timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	            status.setTimeDifference(timeDifference);
+	            return status;
+	        }
+
+	        status.setCode(RECORD_NOT_FOUND);
+	        status.setData(null);
+            System.out.println("Exit from getOrderV2 method = "+LocalDateTime.now());
+	        return status;
+	    } catch (Exception e) {
+	        logger.error("Error Description :", e);
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+*/
+	
+
+/*	//on 4july
+	public Status getOrderV2(RequestDto requestDto) {
+		long methodIn = System.currentTimeMillis();
+		System.out.println("methodIn time"+ LocalDateTime.now());
+        
+		Map<String,String> timeDifference = new HashMap<>();
+		
+		
+        Status status = new Status();
+        System.out.println("RequestDto in getoderV2 procedure"+requestDto);
+        List<LtOrderLineDataGt> resultList = new ArrayList<>();
+         //LtOrderLineDataGt ltOrderLineDataGt;
+        long beforeProcedureCallGetOrderV2 = System.currentTimeMillis();
+        return jdbcTemplate.execute((Connection conn) -> {
+            try (CallableStatement callableStatement = conn.prepareCall("{call LT_GET_ORDER_GT_NEW_1(?,?,?,?,?,?,?,?,?)}")) {
+                // Set input parameters
+            	int Limit = requestDto.getLimit();
+            	if(requestDto.getUserId()!= null) {
+                callableStatement.setLong(1, requestDto.getUserId());}
+                callableStatement.registerOutParameter(2, OracleTypes.CURSOR);
+                callableStatement.setString(3, requestDto.getDistributorId());
+                callableStatement.setString(4, requestDto.getStatus());
+                callableStatement.setString(5, requestDto.getOrderNumber());
+                callableStatement.setString(6, requestDto.getSearchField());
+                callableStatement.setString(7, requestDto.getOutletId());
+                if(requestDto.getLimit()== 1 || requestDto.getLimit()== 0) {
+                	Limit = -1;                	
+                }
+                callableStatement.setInt(8, Limit);
+                callableStatement.setInt(9, requestDto.getOffset());
+                
+                //System.out.println("requestDto is = "+requestDto.getUserId()+requestDto.getDistributorId());
+                // Execute the stored procedure
+                System.out.println("above result");
+                boolean result = callableStatement.execute();
+                long afterProcedureCallGetOrderV2 = System.currentTimeMillis();
+				timeDifference.put("procedureExecutionTime", timeDiff(beforeProcedureCallGetOrderV2,afterProcedureCallGetOrderV2));
+
+                System.out.println("below result");
+                //Object lmn =  callableStatement.getObject(2);
+               //System.out.println("lmn" + lmn);
+                System.out.println("before callable" + LocalDateTime.now());
+                ResultSet rs = (ResultSet) callableStatement.getObject(2);
+                
+                //rs.setFetchSize(3);
+              
+                System.out.println("after callable" + LocalDateTime.now());
+                System.out.println("ResultSet = " + rs);
+               // List<LtOrderLineDataGt> resultList = new ArrayList<>();
+//                System.out.println("before while" + LocalDateTime.now());
+               //int batchSize = 1000;
+                //List<LtOrderLineDataGt> batchList = new ArrayList<>(batchSize);
+                while (rs.next()) {     
+                    // Fetching values from ResultSet into local variables to reduce repeated method calls.
+                    long inventoryQuantity = rs.getLong("inventoryQuantity");     
+                    Date cdate = rs.getDate("Cdate");     
+                    String outletAddress = rs.getString("outletAddress");     
+                    long headerId = rs.getLong("HEADER_ID");     
+                    String orderNumber = rs.getString("order_number");     
+                    String productId = rs.getString("product_id");     
+                    String categoryId = rs.getString("category_id");     
+                    String orgId = rs.getString("org_id");     
+                    String subCategoryId = rs.getString("sub_category_id");     
+                    String productType = rs.getString("product_type");     
+                    String category = rs.getString("category");     
+                    String subCategory = rs.getString("subCategory");     
+                    String productCode = rs.getString("product_code");     
+                    String productName = rs.getString("product_name");     
+                    String productDesc = rs.getString("product_desc");     
+                    String primaryUom = rs.getString("primary_uom");     
+                    String secondaryUom = rs.getString("secondary_uom");     
+                    long secondaryUomValue = rs.getLong("secondary_uom_value");     
+                    long unitsPerCase = rs.getLong("units_per_case");     
+                    String segment = rs.getString("segment");     
+                    String style = rs.getString("style");     
+                    String flavor = rs.getString("flavor");     
+                    long casePack = rs.getLong("case_pack");     
+                    String hsnCode = rs.getString("hsn_code");     
+                    String orderable = rs.getString("orderable");     
+                    String status1 = rs.getString("status1");     
+                    Date orderDate = rs.getDate("order_date");     
+                    // String status = rs.getString("status");     
+                    String address = rs.getString("address");     
+                    String latitude = rs.getString("latitude");     
+                    String longitude = rs.getString("longitude");     
+                    String remark = rs.getString("remark");     
+                    Date deliveryDate = rs.getDate("delivery_date");     
+                    long userid = rs.getLong("USERID");     
+                    String instockFlag = rs.getString("instock_flag");     
+                    String beatId = rs.getString("beat_id");     
+                    String outletId = rs.getString("outlet_id");     
+                    String outletName = rs.getString("outlet_name");     
+                    String outletCode = rs.getString("outlet_code");     
+                    String proprietorName = rs.getString("proprietor_name");     
+                    double listPrice = rs.getDouble("list_price");     
+                    String priceList = rs.getString("price_list");     
+                    long lineId = rs.getLong("line_id"); 
+                    String productId1 = rs.getString("product_id_1"); 
+                    long quantity = rs.getLong("quantity"); 
+                    Date deliveryDate1 = rs.getDate("delivery_date1"); 
+                    long statusO = rs.getLong("status_o"); 
+
+                    // Creating the object once outside of the loop can save some time.
+                    LtOrderLineDataGt ltOrderLineDataGt = new LtOrderLineDataGt();     
+                    // Setting values to the object. 
+                    ltOrderLineDataGt.setInventoryQuantity(inventoryQuantity); 
+                    ltOrderLineDataGt.setCdate(cdate); 
+                    ltOrderLineDataGt.setOutletAddress(outletAddress); 
+                    ltOrderLineDataGt.setHeaderId(headerId);
+                    ltOrderLineDataGt.setOrderNumber(orderNumber);
+                    ltOrderLineDataGt.setProductId(productId);
+                    ltOrderLineDataGt.setCategoryId(categoryId);
+                    ltOrderLineDataGt.setOrgId(orgId);
+                    ltOrderLineDataGt.setSubCategoryId(subCategoryId);
+                    ltOrderLineDataGt.setProductType(productType);
+                    ltOrderLineDataGt.setCategory(category);
+                    ltOrderLineDataGt.setSubCategory(subCategory);
+                    ltOrderLineDataGt.setProductCode(productCode);
+                    ltOrderLineDataGt.setProductName(productName);
+                    ltOrderLineDataGt.setProductDesc(productDesc);
+                    ltOrderLineDataGt.setPrimaryUom(primaryUom);
+                    ltOrderLineDataGt.setSecondaryUom(secondaryUom);
+                    ltOrderLineDataGt.setSecondaryUomValue(secondaryUomValue);
+                    ltOrderLineDataGt.setUnitPerCase(unitsPerCase);
+                    ltOrderLineDataGt.setSegment(segment);
+                    ltOrderLineDataGt.setStyle(style);
+                    ltOrderLineDataGt.setFlavor(flavor);
+                    ltOrderLineDataGt.setCasePack(casePack);
+                    ltOrderLineDataGt.setHsnCode(hsnCode);
+                    ltOrderLineDataGt.setOrderable(orderable);
+                    ltOrderLineDataGt.setStatus1(status1);
+                    ltOrderLineDataGt.setOrderDate(orderDate);
+                    // ltOrderLineDataGt.setStatus(status);
+                    ltOrderLineDataGt.setAddress(address);
+                    ltOrderLineDataGt.setLatitude(latitude);
+                    ltOrderLineDataGt.setLongitude(longitude);
+                    ltOrderLineDataGt.setRemark(remark);
+                    ltOrderLineDataGt.setDeliveryDate(deliveryDate);
+                    ltOrderLineDataGt.setUserid(userid);
+                    ltOrderLineDataGt.setInstockFlag(instockFlag);
+                    ltOrderLineDataGt.setBeatId(beatId);
+                    ltOrderLineDataGt.setOutletId(outletId);
+                    ltOrderLineDataGt.setOutletName(outletName);
+                    ltOrderLineDataGt.setOutletCode(outletCode);
+                    ltOrderLineDataGt.setProprietorName(proprietorName);
+                    ltOrderLineDataGt.setListPrice(listPrice);
+                    ltOrderLineDataGt.setPriceList(priceList); 
+                    // ltOrderLineDataGt.setPtrPrice(rs.getString("PTRPRICE"));
+                    // ltOrderLineDataGt.setLinePtrPrice(rs.getString("LINEPTRPRICE"));
+                    ltOrderLineDataGt.setLineId(lineId);
+                    ltOrderLineDataGt.setProductId1(productId1);
+                    ltOrderLineDataGt.setQuantity(quantity);
+                    ltOrderLineDataGt.setDeliveryDate1(deliveryDate1);
+                    ltOrderLineDataGt.setStatusO(statusO);
+
+                    
+                        resultList.add(ltOrderLineDataGt);
+                       
+                    }
+               // }
+
+               // Map<Long, SoHeaderDto> soHeaderDtoMap = new ConcurrentHashMap<>();
+//                int count =0;
+//                System.out.println("before = " + LocalDateTime.now());//("before while" + LocalDateTime.now());
+//                rs.setFetchSize(10);
+/*               while(rs.next()) {
+//                for (boolean hasNext = rs.next(); hasNext; hasNext = rs.next()) {         
+                	//int id = rs.getInt("id");         
+                	//String name = rs.getString("name");         // Process the result set row }
+                	System.out.println("executing procedure = ");    //("in while loop");
+                	//count = count+1;
+                	System.out.println("procedure executed =" +LocalDateTime.now() ); //("before mapResultSetToSoHeaderDto = " + LocalDateTime.now());
+                	SoHeaderDto headerDto =  mapResultSetToSoHeaderDto(rs);
+                	System.out.println("after mapResultSetToSoHeaderDto = " + LocalDateTime.now());
+                	
+                	System.out.println("before mapResultSetToSoLineDto = " + LocalDateTime.now());
+                	SoLineDto lineDto = mapResultSetToSoLineDto(rs);
+                	System.out.println("after mapResultSetToSoLineDto = " + LocalDateTime.now());
+                	
+                	System.out.println("before add(lineDto) = " + LocalDateTime.now());
+                	headerDto.getSoLineDtoList().add(lineDto);
+                	System.out.println("after add(lineDto) = " + LocalDateTime.now());
+
+                    // Use computeIfAbsent to ensure each header is added only once
+                	System.out.println("before computeIfAbsent = " + LocalDateTime.now());
+                    soHeaderDtoMap.computeIfAbsent(headerDto.getHeaderId(), k -> headerDto);
+                    System.out.println("after computeIfAbsent = " + LocalDateTime.now());
+                    count++;
+                }
+ */             
+                //rs.close();
+                //callableStatement.close();
+               // System.out.println("map soze = "+soHeaderDtoMap.size());
+               // System.out.println("count is "+count );
+ //on 4july               System.out.println("after while" + LocalDateTime.now());
+                // Add any remaining records
+//                if (!batchList.isEmpty()) {
+//                    resultList.addAll(batchList);
+//                }
+
+	//on 4july               System.out.println("ResultList size: " + resultList.size());
+	//on 4july             System.out.println("resultList = "+resultList);
+
+//                Map<Long, SoHeaderDto> soHeaderDtoMap = new ConcurrentHashMap<>();
+//                Map<Long, List<SoLineDto>> soLineDtoMap = new ConcurrentHashMap<>();
+
+//                resultList.parallelStream().forEach(responseDto -> {
+//                    SoLineDto soLineDto = buildSoLineDto1(responseDto);
+//
+//                    // Synchronize block for concurrent modification
+//                    synchronized (soLineDtoMap) {
+//                        if (soLineDto.getLineId() != null) {
+//                            soLineDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> new ArrayList<>()).add(soLineDto);
+//                        }
+//                    }
+//
+//                    // Synchronize block for concurrent modification
+//                    synchronized (soHeaderDtoMap) {
+//                        soHeaderDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> buildSoHeaderDto1(responseDto));
+//                    }
+//                });
+
+//                for (LtOrderLineDataGt responseDto : rs) {
+//    	            SoLineDto soLineDto = buildSoLineDto1(responseDto);
+//
+//    	            // Add soLineDto to the soLineDtoMap only if lineId is not null
+//    	            if (soLineDto.getLineId() != null) {
+//    	                soLineDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> new ArrayList<>()).add(soLineDto);
+//    	            }
+//
+//    	            // Add or update soHeaderDto in the soHeaderDtoMap
+//    	            soHeaderDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> buildSoHeaderDto1(responseDto));
+//    	        }
+                
+                // Post-processing the soHeaderDtoMap
+//                List<SoHeaderDto> soHeaderDtoList = soHeaderDtoMap.entrySet()
+//                    .stream()
+//                    .map(entry -> {
+//                        SoHeaderDto soHeaderDto = entry.getValue();
+//                        soHeaderDto.setSoLineDtoList(soLineDtoMap.get(entry.getKey()));
+//                        return soHeaderDto;
+//                    })
+//                    .collect(Collectors.toList());
+
+	//on 4july           System.out.println("Completed processing resultList.");
+	//on 4july           System.out.println("after processing headers" + LocalDateTime.now());
+
+    	        //OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
+   	        //orderDetailsDto.setSoHeaderDto(soHeaderDtoList);
+   	     //System.out.println("order Details Dto = "+orderDetailsDto);
+   	  //System.out.println("soHeaderDtoMap Dto = "+soHeaderDtoMap);
+        //        status.setData(soHeaderDtoMap);
+                long methodOut = System.currentTimeMillis();
+                
+              //on 4july			timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+              //on 4july              System.out.println("Exit from in else getOrderV2 at =" + LocalDateTime.now());
+              //on 4july            status.setTimeDifference(timeDifference);
+                 
+                
+                
+                
+                
+               // List<LtOrderLineDataGt> resultList = ltSoHeadersDao.getOrderV2DataFromProcedure();
+                //if(resultList.size()>0) {
+                	 //status.setData(resultList);
+                     //return status;
+                //}
+               //System.out.println("Result is = "+result);
+                //System.out.println("resultList is = "+resultList);
+       //on 4july             Map<Long, SoHeaderDto> soHeaderDtoMap = new LinkedHashMap<>();
+       //on 4july	        Map<Long, List<SoLineDto>> soLineDtoMap = new LinkedHashMap<>();
+                
+       //on 4july	        for (LtOrderLineDataGt responseDto : resultList) {
+       //on 4july     SoLineDto soLineDto = buildSoLineDto1(responseDto);
+
+    	            // Add soLineDto to the soLineDtoMap only if lineId is not null
+              //on 4july   	            if (soLineDto.getLineId() != null) {
+              //on 4july          soLineDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> new ArrayList<>()).add(soLineDto);
+              //on 4july      }
+
+    	            // Add or update soHeaderDto in the soHeaderDtoMap
+              //on 4july  	            soHeaderDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> buildSoHeaderDto1(responseDto));
+              //on 4july        }
+              //on 4july       List<SoHeaderDto> soHeaderDtoList = new ArrayList<>(soHeaderDtoMap.size());
+
+              //on 4july       soHeaderDtoMap.forEach((headerId, soHeaderDto) -> {
+              //on 4july         soHeaderDto.setSoLineDtoList(soLineDtoMap.get(headerId));
+    	          //on 4july          soHeaderDtoList.add(soHeaderDto);
+              //on 4july     });
+
+              //on 4july        OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
+              //on 4july       orderDetailsDto.setSoHeaderDto(soHeaderDtoList);
+ /*               List<LtOrderLineDataGt> resultList = new ArrayList<>();
+                if (result!=true) {
+                    try (ResultSet rs = callableStatement.getResultSet()) {
+                        while (rs.next()) {
+                            LtOrderLineDataGt ltOrderLineDataGt = new LtOrderLineDataGt();
+                            ltOrderLineDataGt.setInventoryQuantity(rs.getLong("inventoryQuantity"));
+                            System.out.println("List id ="+rs.getLong("inventoryQuantity"));
+                            ltOrderLineDataGt.setCdate(rs.getDate("Cdate"));
+                            ltOrderLineDataGt.setOutletAddress(rs.getString("outletAddress"));
+                            ltOrderLineDataGt.setHeaderId(rs.getLong("headerId"));
+                            ltOrderLineDataGt.setOrderNumber(rs.getString("orderNumber"));
+                            ltOrderLineDataGt.setProductId(rs.getString("productId"));
+                            ltOrderLineDataGt.setCategoryId(rs.getString("categoryId"));
+                            ltOrderLineDataGt.setOrgId(rs.getString("orgId"));
+                            ltOrderLineDataGt.setSubCategoryId(rs.getString("subCategoryId"));
+                            ltOrderLineDataGt.setProductType(rs.getString("productType"));
+                            ltOrderLineDataGt.setCategory(rs.getString("category"));
+                            ltOrderLineDataGt.setSubCategory(rs.getString("subCategory"));
+                            ltOrderLineDataGt.setProductCode(rs.getString("productCode"));
+                            ltOrderLineDataGt.setProductName(rs.getString("productName"));
+                            ltOrderLineDataGt.setProductDesc(rs.getString("productDesc"));
+                            ltOrderLineDataGt.setPrimaryUom(rs.getString("primaryUom"));
+                            ltOrderLineDataGt.setSecondaryUom(rs.getString("secondaryUom"));
+                            ltOrderLineDataGt.setSecondaryUomValue(rs.getLong("secondaryUomValue"));
+                            ltOrderLineDataGt.setUnitPerCase(rs.getLong("unitPerCase"));
+                            ltOrderLineDataGt.setSegment(rs.getString("segment"));
+                            ltOrderLineDataGt.setStyle(rs.getString("style"));
+                            ltOrderLineDataGt.setFlavor(rs.getString("flavor"));
+                            ltOrderLineDataGt.setCasePack(rs.getLong("casePack"));
+                            ltOrderLineDataGt.setHsnCode(rs.getString("hsnCode"));
+                            ltOrderLineDataGt.setOrderable(rs.getString("orderable"));
+                            ltOrderLineDataGt.setStatus1(rs.getString("status1"));
+                            ltOrderLineDataGt.setOrderDate(rs.getDate("orderDate"));
+                            ltOrderLineDataGt.setStatus(rs.getString("status"));
+                            ltOrderLineDataGt.setAddress(rs.getString("address"));
+                            ltOrderLineDataGt.setLatitude(rs.getString("latitude"));
+                            ltOrderLineDataGt.setLongitude(rs.getString("longitude"));
+                            ltOrderLineDataGt.setRemark(rs.getString("remark"));
+                            ltOrderLineDataGt.setDeliveryDate(rs.getDate("deliveryDate"));
+                            ltOrderLineDataGt.setUserid(rs.getLong("userid"));
+                            ltOrderLineDataGt.setInstockFlag(rs.getString("instockFlag"));
+                            ltOrderLineDataGt.setBeatId(rs.getString("beatId"));
+                            ltOrderLineDataGt.setOutletId(rs.getString("outletId"));
+                            ltOrderLineDataGt.setOutletName(rs.getString("outletName"));
+                            ltOrderLineDataGt.setOutletCode(rs.getString("outletCode"));
+                            ltOrderLineDataGt.setProprietorName(rs.getString("proprietorName"));
+                            ltOrderLineDataGt.setListPrice(rs.getDouble("listPrice"));
+                            ltOrderLineDataGt.setPriceList(rs.getString("priceList"));
+                            ltOrderLineDataGt.setPtrprice(rs.getDouble("ptrprice"));
+                            ltOrderLineDataGt.setLineptrprice(rs.getString("lineptrprice"));
+                            ltOrderLineDataGt.setLineId(rs.getLong("lineId"));
+                            ltOrderLineDataGt.setProductId1(rs.getString("productId1"));
+                            ltOrderLineDataGt.setQuantity(rs.getLong("quantity"));
+                            ltOrderLineDataGt.setDeliveryDate1(rs.getDate("deliveryDate1"));
+                            ltOrderLineDataGt.setStatusO(rs.getLong("statusO"));
+                            System.out.println("orderNumber ="+rs.getString("orderNumber"));
+                            
+                            resultList.add(ltOrderLineDataGt);
+                            System.out.println("List id ="+resultList);
+                        }
+                    }
+                }
+*/
+              //on 4july         status.setData(orderDetailsDto);
+              //on 4july          return status;
+              //on 4july   } catch (Exception e) {
+                //throw new RuntimeException("Error executing stored procedure", e);
+              //on 4july      e.printStackTrace();
+             //on 4july    } 
+             //on 4july   return status;
+             //on 4july     });
+             //on 4july }
+              //on 4july*/// end of comment on 4-july-2024//	
+	
+	private SoHeaderDto mapResultSetToSoHeaderDto(ResultSet rs) throws SQLException{
+		//System.out.println("in mapResultSetToSoHeaderDto" + LocalDateTime.now());
+	    SoHeaderDto headerDto = new SoHeaderDto();
+	    headerDto.setHeaderId(rs.getLong("HEADER_ID"));
+	    headerDto.setOrderNumber(rs.getString("order_number"));
+	    //headerDto.setOrderDate(rs.getDate("order_date"));
+	    headerDto.setStatus(rs.getString("status1"));
+	    headerDto.setAddress(rs.getString("address"));
+	    headerDto.setOutletId(rs.getString("outlet_id"));
+	    headerDto.setOutletName(rs.getString("outlet_name"));
+	    headerDto.setOutletCode(rs.getString("outlet_code"));
+	    headerDto.setOutletAddress(rs.getString("outletAddress"));
+	    headerDto.setCustomerId(rs.getLong("USERID"));
+	    headerDto.setProprietorName(rs.getString("proprietor_name"));
+	    headerDto.setDeliveryDate(rs.getDate("delivery_date"));
+	    headerDto.setLatitude(rs.getString("latitude"));
+	    headerDto.setLongitude(rs.getString("longitude"));
+	    headerDto.setUserId(rs.getLong("USERID"));
+	    headerDto.setRemark(rs.getString("remark"));
+	   // headerDto.setAddress1(rs.getString("address1"));
+	    //headerDto.setCity(rs.getString("city"));
+//	    headerDto.setDistributorName(rs.getString("distributor_name"));
+//	    headerDto.setDistributorCode(rs.getString("distributor_code"));
+//	    headerDto.setDistributorId(rs.getString("distributor_id"));
+//	    headerDto.setInvoiceNumber(rs.getString("invoice_number"));
+//	    headerDto.setInvoiceDate(rs.getDate("invoice_date"));
+//	    headerDto.setTotalAmount(rs.getLong("total_amount"));
+//	    headerDto.setPriceListId(rs.getString("price_list_id"));
+//	    headerDto.setPriceListName(rs.getString("price_list_name"));
+//	    headerDto.setBeatName(rs.getString("beat_name"));
+//	    headerDto.setPriceList(rs.getString("price_list"));
+//	    headerDto.setBeatId(rs.getString("beat_id"));
+//	    headerDto.setInstockFlag(rs.getString("instock_flag"));
+//	    headerDto.setHeaderPriceList(rs.getString("header_price_list"));
+//	    headerDto.setCreatedBy(rs.getInt("created_by"));
+//	    headerDto.setSiebelStatus(rs.getString("siebel_status"));
+//	    headerDto.setSiebelRemark(rs.getString("siebel_remark"));
+//	    headerDto.setSiebelInvoicenumber(rs.getString("siebel_invoicenumber"));
+//	    headerDto.setSiebelJsonpayload(rs.getString("siebel_jsonpayload"));
+//	    headerDto.setOrderDate1(rs.getDate("order_date1"));
+//	    headerDto.setInventoryId(rs.getString("inventory_id"));
+//	    headerDto.setLocation(rs.getString("location"));
+//	    headerDto.setMobileNumber(rs.getString("mobile_number"));
+
+	    // Initialize empty list for soLineDtoList
+	    headerDto.setSoLineDtoList(new ArrayList<>());
+	    return headerDto;
+	}
+
+	private SoLineDto mapResultSetToSoLineDto(ResultSet rs) throws SQLException {
+		System.out.println("in mapResultSetToSoLineDto");
+	    SoLineDto lineDto = new SoLineDto();
+	    lineDto.setLineId(rs.getLong("line_id"));
+	    lineDto.setProductId(rs.getString("product_id"));
+	    lineDto.setQuantity(rs.getLong("quantity"));
+	    lineDto.setProductCode(rs.getString("product_code"));
+	    lineDto.setProductDesc(rs.getString("product_desc"));
+	    lineDto.setProductName(rs.getString("product_name"));
+	    lineDto.setListPrice(rs.getString("list_price"));
+	    lineDto.setPriceList(rs.getString("price_list"));
+	    lineDto.setDeliveryDate(rs.getDate("delivery_date"));
+	    lineDto.setStatus(rs.getString("status"));
+//	    lineDto.setLinelistPrice(rs.getString("linelist_price"));
+//	    lineDto.setLinePtrPrice(rs.getString("line_ptr_price"));
+//	    lineDto.setInventoryQuantity(rs.getString("inventory_quantity"));
+//	    lineDto.setOrgId(rs.getString("org_id"));
+//	    lineDto.setCategoryId(rs.getString("category_id"));
+//	    lineDto.setProductType(rs.getString("product_type"));
+//	    lineDto.setCategory(rs.getString("category"));
+//	    lineDto.setSubCategory(rs.getString("sub_category"));
+//	    lineDto.setPrimaryUom(rs.getString("primary_uom"));
+//	    lineDto.setSecondaryUom(rs.getString("secondary_uom"));
+//	    lineDto.setSecondaryUomValue(rs.getString("secondary_uom_value"));
+//	    lineDto.setUnitsPerCase(rs.getString("units_per_case"));
+//	    lineDto.setSegment(rs.getString("segment"));
+//	    lineDto.setBrand(rs.getString("brand"));
+//	    lineDto.setSubBrand(rs.getString("sub_brand"));
+//	    lineDto.setCasePack(rs.getString("case_pack"));
+//	    lineDto.setHsnCode(rs.getString("hsn_code"));
+//	    lineDto.setProductImage(rs.getString("product_image"));
+//	    lineDto.setThumbnailImage(rs.getString("thumbnail_image"));
+//	    lineDto.setEimStatus(rs.getString("eim_status"));
+//	    lineDto.setPriceListId(rs.getString("price_list_id"));
+//	    lineDto.setHeaderPriceList(rs.getString("header_price_list"));
+//	    lineDto.setHeaderId(rs.getLong("HEADER_ID"));
+//	    lineDto.setPtrBasePrice(rs.getLong("ptr_base_price"));
+//	    lineDto.setLocation(rs.getString("location"));
+//	    lineDto.setInventoryId(rs.getString("inventory_id"));
+//	    lineDto.setShippedQuantity(rs.getString("shipped_quantity"));
+//	    lineDto.setReturnQuantity(rs.getLong("return_quantity"));
+
+	    return lineDto;
+	}
+	
+	
+	public String timeDiff(long startTime,long endTime) {
+		// Step 4: Calculate the time difference in milliseconds
+        long durationInMillis = endTime - startTime;
+ 
+        // Step 5: Convert the duration into a human-readable format
+        long seconds = durationInMillis / 1000;
+        long milliseconds = durationInMillis % 1000;
+ 
+        String formattedDuration = String.format(
+            "%d seconds, %d milliseconds",
+            seconds, milliseconds
+        );
+		return formattedDuration;
+	}
+	
 		private SoLineDto buildSoLineDto(ResponseDto responseDto) {
 		    SoLineDto soLineDto = new SoLineDto();
 		    soLineDto.setLineId(responseDto.getLineId());
@@ -5989,6 +6781,34 @@ System.out.println("3820 = "+new Date());
 		    return soLineDto;
 		}
 		
+		private SoLineDto buildSoLineDto1(LtOrderLineDataGt responseDto) {
+		    SoLineDto soLineDto = new SoLineDto();
+		    soLineDto.setLineId(responseDto.getLineId());
+		    soLineDto.setProductId(responseDto.getProductId());
+		    soLineDto.setQuantity(responseDto.getQuantity());
+		    soLineDto.setProductCode(responseDto.getProductCode());
+		    soLineDto.setProductDesc(responseDto.getProductDesc());
+		    soLineDto.setProductName(responseDto.getProductName());
+		    soLineDto.setPriceList(responseDto.getPriceList());
+		    //soLineDto.setListPrice(determineListPrice(responseDto));
+		    //soLineDto.setPtrPrice(determinePtrPrice(responseDto));
+		    //soLineDto.setInventoryQuantity(responseDto.getInventoryQuantity());
+		    soLineDto.setDeliveryDate(responseDto.getDeliveryDate1());
+		    soLineDto.setOrgId(responseDto.getOrgId());
+		    soLineDto.setProductType(responseDto.getProductType());
+		    soLineDto.setPrimaryUom(responseDto.getPrimaryUom());
+		    soLineDto.setSecondaryUom(responseDto.getSecondaryUom());
+		    //soLineDto.setSecondaryUomValue(responseDto.getSecondaryUomValue());
+		    //soLineDto.setUnitsPerCase(responseDto.getUnitsPerCase());
+		    soLineDto.setProductImage(responseDto.getProductImage());
+		    soLineDto.setBrand(responseDto.getBrand());
+		    //soLineDto.setSubBrand(responseDto.getSubBrand());
+		    soLineDto.setSegment(responseDto.getSegment());
+		    //soLineDto.setCasePack(responseDto.getCasePack());
+		    soLineDto.setHsnCode(responseDto.getHsnCode());
+		    //soLineDto.setThumbnailImage(responseDto.getThumbnailImage());
+		    return soLineDto;
+		}
 		
 		private SoHeaderDto buildSoHeaderDto(ResponseDto responseDto) {
 		    SoHeaderDto soHeaderDto = new SoHeaderDto();
@@ -6013,6 +6833,32 @@ System.out.println("3820 = "+new Date());
 		    soHeaderDto.setOutletAddress(responseDto.getOutletAddress());
 		    soHeaderDto.setCustomerId(responseDto.getCustomerId());
 		    soHeaderDto.setCity(responseDto.getCity());
+		    return soHeaderDto;
+		}
+		
+		private SoHeaderDto buildSoHeaderDto1(LtOrderLineDataGt responseDto) {
+		    SoHeaderDto soHeaderDto = new SoHeaderDto();
+		    soHeaderDto.setHeaderId(responseDto.getHeaderId());
+		    soHeaderDto.setOrderNumber(responseDto.getOrderNumber());
+		    soHeaderDto.setOrderDate(formatOrderDate(responseDto.getOrderDate()));
+		    soHeaderDto.setStatus(responseDto.getStatus());
+		    soHeaderDto.setAddress(responseDto.getAddress());
+		    soHeaderDto.setOutletName(responseDto.getOutletName());
+		    soHeaderDto.setOutletId(responseDto.getOutletId());
+		    soHeaderDto.setOutletCode(responseDto.getOutletCode());
+		    soHeaderDto.setLatitude(responseDto.getLatitude());
+		    soHeaderDto.setLongitude(responseDto.getLongitude());
+		    soHeaderDto.setInstockFlag(responseDto.getInstockFlag());
+		    soHeaderDto.setPriceList(responseDto.getPriceList());
+		    //soHeaderDto.setSiebelRemark(responseDto.getSiebelRemark());
+		    soHeaderDto.setBeatId(responseDto.getBeatId());
+		    soHeaderDto.setProprietorName(responseDto.getProprietorName());
+		    soHeaderDto.setRemark(responseDto.getRemark());
+		    soHeaderDto.setDeliveryDate(responseDto.getDeliveryDate());
+		    soHeaderDto.setUserId(responseDto.getUserid());
+		    soHeaderDto.setOutletAddress(responseDto.getOutletAddress());
+		   // soHeaderDto.setCustomerId(responseDto.getCustomerId());
+		   // soHeaderDto.setCity(responseDto.getCity());
 		    return soHeaderDto;
 		}
 		
@@ -6077,15 +6923,37 @@ System.out.println("3820 = "+new Date());
 	
 	@Override
 	public Status getOrderForPendingApprovals(RequestDto requestDto) throws ServiceException, IOException {
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetUserTypeAgainsUserId = 0;
+		long outQuerygetUserTypeAgainsUserId = 0;
+		long inQuerygetSoHeader = 0;
+		long outQuerygetSoHeader = 0;
+		long inQuerygetRecordCount = 0;
+		long outQuerygetRecordCount = 0;
+		long inQuerygetOrderV2 = 0;
+		long outQuerygetOrderV2 = 0;
+		//long inQuerygetInStockProductWithInventory = 0;
+		//long outQuerygetInStockProductWithInventory = 0;
+		//long inQuerygetInStockProductCountWithInventory = 0;
+		//long outQuerygetInStockProductCountWithInventory = 0;
+		
 		try {
 			Status status = new Status();
+			inQuerygetUserTypeAgainsUserId = System.currentTimeMillis();
 			String userType = ltSoHeadersDao.getUserTypeAgainsUserId(requestDto.getUserId());
+			outQuerygetUserTypeAgainsUserId = System.currentTimeMillis();
+
 			if(userType.equalsIgnoreCase(DISTRIBUTOR) || userType.equalsIgnoreCase("SALESOFFICER")) {
-			
+				inQuerygetSoHeader = System.currentTimeMillis();
 			List<Long> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
+				outQuerygetSoHeader = System.currentTimeMillis();
 			System.out.print("headerIdsList is ====" +headerIdsList);
+			
+			inQuerygetRecordCount = System.currentTimeMillis();
 			Long recordCount = ltSoHeadersDao.getRecordCount(requestDto);
 			//Long recordCount = (long) headerIdsList.size() + 1;
+			outQuerygetRecordCount = System.currentTimeMillis();
 			
 			System.out.println("headerIdsList====>"+headerIdsList.size());
 			//System.out.println("recordCount====>"+recordCount);
@@ -6100,7 +6968,9 @@ System.out.println("3820 = "+new Date());
 			
 			List<ResponseDto> responseDtoList = new ArrayList<ResponseDto>();
 			
+			inQuerygetOrderV2 = System.currentTimeMillis();
 			responseDtoList = ltSoHeadersDao.getOrderV2(headerIdsList);
+			inQuerygetOrderV2 = System.currentTimeMillis();
 			
 			Map<Long, SoHeaderDto> soHeaderDtoMap = new LinkedHashMap<Long, SoHeaderDto>();
 			Map<Long, List<SoLineDto>> soLineDtoMap = new LinkedHashMap<Long, List<SoLineDto>>();
@@ -6330,6 +7200,19 @@ System.out.println("3820 = "+new Date());
 			if (!responseDtoList.isEmpty()) {
 				status.setCode(RECORD_FOUND);// = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
 				status.setData(orderDetailsDto);
+				
+				timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetUserTypeAgainsUserId,outQuerygetUserTypeAgainsUserId));
+				timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetSoHeader,outQuerygetSoHeader));
+				timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetRecordCount, outQuerygetRecordCount));
+				timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetOrderV2, outQuerygetOrderV2));
+//				timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+//				timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+				
+				long methodOut = System.currentTimeMillis();
+				System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+		        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+		        status.setTimeDifference(timeDifference);
+				
 				return status;
 			}
 			status.setCode(RECORD_NOT_FOUND); // status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
@@ -6724,11 +7607,27 @@ System.out.println("3820 = "+new Date());
 */		
 	
 	public Status getAllPendingOrders(RequestDto requestDto) throws ServiceException, IOException {
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetSoHeader111 = 0;
+		long outQuerygetSoHeader111 = 0;
+//		long inQuerygetInStockProductAdmin = 0;
+//		long outQuerygetInStockProductAdmin = 0;
+//		long inQuerygetInStockProductCountForAdmin = 0;
+//		long outQuerygetInStockProductCountForAdmin = 0;
+//		long inQuerygetMultipleMrpForProduct = 0;
+//		long outQuerygetMultipleMrpForProduct = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
 	    try {
 	        System.out.println("In method getAllPendingOrders at =" + LocalDateTime.now());
 	        Status status = new Status();
 	        System.out.println("Above getSoHeader11 query call at =" + LocalDateTime.now());
+	        inQuerygetSoHeader111 = System.currentTimeMillis();
 	        List<ResponseDto> responseList = ltSoHeadersDao.getSoHeader111(requestDto);
+	        outQuerygetSoHeader111 = System.currentTimeMillis();
 	        System.out.println("Below getSoHeader11 query call at =" + LocalDateTime.now());
 	        System.out.println("headerIdsList size is = " + responseList.size());
  
@@ -6797,6 +7696,17 @@ System.out.println("3820 = "+new Date());
 	        } else {
 	            status.setCode(SUCCESS);
 	            status.setData(ordersList);
+	            timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetSoHeader111,outQuerygetSoHeader111));
+//	    		timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetInStockProductAdmin,outQuerygetInStockProductAdmin));
+//	    		timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetInStockProductCountForAdmin, outQuerygetInStockProductCountForAdmin));
+//	    		timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetMultipleMrpForProduct, outQuerygetMultipleMrpForProduct));
+//	    		timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+//	    		timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+	    		
+	    		long methodOut = System.currentTimeMillis();
+	    		System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+	            timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	            status.setTimeDifference(timeDifference);
 		        System.out.println("Exit from in else getAllPendingOrders at =" + LocalDateTime.now());
 	            return status;
 	        }
@@ -6865,10 +7775,26 @@ System.out.println("3820 = "+new Date());
 	
 	@Override
 	public Status removingPendingOrdersFromGetOrderV2(RequestDto requestDto) throws ServiceException, IOException {
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetSoHeaderRemovingPendingOrdersFromGetOrderV2 = 0;
+		long outQuerygetSoHeaderRemovingPendingOrdersFromGetOrderV2 = 0;
+		long inQuerygetOrderV2RemovingPendingOrdersFromGetOrderV2 = 0;
+		long outQuerygetOrderV2RemovingPendingOrdersFromGetOrderV2 = 0;
+//		long inQuerygetInStockProductCountForAdmin = 0;
+//		long outQuerygetInStockProductCountForAdmin = 0;
+//		long inQuerygetMultipleMrpForProduct = 0;
+//		long outQuerygetMultipleMrpForProduct = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
 			try {
 				Status status = new Status();
 				//System.out.println("Login Id is ="+requestDto.getLoginId());
+				inQuerygetSoHeaderRemovingPendingOrdersFromGetOrderV2 = System.currentTimeMillis();
 				List<Long> headerIdsList = ltSoHeadersDao.getSoHeaderRemovingPendingOrdersFromGetOrderV2(requestDto);
+				outQuerygetSoHeaderRemovingPendingOrdersFromGetOrderV2 = System.currentTimeMillis();
 				System.out.print("headerIdsList is ====" +headerIdsList);
 				System.out.print("requestDto data is =="+requestDto);
 				//Long recordCount = ltSoHeadersDao.getRecordCountRemovingPendingOrdersFromGetOrderV2(requestDto);
@@ -6906,7 +7832,9 @@ System.out.println("3820 = "+new Date());
 				
 				List<ResponseDto> responseDtoList = new ArrayList<ResponseDto>();
 				
+				inQuerygetOrderV2RemovingPendingOrdersFromGetOrderV2 = System.currentTimeMillis();
 				responseDtoList = ltSoHeadersDao.getOrderV2RemovingPendingOrdersFromGetOrderV2(headerIdsList);
+				outQuerygetOrderV2RemovingPendingOrdersFromGetOrderV2 = System.currentTimeMillis();
 				
 			//	responseDtoList = ltSoHeadersDao.getOrderV2(headerIdsListUpdated);
 				
@@ -7164,6 +8092,19 @@ System.out.println("3820 = "+new Date());
 				if (!responseDtoList.isEmpty()) {
 					status.setCode(RECORD_FOUND);// = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
 					status.setData(orderDetailsDto);
+					
+					timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetSoHeaderRemovingPendingOrdersFromGetOrderV2,outQuerygetSoHeaderRemovingPendingOrdersFromGetOrderV2));
+					timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetOrderV2RemovingPendingOrdersFromGetOrderV2,outQuerygetOrderV2RemovingPendingOrdersFromGetOrderV2));
+//					timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetInStockProductCountForAdmin, outQuerygetInStockProductCountForAdmin));
+//					timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetMultipleMrpForProduct, outQuerygetMultipleMrpForProduct));
+//					timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+//					timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+					
+					long methodOut = System.currentTimeMillis();
+					System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+			        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+			        status.setTimeDifference(timeDifference);
+			        
 					return status;
 				}
 				status.setCode(RECORD_NOT_FOUND); // status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);

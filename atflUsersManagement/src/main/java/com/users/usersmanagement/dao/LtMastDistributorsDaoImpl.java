@@ -1,7 +1,5 @@
 package com.users.usersmanagement.dao;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.*;
 
 import javax.sql.DataSource;
@@ -209,6 +207,46 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 		System.out.println("Newwww ltMastDistributorsList" + ltMastDistributorsList);
 		return ltMastDistributorsList;
 
+	}
+
+	@Override
+	public NotificationDetails deleteNotificationAfter72Hours(Date cutoffDate) throws ServiceException {
+		    NotificationDetails notificationDetails = new NotificationDetails();   
+		   try {
+		String query = env.getProperty("deleteNotificationAfter72Hours");
+		 notificationDetails = jdbcTemplate.queryForObject(query, 
+				new Object[] {cutoffDate}, new BeanPropertyRowMapper<NotificationDetails>(NotificationDetails.class));
+		
+		if(notificationDetails == null) {
+			return notificationDetails;
+		}else {
+			return notificationDetails;
+		}
+	  }catch(Exception e) {
+		  e.printStackTrace();
+	  }
+           return notificationDetails;
+	}
+
+	@Override
+	public void updateReadNotificationFlag(int notificationId) throws ServiceException {
+		//NotificationDetails notificationDetails = new NotificationDetails();
+		try {
+			String query = env.getProperty("updateReadNotificationFlag");
+/*			notificationDetails = jdbcTemplate.queryForObject(query, 
+					new Object[] {notificationId}, 
+					new BeanPropertyRowMapper<NotificationDetails>(NotificationDetails.class)); 
+			if(notificationDetails!= null) {
+				return notificationDetails;
+			}else {
+				return notificationDetails;
+			}
+*/			
+			this.jdbcTemplate.update(query,notificationId);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	//	return notificationDetails;
 	}
 
 //	@Override

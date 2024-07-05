@@ -1,5 +1,7 @@
 package com.atflMasterManagement.masterservice.model;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -12,7 +14,17 @@ public class Status {
 	private Long recordCount;
 	private Long  totalCount;
 	private Object url;
+	private Map<String,String> timeDifference;
 	
+	
+	public Map<String, String> getTimeDifference() {
+		return timeDifference;
+	}
+
+	public void setTimeDifference(Map<String, String> timeDifference) {
+		this.timeDifference = timeDifference;
+	}
+
 	public Status() {
 	}
 
@@ -72,9 +84,8 @@ public class Status {
 	@Override
 	public String toString() {
 		return "Status [code=" + code + ", message=" + message + ", data=" + data + ", recordCount=" + recordCount
-				+ ", totalCount=" + totalCount + ", url=" + url + "]";
+				+ ", totalCount=" + totalCount + ", url=" + url + ", timeDifference=" + timeDifference + "]";
 	}
 
-	
 	
 }

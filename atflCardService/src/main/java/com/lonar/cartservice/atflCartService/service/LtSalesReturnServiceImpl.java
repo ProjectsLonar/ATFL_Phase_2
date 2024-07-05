@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.rmi.ServerException;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
@@ -22,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import javax.mail.Authenticator;
@@ -111,8 +115,8 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 	
 	
 	
-private void sendEmail(LtSalesReturnHeader ltSalesReturnHeader, LtMastUsers user) {
-	/*		
+private void sendEmail(LtSalesReturnHeader ltSalesReturnHeader, LtMastUsers user, LtSalesReturnDto ltSalesReturnDto) throws ServerException {
+			
 		List<LtMastUsers> ltMastAllUsers = ltSalesreturnDao.getAllUsersForEmail(ltSalesReturnHeader.getOutletId());
 		
 		if(!ltMastAllUsers.isEmpty()) 
@@ -124,32 +128,33 @@ private void sendEmail(LtSalesReturnHeader ltSalesReturnHeader, LtMastUsers user
 						LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
 						System.out.println(user.getTokenData());
 						
-						String subject = "OUTLET_APPROVAL";
-					    String userName = ltSalesreturnDao.getUserNameAgainsUserId(ltSalesReturnHeader.getCreatedBy());
+						String subject = "SALES_RETURN_APPROVAL";
+						System.out.println("ltSalesReturnHeader.getUserId()"+ltSalesReturnDto.getUserId());
+					    String userName = ltSalesreturnDao.getUserNameAgainsUserId(ltSalesReturnDto.getUserId());
 					    System.out.println("userName for Email = "+userName+"...Ok");
 					      
 					      String salespersonName=userName;
 					      
-					      String outletName = ltMastOutletsDumpupdated.getOutletName();
-					      System.out.println("outletName is"+ outletName);
+					      String salesReturnNo = ltSalesReturnHeader.getSalesReturnNumber();
+					      System.out.println("salesReturnNo is"+ salesReturnNo);
 						  String text = "";
 					      
 					      if(ltMastUsers.getEmail()!= null) {
 					      String to= ltMastUsers.getEmail();
 					      System.out.println("Above sendSimpleMessage");
 					      try {
-							sendSimpleMessageWithAuth(to,subject,text,outletName,salespersonName);
+							sendSimpleMessageWithAuth(to,subject,text,salesReturnNo,salespersonName);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 			          }
 					}
 		}
-	*/	
+		
 	}
 	
 
-public void sendSimpleMessageWithAuth(String to, String subject, String text,String outletName,String salespersonName) throws MessagingException {
+public void sendSimpleMessageWithAuth(String to, String subject, String text,String salesReturnNo,String salespersonName) throws MessagingException {
 //  MimeMessage message = emailSender.createMimeMessage();
 //  MimeMessageHelper helper = new MimeMessageHelper(message, true);
   Map<String,String> map = new HashMap<String,String>();
@@ -160,25 +165,39 @@ public void sendSimpleMessageWithAuth(String to, String subject, String text,Str
   String password = "Welcome12";    //"vjug xicp wiuw fakw";         
   // Outgoing email information
   String mailTo = to;        
-  String subject1 = "SALES_ORDER_APPROVAL";   
+  String subject1 = "SALES_RETURN_APPROVAL";   
 //  text = "<html><head></head><body><h1>Greetings!</h1><p>We hope this message finds you well.</p></body></html>";
 //  String salesOrder ="myOrder123";
 //  String salespersonName = "Vaibhav";
 //  String totalAmount= "100";
-  text = "<html> <head> </head> <body>"
-          + "<div style=\"margin-top:0;background-color:#f4f4f4!important;color:#555; font-family: 'Open Sans', sans-serif;\">"
-          + "<div style=\"font-size:14px;margin:0px auto;max-width:620px;margin-bottom:20px;background:#c02e2e05;\">"
-          + "<div style=\"padding: 0px 0px 9px 0px;width:100%;color: #fff;font-weight:bold;font-size:15px;line-height: 20px; width:562px; margin:0 auto;\">"
-          + "<center><table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\"><tbody><tr><td valign=\"top\" style=\"padding:48px 48px 32px\">"
-          + "<div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left\">"
-          + "<p style=\"margin:0 0 16px\">Dear Sir/Ma’am,</p>"
-          + "<p style=\"margin:0 0 16px\">An outlet has come for your approval. Please go to the app to approve/reject the outlet.</p>"
-          + "<h4 style=\"font-weight:bold\">Outlet Name:"+ salespersonName +"</h4>"
-          + "<h4 style=\"font-weight:bold\">Created by:"+ salespersonName +"</h4>"
-          + "<h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>"
-          + "<p>Regards,</p><p>Lakshya App team.</p>"
-          + "<div style= \"margin-bottom:40px\"></div></div></td></tr></tbody></table></center></div></div></div>"
-          + "</body> </html>";
+  text = "<html> <head> </head> <body> "
+		    + "    <div style=\"margin-top:0;background-color:#f4f4f4!important;color:#555; font-family: 'Open Sans', sans-serif;\">"
+		    + "        <div style=\"font-size:14px;margin:0px auto;max-width:620px;margin-bottom:20px;background:#c02e2e05;\">"
+		    + "            <div style=\"padding: 0px 0px 9px 0px;width:100%;color: #fff;font-weight:bold;font-size:15px;line-height: 20px; width:562px; margin:0 auto;\">"
+		    + "                <center>"
+		    + "                    <table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\">"
+		    + "                        <tbody>"
+		    + "                            <tr>"
+		    + "                                <td valign=\"top\" style=\"padding:48px 48px 32px\">"
+		    + "                                    <div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left\">"
+		    + "                                         <p style=\"margin:0 0 16px\">Dear Sir/Ma’am,</p>"
+		    + "                                        <p style=\"margin:0 0 16px\">${salesReturnNo} has come for your approval. Please visit the app to approve/ reject the record.</p>"
+		    + "                                        <h4 style=\"font-weight:bold\">Created by:${salespersonName}</h4>"
+		    + "                                        <h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>"
+		    + "                                        <p>Regards,</p>"
+		    + "                                        <p>Lakshya App team.</p>"
+		    + "                                        <div style=\"margin-bottom:40px\"></div>"
+		    + "                                    </div>"
+		    + "                                </td>"
+		    + "                            </tr>"
+		    + "                        </tbody>"
+		    + "                    </table>"
+		    + "                </center>"
+		    + "            </div>"
+		    + "        </div>"
+		    + "    </div>"
+		    + " </body> </html>";
+
   
   String message = text;
   String result = String.join("   ", host,mailFrom,password,mailTo,subject1,message);
@@ -260,6 +279,23 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 
 	@Override
 	public Status saveSalesReturn(LtSalesReturnDto ltSalesReturnDto) throws ServerException{
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerydeleteSalesReturnLinesByHeaderId = 0;
+		long outQuerydeleteSalesReturnLinesByHeaderId = 0;
+		long inQuerygetSalesReturnSiebelDataById = 0;
+		long outQuerygetSalesReturnSiebelDataById = 0;
+		long inQuerygetAreaHeadDetails = 0;
+		long outQuerygetAreaHeadDetails = 0;
+		long inQuerygetSalesOfficersDetails = 0;
+		long outQuerygetSalesOfficersDetails = 0;
+		long inQuerygetSysAdminDetails = 0;
+		long outQuerygetSysAdminDetails = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
+		
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		
 		try {
 		Status status = new Status();
 		LtSalesReturnHeader ltSalesReturnHeader = new LtSalesReturnHeader();
@@ -268,7 +304,9 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 				//code for update
 				
 				//delete sales return lines
+				inQuerydeleteSalesReturnLinesByHeaderId = System.currentTimeMillis();
 				ltSalesreturnDao.deleteSalesReturnLinesByHeaderId(ltSalesReturnDto.getSalesReturnHeaderId());
+				outQuerydeleteSalesReturnLinesByHeaderId =  System.currentTimeMillis();
 				
 				ltSalesReturnHeader.setSalesReturnHeaderId(ltSalesReturnDto.getSalesReturnHeaderId());
 				ltSalesReturnHeader.setSalesReturnNumber(ltSalesReturnDto.getSalesReturnNumber());
@@ -313,9 +351,11 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 				if(ltSalesReturnDto.getPriceList()!=null) {
 					ltSalesReturnHeader.setPriceList(ltSalesReturnDto.getPriceList());
 				}
-				
+				inQuerygetSalesReturnSiebelDataById = System.currentTimeMillis();
 				LtSalesReturnHeader siebelData = ltSalesreturnDao.getSalesReturnSiebelDataById(ltSalesReturnDto.getSalesReturnHeaderId());
-				 if(siebelData.getSiebelRemark()!= null) {
+				outQuerygetSalesReturnSiebelDataById = System.currentTimeMillis(); 
+				
+				if(siebelData.getSiebelRemark()!= null) {
 				ltSalesReturnHeader.setSiebelRemark(siebelData.getSiebelRemark());
 				}
 				 if(siebelData.getSiebelStatus()!= null) {
@@ -471,11 +511,19 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			//System.out.println("Hi This is the incoice number for notification:"+ltSalesReturnHeader.getInvoiceNumber()); 
 			//System.out.println("Hi This is the sales return number for notification:"+ltSalesReturnHeader.getSalesReturnNumber());
 			//List<LtMastUsers> ltMastUsersAreaHead = ltSalesreturnDao.getAreaHeadDetails(ltSalesReturnHeader.getInvoiceNumber(), ltSalesReturnHeader.getSalesReturnNumber());
-			List<LtMastUsers> ltMastUsersAreaHead = ltSalesreturnDao.getAreaHeadDetails(ltSalesReturnHeader.getOutletId());
-			//List<LtMastUsers> sysAdminUserList = ltSoHeadersDao.getActiveSysAdminUsersFromHeaderId(ltSoHeader.getHeaderId(), ltSoHeader.getOrderNumber());
+				inQuerygetAreaHeadDetails = System.currentTimeMillis();
+				List<LtMastUsers> ltMastUsersAreaHead = ltSalesreturnDao.getAreaHeadDetails(ltSalesReturnHeader.getOutletId());
+				outQuerygetAreaHeadDetails = System.currentTimeMillis();
+				inQuerygetSalesOfficersDetails = System.currentTimeMillis();
+				//List<LtMastUsers> sysAdminUserList = ltSoHeadersDao.getActiveSysAdminUsersFromHeaderId(ltSoHeader.getHeaderId(), ltSoHeader.getOrderNumber());
 			List<LtMastUsers> ltMastUsersSalesOfficer = ltSalesreturnDao.getSalesOfficersDetails(ltSalesReturnHeader.getOutletId());
+			outQuerygetSalesOfficersDetails = System.currentTimeMillis();
+			inQuerygetSysAdminDetails = System.currentTimeMillis();
 			List<LtMastUsers> ltMastUsersSysAdmin = ltSalesreturnDao.getSysAdminDetails(ltSalesReturnHeader.getOutletId());
-			
+			outQuerygetSysAdminDetails = System.currentTimeMillis();
+			final LtSalesReturnHeader ltSalesReturnHeader1 = ltSalesReturnHeader;
+			CompletableFuture.runAsync(() -> {
+                try {
 			//System.out.println("Hi this is AreaHead" + ltMastUsersAreaHead);
 			if(ltMastUsersAreaHead !=null) {
 				for(LtMastUsers user:ltMastUsersAreaHead) {
@@ -484,9 +532,9 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			//sending notification to areahead
 						
 						//System.out.println("Hi this is before notification");
-			webController.sendSalesReturnNotification(ltSalesReturnHeader, user);
+			webController.sendSalesReturnNotification(ltSalesReturnHeader1, user);
 			            //System.out.println("Hi this is after notification");
-			          sendEmail(ltSalesReturnHeader, user);
+			          sendEmail(ltSalesReturnHeader1, user, ltSalesReturnDto);
 					}
 				  }
 				}
@@ -498,9 +546,9 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			//sending notification to areahead
 						
 						//System.out.println("Hi this is before notification");
-			webController.sendSalesReturnNotification(ltSalesReturnHeader, user);
+			webController.sendSalesReturnNotification(ltSalesReturnHeader1, user);
 			            //System.out.println("Hi this is after notification");
-			sendEmail(ltSalesReturnHeader, user);
+			sendEmail(ltSalesReturnHeader1, user, ltSalesReturnDto);
 					}
 				  }
 				}
@@ -512,69 +560,21 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			//sending notification to areahead
 						
 						//System.out.println("Hi this is before notification");
-			webController.sendSalesReturnNotification(ltSalesReturnHeader, user);
+			webController.sendSalesReturnNotification(ltSalesReturnHeader1, user);
 			            //System.out.println("Hi this is after notification");
-			sendEmail(ltSalesReturnHeader, user);
+			sendEmail(ltSalesReturnHeader1, user, ltSalesReturnDto);
 					}
 				  }
-				}
+				}}catch (Exception e) {
+                    e.printStackTrace();
+                }
+                }
+                , executor);
 			
 			// End of Send Notification Code
 			
-			// Code for Send E-mail to Area Head
-			
-			 if(ltMastUsersAreaHead!= null) 
-			      {			
-				 System.out.println("Hi I'm in send email sales return");
-						for(Iterator iterator = ltMastUsersAreaHead.iterator(); iterator.hasNext();) {
-							LtMastUsers ltMastUsers = (LtMastUsers) iterator.next();
-							System.out.print(ltMastUsers.getTokenData());
-							
-							String subject = "EMAIL_SALES_RETURN_APPROVAL_";
-						      
-						     // String body = ltSoHeadersDao.getEmailBody(subject);
-							//String body= "<html> <head> </head> <body>     <div style=\"margin-top: 0;background-color:#f4f4f4!important;color:#555; font-family: 'Open Sans', sans-serif;\"><div style=\"font-size: 14px;margin: 0px auto;max-width: 620px;margin-bottom: 20px;background:#c02e2e05;\">              <div style=\"padding: 0px 0px 9px 0px;width: 100%;color: #fff;font-weight:bold;font-size: 15px;line-height: 20px; width: 562px; margin: 0 auto;\">                 <center>                     <table border=\"0\" cellpadding=\"20\"cellspacing=\"0\" width=\"100%\">                         <tbody>                             <tr>                                 <td valign=\"top\" style=\"padding: 48px 48px 32px\">                                     <div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size: 14px;line-height: 150%;text-align:left\">                                          <p style=\"margin: 0 0 16px\">Dear Sir/Ma’am,</p>                                         <p style=\"margin: 0 0 16px\">MSO-29686-2425-967 has come for your approval. Please visit the app to approve/ reject the record.</p>    <h4 style=\"font-weight:bold\">Created by:Panchanan Rout</h4>  <h4 style=\"font-weight:bold\">Order Amount:0.0</h4>   <h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>  <p>Regards,</p><p>Lakshya App team.</p>                               <div style= \"margin-bottom: 40px\">                                                                                       </div>                                                                                                                       </div>                          </html>       </td>                             </tr>                         </tbody>                     </table>                 </center>             </div>            </div>      </div> </body>" ;
-							String body= "EMAIL For SALES RETURN APPROVAL";
-							System.out.print("Email body"+body);
-						      //String userName = ltSalesreturnDao.getUserNameAgainsUserId(ltSoHeader.getCreatedBy());
-							String userName = ltSalesreturnDao.getUserNameAgainsUserId(ltSalesReturnDto.getUserId());
-						      System.out.print("userName for Email"+userName);
-						      
-						      //List<Double> amount = ltSoHeadersDao.getTotalAmount(ltSoHeader.getHeaderId());
-						      //System.out.println("amount is........" + amount);
-						      //double amt = amount.stream().collect(Collectors.summingDouble((Double::doubleValue)));
-						      							      
-						 /*     List<String> amount = ltSalesreturnDao.getTotalAmount1(ltSoHeader.getHeaderId());
-						     
-						      double sum = 0.0;
-						      for (String str : amount) {
-						    	  if(str.equals("null")) {
-						    		  str= "0";
-						    	  }
-						             double number = Double.parseDouble(str);
-						            sum = sum+number;
-						        }
-						      String totalAmount= String.valueOf(sum);
-						      System.out.print("amount for Email" +totalAmount);
-						      //System.out.print("amount for Email"+amt);            
-						 */
-						      
-						      String salespersonName=userName;
-						      //String totalAmount= Double.toString(amt);
-						      //String body= "<html> <head> </head> <body>     <div style=\"margin-top: 0;background-color:#f4f4f4!important;color:#555; font-family: 'Open Sans', sans-serif;\"><div style=\"font-size: 14px;margin: 0px auto;max-width: 620px;margin-bottom: 20px;background:#c02e2e05;\">              <div style=\"padding: 0px 0px 9px 0px;width: 100%;color: #fff;font-weight:bold;font-size: 15px;line-height: 20px; width: 562px; margin: 0 auto;\">                 <center>                     <table border=\"0\" cellpadding=\"20\"cellspacing=\"0\" width=\"100%\">                         <tbody>                             <tr>                                 <td valign=\"top\" style=\"padding: 48px 48px 32px\">                                     <div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size: 14px;line-height: 150%;text-align:left\">                                          <p style=\"margin: 0 0 16px\">Dear Sir/Ma’am,</p>                                         <p style=\"margin: 0 0 16px\">MSO-29686-2425-967 has come for your approval. Please visit the app to approve/ reject the record.</p>    <h4 style=\"font-weight:bold\">Created by:Panchanan Rout</h4>  <h4 style=\"font-weight:bold\">Order Amount:0.0</h4>   <h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>  <p>Regards,</p><p>Lakshya App team.</p>                               <div style= \"margin-bottom: 40px\">                                                                                       </div>                                                                                                                       </div>                          </html>       </td>                             </tr>                         </tbody>                     </table>                 </center>             </div>            </div>      </div> </body>" ;
-						      body = body.replace("${salesOrder}", ltSalesReturnDto.getOrderNumber());
-						      body = body.replace("${salespersonName}", salespersonName);
-						      //body = body.replace("${totalAmount}", totalAmount);
-						      if(ltMastUsers.getEmail()!= null) {
-						      String to= ltMastUsers.getEmail();
-//						      emailService.sendSimpleMessage(to, subject, body);
-						      sendEmail1( subject, body, to);
-				          }
-						}
-			}
-		}	
-			// End of Send E-mail code
-			
+	}
+
 			///siebel json creation
 			System.out.println("Hi I'm in Siebel Mehtod");
 			
@@ -915,6 +915,18 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 				status.setCode(SUCCESS);
 				status.setMessage("Save Successfully");
 				status.setData(status.getData());
+				
+				timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerydeleteSalesReturnLinesByHeaderId,outQuerydeleteSalesReturnLinesByHeaderId));
+				timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetSalesReturnSiebelDataById,outQuerygetSalesReturnSiebelDataById));
+				timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetAreaHeadDetails, outQuerygetAreaHeadDetails));
+				timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetSalesOfficersDetails, outQuerygetSalesOfficersDetails));
+				timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetSysAdminDetails,outQuerygetSysAdminDetails));
+			//	timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+				
+				long methodOut = System.currentTimeMillis();
+				System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+		        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+		        status.setTimeDifference(timeDifference);
 				return status;
 			}else {
 				status.setCode(FAIL);
@@ -929,6 +941,20 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		return null;
 	}
 	
+	public String timeDiff(long startTime,long endTime) {
+		// Step 4: Calculate the time difference in milliseconds
+        long durationInMillis = endTime - startTime;
+ 
+        // Step 5: Convert the duration into a human-readable format
+        long seconds = durationInMillis / 1000;
+        long milliseconds = durationInMillis % 1000;
+ 
+        String formattedDuration = String.format(
+            "%d seconds, %d milliseconds",
+            seconds, milliseconds
+        );
+		return formattedDuration;
+	}
 	
 	public static void sendEmail1(String subject, String text, String to) throws IOException {
 		System.out.println("Hi I'm in send email sales return...");
@@ -1056,7 +1082,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		return null;
 	}
 	
-	
+/* this is original code comment on 17-June-2024 for optimization purpose	
 	@Override
 	public Status getSalesReturn(RequestDto requestDto) throws ServerException{
 		try {
@@ -1179,87 +1205,205 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		}
 		orderDetailsDto.setLtSalesReturnDto(soHeaderDtoList);
 */		
+//		if(!IdsList.isEmpty()) {
+//		 for(int i =0; i<IdsList.size(); i++) 
+//			{
+//				System.out.println("I'm in for loop 11111111111");
+//				System.out.println("Hiiii" +i);
+//                //i = Long.valueOf(ids).intValue();
+//				ResponseDto	ltSalesReturnHeaderDto = new ResponseDto();
+//				
+//				List<LtSalesReturnLines> salesReturnLineData = ltSalesreturnDao.getSalesReturnLineDataForApproval(IdsList.get(i), requestDto);
+//				//System.out.println("sales Return Line Data ==-------== "+salesReturnLineData);
+//				
+//				//List<LtSalesReturnResponseDto> salesReturnHeaderData = ltSalesreturnDao.getSalesReturnForPendingAprroval1(salesReturnHeaderId.get(i));
+//				ResponseDto responseDtoList1 = ltSalesreturnDao.getSalesReturnForAprroval1(IdsList.get(i), requestDto);
+//				
+//				System.out.println("sales Return Header Data ==-------== "+ responseDtoList1);//salesReturnHeaderData);
+//				Long id1 = responseDtoList1.getSalesReturnHeaderId();
+//				//System.out.println("sales Return Header IDDDDDDDDDD" + id1);
+//				//if(id1!= null) {
+//				ltSalesReturnHeaderDto.setSalesReturnHeaderId(id1);//}
+//				ltSalesReturnHeaderDto.setSalesReturnNumber(responseDtoList1.getSalesReturnNumber());
+//				
+//				ltSalesReturnHeaderDto.setInvoiceNumber(responseDtoList1.getInvoiceNumber());
+//				ltSalesReturnHeaderDto.setOutletId(responseDtoList1.getOutletId());
+//				ltSalesReturnHeaderDto.setReturnStatus(responseDtoList1.getReturnStatus());
+//				ltSalesReturnHeaderDto.setReturnReason(responseDtoList1.getReturnReason());
+//				ltSalesReturnHeaderDto.setStatus(responseDtoList1.getStatus());
+//				ltSalesReturnHeaderDto.setSalesReturnDate(responseDtoList1.getSalesReturnDate());
+//				ltSalesReturnHeaderDto.setBeatName(responseDtoList1.getBeatName());
+//				ltSalesReturnHeaderDto.setOutletName(responseDtoList1.getOutletName());
+//				ltSalesReturnHeaderDto.setPriceList(responseDtoList1.getPriceList());
+//								
+//				ltSalesReturnHeaderDto.setSiebelRemark(responseDtoList1.getSiebelRemark());
+//				
+//				List<LtSalesReturnLines> ltSalesReturnLineDto1 = new ArrayList<LtSalesReturnLines>();
+//				//int line=0;
+//				//System.out.println("I'm in for loop above 2222222222");
+//				//for(LtSalesReturnLineDto ltSalesReturnLineDto:salesReturnLineData)
+//				for(int line =0; line<salesReturnLineData.size(); line++) 
+//					{
+//					LtSalesReturnLines ltSalesReturnLineDto = new LtSalesReturnLines();
+//					
+//					//System.out.println("salesssss ==-------== "+salesReturnLineData.get(line).getSalesReturnHeaderId());
+//					
+//					//System.out.println("I'm in for loop 22222222");
+//					Long id= salesReturnLineData.get(line).getSalesReturnHeaderId();
+//					ltSalesReturnLineDto.setSalesReturnHeaderId(id);	
+//					ltSalesReturnLineDto.setProductId(salesReturnLineData.get(line).getProductId());
+//					ltSalesReturnLineDto.setReturnQuantity(salesReturnLineData.get(line).getReturnQuantity());
+//					ltSalesReturnLineDto.setAvailability(salesReturnLineData.get(line).getAvailability());
+//					ltSalesReturnLineDto.setLotNumber(salesReturnLineData.get(line).getLotNumber());
+//					ltSalesReturnLineDto.setRemainingQuantity(salesReturnLineData.get(line).getRemainingQuantity());
+//					ltSalesReturnLineDto.setLocation(salesReturnLineData.get(line).getLocation());
+//					ltSalesReturnLineDto.setShippedQuantity(salesReturnLineData.get(line).getShippedQuantity());
+//					ltSalesReturnLineDto.setStatus(salesReturnLineData.get(line).getStatus());
+//					ltSalesReturnLineDto.setTotalPrice(salesReturnLineData.get(line).getTotalPrice());
+//					
+//					ltSalesReturnLineDto1.add(ltSalesReturnLineDto);
+//									
+//				}
+//				ltSalesReturnHeaderDto.setLtSalesReturnLines(ltSalesReturnLineDto1);
+//				responseDtoList.add(ltSalesReturnHeaderDto);
+//			}
+//		 salesReturnApproval.setResponseDto(responseDtoList);
+//
+//		 
+//		if (responseDtoList != null) {
+//			status.setCode(SUCCESS);
+//			status.setMessage("RECORD FOUND SUCCESSFULLY");
+//			status.setData(salesReturnApproval);
+//			return status;
+//		} }else {
+//			status.setCode(FAIL);
+//			status.setMessage("RECORD NOT FOUND");
+//			return status;
+//		}
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
+//  end of comment */	
+	
+	
+	@Override
+	public Status getSalesReturn(RequestDto requestDto) throws ServerException{
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetSalesReturnHeader = 0;
+		long outQuerygetSalesReturnHeader = 0;
+		long inQuerygetSalesReturnRecordCount = 0;
+		long outQuerygetSalesReturnRecordCount = 0;
+		long inQuerygetSalesReturnForAprroval_Opt = 0;
+		long outQuerygetSalesReturnForAprroval_Opt = 0;
+		long inQuerygetSalesReturnLinesForApproval_Opt = 0;
+		long outQuerygetSalesReturnLinesForApproval_Opt = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
+		try {
+		System.out.println("In getSalesReturn service method at "+LocalDateTime.now());
+		Status status = new Status();
+		System.out.println("requestDto"+requestDto);
+//		System.out.println("Above getSalesReturnHeader method at "+LocalDateTime.now());
+		inQuerygetSalesReturnHeader = System.currentTimeMillis();
+		List<Long> IdsList = ltSalesreturnDao.getSalesReturnHeader(requestDto);
+		inQuerygetSalesReturnHeader = System.currentTimeMillis();
+//		System.out.println("Below getSalesReturnHeader method at "+LocalDateTime.now());
+//		System.out.println("Above getSalesReturnRecordCount method at "+LocalDateTime.now());
+		inQuerygetSalesReturnRecordCount = System.currentTimeMillis();
+		Long recordCount = ltSalesreturnDao.getSalesReturnRecordCount(requestDto);
+		inQuerygetSalesReturnRecordCount = System.currentTimeMillis(); 
+//		System.out.println("Below getSalesReturnRecordCount method at "+LocalDateTime.now());
+		System.out.println("IdsList = "+IdsList);
+		System.out.println("IdsList = "+recordCount);
+		status.setTotalCount(recordCount);
+		status.setRecordCount(recordCount);
+		if(IdsList== null) {
+			status.setCode(RECORD_NOT_FOUND);
+			status.setCode(FAIL);
+			status.setData("Record not found");
+			return status;
+		}
+		
+//		System.out.println("Above IdsList for loop at = "+LocalDateTime.now());
 		if(!IdsList.isEmpty()) {
-		 for(int i =0; i<IdsList.size(); i++) 
-			{
-				System.out.println("I'm in for loop 11111111111");
-				System.out.println("Hiiii" +i);
-                //i = Long.valueOf(ids).intValue();
-				ResponseDto	ltSalesReturnHeaderDto = new ResponseDto();
-				
-				List<LtSalesReturnLines> salesReturnLineData = ltSalesreturnDao.getSalesReturnLineDataForApproval(IdsList.get(i), requestDto);
-				//System.out.println("sales Return Line Data ==-------== "+salesReturnLineData);
-				
-				//List<LtSalesReturnResponseDto> salesReturnHeaderData = ltSalesreturnDao.getSalesReturnForPendingAprroval1(salesReturnHeaderId.get(i));
-				ResponseDto responseDtoList1 = ltSalesreturnDao.getSalesReturnForAprroval1(IdsList.get(i), requestDto);
-				
-				System.out.println("sales Return Header Data ==-------== "+ responseDtoList1);//salesReturnHeaderData);
-				Long id1 = responseDtoList1.getSalesReturnHeaderId();
-				//System.out.println("sales Return Header IDDDDDDDDDD" + id1);
-				//if(id1!= null) {
-				ltSalesReturnHeaderDto.setSalesReturnHeaderId(id1);//}
-				ltSalesReturnHeaderDto.setSalesReturnNumber(responseDtoList1.getSalesReturnNumber());
-				
-				ltSalesReturnHeaderDto.setInvoiceNumber(responseDtoList1.getInvoiceNumber());
-				ltSalesReturnHeaderDto.setOutletId(responseDtoList1.getOutletId());
-				ltSalesReturnHeaderDto.setReturnStatus(responseDtoList1.getReturnStatus());
-				ltSalesReturnHeaderDto.setReturnReason(responseDtoList1.getReturnReason());
-				ltSalesReturnHeaderDto.setStatus(responseDtoList1.getStatus());
-				ltSalesReturnHeaderDto.setSalesReturnDate(responseDtoList1.getSalesReturnDate());
-				ltSalesReturnHeaderDto.setBeatName(responseDtoList1.getBeatName());
-				ltSalesReturnHeaderDto.setOutletName(responseDtoList1.getOutletName());
-				ltSalesReturnHeaderDto.setPriceList(responseDtoList1.getPriceList());
-								
-				ltSalesReturnHeaderDto.setSiebelRemark(responseDtoList1.getSiebelRemark());
-				
-				List<LtSalesReturnLines> ltSalesReturnLineDto1 = new ArrayList<LtSalesReturnLines>();
-				//int line=0;
-				//System.out.println("I'm in for loop above 2222222222");
-				//for(LtSalesReturnLineDto ltSalesReturnLineDto:salesReturnLineData)
-				for(int line =0; line<salesReturnLineData.size(); line++) 
-					{
-					LtSalesReturnLines ltSalesReturnLineDto = new LtSalesReturnLines();
-					
-					//System.out.println("salesssss ==-------== "+salesReturnLineData.get(line).getSalesReturnHeaderId());
-					
-					//System.out.println("I'm in for loop 22222222");
-					Long id= salesReturnLineData.get(line).getSalesReturnHeaderId();
-					ltSalesReturnLineDto.setSalesReturnHeaderId(id);	
-					ltSalesReturnLineDto.setProductId(salesReturnLineData.get(line).getProductId());
-					ltSalesReturnLineDto.setReturnQuantity(salesReturnLineData.get(line).getReturnQuantity());
-					ltSalesReturnLineDto.setAvailability(salesReturnLineData.get(line).getAvailability());
-					ltSalesReturnLineDto.setLotNumber(salesReturnLineData.get(line).getLotNumber());
-					ltSalesReturnLineDto.setRemainingQuantity(salesReturnLineData.get(line).getRemainingQuantity());
-					ltSalesReturnLineDto.setLocation(salesReturnLineData.get(line).getLocation());
-					ltSalesReturnLineDto.setShippedQuantity(salesReturnLineData.get(line).getShippedQuantity());
-					ltSalesReturnLineDto.setStatus(salesReturnLineData.get(line).getStatus());
-					ltSalesReturnLineDto.setTotalPrice(salesReturnLineData.get(line).getTotalPrice());
-					
-					ltSalesReturnLineDto1.add(ltSalesReturnLineDto);
-									
-				}
-				ltSalesReturnHeaderDto.setLtSalesReturnLines(ltSalesReturnLineDto1);
-				responseDtoList.add(ltSalesReturnHeaderDto);
-			}
+			
+			// Fetch all sales return headers and lines in a single batch query
+			inQuerygetSalesReturnForAprroval_Opt =  System.currentTimeMillis();
+	        List<ResponseDto> responseDtos = ltSalesreturnDao.getSalesReturnForAprroval_Opt(IdsList, requestDto);
+	        outQuerygetSalesReturnForAprroval_Opt =  System.currentTimeMillis();
+	        
+	        inQuerygetSalesReturnLinesForApproval_Opt = System.currentTimeMillis();
+	        Map<Long, List<LtSalesReturnLines>> salesReturnLinesMap = ltSalesreturnDao.getSalesReturnLinesForApproval_Opt(IdsList, requestDto);
+	        inQuerygetSalesReturnLinesForApproval_Opt = System.currentTimeMillis();
+	        
+	        System.out.println("responseDtos = "+responseDtos);
+	        System.out.println("responseDtos size = "+responseDtos.size());
+	        System.out.println("salesReturnLinesMap = "+salesReturnLinesMap);
+	        System.out.println("salesReturnLinesMap size = "+salesReturnLinesMap.size());
+	        
+	        SalesReturnApproval salesReturnApproval = new SalesReturnApproval();
+	        List<ResponseDto> responseDtoList = new ArrayList<>();
+ 
+	        Double totalReturnAmount = 0.0;
+ 
+//	        System.out.println("Above IdsList for loop at = " + LocalDateTime.now());
+	        for (ResponseDto responseDto : responseDtos) {
+	            Long id = responseDto.getSalesReturnHeaderId();
+	            System.out.println("Processing ID: " + id);
+ 
+	            List<LtSalesReturnLines> salesReturnLineData = salesReturnLinesMap.get(id);
+	            if (salesReturnLineData == null) continue;
+ 
+	            // Set header data
+	            responseDto.setLtSalesReturnLines(salesReturnLineData);
+ 
+	            // Accumulate total return amount
+	            for (LtSalesReturnLines line : salesReturnLineData) {
+	                totalReturnAmount += line.getTotalPrice() != null ? line.getTotalPrice() : 0;
+	            }
+ 
+	            responseDtoList.add(responseDto);
+	        }
+			
+//		 System.out.println("Below IdsList for loop at = "+LocalDateTime.now());
 		 salesReturnApproval.setResponseDto(responseDtoList);
-
-		 
+ 
+		
 		if (responseDtoList != null) {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
 			status.setData(salesReturnApproval);
+			
+			timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetSalesReturnHeader,outQuerygetSalesReturnHeader));
+			timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetSalesReturnRecordCount,outQuerygetSalesReturnRecordCount));
+			timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetSalesReturnForAprroval_Opt, outQuerygetSalesReturnForAprroval_Opt));
+			timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetSalesReturnLinesForApproval_Opt, outQuerygetSalesReturnLinesForApproval_Opt));
+		//	timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+		//	timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+			
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
+//			System.out.println("Exit from if getSalesReturn method at = "+LocalDateTime.now());
 			return status;
 		} }else {
 			status.setCode(FAIL);
 			status.setMessage("RECORD NOT FOUND");
+//			System.out.println("Exit from else getSalesReturn method at = "+LocalDateTime.now());
 			return status;
 		}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		System.out.println("Exit from else getSalesReturn method at == "+LocalDateTime.now());
 		return null;
 	}
-	
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	private LtSalesReturnHeader updateSalesReturnHeader(LtSalesReturnHeader ltSalesreturnHeader) throws ServerException {
@@ -1279,6 +1423,20 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		Status status = new Status();
 		Date d1 = new Date();
 		System.out.println("in method getInvoices service"+ new Date() + "this is datwe & time "+d1);
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetSalesOrderInvoiceNo = 0;
+		long outQuerygetSalesOrderInvoiceNo = 0;
+		long inQuerygetSoHeaderDataNew = 0;
+		long outQuerygetSoHeaderDataNew = 0;
+		long inQuerygetSoLineData = 0;
+		long outQuerygetSoLineData = 0;
+		long inQuerygetBeatNameAgainstInvoiceNo = 0;
+		long outQuerygetBeatNameAgainstInvoiceNo = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
 		try {
 			List<LtInvoiceDetailsResponseDto> ltInvoiceDetailsResponseDto = new ArrayList<LtInvoiceDetailsResponseDto>();
 /*		ltInvoiceDetailsResponseDto = ltSalesreturnDao.getInvoiceDetails(requestDto);
@@ -1397,7 +1555,9 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		return status;
 	*/
 			//System.out.println("RequestDto is = "+requestDto);
+			inQuerygetSalesOrderInvoiceNo = System.currentTimeMillis();
 			List<String> salesReturnInvoice = ltSalesreturnDao.getSalesOrderInvoiceNo(requestDto);
+			outQuerygetSalesOrderInvoiceNo = System.currentTimeMillis();
 			//System.out.println("in method getInvoices service line 1224 ="+ new Date() + "this is datwe & time line 1224= "+d1);
 			//System.out.println("Invocie no List = "+salesReturnInvoice + "List Size is "+salesReturnInvoice.size());
 			
@@ -1416,12 +1576,19 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			   		
 			if(salesReturnInvoice!= null) {
 			//	System.out.println("in method getInvoices service line 1240 ="+ new Date() + "this is datwe & time line 1240= "+d1);
-			List<SoHeaderDto> SoHeaderDtoList = new ArrayList<SoHeaderDto>();	
+			List<SoHeaderDto> SoHeaderDtoList = new ArrayList<SoHeaderDto>();
+			inQuerygetSoHeaderDataNew = System.currentTimeMillis();
 			SoHeaderDtoList = ltSalesreturnDao.getSoHeaderDataNew(salesReturnInvoice, requestDto);
+			outQuerygetSoHeaderDataNew = System.currentTimeMillis();
+			inQuerygetSoLineData = System.currentTimeMillis();
 			List<SoLineDto> SoLineDataList = ltSalesreturnDao.getSoLineData(SoHeaderDtoList.get(0).getInvoiceNumber(), requestDto);
+			outQuerygetSoLineData = System.currentTimeMillis();
 			String beatName1= null;
+			inQuerygetBeatNameAgainstInvoiceNo = System.currentTimeMillis();
 			List<SoHeaderDto>beatNameList =  ltSalesreturnDao.getBeatNameAgainstInvoiceNo(salesReturnInvoice.get(0));
-				for(int i =0; i<salesReturnInvoice.size(); i++) 
+			outQuerygetBeatNameAgainstInvoiceNo = System.currentTimeMillis();
+			
+			for(int i =0; i<salesReturnInvoice.size(); i++) 
 				{
 					SoHeaderDto	soHeaderDto = new SoHeaderDto();
 					//SoHeaderLineDto soHeaderDto = new SoHeaderLineDto();
@@ -1556,6 +1723,19 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 					status.setCode(RECORD_FOUND);
 					status.setMessage("Recod_Found_Successfully");
 					status.setData(ltSoHeaderDto);  //(salesReturnDto);
+					
+					timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetSalesOrderInvoiceNo,outQuerygetSalesOrderInvoiceNo));
+					timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetSoHeaderDataNew,outQuerygetSoHeaderDataNew));
+					timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetSoLineData, outQuerygetSoLineData));
+					timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetBeatNameAgainstInvoiceNo, outQuerygetBeatNameAgainstInvoiceNo));
+//					timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+//					timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+					
+					long methodOut = System.currentTimeMillis();
+					System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+			        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+			        status.setTimeDifference(timeDifference);
+					
 				  }
 				}else {
 				     status.setCode(FAIL); 
@@ -1750,6 +1930,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		return status;
 	}
 
+/* this is original method comment on 17-June-2024 for code optimization purpose	
 	@Override
 	public Status getSalesReturnForPendingAprroval(RequestDto requestDto) throws ServerException {
 		Status status = new Status();
@@ -1943,21 +2124,160 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			System.out.println("sales Return Response == "+salesReturnResponse);
 			System.out.println("sales Return Dto == "+salesReturnDto);
 */						
-			if(!salesReturnResponse.isEmpty()) {
-				status.setCode(RECORD_FOUND);
-				status.setMessage("Recod_Found_Successfully");
-				status.setData(salesReturnDto);  //(salesReturnDto);
-			}}else {
-			     status.setCode(FAIL); 
-			     status.setMessage("Recod_Not_Found");
-			}
-			
-		}catch(Exception e) {
-			   e.printStackTrace();
-			 }
-		return status;
+//			if(!salesReturnResponse.isEmpty()) {
+//				status.setCode(RECORD_FOUND);
+//				status.setMessage("Recod_Found_Successfully");
+//				status.setData(salesReturnDto);  //(salesReturnDto);
+//			}}else {
+//			     status.setCode(FAIL); 
+//			     status.setMessage("Recod_Not_Found");
+//			}
+//			
+//		}catch(Exception e) {
+//			   e.printStackTrace();
+//			 }
+//		return status;
+//	}
+//
+// end of optimization */	
+	
+	@Override
+	public Status getSalesReturnForPendingAprroval(RequestDto requestDto) throws ServerException {
+		System.out.println("In method getSalesReturnForPendingAprroval at "+LocalDateTime.now());
+	    Status status = new Status();
+	    Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetSalesReturnHeaderId = 0;
+		long outQuerygetSalesReturnHeaderId = 0;
+		long inQuerygetSalesReturnForPendingAprroval = 0;
+		long outQuerygetSalesReturnForPendingAprroval = 0;
+		long inQuerygetSalesReturnLineData = 0;
+		long outQuerygetSalesReturnLineData = 0;
+		long inQuerygetProdNameFromProdId = 0;
+		long outQuerygetProdNameFromProdId = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
+	    try {
+	        System.out.println("requestDto == " + requestDto);
+	        
+	        // Fetch sales return header IDs
+	        inQuerygetSalesReturnHeaderId = System.currentTimeMillis();
+	        List<Long> salesReturnHeaderId = ltSalesreturnDao.getSalesReturnHeaderId(requestDto);
+	        outQuerygetSalesReturnHeaderId = System.currentTimeMillis();
+	        System.out.println("salesReturnHeaderId == " + salesReturnHeaderId + " size is = " + salesReturnHeaderId.size());
+	     // Remove duplicates without using Set
+//	        List<Long> salesReturnHeaderId = new ArrayList<>();
+//	        for (Long element : salesReturnHeaderId1) {
+//	            if (!salesReturnHeaderId.contains(element)) {
+//	            	salesReturnHeaderId.add(element);
+//	            }
+//	        }
+	        if (salesReturnHeaderId != null && !salesReturnHeaderId.isEmpty()) {
+	            // Fetch sales return header data in one go
+	        	inQuerygetSalesReturnForPendingAprroval = System.currentTimeMillis();
+	        	List<LtSalesReturnResponseDto> salesReturnResponse = ltSalesreturnDao.getSalesReturnForPendingAprroval(salesReturnHeaderId);
+	        	outQuerygetSalesReturnForPendingAprroval = System.currentTimeMillis();
+	        	
+	            System.out.println("sales Return Response **==*** " + salesReturnResponse);
+	            
+	            // Fetch all line data in one go
+	            inQuerygetSalesReturnLineData = System.currentTimeMillis();
+	            List<LtSalesReturnLineDto> salesReturnLineData = ltSalesreturnDao.getSalesReturnLineData(salesReturnHeaderId, requestDto);
+	            outQuerygetSalesReturnLineData = System.currentTimeMillis();
+	            System.out.println("sales Return Line Data ==-------== " + salesReturnLineData);
+ 
+	            // Organize line data by header ID
+//	            Map<Long, List<LtSalesReturnLineDto>> linesByHeaderId = salesReturnLineData.stream()
+//	                    .collect(Collectors.groupingBy(LtSalesReturnLineDto::getSalesReturnHeaderId));
+	            Map<Long, List<LtSalesReturnLineDto>> linesByHeaderId = new HashMap<>();
+	            for (LtSalesReturnLineDto line : salesReturnLineData) {
+	                Long headerId = line.getSalesReturnHeaderId();
+	                if (!linesByHeaderId.containsKey(headerId)) {
+	                    linesByHeaderId.put(headerId, new ArrayList<>());
+	                }
+	                linesByHeaderId.get(headerId).add(line);
+	            }
+	            System.out.println("Map start");
+	            for (Map.Entry<Long, List<LtSalesReturnLineDto>> entry : linesByHeaderId.entrySet()) {
+	                System.out.println(entry.getKey() + " = " + entry.getValue());
+	            }
+	            System.out.println("Map end");
+ 
+	            // Process header data and map it to line data
+	            List<LtSalesReturnHeaderDto> ltSalesReturnHeaderList = new ArrayList<>();
+				System.out.println("Above for loop at "+LocalDateTime.now());
+ 
+	            for (LtSalesReturnResponseDto salesReturnHeaderData : salesReturnResponse) {
+	                LtSalesReturnHeaderDto ltSalesReturnHeaderDto = new LtSalesReturnHeaderDto();
+ 
+	                // Set header details
+	                Long id1 = salesReturnHeaderData.getSalesReturnHeaderId();
+	                ltSalesReturnHeaderDto.setSalesReturnHeaderId(id1);
+	                ltSalesReturnHeaderDto.setSalesReturnNumber(salesReturnHeaderData.getSalesReturnNumber());
+	                ltSalesReturnHeaderDto.setInvoiceNumber(salesReturnHeaderData.getInvoiceNumber());
+	                ltSalesReturnHeaderDto.setOutletId(salesReturnHeaderData.getOutletId());
+	                ltSalesReturnHeaderDto.setReturnStatus(salesReturnHeaderData.getReturnStatus());
+	                ltSalesReturnHeaderDto.setReturnReason(salesReturnHeaderData.getReturnReason());
+	                ltSalesReturnHeaderDto.setStatus(salesReturnHeaderData.getStatus());
+	                ltSalesReturnHeaderDto.setSalesReturnDate(salesReturnHeaderData.getSalesReturnDate());
+	                ltSalesReturnHeaderDto.setBeatName(salesReturnHeaderData.getBeatName());
+	                ltSalesReturnHeaderDto.setOutletName(salesReturnHeaderData.getOutletName());
+	                ltSalesReturnHeaderDto.setPriceList(salesReturnHeaderData.getPriceList());
+ 
+	                // Set line details
+	                List<LtSalesReturnLineDto> lines = linesByHeaderId.getOrDefault(id1, new ArrayList<>());
+	                System.out.println("lines = "+lines);
+	                for (LtSalesReturnLineDto line : lines) {
+	                	inQuerygetProdNameFromProdId = System.currentTimeMillis();
+	                    String productName = ltSalesreturnDao.getProdNameFromProdId(line.getProductId());
+	                	outQuerygetProdNameFromProdId = System.currentTimeMillis();
+	                    line.setProductName(productName);
+	                }
+	                ltSalesReturnHeaderDto.setLtSalesReturnLineDto(lines);
+	                ltSalesReturnHeaderList.add(ltSalesReturnHeaderDto);
+	            }
+ 
+				System.out.println("Below for loop at "+LocalDateTime.now());
+ 
+	            SalesReturnDto salesReturnDto = new SalesReturnDto();
+	            salesReturnDto.setLtSalesReturnHeaderDto(ltSalesReturnHeaderList);
+ 
+	            if (!salesReturnResponse.isEmpty()) {
+	                status.setCode(RECORD_FOUND);
+	                status.setMessage("Recod_Found_Successfully");
+	                status.setData(salesReturnDto);
+	                
+	                timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetSalesReturnHeaderId,outQuerygetSalesReturnHeaderId));
+	        		timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetSalesReturnForPendingAprroval,outQuerygetSalesReturnForPendingAprroval));
+	        		timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetSalesReturnLineData, outQuerygetSalesReturnLineData));
+	        		timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetProdNameFromProdId, outQuerygetProdNameFromProdId));
+	        //		timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+	        //		timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+	        		
+	        		long methodOut = System.currentTimeMillis();
+	        		System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+	                timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	                status.setTimeDifference(timeDifference);
+	                System.out.println("Exit from  getSalesReturnForPendingAprroval at "+LocalDateTime.now());
+	            } else {
+	                status.setCode(FAIL);
+	                status.setMessage("Recod_Not_Found");
+	                System.out.println("Exit from  getSalesReturnForPendingAprroval at "+LocalDateTime.now());
+	            }
+	        } else {
+	            status.setCode(FAIL);
+	            status.setMessage("Recod_Not_Found");
+	            System.out.println("Exit from  getSalesReturnForPendingAprroval at "+LocalDateTime.now());
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw new ServerException("Error fetching sales return data", e);
+	    }
+	    return status;
 	}
-
+	
 	@Override
 	public StringBuilder getInvoicePdfAgainstInvoiceNumber1(RequestDto requestDto) throws ServerException {
 		StringBuilder response = new StringBuilder();
@@ -2132,17 +2452,28 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 
 	@Override
 	public Status getSalesReturnOrderAgainstReturnOrderNo(String returnOrderNo) throws ServerException {
-		Status status = new Status();  
+		Status status = new Status(); 
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetSalesReturnOrderAgainstReturnOrderNo = 0;
+		long outQuerygetSalesReturnOrderAgainstReturnOrderNo = 0;
+		long inQuerygetSalesReturnOrderLineData = 0;
+		long outQuerygetSalesReturnOrderLineData = 0;
 		try {
                //SalesReturnApproval salesReturnApproval = new SalesReturnApproval();
               //List<LtSalesReturnResponseDto> ltSalesReturnResponseDto = new ArrayList<LtSalesReturnResponseDto>();
               //List<LtSalesReturnHeaderDto> ltSalesReturnHeaderDto = new ArrayList<LtSalesReturnHeaderDto>();
               LtSalesReturnHeaderDto ltSalesReturnHeaderDto = new LtSalesReturnHeaderDto();
               System.out.println("returnOrderNo is"+returnOrderNo);
+              inQuerygetSalesReturnOrderAgainstReturnOrderNo =  System.currentTimeMillis();
               ltSalesReturnHeaderDto = ltSalesreturnDao.getSalesReturnOrderAgainstReturnOrderNo(returnOrderNo);
+              outQuerygetSalesReturnOrderAgainstReturnOrderNo =  System.currentTimeMillis();
+
               //ltSalesReturnHeaderDto.get(0);
+              inQuerygetSalesReturnOrderLineData = System.currentTimeMillis();
               List<LtSalesReturnLineDto>  LtSalesReturnResponseDto1 = ltSalesreturnDao.getSalesReturnOrderLineData(ltSalesReturnHeaderDto.getSalesReturnHeaderId());
-              
+              outQuerygetSalesReturnOrderLineData = System.currentTimeMillis();
+
               List<LtSalesReturnLineDto>  salesLineList = new ArrayList<LtSalesReturnLineDto>();
               
               for(int i=0; i<LtSalesReturnResponseDto1.size(); i++ ) {
@@ -2178,6 +2509,19 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
             	   status.setCode(SUCCESS);
             	   status.setMessage("RECORD FOUND SUCCESSFULLY");
             	   status.setData(ltSalesReturnHeaderDto); //salesReturnDto
+            	   
+            	timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetSalesReturnOrderAgainstReturnOrderNo, outQuerygetSalesReturnOrderAgainstReturnOrderNo));
+           		timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetSalesReturnOrderLineData, outQuerygetSalesReturnOrderLineData));
+//           		timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetInStockProductCountForAdmin, outQuerygetInStockProductCountForAdmin));
+//           		timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetMultipleMrpForProduct, outQuerygetMultipleMrpForProduct));
+//           		timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+//           		timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+          		
+           		long methodOut = System.currentTimeMillis();
+           		System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+                   timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+                   status.setTimeDifference(timeDifference);
+            	   
                 }else 
                  {
             	   status.setCode(FAIL);

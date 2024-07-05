@@ -201,7 +201,7 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	@Override
 	public List<ProductDto> getInStockProductAdmin(RequestDto requestDto) throws ServiceException, IOException {
 		try {
-			System.out.print("In dao getInStockProduct");
+			System.out.println("In dao getInStockProduct");
 			String query = env.getProperty("getInStockProductAdmin");
 			
 			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
@@ -216,10 +216,11 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 			if (requestDto.getSearchField() != null) {
 				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 			}
-                 System.out.print(query);
+                 System.out.println(query);
 			List<ProductDto> productsList = jdbcTemplate.query(query,
 					new Object[] {requestDto.getProductId(), requestDto.getCategoryId(),
-							 searchField,requestDto.getOrgId(), requestDto.getLimit(), requestDto.getOffset() },
+							 searchField,//requestDto.getOrgId(), 
+							 requestDto.getLimit(), requestDto.getOffset() },
 					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
 			if (!productsList.isEmpty()) {
 				return productsList;
@@ -237,8 +238,9 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
-		Long count = getJdbcTemplate().queryForObject(query, new Object[] { requestDto.getProductId(), requestDto.getCategoryId(),
-				 searchField,requestDto.getOrgId() }, Long.class);
+		Long count = getJdbcTemplate().queryForObject(query, new Object[] { requestDto.getProductId(), 
+				requestDto.getCategoryId(), searchField//requestDto.getOrgId() 
+				}, Long.class);
 		return count;
 	}
 	
@@ -259,10 +261,11 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 			if (requestDto.getSearchField() != null) {
 				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 			}
-                 System.out.print(query);
+                 System.out.println(query);
 			List<ProductDto> productsList = jdbcTemplate.query(query,
 					new Object[] {requestDto.getProductId(), requestDto.getCategoryId(),
-							 searchField,requestDto.getOrgId(), requestDto.getLimit(), requestDto.getOffset() },
+							 searchField,//requestDto.getOrgId(), 
+							 requestDto.getLimit(), requestDto.getOffset() },
 					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
 			if (!productsList.isEmpty()) {
 				return productsList;
@@ -288,7 +291,7 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	@Override
 	public List<ProductDto> getInStockProductWithInventory(RequestDto requestDto) throws ServiceException, IOException {
 		try {
-			System.out.print("In daoooo getInStockProduct");
+			System.out.println("In daoooo getInStockProduct");
 			String query = env.getProperty("getInStockProductWithInventory");
 			
 			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
@@ -303,10 +306,12 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 			if (requestDto.getSearchField() != null) {
 				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 			}
-			System.out.print("Input requestDto= "+requestDto);
-              System.out.print(query);
+			System.out.println("Input requestDto= "+requestDto);
+              System.out.println(query);
 			List<ProductDto> productsList = jdbcTemplate.query(query,
-					new Object[] { requestDto.getOrgId(), requestDto.getProductId(), requestDto.getCategoryId(),
+					new Object[] { //requestDto.getOrgId(), 
+							requestDto.getProductId(), 
+							requestDto.getCategoryId(),
 							searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
 					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
 			System.out.println("products dao is ======" +productsList);
@@ -347,7 +352,8 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
-		Long count = getJdbcTemplate().queryForObject(query, new Object[] {requestDto.getOrgId(), requestDto.getProductId(), requestDto.getCategoryId(),
+		Long count = getJdbcTemplate().queryForObject(query, new Object[] {//requestDto.getOrgId(), 
+				requestDto.getProductId(), requestDto.getCategoryId(),
 				searchField,requestDto.getOutletId() }, Long.class);
 		return count;
 	}
@@ -369,9 +375,10 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 			if (requestDto.getSearchField() != null) {
 				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 			}
-              //System.out.print(query);
+              System.out.print("New request Dto = "+ requestDto);
 			List<ProductDto> productsList = jdbcTemplate.query(query,
-					new Object[] { requestDto.getOrgId(), requestDto.getProductId(), requestDto.getCategoryId(),
+					new Object[] { requestDto.getOrgId(), 
+							requestDto.getProductId(), requestDto.getCategoryId(),
 							searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
 					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
 			if (!productsList.isEmpty()) {
@@ -390,7 +397,8 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
-		Long count = getJdbcTemplate().queryForObject(query, new Object[] { requestDto.getOrgId(), requestDto.getProductId(), requestDto.getCategoryId(),
+		Long count = getJdbcTemplate().queryForObject(query, new Object[] { //requestDto.getOrgId(), 
+				requestDto.getProductId(), requestDto.getCategoryId(),
 				searchField,requestDto.getOutletId() }, Long.class);
 		return count;
 	}

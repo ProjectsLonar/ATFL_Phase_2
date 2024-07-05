@@ -34,7 +34,17 @@ public class RequestDto {
 	String siebelRemark; 
 	
 	String mobileNumber;
+	private String positionId;
 	
+	
+	public String getPositionId() {
+		return positionId;
+	}
+
+	public void setPositionId(String positionId) {
+		this.positionId = positionId;
+	}
+
 	public String getMobileNumber() {
 		return mobileNumber;
 	}
@@ -223,7 +233,6 @@ public class RequestDto {
 		this.totalPrice = totalPrice;
 	}
 
-	
 	@Override
 	public String toString() {
 		return "RequestDto [orgId=" + orgId + ", distributorId=" + distributorId + ", salesPersonId=" + salesPersonId
@@ -233,9 +242,8 @@ public class RequestDto {
 				+ ", returnStatus=" + returnStatus + ", salesReturnHeaderId=" + salesReturnHeaderId
 				+ ", salesReturnNumber=" + salesReturnNumber + ", price=" + price + ", totalPrice=" + totalPrice
 				+ ", loginId=" + loginId + ", siebelStatus=" + siebelStatus + ", siebelRemark=" + siebelRemark
-				+ ", mobileNumber=" + mobileNumber + "]";
+				+ ", mobileNumber=" + mobileNumber + ", positionId=" + positionId + "]";
 	}
 
-	
-	
+		
 }

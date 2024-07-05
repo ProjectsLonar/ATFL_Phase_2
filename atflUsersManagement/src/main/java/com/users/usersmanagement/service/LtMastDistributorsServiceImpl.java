@@ -1,8 +1,12 @@
 package com.users.usersmanagement.service;
 
 import java.rmi.ServerException;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -144,11 +148,29 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 	public Status verifyDistributorV1(String distributorCrmCode,String distributorName,String proprietorName,Long userId)
 			throws ServiceException {
 
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetUserById = 0;
+		long outQuerygetUserById = 0;
+		long inQueryverifyDistributorsV1 = 0;
+		long outQueryverifyDistributorsV1 = 0;
+//		long inQuerygetInStockProductCountForAdmin = 0;
+//		long outQuerygetInStockProductCountForAdmin = 0;
+//		long inQuerygetMultipleMrpForProduct = 0;
+//		long outQuerygetMultipleMrpForProduct = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
 		Status status = new Status();
+		inQuerygetUserById = System.currentTimeMillis();
 		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
+		outQuerygetUserById = System.currentTimeMillis();
 		if (ltMastUsers != null) {
+			inQueryverifyDistributorsV1 = System.currentTimeMillis();
 			LtMastDistributors ltMastDistributors = ltMastDistributorsDao.verifyDistributorsV1(distributorCrmCode,
 					distributorName, proprietorName);
+			outQueryverifyDistributorsV1 = System.currentTimeMillis();
 			if (ltMastDistributors != null) {
 
 				if (ltMastDistributors.getStatus().equalsIgnoreCase(ACTIVE)) {
@@ -204,6 +226,19 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 								ltMastDistributors.setDistributorCode(ltMastDistributors.getDistributorCrmCode());
 								//ltMastDistributors.setDistributorCode(ltMastDistributors.getDistributorCode());
 								status.setData(ltMastDistributors);
+								
+								timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetUserById,outQuerygetUserById));
+								timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQueryverifyDistributorsV1,outQueryverifyDistributorsV1));
+				//				timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetInStockProductCountForAdmin, outQuerygetInStockProductCountForAdmin));
+				//				timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetMultipleMrpForProduct, outQuerygetMultipleMrpForProduct));
+				//				timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+				//				timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+								
+								long methodOut = System.currentTimeMillis();
+								System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+						        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+						        status.setTimeDifference(timeDifference);
+						        
 								return status;
 
 							}
@@ -234,17 +269,47 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 		return status;
 	}
 
+	public String timeDiff(long startTime,long endTime) {
+		// Step 4: Calculate the time difference in milliseconds
+        long durationInMillis = endTime - startTime;
+ 
+        // Step 5: Convert the duration into a human-readable format
+        long seconds = durationInMillis / 1000;
+        long milliseconds = durationInMillis % 1000;
+ 
+        String formattedDuration = String.format(
+            "%d seconds, %d milliseconds",
+            seconds, milliseconds
+        );
+		return formattedDuration;
+	}
 	
 	@Override
 	public Status getAllDistributorAgainstAreahead(RequestDto requestDto)throws ServerException, ServiceException{
 		Status status = new Status();
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetUserTypeByUserId = 0;
+		long outQuerygetUserTypeByUserId = 0;
+		long inQuerygetAllDistributorAgainstAreahead = 0;
+		long outQuerygetAllDistributorAgainstAreahead = 0;
+		long inQuerygetAllDistributorAgainstSystemAdmin = 0;
+		long outQuerygetAllDistributorAgainstSystemAdmin = 0;
+//		long inQuerygetMultipleMrpForProduct = 0;
+//		long outQuerygetMultipleMrpForProduct = 0;
+//		long inQuerygetInStockProductWithInventory = 0;
+//		long outQuerygetInStockProductWithInventory = 0;
+//		long inQuerygetInStockProductCountWithInventory = 0;
+//		long outQuerygetInStockProductCountWithInventory = 0;
 		try {
-			
+			inQuerygetUserTypeByUserId = System.currentTimeMillis();
 			String userType= ltMastDistributorsDao.getUserTypeByUserId(requestDto.getUserId());
+			outQuerygetUserTypeByUserId = System.currentTimeMillis();
 			System.out.println("userType =" +userType);
 			if(userType.equalsIgnoreCase("AREAHEAD") ) {
-			
+				inQuerygetAllDistributorAgainstAreahead = System.currentTimeMillis();
 		List<LtMastDistributors> distributorList = ltMastDistributorsDao.getAllDistributorAgainstAreahead(requestDto);
+		        outQuerygetAllDistributorAgainstAreahead = System.currentTimeMillis();
 		System.out.println("distributorList \n"+distributorList);
 		if (distributorList != null) {
 			status.setCode(SUCCESS);
@@ -255,12 +320,26 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 			status.setMessage("RECORD NOT FOUND");
 		}
 			}
+			inQuerygetAllDistributorAgainstSystemAdmin = System.currentTimeMillis();
 			List<LtMastDistributors> distributorList = ltMastDistributorsDao.getAllDistributorAgainstSystemAdmin(requestDto);
+			inQuerygetAllDistributorAgainstSystemAdmin = System.currentTimeMillis();
 			System.out.println("distributorList Admin =="+distributorList);
 			if (distributorList != null) {
 				status.setCode(SUCCESS);
 				status.setMessage("RECORD FOUND SUCCESSFULLY");
 				status.setData(distributorList);
+				
+				timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetUserTypeByUserId,outQuerygetUserTypeByUserId));
+				timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetAllDistributorAgainstAreahead,outQuerygetAllDistributorAgainstAreahead));
+				timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetAllDistributorAgainstSystemAdmin, outQuerygetAllDistributorAgainstSystemAdmin));
+		//		timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetMultipleMrpForProduct, outQuerygetMultipleMrpForProduct));
+		//		timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+		//		timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+				
+				long methodOut = System.currentTimeMillis();
+				System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+		        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+		        status.setTimeDifference(timeDifference);
 			} //else {
 				//status.setCode(FAIL);
 				//status.setMessage("RECORD NOT FOUND");
@@ -274,12 +353,29 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 	@Override
 	public Status getAllNotification(RequestDto requestDto) throws ServerException, ServiceException{
 		Status status = new Status();
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetAllNotification = 0;
+		long outQuerygetAllNotification = 0;
 		try {
+			inQuerygetAllNotification = System.currentTimeMillis();
 			List<NotificationDetails> notificationList  = ltMastDistributorsDao.getAllNotification(requestDto);
+			outQuerygetAllNotification = System.currentTimeMillis();
 			if(notificationList != null) {
 				status.setCode(SUCCESS);
 				status.setMessage("RECORD FOUND SUCCESSFULLY");
 				status.setData(notificationList);
+				timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetAllNotification,outQuerygetAllNotification));
+//				timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetInStockProductAdmin,outQuerygetInStockProductAdmin));
+//				timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetInStockProductCountForAdmin, outQuerygetInStockProductCountForAdmin));
+//				timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetMultipleMrpForProduct, outQuerygetMultipleMrpForProduct));
+//				timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+//				timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+				
+				long methodOut = System.currentTimeMillis();
+				System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+		        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+		        status.setTimeDifference(timeDifference);
 			}else {
 				status.setCode(FAIL);
 				status.setMessage("RECORD NOT FOUND");
@@ -295,6 +391,20 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 	public Status getUserDataByIdForValidation(Long userId) throws ServerException, ServiceException {
 		 Status status = new Status();
 		 SiebelDto seibelUserdata = new SiebelDto();
+		 Map<String,String> timeDifference = new HashMap<>();
+			long methodIn = System.currentTimeMillis();
+			long inQuerygetUserDataByIdForValidation = 0;
+			long outQuerygetUserDataByIdForValidation = 0;
+//			long inQuerygetInStockProductAdmin = 0;
+//			long outQuerygetInStockProductAdmin = 0;
+//			long inQuerygetInStockProductCountForAdmin = 0;
+//			long outQuerygetInStockProductCountForAdmin = 0;
+//			long inQuerygetMultipleMrpForProduct = 0;
+//			long outQuerygetMultipleMrpForProduct = 0;
+//			long inQuerygetInStockProductWithInventory = 0;
+//			long outQuerygetInStockProductWithInventory = 0;
+//			long inQuerygetInStockProductCountWithInventory = 0;
+//			long outQuerygetInStockProductCountWithInventory = 0;
 		 try {
 			 
 			 /*if(seibelUserdata.getMobileNumber()==("8806962104") || seibelUserdata.getMobileNumber() =="7013600327" || 
@@ -304,7 +414,9 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 			 {*/
 			 System.out.println("userId =" +userId);
 			 //SiebelDto seibelUserdata = new SiebelDto();
+			 inQuerygetUserDataByIdForValidation = System.currentTimeMillis();
 			 seibelUserdata = ltMastDistributorsDao.getUserDataByIdForValidation(userId);
+			 outQuerygetUserDataByIdForValidation = System.currentTimeMillis();
 			 /*}else {
 			
 				//String mobileNo= user.getMobileNumber();
@@ -351,6 +463,13 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 					status.setCode(SUCCESS);
 					status.setMessage("RECORD FOUND SUCCESSFULLY");
 					status.setData(seibelUserdata);
+					
+					timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetUserDataByIdForValidation,outQuerygetUserDataByIdForValidation));
+					
+					long methodOut = System.currentTimeMillis();
+					System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+			        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+			        status.setTimeDifference(timeDifference);
 				}
 			}
 			 else {
@@ -365,6 +484,10 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 
 	@Override
 	public Status saveSeibelUserData(Long userId) throws ServerException, ServiceException {
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetUserDataByIdForValidation = 0;
+		long outQuerygetUserDataByIdForValidation = 0;
 		Status status = new Status();
 		LtMastUsers user = new LtMastUsers();
 		//LtMastUsers userData = ltMastUsersDao.getLtMastUsersByMobileNumber(userId);
@@ -374,7 +497,11 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 		//System.out.println("siebelUserData2 =" +userData);
 		
 		SiebelDto seibelUserdata = new SiebelDto();
+		
+		inQuerygetUserDataByIdForValidation =  System.currentTimeMillis();
 		seibelUserdata = ltMastDistributorsDao.getUserDataByIdForValidation(userId);
+		outQuerygetUserDataByIdForValidation =  System.currentTimeMillis();
+		
 		//if(userData.getMobileNumber()==seibelUserdata.getMobileNumber())
 		if(seibelUserdata!= null) {
 			
@@ -436,9 +563,70 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 			status.setCode(SUCCESS);
 			status.setMessage("Update Successfully");
 			status.setData(user);
+			
+			timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetUserDataByIdForValidation,outQuerygetUserDataByIdForValidation));
+			
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
 			return status;
 		}
 		
 		return null;
+	}
+
+	
+	@Override
+	public Status deleteNotificationAfter72Hours() throws ServerException, ServiceException {
+	        Status status= new Status();    
+		try {
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.HOUR, -72);
+			Date cutoffDate = calendar.getTime(); 
+			
+			NotificationDetails notificationDetails= ltMastDistributorsDao.deleteNotificationAfter72Hours(cutoffDate);
+	    	   
+			if(notificationDetails == null) {
+				status.setCode(DELETE_SUCCESSFULLY);
+				status.setMessage("Record_Deleted_Successfully");
+				return status;
+			}else {
+				status.setCode(FAIL);
+				status.setMessage("Recorde_Not_Deleted");
+				return status;
+			}
+			
+	       }catch(Exception e) {
+	    	   e.printStackTrace();
+	       } 
+		
+		return status;
+	}
+
+	@Override
+	public Status updateReadNotificationFlag(RequestDto requestDto) throws ServerException, ServiceException {
+		Status status = new Status();
+		try {
+			if(requestDto!= null) {
+				
+				System.out.println("Notifi id is "+requestDto.getNotificationId());
+				ltMastDistributorsDao.updateReadNotificationFlag(requestDto.getNotificationId());
+			
+			//if(notificationDetails.getReadFlag().equalsIgnoreCase("Y")) {
+				status.setCode(UPDATE_SUCCESSFULLY);
+				status.setMessage("Record_Updated_Successfully");
+				return status;
+			//}
+			}/*else {
+				status.setCode(FAIL);
+				status.setMessage("Recorde_Not_Deleted");
+				return status;
+			}*/
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return status;
 	}
 }

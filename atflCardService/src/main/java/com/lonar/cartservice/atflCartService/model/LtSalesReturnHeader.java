@@ -79,8 +79,19 @@ public class LtSalesReturnHeader extends BaseClass {
 	@Column(name = "SIEBEL_JSONPAYLOAD")
 	private String siebelJsonpayload;
 	
+	@Transient
+	private Long userId;
 	
 	
+	
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 	public String getSiebelJsonpayload() {
 		return siebelJsonpayload;
 	}
@@ -235,9 +246,8 @@ public class LtSalesReturnHeader extends BaseClass {
 				+ ", returnReason=" + returnReason + ", salesReturnDate=" + salesReturnDate + ", outletName="
 				+ outletName + ", beatName=" + beatName + ", siebelStatus=" + siebelStatus + ", siebelRemark="
 				+ siebelRemark + ", outletCode=" + outletCode + ", priceList=" + priceList + ", test=" + test
-				+ ", siebelJsonpayload=" + siebelJsonpayload + "]";
+				+ ", siebelJsonpayload=" + siebelJsonpayload + ", userId=" + userId + "]";
 	}
 
-	
-	
+		
 }

@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 	@Autowired
 	private Environment env;
 
-	@Override
+/*	@Override   this is original method comment on 19-June-2024 for calculating api timing
 	public Status statusWiseOrdersCount(String orgId, String userId) throws ServiceException {
 		List<StatusWiseOrdersCountDto> listStatusData = dashboardDao.statusWiseOrdersCount(orgId,userId);
 		Status status = new Status();
@@ -62,7 +63,48 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 		}
 		return status;
 	}
-
+*/
+	@Override
+	public Status statusWiseOrdersCount(String orgId, String userId) throws ServiceException {
+		System.out.println("In method statusWiseOrdersCount = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerystatusWiseOrdersCount = System.currentTimeMillis();
+		List<StatusWiseOrdersCountDto> listStatusData = dashboardDao.statusWiseOrdersCount(orgId,userId);
+		long outQuerystatusWiseOrdersCount = System.currentTimeMillis();
+		Status status = new Status();
+		if (listStatusData != null) {
+			status.setCode(SUCCESS);
+			status.setMessage("Success");
+			status.setData(listStatusData);
+		} else {
+			status.setCode(FAIL);
+			status.setMessage("FAIL");
+			status.setData(listStatusData);
+		}
+        timeDifference.put("QuerystatusWiseOrdersCount", timeDiff(inQuerystatusWiseOrdersCount,outQuerystatusWiseOrdersCount));
+		long methodOut = System.currentTimeMillis();
+		System.out.println("Exit from method statusWiseOrdersCount at "+LocalDateTime.now());
+        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+        status.setTimeDifference(timeDifference);
+		return status;
+	}
+	
+	public String timeDiff(long startTime,long endTime) {
+		// Step 4: Calculate the time difference in milliseconds
+        long durationInMillis = endTime - startTime;
+ 
+        // Step 5: Convert the duration into a human-readable format
+        long seconds = durationInMillis / 1000;
+        long milliseconds = durationInMillis % 1000;
+ 
+        String formattedDuration = String.format(
+            "%d seconds, %d milliseconds",
+            seconds, milliseconds
+        );
+		return formattedDuration;
+	}
+	
 	@Override
 	public Status categoryRevenueDistribution(String orgId, String userId) throws ServiceException {
 		Status status;
@@ -122,7 +164,8 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 		} 
 		return null;
 	}
-	
+
+/*	this is original method comment on 19-June-2024 for calculating api timing
 	@Override
 	public Status categoryRevenueDistributionv2(String orgId, String userId) throws ServiceException {
 		Status status;
@@ -168,7 +211,65 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 		} 
 		return null;
 	}
-
+*/
+	
+	@Override
+	public Status categoryRevenueDistributionv2(String orgId, String userId) throws ServiceException {
+		System.out.println("In method statusWiseOrdersCount = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerycategoryRevenueDistribution = 0;
+		long outQuerycategoryRevenueDistribution = 0;
+		Status status;
+		try {
+			Status status1 =new Status();
+			inQuerycategoryRevenueDistribution = System.currentTimeMillis();
+			List<CategoryRevenueDto> categoryRevenueList = dashboardDao.categoryRevenueDistribution(orgId,userId);
+			outQuerycategoryRevenueDistribution = System.currentTimeMillis();
+			if(categoryRevenueList.isEmpty()) {
+				status1.setMessage("Report data not available");
+				status1.setCode(FAIL);
+				return status1;
+			}
+			
+			Map<String,CategoryRevenueResponseDto> categoryRevenueResponseDtoMap = new HashMap<String,CategoryRevenueResponseDto>();
+			
+			for(CategoryRevenueDto categoryRevenueDto:categoryRevenueList) {
+				CategoryRevenueResponseDto categoryRevenueResponseDto=new CategoryRevenueResponseDto();
+				categoryRevenueResponseDto.setCategoryId(categoryRevenueDto.getCategoryId());
+				categoryRevenueResponseDto.setRevenue(categoryRevenueDto.getRevenue());
+				categoryRevenueResponseDto.setDbc(categoryRevenueDto.getDbc());
+				categoryRevenueResponseDto.setCategoryName(categoryRevenueDto.getCategoryName());
+				categoryRevenueResponseDto.setCategoryDesc(categoryRevenueDto.getCategoryName());
+				categoryRevenueResponseDtoMap.put(categoryRevenueResponseDto.getCategoryId(), categoryRevenueResponseDto);
+			}
+			
+			//Map<Long,CategoryRevenueResponseDto> categoryRevenueResponseDtoMap2 = dashboardDao.getOrderCountDataV2(categoryRevenueResponseDtoMap,userId);
+ 
+			List<CategoryRevenueResponseDto> categoryRevenueResponseDtoList= new ArrayList(categoryRevenueResponseDtoMap.values());
+			
+			status = new Status();
+			if (!categoryRevenueResponseDtoList.isEmpty()) {
+				status.setCode(SUCCESS);
+				status.setMessage("Success");
+				status.setData(categoryRevenueResponseDtoList);
+			} else {
+				status.setCode(FAIL);
+				status.setMessage("FAIL");
+				status.setData(categoryRevenueResponseDtoList);
+			}
+			timeDifference.put("QuerycategoryRevenueDistribution", timeDiff(inQuerycategoryRevenueDistribution,outQuerycategoryRevenueDistribution));
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method statusWiseOrdersCount at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
+			return status;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@Override
 	public Status dailySales(String orgId, String userId) throws ServiceException {
 		try {
@@ -225,11 +326,72 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 		}
 		return null; 
 	}
+	
+/*	this is original method comment on 19-June-2024 for calculating api timing
 	@Override
 	public Status dailySalesV2(String orgId, String userId) throws ServiceException {
 		Status status = new Status();
 		try {
 			List<DailySalesResponseDto> dailySalesList = dashboardDao.dailySalesV2(orgId,userId);
+			
+			//Long distId = dashboardDao.getDistributorIdByUserId(userId);
+			
+/*			Map<String,DailySalesResponseDto> dailySalesResponseDtoMap = new LinkedHashMap<String,DailySalesResponseDto>();
+			LocalDate today = LocalDate.now();
+			int year = today.getYear();
+			int month = today.getMonthValue();
+			int day = today.getDayOfMonth();
+			for (int i = 1; i <= day; i++) {
+				DailySalesResponseDto dailySalesResponseObj = new DailySalesResponseDto();
+				String dateInString = String.format("%02d", i) + "-" + String.format("%02d", month) + "-" + year;
+				dailySalesResponseObj.setDate(dateInString);
+				dailySalesResponseDtoMap.put(dateInString, dailySalesResponseObj);
+			}
+			
+			if(dailySalesList!=null) {
+				for(DailySalesResponseDto dailySalesResponseDto:dailySalesList) {
+	 				if(dailySalesResponseDtoMap.containsKey(dailySalesResponseDto.getDate())) {
+	 					dailySalesResponseDtoMap.get(dailySalesResponseDto.getDate()).setSale(dailySalesResponseDto.getSale());
+	 					dailySalesResponseDtoMap.get(dailySalesResponseDto.getDate()).setTls(dailySalesResponseDto.getTls());
+	 					dailySalesResponseDtoMap.get(dailySalesResponseDto.getDate()).setDbc(dailySalesResponseDto.getDbc());
+					}
+				}	
+			}
+			//Map<String,DailySalesResponseDto> dailySalesResponseMap = dashboardDao.getOrderAndLineCountDataV2(distId,userId,dailySalesResponseDtoMap);
+			
+			List<DailySalesResponseDto> dailySalesResponseDtoList= new ArrayList<DailySalesResponseDto>(dailySalesResponseDtoMap.values());
+	*/		
+//			
+//			
+//			if(!dailySalesList.isEmpty()) {
+//				status.setCode(SUCCESS);
+//				status.setMessage("Success");
+//				status.setData(dailySalesList);
+//			} else {
+//				status.setCode(FAIL);
+//				status.setMessage("FAIL");
+//				status.setData(dailySalesList);
+//			}
+//			return status;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return status; 
+//	}
+//*/	
+	
+	@Override
+	public Status dailySalesV2(String orgId, String userId) throws ServiceException {
+		System.out.println("In method dailySalesV2 = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerydailySalesV2 = 0;
+		long outQuerydailySalesV2 = 0;
+		Status status = new Status();
+		try {
+			inQuerydailySalesV2 = System.currentTimeMillis();
+			List<DailySalesResponseDto> dailySalesList = dashboardDao.dailySalesV2(orgId,userId);
+			outQuerydailySalesV2 = System.currentTimeMillis();
 			
 			//Long distId = dashboardDao.getDistributorIdByUserId(userId);
 			
@@ -269,12 +431,19 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 				status.setMessage("FAIL");
 				status.setData(dailySalesList);
 			}
+	        timeDifference.put("QuerydailySalesV2", timeDiff(inQuerydailySalesV2,outQuerydailySalesV2));
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method dailySalesV2 at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
 			return status;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return status; 
+		return status;
 	}
+	
+/*	this is original method comment on 19-June-2024 for calculating api timing
 	@Override
 	public Status monthlySalesV2(String orgId, String userId) throws ServiceException {
 		Status status = new Status();
@@ -319,6 +488,80 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 			//Status status = new Status();
 			  
 	 */
+//			if (!MonthlyResponseDtoList.isEmpty()) {
+//				System.out.println("In if status");
+//				System.out.println("MonthlyResponseDtoList == "+MonthlyResponseDtoList);
+//				return monthlyResponseDtoList;
+//				status.setCode(SUCCESS);
+//				status.setMessage("Success");
+//				status.setData(MonthlyResponseDtoList);
+//			} 
+//			else {
+//				//System.out.println("In else status");
+//				status.setCode(FAIL);
+//				status.setMessage("FAIL");
+//				status.setData(MonthlyResponseDtoList);
+//			}//System.out.println("status1"+status);
+//			//return MonthlyResponseDtoList;
+//			return status;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}//System.out.println("status"+status);
+//		return status;
+//
+//	}
+//*/	
+	
+	@Override
+	public Status monthlySalesV2(String orgId, String userId) throws ServiceException {
+		System.out.println("In method monthlySalesV2 = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerymonthlySalesV2 = 0;
+		long outQuerymonthlySalesV2 = 0;
+		Status status = new Status();
+		List<MonthlyResponseDto> monthlyResponseDtoList= new ArrayList <MonthlyResponseDto>();
+		try {
+			inQuerymonthlySalesV2 = System.currentTimeMillis();
+			List<MonthlyResponseDto> MonthlyResponseDtoList = dashboardDao.monthlySalesV2(orgId, userId);
+			outQuerymonthlySalesV2 = System.currentTimeMillis();
+			System.out.println("in service Impl =="+MonthlyResponseDtoList);
+/* comment on 20-May-24		Map<String,MonthlyResponseDto> monthlyResponseDtoMap=new LinkedHashMap<String,MonthlyResponseDto>();
+			
+			//Long distId = dashboardDao.getDistributorIdByUserId(userId);
+			String distId = dashboardDao.getDistributorIdByUserId(userId);
+			
+			for (int i = 11; i >= 0; i--) {
+				YearMonth date = YearMonth.now().minusMonths(i);
+//				System.out.println("in for loop date  == "+date);
+				String monthName = date.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH)+" "+date.getYear();
+//				System.out.println("in for loop monthName  == "+monthName);
+				MonthlyResponseDto monthlyResponseDto=new MonthlyResponseDto();
+				monthlyResponseDto.setMonth(monthName);
+				monthlyResponseDto.setMonthNo(String.valueOf(date.getMonthValue()));
+				monthlyResponseDtoMap.put(monthName, monthlyResponseDto);
+			}
+			
+			if (MonthlyResponseDtoList != null) {
+				for (MonthlyResponseDto monthlyResponseDto : MonthlyResponseDtoList) {
+					if (monthlyResponseDtoMap.containsKey(monthlyResponseDto.getMonth())) {
+						monthlyResponseDtoMap.get(monthlyResponseDto.getMonth()).setSale(monthlyResponseDto.getSale());
+						monthlyResponseDtoMap.get(monthlyResponseDto.getMonth()).setTls(monthlyResponseDto.getTls());
+						monthlyResponseDtoMap.get(monthlyResponseDto.getMonth()).setDbc(monthlyResponseDto.getDbc());
+					}
+				}
+			}
+			Map<String,MonthlyResponseDto> monthlyResponseDto = dashboardDao.getCountDataForMonthlyDashboardV2(distId,userId,monthlyResponseDtoMap);
+			
+			List<MonthlyResponseDto> monthlyResponseDtoList1= new ArrayList<>(monthlyResponseDto.values());
+//			System.out.println("values = "+monthlyResponseDto.values());
+//			List<MonthlyResponseDto> monthlyResponseDtoList1= new ArrayList<>();
+//			System.out.println("List is "+monthlyResponseDtoList1);
+ 
+			//System.out.println("MonthlyResponseDtoList == "+MonthlyResponseDtoList);
+			//Status status = new Status();
+			  
+	 */
 			if (!MonthlyResponseDtoList.isEmpty()) {
 //				System.out.println("In if status");
 //				System.out.println("MonthlyResponseDtoList == "+MonthlyResponseDtoList);
@@ -326,7 +569,7 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 				status.setCode(SUCCESS);
 				status.setMessage("Success");
 				status.setData(MonthlyResponseDtoList);
-			} 
+			}
 			else {
 				//System.out.println("In else status");
 				status.setCode(FAIL);
@@ -334,13 +577,19 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 				status.setData(MonthlyResponseDtoList);
 			}//System.out.println("status1"+status);
 			//return MonthlyResponseDtoList;
+			timeDifference.put("QuerymonthlySalesV2", timeDiff(inQuerymonthlySalesV2,outQuerymonthlySalesV2));
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method monthlySalesV2 at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
 			return status;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}//System.out.println("status"+status);
 		return status;
-
+ 
 	}
+	
 	@Override
 	public Status monthlySales(String orgId, String userId) throws ServiceException {
 		try {
@@ -406,12 +655,34 @@ public class DashboardServiceImpl implements DashboardService, CodeMaster{
 
 	}
 
+/*	this is original method comment on 19-June-2024 for calculating api timing
 	@Override
 	public Status dailySalesExcel(String orgId, String userId) throws ServiceException {
 		Status status = dailySalesV2(orgId, userId);
 		List<DailySalesResponseDto> dailySalesResponseDtoList = (List<DailySalesResponseDto>) status.getData();
 		if(!dailySalesResponseDtoList.isEmpty()) {
 			status = createExcelSalespersonReport(dailySalesResponseDtoList);
+			return status;
+		}else {
+			status.setMessage("Dashboard data not available");
+			status.setCode(FAIL);
+			return status;
+		}
+	}
+*/	
+	@Override
+	public Status dailySalesExcel(String orgId, String userId) throws ServiceException {
+		System.out.println("In method dailySalesExcel = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		Status status = dailySalesV2(orgId, userId);
+		List<DailySalesResponseDto> dailySalesResponseDtoList = (List<DailySalesResponseDto>) status.getData();
+		if(!dailySalesResponseDtoList.isEmpty()) {
+			status = createExcelSalespersonReport(dailySalesResponseDtoList);
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method dailySalesExcel at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOutdailySalesExcel", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
 			return status;
 		}else {
 			status.setMessage("Dashboard data not available");

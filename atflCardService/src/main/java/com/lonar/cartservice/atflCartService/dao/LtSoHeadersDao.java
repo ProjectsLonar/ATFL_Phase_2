@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.DistributorDetailsDto;
+import com.lonar.cartservice.atflCartService.dto.LtOrderLineDataGt;
 import com.lonar.cartservice.atflCartService.dto.QuantityCheck;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.ResponseDto;
@@ -109,4 +110,10 @@ public interface LtSoHeadersDao {
 	List<ResponseDto> getSoHeader11(RequestDto requestDto)throws ServiceException, IOException;
 
 	List<ResponseDto> getSoHeader111(RequestDto requestDto)throws ServiceException, IOException;
+
+	List<Long> getSoHeaderFromProcedure()throws ServiceException, IOException;
+
+	List<ResponseDto> getOrderV2FromProcedure(List<Long> headerIdsList)throws ServiceException, IOException;
+
+	List<LtOrderLineDataGt> getOrderV2DataFromProcedure()throws ServiceException, IOException;
 }

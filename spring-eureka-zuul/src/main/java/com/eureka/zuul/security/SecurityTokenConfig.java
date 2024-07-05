@@ -234,7 +234,9 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				 .antMatchers("/uam" + "/distributor" + "/getAllNotification/**").hasAnyRole("DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "SYSTEMADMINISTRATOR", "ORGANIZATION_USER")
 				 .antMatchers("/uam" + "/distributor" + "/getUserDataByIdForValidation/**").permitAll()
 				 .antMatchers("/uam" + "/distributor" + "/saveSeibelUserData/**").permitAll()
-
+				 .antMatchers("/uam" + "/distributor" + "/updateReadNotificationFlag/**").permitAll()
+				 .antMatchers("/uam" + "/distributor" + "/deleteNotificationAfter72Hours/**").permitAll()
+				 
 				// ANONYMOUS
 
 				// Any other request must be authenticated

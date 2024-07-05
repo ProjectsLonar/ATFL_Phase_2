@@ -3,6 +3,7 @@ package com.lonar.cartservice.atflCartService.dao;
 import java.io.IOException;
 import java.rmi.ServerException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.lonar.cartservice.atflCartService.common.ServiceException;
@@ -107,5 +108,12 @@ public interface LtSalesreturnDao {
 	List<SoHeaderDto> getSoHeaderDataNew(List<String> salesReturnInvoice, RequestDto requestDto)throws ServerException;
 
 	String getUserNameFromSiebel(String mobileNumber)throws ServerException;
+	
+	List<ResponseDto> getSalesReturnForAprroval_Opt(List<Long> long1, RequestDto requestDto)throws ServerException;
+	
+	Map<Long, List<LtSalesReturnLines>> getSalesReturnLinesForApproval_Opt(List<Long> long1, RequestDto requestDto) throws ServerException;
 
+	List<LtSalesReturnLineDto> getSalesReturnLineData(List<Long> long1, RequestDto requestDto)throws ServerException;
+
+	List<LtMastUsers> getAllUsersForEmail(String outletId)throws ServerException;
 }

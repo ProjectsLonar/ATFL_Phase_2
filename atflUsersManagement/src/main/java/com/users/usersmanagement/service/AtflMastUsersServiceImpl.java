@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -623,7 +625,7 @@ public Status sendOTPToUser(String mobileNumber) throws ServiceException, IOExce
 	}	
 */	
 	
-	@Override
+/*	@Override  comment on 19-June-2024 for api time calculation
 	public Status sendOTPToUser(String mobileNumber) throws ServiceException, IOException {
 		Status status = new Status();
 	    
@@ -699,6 +701,115 @@ public Status sendOTPToUser(String mobileNumber) throws ServiceException, IOExce
 	    }
 		return status;
 	}	
+*/	
+	
+	@Override
+	public Status sendOTPToUser(String mobileNumber) throws ServiceException, IOException {
+		System.out.println("In method sendOTPToUser = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetLtMastUsersByMobileNumber = 0;
+		long outQuerygetLtMastUsersByMobileNumber = 0;
+		long inQuerycreateUser = 0;
+		long outQuerycreateUser = 0;
+		Status status = new Status();
+	    
+	    try {
+ 
+	        // Validate mobile number
+	        if (!Validation.validatePhoneNumber(mobileNumber)) {
+	            status.setCode(FAIL);
+	            status.setMessage(env.getProperty("lonar.users.mobilenoValid"));
+	            System.out.println("status is "+status);
+	            System.out.println("status = "+CompletableFuture.completedFuture(status));
+	            return status;
+//	            return CompletableFuture.completedFuture(status);
+	        }
+ 
+	        // Check if mobile number is in predefined list
+	        if (!isMobileNumberPredefined(mobileNumber)) {
+	            if (!isUserExists(mobileNumber)) {
+	                status.setCode(FAIL);
+	                status.setMessage(env.getProperty("lonar.users.userLoginNotsuccess"));
+	                System.out.println("status in isMobileNumberPredefined"+status);
+		            System.out.println("status isMobileNumberPredefined = "+CompletableFuture.completedFuture(status));
+//	                return CompletableFuture.completedFuture(status);
+		            return status;
+	            }
+	        }
+	        System.out.println("Above getLtMastUsersByMobileNumber query call at = " + LocalDateTime.now());
+	        inQuerygetLtMastUsersByMobileNumber = System.currentTimeMillis();
+	        LtMastUsers user = ltMastUsersDao.getLtMastUsersByMobileNumber(mobileNumber);
+	        outQuerygetLtMastUsersByMobileNumber = System.currentTimeMillis();
+	        System.out.println("Below getLtMastUsersByMobileNumber query call at = " + LocalDateTime.now());
+	        if (user == null) {
+	        	inQuerycreateUser = System.currentTimeMillis();
+	            user = createUser(mobileNumber);
+	            outQuerycreateUser = System.currentTimeMillis();
+	            timeDifference.put("QuerycreateUser", timeDiff(inQuerycreateUser,outQuerycreateUser));
+	            if (user == null) {
+	                status.setCode(FAIL);
+	                status.setMessage(env.getProperty("lonar.users.userLoginNotsuccess"));
+//	                return CompletableFuture.completedFuture(status);
+	                return status;
+	            }
+	        }
+ 
+	        CompletableFuture<Status> futureStatus = sendOtpToUserAsync(user)
+	            .thenApply(result -> {
+	                if (result) {
+	                    status.setCode(SUCCESS);
+	                    status.setMessage(env.getProperty("lonar.users.sentOTPsuccess"));
+	                } else {
+	                    status.setCode(FAIL);
+	                    status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
+	                }
+	                return status;
+	            }).exceptionally(ex -> {
+	                ex.printStackTrace();
+	                status.setCode(FAIL);
+	                status.setMessage(env.getProperty("lonar.users.sentOTPnotsuccess"));
+	                return status;
+	            });
+ 
+//	        System.out.println("Exit from sendOTP at " + LocalDateTime.now());
+	        status.setCode(SUCCESS);
+	        status.setMessage(env.getProperty("lonar.users.sentOTPsuccess"));
+//	        System.out.println("future status is "+futureStatus);
+//	        return futureStatus.get();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        CompletableFuture<Status> failedFuture = new CompletableFuture<>();
+	        failedFuture.completeExceptionally(e);
+	        try {
+				return failedFuture.get();
+			} catch (InterruptedException | ExecutionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	    }
+	    timeDifference.put("QuerygetLtMastUsersByMobileNumber", timeDiff(inQuerygetLtMastUsersByMobileNumber,outQuerygetLtMastUsersByMobileNumber));
+		long methodOut = System.currentTimeMillis();
+		System.out.println("Exit from method sendOTP at "+LocalDateTime.now());
+        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+        status.setTimeDifference(timeDifference);
+		return status;
+	}	
+	
+	public String timeDiff(long startTime,long endTime) {
+		// Step 4: Calculate the time difference in milliseconds
+        long durationInMillis = endTime - startTime;
+ 
+        // Step 5: Convert the duration into a human-readable format
+        long seconds = durationInMillis / 1000;
+        long milliseconds = durationInMillis % 1000;
+ 
+        String formattedDuration = String.format(
+            "%d seconds, %d milliseconds",
+            seconds, milliseconds
+        );
+		return formattedDuration;
+	}
 	
 private boolean isMobileNumberPredefined(String mobileNumber) {
     return mobileNumber.equals("8806962104") || mobileNumber.equals("6260011680") ||
@@ -817,6 +928,7 @@ private CompletableFuture<Boolean> sendOtpToUserAsync(LtMastUsers user) {
 		return null;
 	}
 
+/* comment on 19-June-2024 for api time calculation
 	@Override
 	public Status update(LtMastUsers ltMastUser) throws ServiceException, IOException {
 
@@ -902,7 +1014,114 @@ private CompletableFuture<Boolean> sendOtpToUserAsync(LtMastUsers user) {
 		status.setData(null);
 		return status;
 	}
-
+*/	
+	@Override
+	public Status update(LtMastUsers ltMastUser) throws ServiceException, IOException {
+		long methodIn = System.currentTimeMillis();
+		System.out.println("In method update = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long inQuerygetLtMastUsersByMobileNumber = 0;
+		long outQuerygetLtMastUsersByMobileNumber = 0;
+		long inQuerygetEmployeeByCode = 0;
+		long outQuerygetEmployeeByCode = 0;
+		long inQuerysaveLtMastUsers = 0;
+		long outQuerysaveLtMastUsers = 0;
+ 
+		Status status = new Status();
+		ltMastUser.setLastUpdatedBy(ltMastUser.getLastUpdateLogin());
+		ltMastUser.setLastUpdateLogin(ltMastUser.getLastUpdateLogin());
+		ltMastUser.setLastUpdateDate(new Date());
+ 
+		if (ltMastUser.getCreatedBy() == null) {
+			ltMastUser.setCreatedBy(ltMastUser.getLastUpdateLogin());
+		}
+ 
+		if (ltMastUser.getCreationDate() == null) {
+			ltMastUser.setCreationDate(new Date());
+		}
+ 
+		status = checkDuplicate(ltMastUser);
+ 
+		if (status.getCode() == FAIL) {
+			return status;
+		}
+ 
+		inQuerygetLtMastUsersByMobileNumber = System.currentTimeMillis();
+		LtMastUsers ltMastUserdto = ltMastUsersDao.getLtMastUsersByMobileNumber(ltMastUser.getMobileNumber());
+		outQuerygetLtMastUsersByMobileNumber = System.currentTimeMillis();
+		
+		if (ltMastUserdto != null) {
+ 
+			if (ltMastUser.getUserType().equalsIgnoreCase(RoleMaster.SALES)
+					&& ltMastUser.getStatus().equalsIgnoreCase(ACTIVE)
+					&& ltMastUserdto.getStatus().equalsIgnoreCase(INPROCESS)) {
+				ltMastUser.setStatus(PENDINGAPPROVAL);
+			}
+ 
+			if (ltMastUser.getUserType().equalsIgnoreCase(RoleMaster.SALES)
+					&& ltMastUser.getStatus().equalsIgnoreCase(ACTIVE)
+					&& ltMastUserdto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
+				ltMastUser.setStatus(PENDINGAPPROVAL);
+			}
+ 
+			if (ltMastUser.getUserType().equalsIgnoreCase(RoleMaster.DISTRIBUTOR)
+					&& ltMastUser.getStatus().equalsIgnoreCase(ACTIVE)
+					&& ltMastUserdto.getStatus().equalsIgnoreCase(INPROCESS)) {
+ 
+				if (ltMastUser.getEmployeeCode() != null) {
+ 
+					//LtMastDistributors LtMastDistributor = ltMastDistributorsDao.getLtDistributorsById(ltMastUser.getDistributorId());
+					inQuerygetEmployeeByCode =  System.currentTimeMillis();
+					LtMastEmployees  ltMastEmployees = ltMastEmployeeDao.getEmployeeByCode(ltMastUser.getEmployeeCode());
+					outQuerygetEmployeeByCode = System.currentTimeMillis();
+					
+					if (ltMastEmployees.getPrimaryMobile().length() >= 10) {
+ 
+						String mobileNumber = ltMastEmployees.getPrimaryMobile()
+								.substring(ltMastEmployees.getPrimaryMobile().length() - 10);
+ 
+						if (mobileNumber.equalsIgnoreCase(ltMastUser.getMobileNumber())) {
+							ltMastUser.setStatus(ACTIVE);
+						} else {
+							ltMastUser.setStatus(PENDINGAPPROVAL);
+						}
+ 
+					} else {
+						ltMastUser.setStatus(PENDINGAPPROVAL);
+					}
+ 
+				}
+ 
+			}
+			if (ltMastUser.getUserType().equalsIgnoreCase(RoleMaster.DISTRIBUTOR)
+					&& ltMastUser.getStatus().equalsIgnoreCase(ACTIVE)
+					&& ltMastUserdto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
+				ltMastUser.setStatus(ltMastUserdto.getStatus());
+			}
+ 
+			inQuerysaveLtMastUsers = System.currentTimeMillis();
+			ltMastUser = ltMastUsersDao.saveLtMastUsers(ltMastUser);
+			outQuerysaveLtMastUsers = System.currentTimeMillis();
+ 
+			if (ltMastUser != null) {
+				status = ltMastCommonMessageService.getCodeAndMessage(UPDATE_SUCCESSFULLY);
+				status.setData(userResponce(ltMastUser));
+				timeDifference.put("QuerygetLtMastUsersByMobileNumber", timeDiff(inQuerygetLtMastUsersByMobileNumber,outQuerygetLtMastUsersByMobileNumber));
+				timeDifference.put("QuerygetEmployeeByCode", timeDiff(inQuerygetEmployeeByCode,outQuerygetEmployeeByCode));
+				timeDifference.put("QuerysaveLtMastUsers", timeDiff(inQuerysaveLtMastUsers,outQuerysaveLtMastUsers));
+				long methodOut = System.currentTimeMillis();
+				System.out.println("Exit from method update at "+LocalDateTime.now());
+		        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+		        status.setTimeDifference(timeDifference);
+				return status;
+			}
+ 
+		}
+		status = ltMastCommonMessageService.getCodeAndMessage(UPDATE_FAIL);
+		status.setData(null);
+		return status;
+	}
+/*	comment on 19-June-2024 for api time calculation
 	@Override
 	public Status getUserById(Long userId) throws ServiceException {
 
@@ -926,7 +1145,42 @@ private CompletableFuture<Boolean> sendOtpToUserAsync(LtMastUsers user) {
 
 		return status;
 	}
-
+*/
+	@Override
+	public Status getUserById(Long userId) throws ServiceException {
+		System.out.println("In method getUserById = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetUserById = 0;
+		long outQuerygetUserById = 0;
+		Status status = new Status();
+		try {
+			inQuerygetUserById = System.currentTimeMillis();
+			LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
+			outQuerygetUserById = System.currentTimeMillis();
+			if (ltMastUsers != null) {
+ 
+				status = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
+				LtMastUsers ltMastUsersResponce = userResponce(ltMastUsers);
+				status.setData(ltMastUsersResponce);
+			} else {
+				status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
+				status.setData(null);
+			}
+		} catch (Exception e) {
+			status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
+			status.setData(null);
+			e.printStackTrace();
+		}
+		timeDifference.put("QuerygetUserById", timeDiff(inQuerygetUserById,outQuerygetUserById));
+		long methodOut = System.currentTimeMillis();
+		System.out.println("Exit from method getUserById at "+LocalDateTime.now());
+        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+        status.setTimeDifference(timeDifference);
+		return status;
+	}
+	
+/*	comment on 19-June-2024 for api time calculation
 	@Override
 	public Status delete(Long userId) throws ServiceException {
 		Status status = new Status();
@@ -951,7 +1205,50 @@ private CompletableFuture<Boolean> sendOtpToUserAsync(LtMastUsers user) {
 		status = ltMastCommonMessageService.getCodeAndMessage(DELETE_FAIL);
 		return status;
 	}
-
+*/
+	@Override
+	public Status delete(Long userId) throws ServiceException {
+		long methodIn = System.currentTimeMillis();
+		System.out.println("In method delete = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long inQuerygetUserById = 0;
+		long outQuerygetUserById = 0;
+		long inQuerydelete = 0;
+		long outQuerydelete = 0;
+		Status status = new Status();
+ 
+		inQuerygetUserById = System.currentTimeMillis();
+		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
+		outQuerygetUserById = System.currentTimeMillis();
+		
+		if (ltMastUsers != null) {
+			inQuerydelete = System.currentTimeMillis();
+			LtMastUsers ltMastUserDelete = ltMastUsersDao.delete(userId);
+			outQuerydelete = System.currentTimeMillis();
+ 
+			if (ltMastUserDelete == null) {
+				status.setCode(SUCCESS);
+				status = ltMastCommonMessageService.getCodeAndMessage(DELETE_SUCCESSFULLY);
+				timeDifference.put("QuerygetUserById", timeDiff(inQuerygetUserById,outQuerygetUserById));
+				timeDifference.put("Querydelete", timeDiff(inQuerydelete,outQuerydelete));
+				long methodOut = System.currentTimeMillis();
+				System.out.println("Exit from method delete at "+LocalDateTime.now());
+		        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+		        status.setTimeDifference(timeDifference);
+				return status;
+			}
+ 
+		} else {
+			status.setCode(FAIL);
+			status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
+			return status;
+		}
+ 
+		status.setCode(FAIL);
+		status = ltMastCommonMessageService.getCodeAndMessage(DELETE_FAIL);
+		return status;
+	}
+	
 	private Status sendSMS(LtMastLogins ltMastLogins) throws IOException, ServiceException {
 		Status status = new Status();
 		// Prepare Url
@@ -989,7 +1286,7 @@ private CompletableFuture<Boolean> sendOtpToUserAsync(LtMastUsers user) {
 		return status;
 	}
 
-	@Override
+/*	@Override  comment on 19-June-2024 for api time calculation
 	public Status getPenddingApprovalByDistributorId(Long distributorId, Long userId)
 			throws ServiceException, IOException {
 		Status status = new Status();
@@ -1006,8 +1303,40 @@ private CompletableFuture<Boolean> sendOtpToUserAsync(LtMastUsers user) {
 		}
 		return status;
 	}
-
+*/
 	@Override
+	public Status getPenddingApprovalByDistributorId(Long distributorId, Long userId)
+			throws ServiceException, IOException {
+		long methodIn = System.currentTimeMillis();
+		System.out.println("In method getPenddingApprovalByDistributorId = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long inQuerygetPenddingApprovalByDistributorId = 0;
+		long outQuerygetPenddingApprovalByDistributorId = 0;
+ 
+		
+		Status status = new Status();
+		// List<LtMastUsers> ltMastUserList = null;
+		inQuerygetPenddingApprovalByDistributorId = System.currentTimeMillis();
+		List<LtMastUsers> ltMastUsersList = ltMastUsersDao.getPenddingApprovalByDistributorId(distributorId, userId);
+		outQuerygetPenddingApprovalByDistributorId = System.currentTimeMillis();
+ 
+		if (!ltMastUsersList.isEmpty()) {
+			status = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
+			status.setData(ltMastUsersList);
+ 
+		} else {
+			status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
+			status.setData(ltMastUsersList);
+		}
+		timeDifference.put("QuerygetPenddingApprovalByDistributorId", timeDiff(inQuerygetPenddingApprovalByDistributorId,outQuerygetPenddingApprovalByDistributorId));
+		long methodOut = System.currentTimeMillis();
+		System.out.println("Exit from method getPenddingApprovalByDistributorId at "+LocalDateTime.now());
+        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+        status.setTimeDifference(timeDifference);
+		return status;
+	}
+	
+/*	@Override  comment on 19-June-2024 for api time calculation
 	public Status changeUserStatus(Long userId, String userStatus) throws ServiceException, IOException {
 		Status status = new Status();
 		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
@@ -1057,7 +1386,87 @@ private CompletableFuture<Boolean> sendOtpToUserAsync(LtMastUsers user) {
 		status.setData(ltMastUsers);
 		return status;
 	}
-
+*/
+	@Override
+	public Status changeUserStatus(Long userId, String userStatus) throws ServiceException, IOException {
+		long methodIn = System.currentTimeMillis();
+		System.out.println("In method changeUserStatus = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long inQuerygetUserById = 0;
+		long outQuerygetUserById = 0;
+		long inQuerysaveLtMastUsers = 0;
+		long outQuerysaveLtMastUsers = 0;
+		
+		Status status = new Status();
+		inQuerygetUserById = System.currentTimeMillis();
+		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
+		outQuerygetUserById = System.currentTimeMillis();
+ 
+		if (ltMastUsers != null) {
+ 
+			if (ltMastUsers.getStatus().equalsIgnoreCase(PENDINGAPPROVAL)) {
+ 
+				ltMastUsers.setStatus(userStatus);
+				ltMastUsers.setLastUpdatedBy(userId);
+				ltMastUsers.setLastUpdateLogin(ltMastUsers.getLastUpdateLogin());
+				ltMastUsers.setLastUpdateDate(new Date());
+ 
+				inQuerysaveLtMastUsers = System.currentTimeMillis();
+				LtMastUsers ltMastUsersDto = ltMastUsersDao.saveLtMastUsers(ltMastUsers);
+				outQuerysaveLtMastUsers = System.currentTimeMillis();
+ 
+				if (ltMastUsersDto != null) {
+					status = sendSMSStatusChange(ltMastUsers);
+					status = ltMastCommonMessageService.getCodeAndMessage(UPDATE_SUCCESSFULLY);
+					status.setData(userResponce(ltMastUsersDto));
+ 
+			timeDifference.put("QuerygetUserById", timeDiff(inQuerygetUserById,outQuerygetUserById));
+			timeDifference.put("QuerysaveLtMastUsers", timeDiff(inQuerysaveLtMastUsers,outQuerysaveLtMastUsers));
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method changeUserStatus at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
+			return status;
+				}
+			} else {
+				ltMastUsers.setStatus(userStatus);
+				ltMastUsers.setLastUpdatedBy(userId);
+				ltMastUsers.setLastUpdateLogin(ltMastUsers.getLastUpdateLogin());
+				ltMastUsers.setLastUpdateDate(new Date());
+				
+				inQuerysaveLtMastUsers = System.currentTimeMillis();
+				LtMastUsers ltMastUsersDto = ltMastUsersDao.saveLtMastUsers(ltMastUsers);
+				outQuerysaveLtMastUsers = System.currentTimeMillis();
+ 
+				if (ltMastUsersDto != null) {
+					status = ltMastCommonMessageService.getCodeAndMessage(UPDATE_SUCCESSFULLY);
+					status.setData(userResponce(ltMastUsersDto));
+					if (userStatus.equalsIgnoreCase(INACTIVE) || userStatus.equalsIgnoreCase(ACTIVE)) {
+						Status statusObj = this.getInactiveUsers();
+						System.out.println("Data===>" + statusObj);
+ 
+					}
+					timeDifference.put("QuerygetUserById", timeDiff(inQuerygetUserById,outQuerygetUserById));
+					timeDifference.put("QuerysaveLtMastUsers", timeDiff(inQuerysaveLtMastUsers,outQuerysaveLtMastUsers));
+					long methodOut = System.currentTimeMillis();
+					System.out.println("Exit from method changeUserStatus at "+LocalDateTime.now());
+			        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+			        status.setTimeDifference(timeDifference);
+					return status;
+				}
+			}
+ 
+			if (userStatus.equalsIgnoreCase(PENDINGAPPROVAL)) {
+				sendNotification(ltMastUsers);
+			}
+ 
+		}
+ 
+		status = ltMastCommonMessageService.getCodeAndMessage(UPDATE_FAIL);
+		status.setData(ltMastUsers);
+		return status;
+	}
+	
 	private void sendNotification(LtMastUsers pendingAppUsers) throws ServiceException {
 		List<LtMastUsers> usersList = ltMastUsersDao.getActiveUsersDistByUserId(pendingAppUsers.getUserId());
 
@@ -1177,7 +1586,7 @@ try {
 		return status;
 
 	}
-
+/* comment on 19-June-2024 for api time calculation
 	@Override
 	public Status savePersonalDetails(LtUserPersonalDetails ltUserPersonalDetails) throws ServiceException {
 
@@ -1220,7 +1629,76 @@ try {
 		status.setData(userResponce(null));
 		return status;
 	}
-
+*/
+	@Override
+	public Status savePersonalDetails(LtUserPersonalDetails ltUserPersonalDetails) throws ServiceException {
+		long methodIn = System.currentTimeMillis();
+		System.out.println("In method savePersonalDetails = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long inQuerygetUserById = 0;
+		long outQuerygetUserById = 0;
+		long inQuerysaveLtMastUsers = 0;
+		long outQuerysaveLtMastUsers = 0;
+ 
+ 
+ 
+		Status status = new Status();
+ 
+		if (ltUserPersonalDetails != null) {
+ 
+			inQuerygetUserById = System.currentTimeMillis();
+			LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(ltUserPersonalDetails.getUserId());
+			outQuerygetUserById = System.currentTimeMillis();
+ 
+			
+			if (ltMastUsers != null) {
+ 
+				if (ltMastUsers.getMobileNumber().equalsIgnoreCase(ltUserPersonalDetails.getMobileNumber())) {
+ 
+					ltMastUsers.setUserName(ltUserPersonalDetails.getUserName());
+					ltMastUsers.setEmail(ltUserPersonalDetails.getEmail());
+					ltMastUsers.setAlternateNo(ltUserPersonalDetails.getAlternateNo());
+ 
+					ltMastUsers.setLastUpdatedBy(ltUserPersonalDetails.getUserId());
+					ltMastUsers.setLastUpdateLogin(ltUserPersonalDetails.getUserId());
+					ltMastUsers.setLastUpdateDate(new Date());
+					
+					inQuerysaveLtMastUsers = System.currentTimeMillis();
+					ltMastUsers = ltMastUsersDao.saveLtMastUsers(ltMastUsers);
+					outQuerysaveLtMastUsers = System.currentTimeMillis();
+ 
+					
+					if (ltMastUsers != null) {
+						status = ltMastCommonMessageService.getCodeAndMessage(INSERT_SUCCESSFULLY);
+						status.setData(userResponce(ltMastUsers));
+						
+						timeDifference.put("QuerygetUserById", timeDiff(inQuerygetUserById,outQuerygetUserById));
+						timeDifference.put("QuerysaveLtMastUsers", timeDiff(inQuerysaveLtMastUsers,outQuerysaveLtMastUsers));
+						long methodOut = System.currentTimeMillis();
+						System.out.println("Exit from method savePersonalDetails at "+LocalDateTime.now());
+				        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+				        status.setTimeDifference(timeDifference);
+				        
+						return status;
+					}
+ 
+				} else {
+					System.out.println("Exit from method savePersonalDetails at "+LocalDateTime.now());
+					status = ltMastCommonMessageService.getCodeAndMessage(INSERT_FAIL);
+					status.setMessage(ltMastCommonMessageService.getCommonMessage("lonar.users.mobilenoValid"));
+					status.setData(userResponce(null));
+					return status;
+				}
+ 
+			}
+ 
+		}
+		System.out.println("Exit from method savePersonalDetails at "+LocalDateTime.now());
+		status = ltMastCommonMessageService.getCodeAndMessage(INSERT_FAIL);
+		status.setData(userResponce(null));
+		return status;
+	}
+	
 	// @Override
 	public Status saveAddressOld(LtUserAddressDetails ltUserAddressDetails) throws ServiceException {
 
@@ -1266,7 +1744,7 @@ try {
 		return status;
 	}
 
-	@Override
+/*	@Override  comment on 19-June-2024 for api time calculation
 	public Status saveAddress(LtUserAddressDetails ltUserAddressDetails) throws ServiceException {
 
 		Status status = new Status();
@@ -1297,8 +1775,62 @@ try {
 		status.setData(null);
 		return status;
 	}
-
+*/
 	@Override
+	public Status saveAddress(LtUserAddressDetails ltUserAddressDetails) throws ServiceException {
+		long methodIn = System.currentTimeMillis();
+		System.out.println("In method saveAddress = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long inQuerygetUserById = 0;
+		long outQuerygetUserById = 0;
+		long inQuerysaveLtMastUsers = 0;
+		long outQuerysaveLtMastUsers = 0;
+ 
+		Status status = new Status();
+ 
+		if (ltUserAddressDetails != null) {
+ 
+			inQuerygetUserById = System.currentTimeMillis();
+			LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(ltUserAddressDetails.getUserId());
+			outQuerygetUserById = System.currentTimeMillis();
+ 
+			if (ltMastUsers != null) {
+				ltMastUsers.setAddress(ltUserAddressDetails.getAddress());
+				ltMastUsers.setLatitude(ltUserAddressDetails.getLatitude());
+				ltMastUsers.setLongitude(ltUserAddressDetails.getLongitude());
+				ltMastUsers.setAddressDetails(ltUserAddressDetails.getAddressDetails());
+ 
+				ltMastUsers.setLastUpdatedBy(ltUserAddressDetails.getUserId());
+				ltMastUsers.setLastUpdateLogin(ltUserAddressDetails.getUserId());
+				ltMastUsers.setLastUpdateDate(new Date());
+				
+				inQuerysaveLtMastUsers = System.currentTimeMillis();
+				ltMastUsers = ltMastUsersDao.saveLtMastUsers(ltMastUsers);
+				outQuerysaveLtMastUsers = System.currentTimeMillis();
+ 
+				if (ltMastUsers != null) {
+					status = ltMastCommonMessageService.getCodeAndMessage(INSERT_SUCCESSFULLY);
+					status.setData(userResponce(ltMastUsers));
+					
+					timeDifference.put("QuerygetUserById", timeDiff(inQuerygetUserById,outQuerygetUserById));
+					timeDifference.put("QuerysaveLtMastUsers", timeDiff(inQuerysaveLtMastUsers,outQuerysaveLtMastUsers));
+					long methodOut = System.currentTimeMillis();
+					System.out.println("Exit from method saveAddress at "+LocalDateTime.now());
+			        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+			        status.setTimeDifference(timeDifference);
+					
+					return status;
+				}
+			}
+ 
+		}
+		System.out.println("Exit from method saveAddress at "+LocalDateTime.now());
+		status = ltMastCommonMessageService.getCodeAndMessage(INSERT_FAIL);
+		status.setData(null);
+		return status;
+	}
+	
+/*	@Override  comment on 19-June-2024 for api time calculation
 	public Status getPersonaldetailsById(Long userId) throws ServiceException {
 		Status status = new Status();
 		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
@@ -1320,7 +1852,47 @@ try {
 		status.setData(null);
 		return status;
 	}
-
+*/
+	@Override
+	public Status getPersonaldetailsById(Long userId) throws ServiceException {
+		long methodIn = System.currentTimeMillis();
+		System.out.println("In method getPersonaldetailsById = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long inQuerygetUserById = 0;
+		long outQuerygetUserById = 0;
+		
+		Status status = new Status();
+		inQuerygetUserById = System.currentTimeMillis();
+		LtMastUsers ltMastUsers = ltMastUsersDao.getUserById(userId);
+		outQuerygetUserById = System.currentTimeMillis();
+		
+		if (ltMastUsers != null) {
+			if (ltMastUsers.getUserName() != "" && ltMastUsers.getUserName().length() > 0) {
+				LtUserPersonalDetails ltUserPersonalDetails = new LtUserPersonalDetails();
+				ltUserPersonalDetails.setUserName(ltMastUsers.getUserName());
+				ltUserPersonalDetails.setMobileNumber(ltMastUsers.getMobileNumber());
+				ltUserPersonalDetails.setAlternateNo(ltMastUsers.getAlternateNo());
+				ltUserPersonalDetails.setEmail(ltMastUsers.getEmail());
+				ltUserPersonalDetails.setUserId(ltMastUsers.getUserId());
+				status = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
+				status.setData(ltUserPersonalDetails);
+				
+				timeDifference.put("QuerygetUserById", timeDiff(inQuerygetUserById,outQuerygetUserById));
+				long methodOut = System.currentTimeMillis();
+				System.out.println("Exit from method getPersonaldetailsById at "+LocalDateTime.now());
+		        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+		        status.setTimeDifference(timeDifference);
+				
+				return status;
+ 
+			}
+		}
+		System.out.println("Exit from method getPersonaldetailsById at "+LocalDateTime.now());
+		status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
+		status.setData(null);
+		return status;
+	}
+	
 	@Override
 	public Status getAddressDetailsById(Long userId) throws ServiceException {
 		Status status = new Status();
@@ -1419,7 +1991,7 @@ try {
 		return convFile;
 	}
 
-	@Override
+/*	@Override this is comment on 19-June-2024 for api time calculation
 	public Status saveRecentSearchId(Long userId, String serachId) throws ServiceException {
 		Status status = new Status();
 
@@ -1441,8 +2013,57 @@ try {
 		status.setData(null);
 		return status;
 	}
-
+*/
 	@Override
+	public Status saveRecentSearchId(Long userId, String serachId) throws ServiceException {
+		long methodIn = System.currentTimeMillis();
+		System.out.println("In method saveRecentSearchId = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long inQuerygetUserById = 0;
+		long outQuerygetUserById = 0;
+		long inQuerysaveLtMastUsers = 0;
+		long outQuerysaveLtMastUsers = 0;
+ 
+		
+		Status status = new Status();
+ 
+		inQuerygetUserById = System.currentTimeMillis();
+		LtMastUsers ltMastUser = ltMastUsersDao.getUserById(userId);
+		outQuerygetUserById = System.currentTimeMillis();
+ 
+		System.out.println("ltMastUser"+ltMastUser);
+		if (ltMastUser != null) {
+ 
+			ltMastUser.setLastUpdatedBy(userId);
+			ltMastUser.setLastUpdateLogin(userId);
+			ltMastUser.setLastUpdateDate(DateTimeClass.getCurrentDateTime());
+			System.out.println("DateTimeClass.getCurrentDateTime()");
+			ltMastUser.setRecentSerachId(serachId);
+			
+			inQuerysaveLtMastUsers = System.currentTimeMillis();
+			ltMastUser = ltMastUsersDao.saveLtMastUsers(ltMastUser);
+			outQuerysaveLtMastUsers = System.currentTimeMillis();
+			
+			status = ltMastCommonMessageService.getCodeAndMessage(INSERT_SUCCESSFULLY);
+			status.setData(userResponce(ltMastUser));
+			
+			timeDifference.put("QuerysaveLtMastUsers", timeDiff(inQuerygetUserById,outQuerygetUserById));
+			timeDifference.put("QuerygetUserById", timeDiff(inQuerysaveLtMastUsers,outQuerysaveLtMastUsers));
+ 
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method saveRecentSearchId at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
+	        
+			return status;
+		}
+		System.out.println("Exit from method saveRecentSearchId at "+LocalDateTime.now());
+		status = ltMastCommonMessageService.getCodeAndMessage(INSERT_FAIL);
+		status.setData(null);
+		return status;
+	}
+	
+/*	@Override this is comment on 19-June-2024 for api time calculation
 	public Status saveRecentSearchId1(Long userId, String serachId) throws ServiceException {
 		Status status = new Status();
 
@@ -1465,6 +2086,58 @@ try {
 			status.setData(userResponce(ltMastUser));
 			return status;
 		}
+		status = ltMastCommonMessageService.getCodeAndMessage(INSERT_FAIL);
+		status.setData(null);
+		return status;
+	}
+*/	
+	@Override
+	public Status saveRecentSearchId1(Long userId, String serachId) throws ServiceException {
+		long methodIn = System.currentTimeMillis();
+		System.out.println("In method saveRecentSearchId1 = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long inQuerygetUserById = 0;
+		long outQuerygetUserById = 0;
+		long inQuerysaveLtMastUsers = 0;
+		long outQuerysaveLtMastUsers = 0;
+ 
+		
+		Status status = new Status();
+		inQuerygetUserById = System.currentTimeMillis();
+		LtMastUsers ltMastUser = ltMastUsersDao.getUserById(userId);
+		outQuerygetUserById = System.currentTimeMillis();
+		
+		System.out.println("ltMastUser"+ltMastUser);
+		if (ltMastUser != null) {
+ 
+			ltMastUser.setOutletId("");
+			ltMastUser.setOutletCode("");
+			ltMastUser.setOutletName("");
+			ltMastUser.setRecentSerachId("");
+//			ltMastUser.setRecentSearchId("");
+			ltMastUser.setLastUpdatedBy(userId);
+			ltMastUser.setLastUpdateLogin(userId);
+			ltMastUser.setLastUpdateDate(DateTimeClass.getCurrentDateTime());
+			System.out.println("DateTimeClass.getCurrentDateTime()");
+//			ltMastUser.setRecentSerachId(serachId);
+			inQuerysaveLtMastUsers = System.currentTimeMillis();
+			ltMastUser = ltMastUsersDao.saveLtMastUsers(ltMastUser);
+			outQuerysaveLtMastUsers = System.currentTimeMillis();
+			status = ltMastCommonMessageService.getCodeAndMessage(INSERT_SUCCESSFULLY);
+			status.setData(userResponce(ltMastUser));
+			
+			
+			timeDifference.put("QuerygetUserById", timeDiff(inQuerygetUserById,outQuerygetUserById));
+			timeDifference.put("QuerysaveLtMastUsers", timeDiff(inQuerysaveLtMastUsers,outQuerysaveLtMastUsers));
+ 
+			long methodOut = System.currentTimeMillis();
+			System.out.println("Exit from method saveRecentSearchId1 at "+LocalDateTime.now());
+	        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
+	        
+			return status;
+		}
+		System.out.println("Exit from method saveRecentSearchId1 at "+LocalDateTime.now());
 		status = ltMastCommonMessageService.getCodeAndMessage(INSERT_FAIL);
 		status.setData(null);
 		return status;

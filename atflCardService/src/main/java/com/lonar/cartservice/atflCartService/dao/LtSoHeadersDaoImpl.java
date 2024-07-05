@@ -1,6 +1,8 @@
 package com.lonar.cartservice.atflCartService.dao;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.DistributorDetailsDto;
+import com.lonar.cartservice.atflCartService.dto.LtOrderLineDataGt;
 import com.lonar.cartservice.atflCartService.dto.QuantityCheck;
 import com.lonar.cartservice.atflCartService.dto.RequestDto;
 import com.lonar.cartservice.atflCartService.dto.ResponseDto;
@@ -111,8 +114,9 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 
 	@Override
 	public List<Long> getSoHeader(RequestDto requestDto) throws ServiceException, IOException {
+		List<Long> headerIdslist = new ArrayList<>();
 		try {
-			System.out.println("in method getAllPendingOrders dao line 113 ="+ new Date());
+			System.out.println("in method getAllPendingOrders dao line 113 ="+ LocalDateTime.now());
 		String query = env.getProperty("getOrderHeaderV1");
        
 		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
@@ -283,9 +287,11 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 		}
 		System.out.println("searchField :: "+searchField);
 		
-		List<Long> headerIdslist = null;		
+		//List<Long> headerIdslist = new ArrayList<>();		
 		//Long headerId =0l;
+		System.out.println("Above getUserTypeAndDisId query call method at = "+LocalDateTime.now());
 		UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
+		System.out.println("Below getUserTypeAndDisId query call method at = "+LocalDateTime.now());
 		
 		System.out.println("AlluserDetailsDto"+userDetailsDto);
 		if (userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
@@ -298,7 +304,9 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			query = query +" ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 			System.out.println("New123 AlluserDetailsDto"+query);
 	*/		
+			System.out.println("Above getUsersByDistributorId query call method at = "+LocalDateTime.now());
 			List<Long> userList = getUsersByDistributorId(userDetailsDto.getDistributorId());
+			System.out.println("Below getUsersByDistributorId query call method at = "+LocalDateTime.now());
 			
 			System.out.println("AlluserListDto"+userList);
 			
@@ -332,7 +340,9 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 		}else if(userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(SALES)) {
 			//String positionId = getPositionIdByUserId(requestDto.getUserId());
 			//List<Long> outletList = getOutletIdsByPositionId(userDetailsDto.getPositionId()); //comment on 12-March-24 vaibhav
+			System.out.println("Above getOutletIdsByPositionId query call method at = "+LocalDateTime.now());
 			List<String> outletList = getOutletIdsByPositionId(userDetailsDto.getPositionId());
+			System.out.println("Below getOutletIdsByPositionId query call method at = "+LocalDateTime.now());
 			
 			if(!outletList.isEmpty() && outletList != null) {
 				//query = query +" and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
@@ -354,22 +364,45 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 //					
 //				}
 				
-				query = query + " and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
+				String outletListString = outletList.stream()
+                        .map(id -> "'" + id + "'")
+                        .collect(Collectors.joining(", "));
+				System.out.println("In if of Sales Person");
+				query = query + " and lsh.outlet_id in (" + outletListString +
+				 ")  ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				
+			//	 query = query + " and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
 					//	+ " ) ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
-				+  ") ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+			//	+  ") ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 			}else {
 //				query = query +" ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
 			//	query = query +" ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ?";
 				query = query +" ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 			}
 			
-			System.out.print("Issue for query ="+query);
-			
-			headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
-					requestDto.getOrderNumber(), requestDto.getDistributorId(), searchField,
+			System.out.println("Issue for query ="+query);
+					    
+			headerIdslist = jdbcTemplate.queryForList(query, Long.class, 
+					requestDto.getDistributorId(),
+					requestDto.getStatus(),
+					requestDto.getOrderNumber(),
+					searchField,
 					requestDto.getLimit(), requestDto.getOffset());
 			
+			System.out.println(requestDto.getStatus());
+			System.out.println(requestDto.getOrderNumber());
+
+			System.out.println(requestDto.getDistributorId());
+
+			System.out.println(searchField);
+
+			System.out.println(requestDto.getLimit());
 			
+			System.out.println(requestDto.getOffset() +"\n"+ requestDto);
+
+			System.out.println("Sales outletList query" + query);
+			
+			System.out.println("headerIdslist for Sales query = "+headerIdslist);
 			/*
 			 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
 			 * requestDto.getStatus(), requestDto.getOrderNumber(),
@@ -407,14 +440,14 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			 * headerIdslist = jdbcTemplate.query(query, new Object[] { }, new
 			 * BeanPropertyRowMapper<Long>(Long.class));
 			 */
-           System.out.println("in method getAllPendingOrders dao line 408 ="+ new Date());
+           System.out.println("in method getAllPendingOrders dao line 408 ="+ LocalDateTime.now());
 System.out.println("headerIdsSSSS "+headerIdslist);
 			return headerIdslist;
 		}}
 		catch(Exception e) {
 			logger.error("Error Description :", e);
 			e.printStackTrace();
-		}return null;
+		}return headerIdslist;
 	}
 
 	
@@ -1037,7 +1070,7 @@ System.out.println("Query is "+query);
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<ResponseDto> getOrderV2(List<Long> headerIdList) throws ServiceException, IOException {
 		try {
-			System.out.println("in method getAllPendingOrders dao line 438 ="+ new Date());
+			System.out.println("in method getAllPendingOrders getOrderV2 dao line 438 ="+ LocalDateTime.now());
 			String query = env.getProperty("getOrderLineV1");
 			System.out.print("headerIdList =" +headerIdList);
 			if(headerIdList.size()>0) {
@@ -1054,7 +1087,7 @@ System.out.println("Query is "+query);
 			List<ResponseDto> headerDtolist = jdbcTemplate.query(query, new Object[] {},
 					new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
 
-			System.out.println("in method getAllPendingOrders dao line 448 ="+ new Date());
+			System.out.println("in method getAllPendingOrders dao line 448 ="+ LocalDateTime.now());
 			return headerDtolist;
 		} catch (Exception e) {
 			logger.error("Error Description :", e);
@@ -1099,7 +1132,7 @@ System.out.println("Query is "+query);
 	@Override
 	public Long getRecordCount(RequestDto requestDto) throws ServiceException, IOException {
 		
-		System.out.println("in method getAllPendingOrders service line 4454 ="+ new Date());
+		System.out.println("in method getAllPendingOrders service line 4454 ="+ LocalDateTime.now());
 		String searchField = null;
 		if (requestDto.getSearchField() != null) {
 			
@@ -1262,10 +1295,15 @@ System.out.println("Query is "+query);
 		if(requestDto.getHeaderId() !=null) {
 			headerId = requestDto.getHeaderId().toString(); 
 		}
+		System.out.println("Above getUserTypeAndDisId query call method at = "+LocalDateTime.now());
 		UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
+		System.out.println("Below getUserTypeAndDisId query call method at = "+LocalDateTime.now());
+		
 		if (userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
 			//get userList by distributorID
+			System.out.println("Above getUsersByDistributorId query call method at = "+LocalDateTime.now());
 			List<Long> userList = getUsersByDistributorId(userDetailsDto.getDistributorId());
+			System.out.println("Below getUsersByDistributorId query call method at = "+LocalDateTime.now());
 			
 			if(!userList.isEmpty() && userList != null) {
 				query = query + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
@@ -1288,11 +1326,18 @@ System.out.println("Query is "+query);
 			}, Long.class);
 			return recordCount;
 		}else if(userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(SALES)) {
+	        System.out.println("Above getOutletIdsByPositionId query call method at = "+LocalDateTime.now());
 			List<String> outletList = getOutletIdsByPositionId(userDetailsDto.getPositionId());
-			
+	        System.out.println("Above getOutletIdsByPositionId query call method at = "+LocalDateTime.now());
 			if(!outletList.isEmpty() && outletList != null) {
-				query = query +" and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
-						+ ") ";
+				//query = query +" and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
+				//		+ ") ";
+				String outletListString = outletList.stream()
+                        .map(id -> "'" + id + "'")
+                        .collect(Collectors.joining(", "));
+				System.out.println("In if of Sales Person Count");
+				query = query + " and lsh.outlet_id in (" + outletListString +")";
+				
 			}else {
 				//query = query +" and COALESCE(lsh.outlet_id ,-99) =  COALESCE( ? ,COALESCE(lsh.outlet_id),-99) ";
 			}
@@ -1317,7 +1362,7 @@ System.out.println("Query is "+query);
 					requestDto.getDistributorId(), 
 					searchField,requestDto.getOutletId()
 			}, Long.class);
-			System.out.println("in method getAllPendingOrders dao line 709 ="+ new Date());
+			System.out.println("in method getAllPendingOrders dao line 709 ="+ LocalDateTime.now());
 			/*
 			 * recordCount = jdbcTemplate.queryForObject(query, new Object[] {
 			 * requestDto.getStatus(), requestDto.getOrderNumber(),
@@ -1979,6 +2024,52 @@ System.out.println("Query is "+query);
 		String query = env.getProperty("getUserNameFromSiebel");
 		String userName = jdbcTemplate.queryForObject(query, new Object[] {mobileNumber}, String.class);
 		return userName;
+	}
+
+	@Override
+	public List<Long> getSoHeaderFromProcedure() throws ServiceException, IOException {
+		String query = env.getProperty("getSoHeaderFromProcedure");
+		List<Long> headerIdList = jdbcTemplate.queryForList(query, new Object[] {}, Long.class);
+		return headerIdList;
+	}
+
+	@Override
+	public List<ResponseDto> getOrderV2FromProcedure(List<Long> headerIdsList) throws ServiceException, IOException {
+		try {
+			System.out.println("in method getAllPendingOrders getOrderV2 dao line 438 ="+ LocalDateTime.now());
+			String query = env.getProperty("getOrderV2FromProcedure");
+			System.out.print("headerIdList =" +headerIdsList);
+			if(headerIdsList.size()>0) {
+			//query = query + "  and lsh.header_id IN ( 164) ) a order by a.status_o, a.cdate desc, a.header_id ";
+			query = query + "  and lsh.header_id IN ( " + headerIdsList.toString().replace("[", "").replace("]", "")
+					+ " ) ) a order by a.status_o, a.cdate desc, a.header_id ";
+			}
+			else {
+				System.out.println("in else");
+			    query = query + "  and lsh.header_id IN (NULL) ) a order by a.status_o, a.cdate desc, a.header_id ";
+				System.out.println("Concated query is "+query);
+ 
+			}
+			List<ResponseDto> headerDtolist = jdbcTemplate.query(query, new Object[] {},
+					new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+
+			System.out.println("in method getAllPendingOrders dao line 448 ="+ LocalDateTime.now());
+			return headerDtolist;
+		} catch (Exception e) {
+			logger.error("Error Description :", e);
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<LtOrderLineDataGt> getOrderV2DataFromProcedure() throws ServiceException, IOException {
+		String query = env.getProperty("getOrderV2DataFromProcedure");
+		
+		List<LtOrderLineDataGt> data = jdbcTemplate.query(query, new Object[] {},
+				new BeanPropertyRowMapper<LtOrderLineDataGt>(LtOrderLineDataGt.class));
+		return data;
+		
 	}
 }
 	

@@ -1,5 +1,7 @@
 package com.users.usersmanagement.model;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -9,6 +11,17 @@ public class Status {
 	private int code;
 	private String message;
 	private Object data;
+
+	private Map<String,String> timeDifference;
+	
+	
+	public Map<String, String> getTimeDifference() {
+		return timeDifference;
+	}
+
+	public void setTimeDifference(Map<String, String> timeDifference) {
+		this.timeDifference = timeDifference;
+	}
 
 	public Status() {
 	}
@@ -44,7 +57,9 @@ public class Status {
 
 	@Override
 	public String toString() {
-		return "Status [code=" + code + ", message=" + message + ", data=" + data + "]";
+		return "Status [code=" + code + ", message=" + message + ", data=" + data + ", timeDifference=" + timeDifference
+				+ "]";
 	}
+
 	
 }

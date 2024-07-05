@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -50,7 +52,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 	private Environment env;
 
 	Date cdate = new Date();
-
+/* this comment on 19-June-2024 for api time calculation
 	@Override
 	public Status getSalesReportData(ExcelReportDto excelReportDto)
 			throws ServiceException, FileNotFoundException, IOException {
@@ -75,7 +77,59 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 		}
 		return status;
 	}
-
+*/
+	public String timeDiff(long startTime,long endTime) {
+		// Step 4: Calculate the time difference in milliseconds
+        long durationInMillis = endTime - startTime;
+ 
+        // Step 5: Convert the duration into a human-readable format
+        long seconds = durationInMillis / 1000;
+        long milliseconds = durationInMillis % 1000;
+ 
+        String formattedDuration = String.format(
+            "%d seconds, %d milliseconds",
+            seconds, milliseconds
+        );
+		return formattedDuration;
+	}
+	
+	@Override
+	public Status getSalesReportData(ExcelReportDto excelReportDto)
+			throws ServiceException, FileNotFoundException, IOException {
+		System.out.println("In method getSalesReportData = "+LocalDateTime.now());
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetSalesReportData = 0;
+		long outQuerygetSalesReportData = 0;
+		Status status = new Status();
+		try {
+			inQuerygetSalesReportData = System.currentTimeMillis();
+			List<ExcelDataSelesperson> salesReportDataList = ltReportDao.getSalesReportData(excelReportDto);
+			outQuerygetSalesReportData = System.currentTimeMillis();
+			System.out.println("Hi i'm in serviceImpl query dats is = "+excelReportDto +"&&&"+salesReportDataList);
+			if (salesReportDataList == null || salesReportDataList.isEmpty()) {
+				status.setMessage("Report data not available");
+				status.setCode(FAIL);
+				return status;
+			}
+ 
+			if (!salesReportDataList.isEmpty()) {
+				status = createExcelSalespersonReport(salesReportDataList, excelReportDto);
+			} else {
+				status.setMessage("Fail");
+				status.setCode(FAIL);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		timeDifference.put("QuerygetSalesReportData", timeDiff(inQuerygetSalesReportData,outQuerygetSalesReportData));
+		long methodOut = System.currentTimeMillis();
+		System.out.println("Exit from method getSalesReportData at "+LocalDateTime.now());
+        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+        status.setTimeDifference(timeDifference);
+		return status;
+	}
+	
 	@Override
 	public Status getRegionwiseSalesReportData(ExcelReportDto excelReportDto)
 			throws ServiceException, FileNotFoundException, IOException {

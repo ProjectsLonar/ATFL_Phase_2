@@ -276,6 +276,14 @@ System.out.println("list"+list);
 		if (beatDetailsDto.getSearchField() != null) {
 			searchField = "%" + beatDetailsDto.getSearchField().toUpperCase() + "%";
 		}
+		
+		if(beatDetailsDto.getLimit() == 0 || beatDetailsDto.getLimit() == 1) {
+			beatDetailsDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+		if(beatDetailsDto.getOffset() ==0) {
+			beatDetailsDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
+		
 		String query = env.getProperty("getBeatDetailsAgainsDistirbutorCodeAndBeatName");
 	       List<BeatDetailsDto> list = jdbcTemplate.query(query, new Object[] 
 	    		   {beatDetailsDto.getDistributorCode(), searchField, beatDetailsDto.getLimit(), beatDetailsDto.getOffset()}, 
@@ -293,11 +301,20 @@ System.out.println("list"+list);
 		if (beatDetailsDto.getSearchField() != null) {
 			searchField = "%" + beatDetailsDto.getSearchField().toUpperCase() + "%";
 		}
-		
+/*		if(beatDetailsDto.getLimit() == 0 || beatDetailsDto.getLimit() == 1) {
+			beatDetailsDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+		if(beatDetailsDto.getOffset() ==0) {
+			beatDetailsDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
+	*/	
 		String query = env.getProperty("getBeatDetailsAgainsDistirbutorCode");
 	       List<OutletSequenceData> list = jdbcTemplate.query(query, new Object[] 
-	    		   {beatDetailsDto.getDistributorCode(), searchField, beatDetailsDto.getLimit(), beatDetailsDto.getOffset()}, 
-				new BeanPropertyRowMapper<OutletSequenceData>(OutletSequenceData.class));
+	    		   {beatDetailsDto.getDistributorCode(), searchField 
+	    			//	   beatDetailsDto.getLimit(), beatDetailsDto.getOffset()
+	    			}, 
+				
+	    		   new BeanPropertyRowMapper<OutletSequenceData>(OutletSequenceData.class));
 	               if(!list.isEmpty()) {
 				                         return list;
 			                           }

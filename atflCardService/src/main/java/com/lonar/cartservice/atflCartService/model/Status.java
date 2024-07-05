@@ -1,5 +1,7 @@
 package com.lonar.cartservice.atflCartService.model;
 
+import java.util.Map;
+
 public class Status {
 
 	private int code;
@@ -10,8 +12,18 @@ public class Status {
 	
 	private StringBuilder stringBuilder;
 
+	private Map<String,String> timeDifference;
 	
 	
+	
+	public Map<String, String> getTimeDifference() {
+		return timeDifference;
+	}
+
+	public void setTimeDifference(Map<String, String> timeDifference) {
+		this.timeDifference = timeDifference;
+	}
+
 	public StringBuilder getStringBuilder() {
 		return stringBuilder;
 	}
@@ -68,12 +80,12 @@ public class Status {
 		this.recordCount = recordCount;
 	}
 
-	
 	@Override
 	public String toString() {
 		return "Status [code=" + code + ", message=" + message + ", data=" + data + ", totalCount=" + totalCount
-				+ ", recordCount=" + recordCount + ", stringBuilder=" + stringBuilder + "]";
+				+ ", recordCount=" + recordCount + ", stringBuilder=" + stringBuilder + ", timeDifference="
+				+ timeDifference + "]";
 	}
-	
+
 	
 }

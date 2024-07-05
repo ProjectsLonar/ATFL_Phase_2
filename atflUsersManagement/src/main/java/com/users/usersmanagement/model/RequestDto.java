@@ -15,11 +15,22 @@ public class RequestDto {
 	
 	private String beatName;
 	
+	private int notificationId;
+	
 	//Added by Nikhil
 	private String userType;
 	private String status;
 	private String userName;
 	
+	
+	
+	public int getNotificationId() {
+		return notificationId;
+	}
+
+	public void setNotificationId(int notificationId) {
+		this.notificationId = notificationId;
+	}
 
 	public String getSalesPersonId() {
 		return salesPersonId;
@@ -135,15 +146,15 @@ public class RequestDto {
 		this.beatName = beatName;
 	}
 
-	
 	@Override
 	public String toString() {
 		return "RequestDto [orgId=" + orgId + ", distributorId=" + distributorId + ", outletId=" + outletId + ", limit="
 				+ limit + ", offset=" + offset + ", searchField=" + searchField + ", outletName=" + outletName
 				+ ", salesPersonId=" + salesPersonId + ", userId=" + userId + ", primaryMobile=" + primaryMobile
-				+ ", beatName=" + beatName + ", userType=" + userType + ", status=" + status + ", userName=" + userName
-				+ "]";
+				+ ", beatName=" + beatName + ", notificationId=" + notificationId + ", userType=" + userType
+				+ ", status=" + status + ", userName=" + userName + "]";
 	}
-	
 
+	
+	
 }

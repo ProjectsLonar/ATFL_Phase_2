@@ -22,4 +22,8 @@ public interface LtMastDistributorsService {
 
 	Status saveSeibelUserData(Long userId)throws ServerException, ServiceException;
 
+	Status deleteNotificationAfter72Hours()throws ServerException, ServiceException;
+
+	Status updateReadNotificationFlag(RequestDto requestDto)throws ServerException, ServiceException;
+
 }
