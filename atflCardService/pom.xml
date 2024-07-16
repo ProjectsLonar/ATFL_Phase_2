@@ -92,11 +92,18 @@
 			<version>2.4</version>
 		</dependency>
 
-		<dependency>
+<!--		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.3-1100-jdbc41</version>
 		</dependency>
+	-->	
+		
+	<dependency>
+    <groupId>com.oracle.database.jdbc</groupId>
+    <artifactId>ojdbc8</artifactId>
+    <version>19.8.0.0</version>
+</dependency>
 
 		<!-- Swagger dependency -->
 		<dependency>

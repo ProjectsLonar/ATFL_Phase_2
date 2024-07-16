@@ -4,9 +4,11 @@ import java.sql.Clob;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true) // Ignore unknown properties in JSON
 public class SoHeaderDto {
 	private Long headerId;
 	private String orderNumber;

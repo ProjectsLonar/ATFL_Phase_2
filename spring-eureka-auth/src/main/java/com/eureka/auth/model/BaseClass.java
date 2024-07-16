@@ -6,29 +6,38 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @MappedSuperclass
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true) // Ignore unknown properties in JSON
 public class BaseClass {
 
 	@Column(name = "STATUS")
+	//@JsonProperty("STATUS")
 	private String status;
 	
 	@Column(name = "CREATED_BY")
+	//@JsonProperty("CREATED_BY")
 	private String createdBy;
 	
 	@Column(name = "CREATION_DATE")
+	//@JsonProperty("CREATION_DATE")
 	private Date creationDate;
 	
 	@Column(name = "LAST_UPDATE_LOGIN")
+	//@JsonProperty("LAST_UPDATE_LOGIN")
 	private String lastUpdateLogin;
 	
 	@Column(name = "LAST_UPDATED_BY")
+	//@JsonProperty("LAST_UPDATED_BY")
 	private String lastUpdatedBy;
 	
 	@Column(name = "LAST_UPDATE_DATE")
+	//@JsonProperty("LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
 
 	@Transient

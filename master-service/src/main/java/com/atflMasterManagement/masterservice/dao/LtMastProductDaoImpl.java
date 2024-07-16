@@ -22,10 +22,12 @@ import com.atflMasterManagement.masterservice.common.ServiceException;
 import com.atflMasterManagement.masterservice.dto.ProductDto;
 import com.atflMasterManagement.masterservice.dto.TlEtlDto;
 import com.atflMasterManagement.masterservice.model.CodeMaster;
+import com.atflMasterManagement.masterservice.model.LtMastProductCat;
 //import com.atflMasterManagement.masterservice.model.LtMastProducts;
 import com.atflMasterManagement.masterservice.model.LtMastProducts;
 import com.atflMasterManagement.masterservice.model.RequestDto;
 import com.atflMasterManagement.masterservice.repository.LtMastProductsRepository;
+import com.atflMasterManagement.masterservice.servcies.ConsumeApiService;
 
 @Repository
 @PropertySource(value = "classpath:queries/ltMasterQueries.properties", ignoreResourceNotFound = true)
@@ -144,10 +146,25 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 
 	@Override
 	public String getUserTypeByUserId(String userId) throws ServiceException, IOException {
+		List<RequestDto> dataList = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
 		try {
 			String query = env.getProperty("getUserTypeByUserId");
-			List<RequestDto> dataList = jdbcTemplate.query(query, new Object[] { userId },
-					new BeanPropertyRowMapper<RequestDto>(RequestDto.class));
+//			List<RequestDto> dataList = jdbcTemplate.query(query, new Object[] { userId },
+//					new BeanPropertyRowMapper<RequestDto>(RequestDto.class));
+			
+			try {
+				dataList = consumeApiService.consumeApi(query, 
+						new Object[] { userId }, RequestDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+			
 			if (!dataList.isEmpty()) {
 				return dataList.get(0).getUserType();
 			}else {
@@ -215,6 +232,8 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 			String searchField = null;
 			if (requestDto.getSearchField() != null) {
 				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+			}else {
+				searchField="";
 			}
                  System.out.println(query);
 			List<ProductDto> productsList = jdbcTemplate.query(query,
@@ -246,6 +265,8 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	
 	@Override
 	public List<ProductDto> getOutOfStockProductForAdmin(RequestDto requestDto) throws ServiceException, IOException {
+		List<ProductDto> productsList =  new ArrayList<>();
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
 		try {
 			String query = env.getProperty("getOutOfStockProductForAdmin");
 			
@@ -262,11 +283,25 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 			}
                  System.out.println(query);
-			List<ProductDto> productsList = jdbcTemplate.query(query,
-					new Object[] {requestDto.getProductId(), requestDto.getCategoryId(),
-							 searchField,//requestDto.getOrgId(), 
-							 requestDto.getLimit(), requestDto.getOffset() },
-					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+//			List<ProductDto> productsList = jdbcTemplate.query(query,
+//					new Object[] {requestDto.getProductId(), requestDto.getCategoryId(),
+//							 searchField,//requestDto.getOrgId(), 
+//							 requestDto.getLimit(), requestDto.getOffset() },
+//					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+                 
+                 try {
+                	 productsList = consumeApiService.consumeApi(query, 
+                			 new Object[] {requestDto.getProductId(), requestDto.getCategoryId(),
+        							 searchField,//requestDto.getOrgId(), 
+        							 requestDto.getLimit(), requestDto.getOffset() }, 
+                					 ProductDto.class);
+         		} catch (IOException e) {
+         			// TODO Auto-generated catch block
+         			e.printStackTrace();
+         		} catch (InterruptedException e) {
+         			// TODO Auto-generated catch block
+         			e.printStackTrace();
+         		}
 			if (!productsList.isEmpty()) {
 				return productsList;
 			}
@@ -280,11 +315,26 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	public Long getOutOfStockProductCountForAdmin(RequestDto requestDto) throws ServiceException, IOException {
 		String query = env.getProperty("getOutOfStockProductCountForAdmin");
 		String searchField = null;
+		Long count= 0L;
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
-		Long count = getJdbcTemplate().queryForObject(query, new Object[] { requestDto.getProductId(), requestDto.getCategoryId(),
-				 searchField,requestDto.getOrgId() }, Long.class);
+//		Long count = getJdbcTemplate().queryForObject(query, new Object[] { requestDto.getProductId(), requestDto.getCategoryId(),
+//				 searchField,requestDto.getOrgId() }, Long.class);
+		
+		try {
+			count = consumeApiService.consumeApiForCount(query, 
+					new Object[] { requestDto.getProductId(), requestDto.getCategoryId(),
+							 searchField,requestDto.getOrgId()});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return count;
 	}
 	
@@ -305,7 +355,10 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 			String searchField = null;
 			if (requestDto.getSearchField() != null) {
 				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+			}else {
+				searchField="";
 			}
+			
 			System.out.println("Input requestDto= "+requestDto);
               System.out.println(query);
 			List<ProductDto> productsList = jdbcTemplate.query(query,
@@ -362,6 +415,8 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	public List<ProductDto> getOutOfStockProductWithInventory(RequestDto requestDto) throws ServiceException, IOException {
 		try {
 			String query = env.getProperty("getOutOfStockProductWithInventory");
+			List<ProductDto> productsList = new ArrayList<>();
+			ConsumeApiService consumeApiService =  new ConsumeApiService();
 			
 			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
@@ -376,11 +431,26 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 			}
               System.out.print("New request Dto = "+ requestDto);
-			List<ProductDto> productsList = jdbcTemplate.query(query,
-					new Object[] { requestDto.getOrgId(), 
+//			List<ProductDto> productsList = jdbcTemplate.query(query,
+//					new Object[] { requestDto.getOrgId(), 
+//							requestDto.getProductId(), requestDto.getCategoryId(),
+//							searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
+//					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+			try {
+				productsList = consumeApiService.consumeApi(query, 
+						new Object[] { requestDto.getOrgId(), 
 							requestDto.getProductId(), requestDto.getCategoryId(),
-							searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
-					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+								searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() }, 
+						ProductDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			if (!productsList.isEmpty()) {
 				return productsList;
 			}
@@ -394,22 +464,53 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 	public Long getOutOfStockProductCountWithInventory(RequestDto requestDto) throws ServiceException, IOException {
 		String query = env.getProperty("getOutOfStockProductCountWithInventory");
 		String searchField = null;
+		Long count = 0L;
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
-		Long count = getJdbcTemplate().queryForObject(query, new Object[] { //requestDto.getOrgId(), 
-				requestDto.getProductId(), requestDto.getCategoryId(),
-				searchField,requestDto.getOutletId() }, Long.class);
+//		Long count = getJdbcTemplate().queryForObject(query, new Object[] { //requestDto.getOrgId(), 
+//				requestDto.getProductId(), requestDto.getCategoryId(),
+//				searchField,requestDto.getOutletId() }, Long.class);
+		
+		try {
+			count = consumeApiService.consumeApiForCount(query, 
+					new Object[] { requestDto.getProductId(), requestDto.getCategoryId(),
+						searchField,requestDto.getOutletId() });
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return count;
 	}
 
 	@Override
 	public List<ProductDto> getMultipleMrpForProduct(String distId, String outId, String prodId, String priceList)
 			throws ServiceException, IOException {
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		List<ProductDto> productList = new ArrayList<>();
 		try{
 			String query = env.getProperty("getMultipleMrpForProduct");
-		    List<ProductDto> productList = jdbcTemplate.query(query,new Object[] { distId, outId, prodId, priceList },
-				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+//		    List<ProductDto> productList = jdbcTemplate.query(query,new Object[] { distId, outId, prodId, priceList },
+//				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+			try {
+				productList = consumeApiService.consumeApi(query, 
+						new Object[] { distId, outId, prodId, priceList}, 
+						ProductDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		   if(productList!= null) 
 		    {
 			  return productList;
@@ -457,6 +558,27 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}return etlList;
+	}
+	
+	@Override
+	public List<ProductDto> getProductListFromProcedure() throws ServiceException, IOException {
+	
+		String query = env.getProperty("getProductListFromProcedure");
+		List<ProductDto> productList = jdbcTemplate.query(query, new Object[] {},
+				new BeanPropertyRowMapper<>(ProductDto.class));
+		
+		return productList;
+	}
+ 
+	@Override
+	public List<ProductDto> getMultipleMrpFromProcedure() throws ServiceException, IOException {
+		
+		String query = env.getProperty("getMultipleMrpFromProcedure");
+		List<ProductDto> multipleMrpList = jdbcTemplate.query(query, new Object[] {},
+				new BeanPropertyRowMapper<>(ProductDto.class));
+		
+		return multipleMrpList;
+	
 	}
 
 	

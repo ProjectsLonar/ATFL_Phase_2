@@ -12,8 +12,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.sql.Timestamp;
@@ -47,19 +49,42 @@ public class LtPromotionServiceImpl implements LtPromotionService, CodeMaster {
 	@Autowired
 	private Environment env;
 
+	public String timeDiff(long startTime,long endTime) {
+		// Step 4: Calculate the time difference in milliseconds
+        long durationInMillis = endTime - startTime;
+ 
+        // Step 5: Convert the duration into a human-readable format
+        long seconds = durationInMillis / 1000;
+        long milliseconds = durationInMillis % 1000;
+ 
+        String formattedDuration = String.format(
+            "%d seconds, %d milliseconds",
+            seconds, milliseconds
+        );
+		return formattedDuration;
+	}
+	
 	@Override
 	public Status getPromotionDataV1(String orgId, Long limit, Long offset, Long userId) throws ServiceException {
+		long methodIn = System.currentTimeMillis();
+		Map<String,String> timeDifference = new HashMap<>();
+		System.out.println("methodIn getPromotionDataV1 = " + LocalDateTime.now());
 		Status status = new Status();
+		System.out.println("before getPromotionDataV1 query call = " + LocalDateTime.now());
 		List<LtPromotion> ltPromotionList = promotionDao.getPromotionDataV1(orgId, limit, offset, userId);
-
+		System.out.println("after getPromotionDataV1 query call = " + LocalDateTime.now());
 		if (!ltPromotionList.isEmpty()) {
 			status = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
 			status.setData(ltPromotionList);
+			long methodOut = System.currentTimeMillis();
+			timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	        status.setTimeDifference(timeDifference);
 
 		} else {
 			status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
 			status.setData(ltPromotionList);
 		}
+		System.out.println("method out getPromotionDataV1 = " + LocalDateTime.now());
 		return status;
 	}
 	

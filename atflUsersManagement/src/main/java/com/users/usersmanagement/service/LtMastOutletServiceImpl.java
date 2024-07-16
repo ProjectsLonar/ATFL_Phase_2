@@ -8,9 +8,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.rmi.ServerException;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -28,6 +30,12 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +44,7 @@ import org.springframework.core.env.Environment;
 
 import org.springframework.stereotype.Service;
 
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.controller.WebController;
 import com.users.usersmanagement.dao.AtflMastUsersDao;
@@ -179,9 +187,26 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		return status;
 	}
 
+	public String timeDiff(long startTime,long endTime) {
+		// Step 4: Calculate the time difference in milliseconds
+        long durationInMillis = endTime - startTime;
+ 
+        // Step 5: Convert the duration into a human-readable format
+        long seconds = durationInMillis / 1000;
+        long milliseconds = durationInMillis % 1000;
+ 
+        String formattedDuration = String.format(
+            "%d seconds, %d milliseconds",
+            seconds, milliseconds
+        );
+		return formattedDuration;
+	}
+	
 	@Override
 	public Status getAllUserDataByRecentId(Long userId) throws ServiceException {
-
+		System.out.println("Enter in method getSelectedOutlet at "+LocalDateTime.now());
+		long methodIn = System.currentTimeMillis();
+		Map<String,String> timeDifference = new HashMap<>();
 		Status status = new Status();
 
 		LtMastUsers ltMastUser = ltMastUsersDao.getUserById(userId);
@@ -191,27 +216,31 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			if (ltMastUser.getUserType().equalsIgnoreCase(RoleMaster.RETAILER)) {
 
 				LtMastUsers LtMastUser = ltMastOutletDao.getMastDataByOutletId(ltMastUser.getOutletId());
-
 				status = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
-
 				status.setData(LtMastUser);
-
+				long methodOut = System.currentTimeMillis();
+				timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+		        status.setTimeDifference(timeDifference);
 				return status;
-
 			} else if (ltMastUser.getRecentSerachId() != null) {
-
-				LtMastUsers LtMastUser = ltMastOutletDao
-						.getMastDataByOutletId(ltMastUser.getRecentSerachId().toString());
-
+				LtMastUsers LtMastUser = ltMastOutletDao.getMastDataByOutletId(ltMastUser.getRecentSerachId().toString());
 				if (LtMastUser != null) {
 					status = ltMastCommonMessageService.getCodeAndMessage(RECORD_FOUND);
 					status.setData(LtMastUser);
+					long methodOut = System.currentTimeMillis();
+					timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+			        status.setTimeDifference(timeDifference);			       
 					return status;
 				}
 			}
 		}
 		status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
 		status.setData(null);
+		long methodOut = System.currentTimeMillis();
+		System.out.println("Exit from method getSelectedOutlet at "+LocalDateTime.now());
+        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+        status.setTimeDifference(timeDifference);
+		
 		return status;
 	}
 

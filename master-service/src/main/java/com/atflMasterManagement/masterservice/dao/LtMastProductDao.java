@@ -49,5 +49,9 @@ public interface LtMastProductDao {
 	public List<TlEtlDto> getTlForProductDescription(String priceList, String productId) throws ServiceException, IOException;
 
 	public List<TlEtlDto> getEtlForProductDescription(String priceList, String productId) throws ServiceException, IOException;
+	
+	public List<ProductDto> getProductListFromProcedure()throws ServiceException, IOException;
+	 
+	public List<ProductDto> getMultipleMrpFromProcedure()throws ServiceException, IOException;
 
 }

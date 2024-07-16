@@ -35,6 +35,8 @@ import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
 import com.lonar.cartservice.atflCartService.repository.LtSalesPersonLocationRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSoLinesRepository;
 import java.util.ArrayList;
+import com.lonar.cartservice.atflCartService.service.ConsumeApiService;
+
 
 @Repository
 @PropertySource(value = "classpath:queries/cartMasterQueries.properties", ignoreResourceNotFound = true)
@@ -330,10 +332,17 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			 * requestDto.getOffset());
 			 */
 			
-			headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
-					requestDto.getOrderNumber(),requestDto.getDistributorId(),  searchField,
-					requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset());
+//			headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
+//					requestDto.getOrderNumber(),requestDto.getDistributorId(),  searchField,
+//					requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset());
 
+			headerIdslist = jdbcTemplate.queryForList(query, Long.class, 
+					requestDto.getDistributorId(),
+					requestDto.getStatus(),
+					requestDto.getOrderNumber(),
+					searchField, requestDto.getOutletId(),
+					requestDto.getLimit(), requestDto.getOffset());
+			
 			System.out.println("headerIdslist in Dao"+headerIdslist);
 			return headerIdslist;
 			
@@ -430,11 +439,24 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			 * requestDto.getOffset() );
 			 */
            
-           headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+           
+           System.out.println("Status: " + requestDto.getStatus() + " (Type: " + (requestDto.getStatus() != null ? requestDto.getStatus().getClass().getName() : "null") + ")");
+           System.out.println("Order Number: " + requestDto.getOrderNumber() + " (Type: " + (requestDto.getOrderNumber() != null ? requestDto.getOrderNumber().getClass().getName() : "null") + ")");
+           System.out.println("Distributor ID: " + requestDto.getDistributorId() + " (Type: " + (requestDto.getDistributorId() != null ? requestDto.getDistributorId().getClass().getName() : "null") + ")");
+           System.out.println("Search Field: " + searchField + " (Type: " + (searchField != null ? searchField.getClass().getName() : "null") + ")");
+           //System.out.println("Limit: " + requestDto.getLimit() + " (Type: " + (requestDto.getLimit() != null ? requestDto.getLimit().getClass().getName() : "null") + ")");
+           //System.out.println("Offset: " + requestDto.getOffset() + " (Type: " + (requestDto.getOffset() != null ? requestDto.getOffset().getClass().getName() : "null") + ")");
+           System.out.println("Request DTO: " + requestDto + " (Type: " + requestDto.getClass().getName() + ")");
+
+
+			System.out.println("Sales outletList query" + query);
+			
+			headerIdslist = jdbcTemplate.queryForList(query, Long.class,
 					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
 					searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
 					);
-
+			
+			System.out.println("headerIdslist for Other user query = "+headerIdslist);
 
 			/*
 			 * headerIdslist = jdbcTemplate.query(query, new Object[] { }, new
@@ -934,11 +956,13 @@ System.out.println("Query is "+query);
 		}
 		System.out.println("searchField :: "+searchField);
 		
-		List<ResponseDto> headerIdslist = null;	
-		
+		List<ResponseDto> headerIdslist = new ArrayList<>();;	
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
 		//Long headerId =0l;
 		//System.out.println("Above getUserTypeAndDisId dao method at = "+LocalDateTime.now());
 		UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
+		//String userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
 		//System.out.println("Below getUserTypeAndDisId dao method at = "+LocalDateTime.now());
 		
 		System.out.println("userDetailsDto = "+userDetailsDto);
@@ -961,12 +985,27 @@ System.out.println("Query is "+query);
 			}
 			
 			System.out.println("Query = " +query);
+			
 			//System.out.println("Above query dao method at = "+LocalDateTime.now());
-			headerIdslist = jdbcTemplate.query(query, new Object[] {
-					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
-					searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
-           },new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
-			//System.out.println("Below query dao method at = "+LocalDateTime.now());
+//			headerIdslist = jdbcTemplate.query(query, new Object[] {
+//					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+//					searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
+//           },new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+//			//System.out.println("Below query dao method at = "+LocalDateTime.now());
+			
+			try {
+				headerIdslist = consumeApiService.consumeApi(query, 
+						new Object[] { requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+								searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset() }, 
+						ResponseDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			System.out.println("headerIdslist in Dao = "+headerIdslist);
 			return headerIdslist;
 			
@@ -989,12 +1028,25 @@ System.out.println("Query is "+query);
 			System.out.print("Query = "+query);
 			//System.out.println("Above query dao method at = "+LocalDateTime.now());
  
-			headerIdslist = jdbcTemplate.query(query, new Object[] {
-					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
-					searchField,requestDto.getLimit(), requestDto.getOffset()
-           },new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+//			headerIdslist = jdbcTemplate.query(query, new Object[] {
+//					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+//					searchField,requestDto.getLimit(), requestDto.getOffset()
+//           },new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
 			//System.out.println("Below query dao method at = "+LocalDateTime.now());
  
+			try {
+				headerIdslist = consumeApiService.consumeApi(query, 
+						new Object[] { requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+								searchField,requestDto.getLimit(), requestDto.getOffset() }, 
+						ResponseDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			return headerIdslist;
 			
 		}else {
@@ -1011,12 +1063,30 @@ System.out.println("Query is "+query);
            System.out.println(requestDto.getOffset());
 		//	System.out.println("Above query dao method at = "+LocalDateTime.now());
  
-           headerIdslist = jdbcTemplate.query(query, new Object[] {
-					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
-					searchField,requestDto.getOutletId(),requestDto.getLimit(),requestDto.getOffset()
-           },new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+//           headerIdslist = jdbcTemplate.query(query, new Object[] {
+//					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+//					searchField,requestDto.getOutletId(),requestDto.getLimit(),requestDto.getOffset()
+//           },new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
 		//	System.out.println("Below query dao method at = "+LocalDateTime.now());
  
+           try {
+        	   
+        	   headerIdslist = consumeApiService.consumeApi(query, 
+						new Object[] { requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+								searchField,requestDto.getOutletId(),requestDto.getLimit(),requestDto.getOffset() }, 
+						ResponseDto.class);
+//			for(int i=0; i<headerIds.size(); i++) {
+//				headerIdslist.add(headerIds.get(i));
+//			}
+			
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}           
+           
            System.out.println("headerIdslist below = "+headerIdslist);
          //  System.out.println("Below else dao query at = "+LocalDateTime.now());
            System.out.println("headerIdsSSSS "+headerIdslist);
@@ -1404,17 +1474,56 @@ System.out.println("Query is "+query);
 	
 	private UserDetailsDto getUserTypeAndDisId(Long userId) throws ServiceException {
 		String query = env.getProperty("getUserTypeAndDisId");
-		List<UserDetailsDto> list = jdbcTemplate.query(query, new Object[] { userId },
-				new BeanPropertyRowMapper<UserDetailsDto>(UserDetailsDto.class));
+		List<UserDetailsDto> list = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+//		List<UserDetailsDto> list = jdbcTemplate.query(query, new Object[] { userId },
+//				new BeanPropertyRowMapper<UserDetailsDto>(UserDetailsDto.class));
+		
+		try {
+			list = consumeApiService.consumeApi(query, 
+					new Object[] { userId }, UserDetailsDto.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
 		if (!list.isEmpty())
 			return list.get(0);
 		else
 			return null;
+		
+//		if(list!= null) {
+//			return (UserDetailsDto) list;
+//		}return null;
 	}
 	
 	private List<Long> getUsersByDistributorId(String distributorId) throws ServiceException {
 		String query = env.getProperty("getUsersByDistributorId");
-		List<Long> userIdList = jdbcTemplate.queryForList(query, Long.class, distributorId);
+		List<Long> userIdList = new ArrayList<>();
+		//List<UserDetailsDto> list = new ArrayList<>();
+
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		//List<Long> userIdList = jdbcTemplate.queryForList(query, Long.class, distributorId);
+		
+		try {
+			List<UserDetailsDto> list = consumeApiService.consumeApi(query, 
+					new Object[] { distributorId }, 
+					UserDetailsDto.class);
+			for(int i=0; i<list.size(); i++ ) {
+				userIdList.add(list.get(i).getUserId());
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (!userIdList.isEmpty())
 			return userIdList;
 		else
@@ -1431,9 +1540,32 @@ System.out.println("Query is "+query);
 	
 	private List<String> getOutletIdsByPositionId(String positionId) throws ServiceException {
 		String query = env.getProperty("getOutletIdsByPositionId");
-		List<String> userIdList = jdbcTemplate.queryForList(query, String.class, positionId);
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		List<String> userIdList = new ArrayList<>();
+		
+//		List<String> userIdList = jdbcTemplate.queryForList(query, String.class, positionId);
+		
+		try {
+			List<ResponseDto> list = consumeApiService.consumeApi(query, 
+					new Object[] { positionId }, 
+					ResponseDto.class);
+			
+			
+			for(int i =0; i < list.size();i++) {
+				
+				userIdList.add(list.get(i).getOutletId());
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
 		if (!userIdList.isEmpty())
-			return userIdList;
+			return userIdList;                //userIdList;
 		else
 			return null;
 	}
@@ -1783,7 +1915,9 @@ System.out.println("Query is "+query);
 			}
 			System.out.println("searchField :: "+searchField);
 			
-			List<Long> headerIdslist = null;		
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+			List<Long> headerIdslist = new ArrayList<>();	
+			//List<Long> headerIdslist = null;
 			//Long headerId =0l;
 			UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
 			
@@ -1824,10 +1958,24 @@ System.out.println("Query is "+query);
 				 * requestDto.getOffset());
 				 */
 				
-				headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
-						requestDto.getOrderNumber(),requestDto.getDistributorId(),  searchField,
-						requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset());
+//				headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
+//						requestDto.getOrderNumber(),requestDto.getDistributorId(),  searchField,
+//						requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset());
 
+				try {
+					headerIdslist = consumeApiService.consumeApi(query, 
+							new Object[] { requestDto.getStatus(),
+									requestDto.getOrderNumber(),requestDto.getDistributorId(),  searchField,
+									requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() }, 
+							Long.class);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				System.out.println("headerIdslist in Dao"+headerIdslist);
 				return headerIdslist;
 				
@@ -1869,9 +2017,23 @@ System.out.println("Query is "+query);
 				
 				System.out.print("Issue for query ="+query);
 				
-				headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
-						requestDto.getOrderNumber(), requestDto.getDistributorId(), searchField,
-						requestDto.getLimit(), requestDto.getOffset());
+//				headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
+//						requestDto.getOrderNumber(), requestDto.getDistributorId(), searchField,
+//						requestDto.getLimit(), requestDto.getOffset());
+				
+				try {
+					headerIdslist = consumeApiService.consumeApi(query, 
+							new Object[] { requestDto.getStatus(),
+									requestDto.getOrderNumber(), requestDto.getDistributorId(), searchField,
+									requestDto.getLimit(), requestDto.getOffset() }, 
+							Long.class);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				
 				/*
@@ -1903,12 +2065,28 @@ System.out.println("Query is "+query);
 				 * requestDto.getOffset() );
 				 */
 	           
-	           headerIdslist = jdbcTemplate.queryForList(query, Long.class,
-						requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
-						searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
-						);
-
-
+//	           headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+//						requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+//						searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
+//						);
+				List<RequestDto>headerIdslist1 = new ArrayList<>();
+				try {
+					headerIdslist1 = consumeApiService.consumeApi(query, 
+							new Object[] { requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+									searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset() }, 
+							RequestDto.class);
+					for(int i =0; i<headerIdslist1.size(); i++) {
+						headerIdslist.add(headerIdslist1.get(i).getHeaderId());
+					}
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				/*
 				 * headerIdslist = jdbcTemplate.query(query, new Object[] { }, new
 				 * BeanPropertyRowMapper<Long>(Long.class));
@@ -1933,23 +2111,40 @@ System.out.println("Query is "+query);
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<ResponseDto> getOrderV2RemovingPendingOrdersFromGetOrderV2(List<Long> headerIdList)
 			throws ServiceException, IOException {	
+		List<ResponseDto> headerDtolist = new ArrayList<>();
 			try {
 				String query = env.getProperty("getOrderLineV1RemovingPendingOrders");
 				System.out.print("headerIdList =" +headerIdList);
+				ConsumeApiService consumeApiService = new ConsumeApiService();
+				
 				
 				//query = query + "  and lsh.header_id IN ( 164) ) a order by a.status_o, a.cdate desc, a.header_id ";
 				query = query + "  and lsh.header_id IN ( " + headerIdList.toString().replace("[", "").replace("]", "")
 				//07-May-24		+ " ) ) a order by a.status_o, a.cdate desc, a.header_id ";
 				+ " ) ) a order by a.last_update_date desc";//, a.header_id ";
-				List<ResponseDto> headerDtolist = jdbcTemplate.query(query, new Object[] {},
-						new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+				
+				System.out.println("headerIdList line data query = " +query);
+//				List<ResponseDto> headerDtolist = jdbcTemplate.query(query, new Object[] {},
+//						new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
 
+				try {
+					headerDtolist = consumeApiService.consumeApi(query, 
+							new Object[] { }, 
+							ResponseDto.class);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				return headerDtolist;
 			} catch (Exception e) {
 				logger.error("Error Description :", e);
 				e.printStackTrace();
 			}
-			return null;
+			return headerDtolist;
 	
 	}
 
@@ -2070,6 +2265,15 @@ System.out.println("Query is "+query);
 				new BeanPropertyRowMapper<LtOrderLineDataGt>(LtOrderLineDataGt.class));
 		return data;
 		
+	}
+
+	@Override
+	public List<LtOrderLineDataGt> getDataFromProcedure() throws ServiceException, IOException {
+             String query = env.getProperty("getOrderV2DataFromProcedure");
+		
+		List<LtOrderLineDataGt> data = jdbcTemplate.query(query, new Object[] {},
+				new BeanPropertyRowMapper<LtOrderLineDataGt>(LtOrderLineDataGt.class));
+		return data;
 	}
 }
 	

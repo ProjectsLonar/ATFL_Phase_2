@@ -12,12 +12,15 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Entity
 @Table(name = "LT_MAST_USERS")
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true) // Ignore unknown properties in JSON
 public class LtMastUsers extends BaseClass {
 
 	private static final long serialVersionUID = 1L;
@@ -31,9 +34,11 @@ public class LtMastUsers extends BaseClass {
 	@Column(name = "ORG_ID")
 	private String orgId;
 
+	//@JsonProperty("DISTRIBUTOR_ID")
 	@Column(name = "DISTRIBUTOR_ID")
 	private String distributorId;
 
+	//@JsonProperty("OUTLET_ID")
 	@Column(name = "OUTLET_ID")
 	private String outletId;
 
@@ -122,18 +127,23 @@ public class LtMastUsers extends BaseClass {
 	@Transient
 	String distributorCrmCode;
 	
+	//@JsonProperty("DISTRIBUTOR_NAME")
 	@Transient
 	String distributorName;
 	
+	//@JsonProperty("DISTRIBUTORADDRESS")
 	@Transient
 	String distributorAddress;
 	
+	//@JsonProperty("EMPLOYEE_ID")
 	@Transient
 	String employeeId;
 	
+	//@JsonProperty("EMPNAME")
 	@Transient
 	String empName;
 	
+	//@JsonProperty("EMPCODE")
 	@Transient
 	String empCode;
 	
@@ -143,15 +153,19 @@ public class LtMastUsers extends BaseClass {
 	@Transient
 	String organisationName;
 	
+	//@JsonProperty("OUTLET_NAME")
 	@Transient
 	String outletName;
 	
+	//@JsonProperty("OUTLET_CODE")
 	@Transient
 	String outletCode;
 	
+	//@JsonProperty("OUTLETADDRESS")
 	@Transient
 	String outletAddress;
 	
+	//@JsonProperty("PROPRIETOR_NAME")
 	@Transient
 	String proprietorName;
 	
@@ -164,6 +178,7 @@ public class LtMastUsers extends BaseClass {
 	@Transient
 	private String inventoryLocationName;
 	
+	//@JsonProperty("PRICE_LIST")
 	@Transient
 	private String priceList;
 	

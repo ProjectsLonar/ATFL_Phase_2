@@ -11,75 +11,96 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 //
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 //
 @Entity
 @Table(name = "lt_promotion")
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true) // Ignore unknown properties in JSON
 public class LtPromotion {
 //
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_PROMOTION_S")
 	@SequenceGenerator(name = "LT_PROMOTION_S", sequenceName = "LT_PROMOTION_S", allocationSize = 1)
+	//@JsonProperty("promotionId")
 	@Column(name = "promotion_id")
 	private Long promotionId;
 
+	//@JsonProperty("promotionName")
 	@Column(name = "promotion_name")
 	private String promotionName;
 
+	//@JsonProperty("orgId")
 	@Column(name = "org_id")
 	private String orgId;
 
+	//@JsonProperty("imageType")
 	@Column(name = "image_type")
 	private String imageType;
 
+	//@JsonProperty("imageName")
 	@Column(name = "image_name")
 	private String imageName;
 //
+	//@JsonProperty("imageData")
 	@Column(name = "image_data")
 	private String imageData;
 
+	//@JsonProperty("startDate")
 	@Column(name = "start_date")
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
 	private Date startDate;
 
+	//@JsonProperty("endDate")
 	@Column(name = "end_date")
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
 	private Date endDate;
 	
+	//@JsonProperty("status")
 	@Column(name = "STATUS")
 	private String status;
 
+	//@JsonProperty("allTimeShowFlag")
 	@Column(name = "all_time_show_flag")
 	private String allTimeShowFlag;
 	
+	//@JsonProperty("createdBy")
 	@Column(name = "CREATED_BY")
 	private String createdBy;
 	
+	//@JsonProperty("creationDate")
 	@Column(name = "CREATION_DATE")
 	private Date creationDate;
 	
+	//@JsonProperty("creationDate1")
 	@Column(name = "CREATION_DATE_1")
 	private String creationDate1;
 	
+	//@JsonProperty("lastUpdateLogin")
 	@Column(name = "LAST_UPDATE_LOGIN")
 	private String lastUpdateLogin;
 	
+	//@JsonProperty("lastUpdatedBy")
 	@Column(name = "LAST_UPDATED_BY")
 	private String lastUpdatedBy;
 	
+	//@JsonProperty("lastUpdateDate")
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
 	
+	//@JsonProperty("lastUpdateDate1")
 	@Column(name = "LAST_UPDATE_DATE_1")
 	private String lastUpdateDate1;
 //
-//	
+	//@JsonProperty("startDate1")
 	@Column(name = "start_date_1")
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
 	private String startDate1;
 
+	//@JsonProperty("endDate1")
 	@Column(name = "end_date_1")
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
 	private String endDate1;

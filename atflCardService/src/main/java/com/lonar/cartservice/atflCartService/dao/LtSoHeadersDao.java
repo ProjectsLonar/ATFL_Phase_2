@@ -116,4 +116,6 @@ public interface LtSoHeadersDao {
 	List<ResponseDto> getOrderV2FromProcedure(List<Long> headerIdsList)throws ServiceException, IOException;
 
 	List<LtOrderLineDataGt> getOrderV2DataFromProcedure()throws ServiceException, IOException;
+
+	List<LtOrderLineDataGt> getDataFromProcedure()throws ServiceException, IOException;
 }

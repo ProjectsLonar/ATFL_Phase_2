@@ -7,12 +7,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Entity
 @Table(name = "lt_mast_faq")
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true) // Ignore unknown properties in JSON
 public class LtMastFAQ extends BaseClass{
 	@Id
 	@GeneratedValue(strategy= GenerationType.SEQUENCE)

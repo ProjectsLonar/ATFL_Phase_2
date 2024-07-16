@@ -1738,8 +1738,8 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 					
 				  }
 				}else {
-				     status.setCode(FAIL); 
-				     status.setMessage("Recod_Not_Found");
+				     status.setCode(RECORD_NOT_FOUND); 
+				     status.setMessage("Record not found");
 				}
 			}catch(Exception e) {
 				   e.printStackTrace();

@@ -39,7 +39,9 @@ public class UserDetailsServiceImpl implements UserDetailsService, CodeMaster {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		try {
 			System.out.println("in loadUserByUsername method = "+new Date()+"\n");
+			System.out.println("above getLtMastUsersByMobileNumber query call = "+  System.currentTimeMillis());
 			LtMastUsers ltMastUser = ltMastUsersDao.getLtMastUsersByMobileNumber(username);
+			System.out.println("below getLtMastUsersByMobileNumber query call = "+  System.currentTimeMillis());
 			System.out.println("ltMastUser = "+ltMastUser+"\n");
 			LtMastUsers ltMastUserToken = ltMastUsersMap.get(username);
 			String userOTP = ltMastUserToken.getMobileNumber();
@@ -59,7 +61,10 @@ public class UserDetailsServiceImpl implements UserDetailsService, CodeMaster {
 			}
 			
 			System.out.println("60. = "+new Date()+"\n");
+			System.out.println("above getLoginDetailsByUserId query call = "+  System.currentTimeMillis());
 			LtMastLogins ltMastLogin = ltMastUsersDao.getLoginDetailsByUserId(ltMastUser.getUserId());
+			System.out.println("below getLoginDetailsByUserId query call = "+  System.currentTimeMillis());
+			
 			System.out.println("62. = "+new Date()+"\n");
 			String otp = "" + ltMastLogin.getOtp();
 

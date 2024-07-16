@@ -1,6 +1,8 @@
 package com.atflMasterManagement.masterservice.dao;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -17,6 +19,8 @@ import com.atflMasterManagement.masterservice.common.ServiceException;
 import com.atflMasterManagement.masterservice.model.CodeMaster;
 import com.atflMasterManagement.masterservice.model.LtMastProductCat;
 import com.atflMasterManagement.masterservice.model.RequestDto;
+import com.atflMasterManagement.masterservice.servcies.ConsumeApiService;
+
 
 @Repository
 @PropertySource(value = "classpath:queries/ltMasterQueries.properties", ignoreResourceNotFound = true)
@@ -52,11 +56,25 @@ public class LtMastProdCatDaoImpl implements LtMastProdCatDao, CodeMaster {
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
-
+		List<LtMastProductCat> ltMastProductCatlist = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
 		String query = env.getProperty("getCategory");
-		List<LtMastProductCat> ltMastProductCatlist = jdbcTemplate.query(query,
-				new Object[] { requestDto.getOrgId(), searchField, requestDto.getLimit(), requestDto.getOffset() },
-				new BeanPropertyRowMapper<LtMastProductCat>(LtMastProductCat.class));
+//		List<LtMastProductCat> ltMastProductCatlist = jdbcTemplate.query(query,
+//				new Object[] { requestDto.getOrgId(), searchField, requestDto.getLimit(), requestDto.getOffset() },
+//				new BeanPropertyRowMapper<LtMastProductCat>(LtMastProductCat.class));
+		
+		try {
+			ltMastProductCatlist = consumeApiService.consumeApi(query, 
+					new Object[] { requestDto.getOrgId(), searchField, requestDto.getLimit(), requestDto.getOffset() }, 
+					LtMastProductCat.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
 		if (!ltMastProductCatlist.isEmpty()) {
 			return ltMastProductCatlist;
 		}
@@ -69,11 +87,24 @@ public class LtMastProdCatDaoImpl implements LtMastProdCatDao, CodeMaster {
 		String searchField = null;
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+		}else {
+			searchField = "";
+		}
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		Long totalCount = 0L;
+		String query = env.getProperty("getProdCatCount");
+		//totalCount = jdbcTemplate.queryForObject(sql, new Object[] { requestDto.getOrgId(), searchField,}, Long.class);
+		
+		try {
+			totalCount = consumeApiService.consumeApiForCount(query, new Object[] { requestDto.getOrgId(), searchField,});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		Long totalCount;
-		String sql = env.getProperty("getProdCatCount");
-		totalCount = jdbcTemplate.queryForObject(sql, new Object[] { requestDto.getOrgId(), searchField,}, Long.class);
 		return totalCount;
 	}
 

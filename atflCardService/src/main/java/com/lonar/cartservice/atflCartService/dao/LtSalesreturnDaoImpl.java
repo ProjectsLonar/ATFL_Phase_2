@@ -42,7 +42,7 @@ import com.lonar.cartservice.atflCartService.model.LtSalesReturnStatus;
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
 import com.lonar.cartservice.atflCartService.repository.LtSalesRetrunLinesRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSalesReturnRepository;
-
+import com.lonar.cartservice.atflCartService.service.ConsumeApiService;
 
 @Repository
 @PropertySource(value = "classpath:queries/cartmasterqueries.properties", ignoreResourceNotFound = true)
@@ -141,6 +141,8 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	@Override
 	public List<Long> getSalesReturnHeader(RequestDto requestDto)throws ServerException{
 		List<Long> list = new ArrayList<Long>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
 		try {
 		String query = env.getProperty("getSalesReturnHeader");
 		
@@ -169,10 +171,27 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			status = requestDto.getStatus().toUpperCase();
 		}
 		
-		list = jdbcTemplate.queryForList(query,
-				new Object[] {requestDto.getOutletId(), status, requestDto.getInvoiceNumber(), requestDto.getSalesReturnNumber(),
-						searchField, requestDto.getLimit(), requestDto.getOffset()},Long.class);
+//		list = jdbcTemplate.queryForList(query,
+//				new Object[] {requestDto.getOutletId(), status, requestDto.getInvoiceNumber(), requestDto.getSalesReturnNumber(),
+//						searchField, requestDto.getLimit(), requestDto.getOffset()},Long.class);
 
+		try {
+			List<RequestDto>list1 = consumeApiService.consumeApi(query, 
+					new Object[] {requestDto.getOutletId(), status, requestDto.getInvoiceNumber(), requestDto.getSalesReturnNumber(),
+							searchField, requestDto.getLimit(), requestDto.getOffset()}, 
+					RequestDto.class);
+			for(int i =0; i<list1.size(); i++) {
+				list.add(list1.get(i).getSalesReturnHeaderId());
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (!list.isEmpty()) {
 			return list;
 		}
@@ -190,18 +209,29 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		try {
 		String query = env.getProperty("getSalesReturnRecordCount");
 		
+		ConsumeApiService consumeApiService = new ConsumeApiService();
 
 		String status = null;
 		if(requestDto.getReturnStatus() !=null)
 		{
 			status = requestDto.getReturnStatus().toUpperCase();
 		}
+		Long count=0L;
+//		Long count = jdbcTemplate.queryForObject(query,
+//				new Object[] { status, requestDto.getInvoiceNumber(),requestDto.getSalesReturnNumber()},Long.class);
 
-		Long count = jdbcTemplate.queryForObject(query,
-				new Object[] { status, requestDto.getInvoiceNumber(),requestDto.getSalesReturnNumber()},Long.class);
-
+		try {
+			count = consumeApiService.consumeApiForCount(query, 
+					new Object[] { status, requestDto.getInvoiceNumber(),requestDto.getSalesReturnNumber()});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return count;
-
 	
 		}catch(Exception e){
 			e.printStackTrace();
@@ -298,14 +328,29 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 
 	@Override
 	public List<SoHeaderDto> getBeatNameAgainstInvoiceNo(String invoiceNo) throws ServerException {
-		List<SoHeaderDto> beatName = new ArrayList<SoHeaderDto>();   
+		List<SoHeaderDto> beatName = new ArrayList<SoHeaderDto>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
 		try {
 		    String query = env.getProperty("getBeatNameAgainstInvoiceNoNew");
 		    System.out.print(query);
 		   // System.out.print(invoiceNo);
-		     beatName = jdbcTemplate.query(query, new Object[] {//invoiceNo
-		    		},new BeanPropertyRowMapper<SoHeaderDto>(SoHeaderDto.class));
+//		     beatName = jdbcTemplate.query(query, new Object[] {//invoiceNo
+//		    		},new BeanPropertyRowMapper<SoHeaderDto>(SoHeaderDto.class));
 		    //}
+		    
+		    try {
+		    	beatName = consumeApiService.consumeApi(query, 
+						new Object[] { }, 
+						SoHeaderDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    
 		     System.out.print(" in query beatName ==" + beatName);
 	        if(beatName.size()>0) {
 		    return beatName;
@@ -375,6 +420,9 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	@Override
 	public List<LtSalesReturnResponseDto> getSalesReturnForPendingAprroval(List<Long> salesReturnHeaderId) throws ServerException {
 		try{String query = env.getProperty("getSalesReturnForPendingAprroval");
+		List<LtSalesReturnResponseDto> salesReturnList = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
 //		String searchField = null;
 //		if (requestDto.getSearchField()!= null) {
 //			searchField= "%" +requestDto.getSearchField().toUpperCase()+ "%";
@@ -391,9 +439,22 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		query = query + "  AND lsrh.SALES_RETURN_HEADER_ID IN ( " + salesReturnHeaderId.toString().replace("[", "").replace("]", "")
 				+ " ) order by lsrh.SALES_RETURN_DATE desc" ;
 		
-		List<LtSalesReturnResponseDto> salesReturnList = jdbcTemplate.query(query,new Object[] {},
-				new BeanPropertyRowMapper<LtSalesReturnResponseDto>(LtSalesReturnResponseDto.class));
+//		List<LtSalesReturnResponseDto> salesReturnList = jdbcTemplate.query(query,new Object[] {},
+//				new BeanPropertyRowMapper<LtSalesReturnResponseDto>(LtSalesReturnResponseDto.class));
 		//System.out.println("salesReturnList == "+salesReturnList);
+		
+		try {
+			salesReturnList = consumeApiService.consumeApi(query, 
+					new Object[] {}, 
+					LtSalesReturnResponseDto.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if(!salesReturnList.isEmpty()) {
 			return salesReturnList;
 		}
@@ -407,6 +468,8 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	@Override
 	public List<Long> getSalesReturnHeaderId(RequestDto requestDto) throws ServerException {
 		List<Long> salesReturnHeaderId = new ArrayList<Long>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
 		try {
 			String query = env.getProperty("getSalesReturnHeaderId");
 			
@@ -425,9 +488,28 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			}
 			//System.out.println("rquest = "+searchField+ requestDto.getLimit()+ requestDto.getOffset()+requestDto.getOutletId());	
 			//System.out.println("query = " + query);
-			salesReturnHeaderId = jdbcTemplate.queryForList(query, new Object[] 
-					{requestDto.getOutletId(), searchField, requestDto.getLimit(), requestDto.getOffset()},(Long.class));
+//			salesReturnHeaderId = jdbcTemplate.queryForList(query, new Object[] 
+//					{requestDto.getOutletId(), searchField, requestDto.getLimit(), requestDto.getOffset()},(Long.class));
 			//System.out.println("salesReturnHeaderId result = " + salesReturnHeaderId +"Size will be =="+salesReturnHeaderId.size());   
+			
+			try {
+				List<RequestDto>salesReturnHeaderId1 = consumeApiService.consumeApi(query, 
+						new Object[] 								
+								{requestDto.getOutletId(), searchField, requestDto.getLimit(), requestDto.getOffset()}, 
+								RequestDto.class);
+			for(int i=0; i<salesReturnHeaderId1.size(); i++ ) {
+				salesReturnHeaderId.add(salesReturnHeaderId1.get(i).getSalesReturnHeaderId());
+			}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			
 			if(!salesReturnHeaderId.isEmpty()) {
 			return salesReturnHeaderId;
                }
@@ -480,6 +562,9 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	public List<LtSalesReturnLineDto> getSalesReturnLineData(List<Long> long1, RequestDto requestDto) throws ServerException {
 		
 		try{String query = env.getProperty("getSalesReturnLineData");
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		List<LtSalesReturnLineDto> salesReturnData  = new ArrayList<>();
+
 //		String searchField = null;
 //		if (requestDto.getSearchField()!= null) {
 //			searchField= "%" +requestDto.getSearchField().toUpperCase()+ "%";
@@ -496,11 +581,24 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		query = query + "  AND lsrh.SALES_RETURN_HEADER_ID IN ( " + long1.toString().replace("[", "").replace("]", "")
 				+ " ) order by lsrh.SALES_RETURN_DATE desc" ;
 		
-		List<LtSalesReturnLineDto> salesReturnData = jdbcTemplate.query(query,new Object[] {//long1
-				//requestDto.getLimit(), requestDto.getOffset()
-				}, 
-				new BeanPropertyRowMapper<LtSalesReturnLineDto>(LtSalesReturnLineDto.class));
+//		List<LtSalesReturnLineDto> salesReturnData = jdbcTemplate.query(query,new Object[] {//long1
+//				//requestDto.getLimit(), requestDto.getOffset()
+//				}, 
+//				new BeanPropertyRowMapper<LtSalesReturnLineDto>(LtSalesReturnLineDto.class));
 		//System.out.println("salesReturnList == "+salesReturnList);
+		
+		try {
+			salesReturnData = consumeApiService.consumeApi(query, 
+					new Object[] { }, 
+					LtSalesReturnLineDto.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if(!salesReturnData.isEmpty()) {
 			return salesReturnData;
 		}
@@ -509,9 +607,7 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			 e.printStackTrace();
 			}
 		return null;
-		
 	}
-
 	
 	@Override
 	public LtSalesReturnResponseDto getSalesReturnForPendingAprroval1(Long salesReturnHeaderId, RequestDto requestDto)
@@ -560,11 +656,31 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			}
 			//System.out.println("requestDto"+searchField+ requestDto.getLimit()+ requestDto.getOffset());
 			//System.out.println("query is" +query);
+			List<SoHeaderDto> invoiceNoList = new ArrayList<>();
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+//			List<String> invoiceNoList = jdbcTemplate.queryForList(query, new Object[] 
+//					{requestDto.getOutletId(), searchField, requestDto.getLimit(), requestDto.getOffset()},(String.class));
+               
+			try {
+				invoiceNoList = consumeApiService.consumeApi(query, 
+						new Object[] 
+								{requestDto.getOutletId(), searchField, requestDto.getLimit(), requestDto.getOffset()}, 
+								SoHeaderDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			List<String> retrunstring = new ArrayList<>();
+			for(int i =0; i < invoiceNoList.size();i++) {
+				
+				retrunstring.add(invoiceNoList.get(i).getSiebelInvoicenumber());
+			}
 			
-			List<String> invoiceNoList = jdbcTemplate.queryForList(query, new Object[] 
-					{requestDto.getOutletId(), searchField, requestDto.getLimit(), requestDto.getOffset()},(String.class));
-               if(!invoiceNoList.isEmpty()) {
-			return invoiceNoList;
+			if(!invoiceNoList.isEmpty()) {
+			return retrunstring;
                }
                } catch (Exception e) {
 			//logger.error("Error Description :", e);
@@ -606,6 +722,8 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			throws ServerException {
 		try{
 			String query = env.getProperty("getSoLineData");
+			List<SoLineDto> SoLineData = new ArrayList<>();
+			ConsumeApiService consumeApiService = new ConsumeApiService();
 //		String searchField = null;
 //		if (requestDto.getSearchField()!= null) {
 //			searchField= "%" +requestDto.getSearchField().toUpperCase()+ "%";
@@ -619,10 +737,22 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 		}
 */
-		List<SoLineDto> SoLineData = jdbcTemplate.query(query,new Object[] {//siebelInvoicenumber, siebelInvoicenumber 
-				//requestDto.getLimit(), requestDto.getOffset()
-				}, new BeanPropertyRowMapper<SoLineDto>(SoLineDto.class));
+//		List<SoLineDto> SoLineData = jdbcTemplate.query(query,new Object[] {//siebelInvoicenumber, siebelInvoicenumber 
+//				//requestDto.getLimit(), requestDto.getOffset()
+//				}, new BeanPropertyRowMapper<SoLineDto>(SoLineDto.class));
 		
+			try {
+				SoLineData = consumeApiService.consumeApi(query, 
+						new Object[] {}, 
+						SoLineDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		if(!SoLineData.isEmpty()) {
 			return SoLineData;
 		}
@@ -799,7 +929,19 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	@Override
 	public String getProdNameFromProdId(String productId) throws ServerException {
 		String query= env.getProperty("getProdNameFromProdId");
-		String prodName= jdbcTemplate.queryForObject(query, new Object[] {productId}, String.class);
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		String prodName = "";
+		//String prodName= jdbcTemplate.queryForObject(query, new Object[] {productId}, String.class);
+		try {
+			prodName = consumeApiService.consumeApiForString(query, 
+					new Object[] { productId });
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return prodName;
 	}
 
@@ -879,6 +1021,8 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			throws ServerException {
 		try{
 			String query = env.getProperty("getSoHeaderDataNew");
+			List<SoHeaderDto> SoHeaderData = new ArrayList<>();
+			ConsumeApiService consumeApiService = new ConsumeApiService();
 //		String searchField = null;
 //		if (requestDto.getSearchField()!= null) {
 //			searchField= "%" +requestDto.getSearchField().toUpperCase()+ "%";
@@ -895,9 +1039,21 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			
 			//query = query + "  AND lsh.SIEBEL_INVOICENUMBER in ( " + salesReturnInvoice("[", "").replace("]", "")
 				//	+ " ) ";
-			List<SoHeaderDto> SoHeaderData = jdbcTemplate.query(query,new Object[] {} , 
-					new BeanPropertyRowMapper<SoHeaderDto>(SoHeaderDto.class));
+//			List<SoHeaderDto> SoHeaderData = jdbcTemplate.query(query,new Object[] {} , 
+//					new BeanPropertyRowMapper<SoHeaderDto>(SoHeaderDto.class));
 		
+			try {
+				SoHeaderData = consumeApiService.consumeApi(query, 
+						new Object[] {}, 
+						SoHeaderDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		if(SoHeaderData.size()>0) {
 			return SoHeaderData;
 		}
@@ -919,6 +1075,9 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	@Override
 	public List<ResponseDto> getSalesReturnForAprroval_Opt(List<Long> salesReturnHeaderId, RequestDto requestDto) throws ServerException {
 		try{
+			List<ResponseDto> salesReturnHeaderList = new ArrayList<>();
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+			
 			String query = env.getProperty("getSalesReturnForAprroval1");
  
 			if(requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
@@ -936,10 +1095,24 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	                      "ORDER BY SALES_RETURN_DATE  DESC " +
 	                      "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 			
-		List<ResponseDto> salesReturnHeaderList = jdbcTemplate.query(query,new Object[] {
-				requestDto.getLimit(), requestDto.getOffset()
-				}, new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+//		List<ResponseDto> salesReturnHeaderList = jdbcTemplate.query(query,new Object[] {
+//				requestDto.getLimit(), requestDto.getOffset()
+//				}, new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
 		//System.out.println("salesReturnList == "+salesReturnList);
+		
+	        try {
+	        	salesReturnHeaderList = consumeApiService.consumeApi(query, 
+	        			new Object[] {
+	        					requestDto.getLimit(), requestDto.getOffset()
+	        					 }, 
+						ResponseDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		if(!salesReturnHeaderList.isEmpty()) {
 			return salesReturnHeaderList;
 		}
@@ -956,6 +1129,8 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	    Map<Long, List<LtSalesReturnLines>> salesReturnLinesMap = new HashMap<>();
 	    try {
 	        String query = env.getProperty("getSalesReturnLineDataForApproval");
+	        List<LtSalesReturnLines> salesReturnLines = new ArrayList<>();
+	        ConsumeApiService consumeApiService = new ConsumeApiService();
  
 	        if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 	            requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
@@ -973,12 +1148,24 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	                      "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 	        System.out.println(requestDto.getOffset());
 	        System.out.println(requestDto.getLimit());
-	        List<LtSalesReturnLines> salesReturnLines = jdbcTemplate.query(
-	            query,
-	            new Object[]{requestDto.getLimit(),requestDto.getOffset() },
-	            new BeanPropertyRowMapper<LtSalesReturnLines>(LtSalesReturnLines.class)
-	        );
+//	        List<LtSalesReturnLines> salesReturnLines = jdbcTemplate.query(
+//	            query,
+//	            new Object[]{requestDto.getLimit(),requestDto.getOffset() },
+//	            new BeanPropertyRowMapper<LtSalesReturnLines>(LtSalesReturnLines.class)
+//	        );
  
+	        try {
+	        	salesReturnLines = consumeApiService.consumeApi(query, 
+	        			new Object[]{requestDto.getLimit(),requestDto.getOffset() }, 
+						LtSalesReturnLines.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
 	        System.out.println("Query = "+query);
 	        System.out.println("salesReturnLines = "+salesReturnLines);
 	        System.out.println("salesReturnLines size is = "+salesReturnLines.size());

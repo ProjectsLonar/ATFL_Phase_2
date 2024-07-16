@@ -3344,10 +3344,11 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						}
 						
 						RequestDto requestDto = new RequestDto();
-						requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
+						//requestDto.setOrderNumber(ltSoHeader.getOrderNumber());
 						requestDto.setLimit(-1);
 						requestDto.setOffset(2);
-					//	requestDto.setUserId(soHeaderDto.getUserId());
+						requestDto.setUserId(soHeaderDto.getUserId());
+						//requestDto.setOutletId(soHeaderDto.getOutletId());
 					//	requestDto.setLoginId(0L);
 						status = getOrderV2(requestDto);
 						
@@ -6064,7 +6065,7 @@ System.out.println("3820 = "+new Date());
 */
 	
 //* this is original code comment on 27-June-2024 to use procedure 	
-	public Status getOrderV2(RequestDto requestDto) throws ServiceException, IOException {
+	public Status getOrderV3(RequestDto requestDto) throws ServiceException, IOException {
 		System.out.println("In getOrderV2 method = "+LocalDateTime.now());
 		Map<String,String> timeDifference = new HashMap<>();
 		long methodIn = System.currentTimeMillis();
@@ -6276,7 +6277,7 @@ System.out.println("3820 = "+new Date());
 */
 	
 
-/*	//on 4july
+	//on 8july
 	public Status getOrderV2(RequestDto requestDto) {
 		long methodIn = System.currentTimeMillis();
 		System.out.println("methodIn time"+ LocalDateTime.now());
@@ -6290,23 +6291,42 @@ System.out.println("3820 = "+new Date());
          //LtOrderLineDataGt ltOrderLineDataGt;
         long beforeProcedureCallGetOrderV2 = System.currentTimeMillis();
         return jdbcTemplate.execute((Connection conn) -> {
-            try (CallableStatement callableStatement = conn.prepareCall("{call LT_GET_ORDER_GT_NEW_1(?,?,?,?,?,?,?,?,?)}")) {
+            try (//CallableStatement callableStatement = conn.prepareCall("{call LT_GET_ORDER_GT_NEW_1(?,?,?,?,?,?,?,?,?)}")) {
+            	CallableStatement callableStatement = conn.prepareCall("{call LT_GET_ORDER_GT_GAJ(?,?,?,?,?,?,?,?,?,?,?)}")) {
                 // Set input parameters
-            	int Limit = requestDto.getLimit();
-            	if(requestDto.getUserId()!= null) {
-                callableStatement.setLong(1, requestDto.getUserId());}
-                callableStatement.registerOutParameter(2, OracleTypes.CURSOR);
-                callableStatement.setString(3, requestDto.getDistributorId());
-                callableStatement.setString(4, requestDto.getStatus());
-                callableStatement.setString(5, requestDto.getOrderNumber());
-                callableStatement.setString(6, requestDto.getSearchField());
-                callableStatement.setString(7, requestDto.getOutletId());
-                if(requestDto.getLimit()== 1 || requestDto.getLimit()== 0) {
-                	Limit = -1;                	
-                }
-                callableStatement.setInt(8, Limit);
-                callableStatement.setInt(9, requestDto.getOffset());
+//            	int Limit = requestDto.getLimit();
+//            	if(requestDto.getUserId()!= null) {
+//                callableStatement.setLong(1, requestDto.getUserId());}
+//                callableStatement.registerOutParameter(2, OracleTypes.CURSOR);
+//                callableStatement.setString(3, requestDto.getDistributorId());
+//                callableStatement.setString(4, requestDto.getStatus());
+//                callableStatement.setString(5, requestDto.getOrderNumber());
+//                callableStatement.setString(6, requestDto.getSearchField());
+//                callableStatement.setString(7, requestDto.getOutletId());
+//                if(requestDto.getLimit()== 1 || requestDto.getLimit()== 0) {
+//                	Limit = -1;                	
+//                }
+//                callableStatement.setInt(8, Limit);
+//                callableStatement.setInt(9, requestDto.getOffset());
                 
+            	
+            	// new procedure parameter 
+            	callableStatement.setLong(1, requestDto.getUserId());
+                callableStatement.setString(2, requestDto.getDistributorId());
+                callableStatement.setString(3, requestDto.getPositionId());
+                callableStatement.setString(4, requestDto.getOutletId());
+                
+                callableStatement.setInt(5, requestDto.getLimit());
+                callableStatement.setInt(6, requestDto.getOffset());
+                
+                callableStatement.setString(7, requestDto.getStatus());
+                callableStatement.setString(8, requestDto.getOrderNumber());
+                callableStatement.setString(9, requestDto.getSearchField());
+                
+                callableStatement.registerOutParameter(10, OracleTypes.VARCHAR);
+                callableStatement.registerOutParameter(11, OracleTypes.VARCHAR);
+          
+          
                 //System.out.println("requestDto is = "+requestDto.getUserId()+requestDto.getDistributorId());
                 // Execute the stored procedure
                 System.out.println("above result");
@@ -6317,18 +6337,23 @@ System.out.println("3820 = "+new Date());
                 System.out.println("below result");
                 //Object lmn =  callableStatement.getObject(2);
                //System.out.println("lmn" + lmn);
+                
+                List<LtOrderLineDataGt> ltOrderLineDataGt = new ArrayList<>();
+                ltOrderLineDataGt = ltSoHeadersDao.getDataFromProcedure();
+                
+                
                 System.out.println("before callable" + LocalDateTime.now());
-                ResultSet rs = (ResultSet) callableStatement.getObject(2);
+// on 8 july               ResultSet rs = (ResultSet) callableStatement.getObject(2);
                 
                 //rs.setFetchSize(3);
               
                 System.out.println("after callable" + LocalDateTime.now());
-                System.out.println("ResultSet = " + rs);
+ // on 8 july               System.out.println("ResultSet = " + rs);
                // List<LtOrderLineDataGt> resultList = new ArrayList<>();
 //                System.out.println("before while" + LocalDateTime.now());
                //int batchSize = 1000;
                 //List<LtOrderLineDataGt> batchList = new ArrayList<>(batchSize);
-                while (rs.next()) {     
+ /* on 8 july               while (rs.next()) {     
                     // Fetching values from ResultSet into local variables to reduce repeated method calls.
                     long inventoryQuantity = rs.getLong("inventoryQuantity");     
                     Date cdate = rs.getDate("Cdate");     
@@ -6434,7 +6459,7 @@ System.out.println("3820 = "+new Date());
                     
                         resultList.add(ltOrderLineDataGt);
                        
-                    }
+                    }  on 8 july */
                // }
 
                // Map<Long, SoHeaderDto> soHeaderDtoMap = new ConcurrentHashMap<>();
@@ -6470,14 +6495,14 @@ System.out.println("3820 = "+new Date());
                 //callableStatement.close();
                // System.out.println("map soze = "+soHeaderDtoMap.size());
                // System.out.println("count is "+count );
- //on 4july               System.out.println("after while" + LocalDateTime.now());
+	           System.out.println("after while" + LocalDateTime.now());
                 // Add any remaining records
 //                if (!batchList.isEmpty()) {
 //                    resultList.addAll(batchList);
 //                }
 
-	//on 4july               System.out.println("ResultList size: " + resultList.size());
-	//on 4july             System.out.println("resultList = "+resultList);
+	               System.out.println("ResultList size: " + resultList.size());
+                         System.out.println("resultList = "+resultList);
 
 //                Map<Long, SoHeaderDto> soHeaderDtoMap = new ConcurrentHashMap<>();
 //                Map<Long, List<SoLineDto>> soLineDtoMap = new ConcurrentHashMap<>();
@@ -6520,19 +6545,19 @@ System.out.println("3820 = "+new Date());
 //                    })
 //                    .collect(Collectors.toList());
 
-	//on 4july           System.out.println("Completed processing resultList.");
-	//on 4july           System.out.println("after processing headers" + LocalDateTime.now());
+	        System.out.println("Completed processing resultList.");
+	           System.out.println("after processing headers" + LocalDateTime.now());
 
     	        //OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
    	        //orderDetailsDto.setSoHeaderDto(soHeaderDtoList);
    	     //System.out.println("order Details Dto = "+orderDetailsDto);
    	  //System.out.println("soHeaderDtoMap Dto = "+soHeaderDtoMap);
         //        status.setData(soHeaderDtoMap);
-                long methodOut = System.currentTimeMillis();
+	          long methodOut = System.currentTimeMillis();
                 
-              //on 4july			timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
-              //on 4july              System.out.println("Exit from in else getOrderV2 at =" + LocalDateTime.now());
-              //on 4july            status.setTimeDifference(timeDifference);
+	          			timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+	                       System.out.println("Exit from in else getOrderV2 at =" + LocalDateTime.now());
+	                     status.setTimeDifference(timeDifference);
                  
                 
                 
@@ -6545,29 +6570,31 @@ System.out.println("3820 = "+new Date());
                 //}
                //System.out.println("Result is = "+result);
                 //System.out.println("resultList is = "+resultList);
-       //on 4july             Map<Long, SoHeaderDto> soHeaderDtoMap = new LinkedHashMap<>();
-       //on 4july	        Map<Long, List<SoLineDto>> soLineDtoMap = new LinkedHashMap<>();
+	               Map<Long, SoHeaderDto> soHeaderDtoMap = new LinkedHashMap<>();
+	  	        Map<Long, List<SoLineDto>> soLineDtoMap = new LinkedHashMap<>();
                 
-       //on 4july	        for (LtOrderLineDataGt responseDto : resultList) {
-       //on 4july     SoLineDto soLineDto = buildSoLineDto1(responseDto);
+	   	        for (LtOrderLineDataGt responseDto : ltOrderLineDataGt) {
+	        SoLineDto soLineDto = buildSoLineDto1(responseDto);
 
     	            // Add soLineDto to the soLineDtoMap only if lineId is not null
-              //on 4july   	            if (soLineDto.getLineId() != null) {
-              //on 4july          soLineDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> new ArrayList<>()).add(soLineDto);
-              //on 4july      }
+	             	            if (soLineDto.getLineId() != null) {
+	                    soLineDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> new ArrayList<>()).add(soLineDto);
+	              }
 
     	            // Add or update soHeaderDto in the soHeaderDtoMap
-              //on 4july  	            soHeaderDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> buildSoHeaderDto1(responseDto));
-              //on 4july        }
-              //on 4july       List<SoHeaderDto> soHeaderDtoList = new ArrayList<>(soHeaderDtoMap.size());
+           	            soHeaderDtoMap.computeIfAbsent(responseDto.getHeaderId(), k -> buildSoHeaderDto1(responseDto));
+	                   }
+	                 List<SoHeaderDto> soHeaderDtoList = new ArrayList<>(soHeaderDtoMap.size());
 
-              //on 4july       soHeaderDtoMap.forEach((headerId, soHeaderDto) -> {
-              //on 4july         soHeaderDto.setSoLineDtoList(soLineDtoMap.get(headerId));
-    	          //on 4july          soHeaderDtoList.add(soHeaderDto);
-              //on 4july     });
+	                soHeaderDtoMap.forEach((headerId, soHeaderDto) -> {
+	                soHeaderDto.setSoLineDtoList(soLineDtoMap.get(headerId));
+                                         soHeaderDtoList.add(soHeaderDto);
+	       });
 
-              //on 4july        OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
-              //on 4july       orderDetailsDto.setSoHeaderDto(soHeaderDtoList);
+	                OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
+	                orderDetailsDto.setSoHeaderDto(soHeaderDtoList);
+	                
+	                
  /*               List<LtOrderLineDataGt> resultList = new ArrayList<>();
                 if (result!=true) {
                     try (ResultSet rs = callableStatement.getResultSet()) {
@@ -6631,16 +6658,17 @@ System.out.println("3820 = "+new Date());
                     }
                 }
 */
-              //on 4july         status.setData(orderDetailsDto);
-              //on 4july          return status;
-              //on 4july   } catch (Exception e) {
+	                   status.setData(orderDetailsDto);
+	        // on 8 july            status.setData(ltOrderLineDataGt);
+	                    return status;
+	             } catch (Exception e) {
                 //throw new RuntimeException("Error executing stored procedure", e);
-              //on 4july      e.printStackTrace();
-             //on 4july    } 
-             //on 4july   return status;
-             //on 4july     });
-             //on 4july }
-              //on 4july*/// end of comment on 4-july-2024//	
+	               e.printStackTrace();
+	             } 
+	            return status;
+	              });
+	          }
+              // end of comment on 4-july-2024//	
 	
 	private SoHeaderDto mapResultSetToSoHeaderDto(ResultSet rs) throws SQLException{
 		//System.out.println("in mapResultSetToSoHeaderDto" + LocalDateTime.now());

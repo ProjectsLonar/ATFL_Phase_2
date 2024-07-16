@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
@@ -97,6 +99,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication auth) throws IOException, ServletException {
+		long methodIn = System.currentTimeMillis();
+		Map<String,String> timeDifference = new HashMap<>();
 
 		String userName = auth.getName();
 		Status status = new Status();
@@ -171,7 +175,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 							ltMastUser.getCreationDate(),ltMastUser.getLastUpdateDate(),ltMastUser.getIsFirstLogin(),
 							ltMastUser.getTerritory());
 
+					long methodOut = System.currentTimeMillis();
+					timeDifference.put("methodInOut", timeDiff(methodIn,methodOut));
 					status.setData(jwtResponse);
+					status.setTimeDifference(timeDifference);
 
 				} else {
 					System.out.println("Unknown Status of User");
@@ -208,6 +215,21 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 		}
 
 		return false;
+	}
+	
+	public String timeDiff(long startTime,long endTime) {
+		// Step 4: Calculate the time difference in milliseconds
+        long durationInMillis = endTime - startTime;
+ 
+        // Step 5: Convert the duration into a human-readable format
+        long seconds = durationInMillis / 1000;
+        long milliseconds = durationInMillis % 1000;
+ 
+        String formattedDuration = String.format(
+            "%d seconds, %d milliseconds",
+            seconds, milliseconds
+        );
+		return formattedDuration;
 	}
 
 	// A (temporary) class just to represent the user credentials

@@ -121,13 +121,17 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 		String searchField = null;
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+		}else{
+			searchField="";
 		}
 		System.out.println("requestDto" + requestDto);
 		
 		
 		String query = env.getProperty("getAllNotification");
 		List<NotificationDetails> notificationList = jdbcTemplate.query(query,
-				new Object[] {requestDto.getDistributorId(),requestDto.getUserId(),requestDto.getSearchField(),requestDto.getLimit(),requestDto.getOffset() },
+				new Object[] {requestDto.getDistributorId(),requestDto.getUserId(),searchField,
+						requestDto.getDistributorId(),requestDto.getUserId(),searchField,
+						requestDto.getLimit(),requestDto.getOffset() },
 				new BeanPropertyRowMapper<NotificationDetails>(NotificationDetails.class));
 		if (!notificationList.isEmpty()) {
 			return notificationList;
@@ -213,10 +217,10 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 	public NotificationDetails deleteNotificationAfter72Hours(Date cutoffDate) throws ServiceException {
 		    NotificationDetails notificationDetails = new NotificationDetails();   
 		   try {
-		String query = env.getProperty("deleteNotificationAfter72Hours");
-		 notificationDetails = jdbcTemplate.queryForObject(query, 
-				new Object[] {cutoffDate}, new BeanPropertyRowMapper<NotificationDetails>(NotificationDetails.class));
-		
+		//String query = env.getProperty("deleteNotificationAfter72Hours");
+//		 notificationDetails = jdbcTemplate.queryForObject(query, 
+//				new Object[] {cutoffDate}, new BeanPropertyRowMapper<NotificationDetails>(NotificationDetails.class));
+//		
 		if(notificationDetails == null) {
 			return notificationDetails;
 		}else {

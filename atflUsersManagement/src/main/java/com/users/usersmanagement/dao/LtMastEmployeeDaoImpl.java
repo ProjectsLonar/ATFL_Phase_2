@@ -1,7 +1,8 @@
 package com.users.usersmanagement.dao;
 
 import java.util.List;
-
+import java.io.IOException;
+import java.util.ArrayList;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import com.users.usersmanagement.model.LtMastEmployees;
 import com.users.usersmanagement.model.LtMastPositions;
 import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.repository.LtMastEmployeeRepository;
+import com.users.usersmanagement.service.ConsumeApiService;
 
 @Repository
 @PropertySource(value = "classpath:queries/userMasterQueries.properties", ignoreResourceNotFound = true)
@@ -73,12 +75,29 @@ public class LtMastEmployeeDaoImpl implements LtMastEmployeeDao {
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
+		List<LtMastPositions> positionsList = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
 
-		List<LtMastPositions> positionsList = jdbcTemplate.query(
-				query, new Object[] { requestDto.getDistributorId(), //requestDto.getOrgId(), 
-						searchField,
-						requestDto.getLimit(), requestDto.getOffset() },
-				new BeanPropertyRowMapper<LtMastPositions>(LtMastPositions.class));
+//		List<LtMastPositions> positionsList = jdbcTemplate.query(
+//				query, new Object[] { requestDto.getDistributorId(), //requestDto.getOrgId(), 
+//						searchField,
+//						requestDto.getLimit(), requestDto.getOffset() },
+//				new BeanPropertyRowMapper<LtMastPositions>(LtMastPositions.class));
+		
+		try {
+			positionsList = consumeApiService.consumeApi(query, 
+					new Object[] { requestDto.getDistributorId(), //requestDto.getOrgId(), 
+							searchField,
+							requestDto.getLimit(), requestDto.getOffset() }, 
+					LtMastPositions.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (!positionsList.isEmpty()) {
 			return positionsList;
 		}

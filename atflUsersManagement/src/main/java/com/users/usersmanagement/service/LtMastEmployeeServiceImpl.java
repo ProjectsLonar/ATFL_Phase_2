@@ -106,8 +106,8 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 	@Override
 	public Status getSalesPersonsForDistributorV1(RequestDto requestDto) throws ServiceException {
 		Status status = new Status();
+		
 		List<LtMastPositions> list = ltMastEmployeeDao.getSalesPersonsForDistributorV1(requestDto);
-
 		if (list != null) {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");

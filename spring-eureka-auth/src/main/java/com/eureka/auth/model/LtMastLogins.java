@@ -11,21 +11,26 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Entity
 @Table(name = "lt_mast_logins")
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true) // Ignore unknown properties in JSON
 public class LtMastLogins {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "LT_MAST_LOGINS_S")
 	@SequenceGenerator(name = "LT_MAST_LOGINS_S", sequenceName = "LT_MAST_LOGINS_S", allocationSize = 1)
 	@Column(name = "LOGIN_ID")
+	//@JsonProperty("LOGIN_ID")
 	private Long loginId;
 
 	@Column(name = "USER_ID")
+	//@JsonProperty("USER_ID")
 	private Long userId;
 
 	@Column(name = "LOGIN_DATE")
@@ -38,12 +43,15 @@ public class LtMastLogins {
 	private String device;
 
 	@Column(name = "OTP")
+	//@JsonProperty("OTP")
 	private Long otp;
 
 	@Column(name = "STATUS")
+	//@JsonProperty("STATUS")
 	private String status;
 
 	@Column(name = "TOKEN_ID")
+	//@JsonProperty("TOKEN_ID")
 	private Long tokenId;
 
 	@Transient

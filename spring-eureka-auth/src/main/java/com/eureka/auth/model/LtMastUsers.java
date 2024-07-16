@@ -10,12 +10,15 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Entity
 @Table(name = "LT_MAST_USERS")
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true) // Ignore unknown properties in JSON
 public class LtMastUsers extends BaseClass {
 
 	private static final long serialVersionUID = 1L;
@@ -24,72 +27,95 @@ public class LtMastUsers extends BaseClass {
 	@SequenceGenerator(name = "LT_MAST_USERS_S", sequenceName = "LT_MAST_USERS_S", allocationSize = 1)
 	@Basic(optional = false)
 	@Column(name = "USER_ID")
+	//@JsonProperty("USER_ID")
 	private Long userId;
 
 	@Column(name = "ORG_ID")
+	//@JsonProperty("ORG_ID")
 	private String orgId;
 
 	@Column(name = "DISTRIBUTOR_ID")
+	////@JsonProperty("DISTRIBUTOR_ID")
 	private String distributorId;
 
 	@Column(name = "OUTLET_ID")
+	////@JsonProperty("OUTLET_ID")
 	private String outletId;
 
 	@Column(name = "MOBILE_NUMBER")
+	////@JsonProperty("MOBILE_NUMBER")
 	private String mobileNumber;
 
 	@Column(name = "USER_TYPE")
+	////@JsonProperty("USER_TYPE")
 	private String userType;
 
 	@Column(name = "USER_NAME")
+	////@JsonProperty("USER_NAME")
 	private String userName;
 
 	@Column(name = "EMPLOYEE_CODE")
+	////@JsonProperty("EMPLOYEE_CODE")
 	private String employeeCode;
 
 	@Column(name = "DESIGNATION")
+	////@JsonProperty("DESIGNATION")
 	private String Designation;
 	
 	@Column(name = "POSITION_ID")
+	////@JsonProperty("POSITION_ID")
 	private String PositionId;
 	
 	@Column(name = "ADDRESS")
+	////@JsonProperty("ADDRESS")
 	private String Address;
 
 	@Column(name = "EMAIL")
+	////@JsonProperty("EMAIL")
 	private String email;
 
 	@Column(name = "ALTERNATE_NO")
+	////@JsonProperty("ALTERNATE_NO")
 	private String alternateNo;
 	
 	@Column(name = "LATITUDE")
+	//@JsonProperty("LATITUDE")
 	private String latitude;
 	
 	@Column(name = "LONGITUDE")
+	//@JsonProperty("LONGITUDE")
 	private String longitude;
 	
 	@Column(name = "image_type")
+	//@JsonProperty("IMAGE_TYPE")
 	private String imageType;
 
 	@Column(name = "image_name")
+	//@JsonProperty("IMAGE_NAME")
 	private String imageName;
 
 	@Column(name = "image_data")
+	//@JsonProperty("IMAGE_DATA")
 	private String imageData;
 	
 	@Column(name = "ADDRESS_DETAILS")
+	//@JsonProperty("ADDRESS_DETAILS")
 	private String addressDetails;
 	
 	@Column(name = "RECENT_SEARCH_ID")
+	//@JsonProperty("RECENT_SEARCH_ID")
 	private String recentSerachId;
 	
 	@Column(name = "TOKEN_DATA")
+	//@JsonProperty("TOKEN_DATA")
 	private String tokenData;
 	
 	@Column(name = "ISFIRSTLOGIN")
+	//@JsonProperty("IS_FIRST_LOGIN")
 	private String isFirstLogin;
 	
 	@Column(name = "TERRITORY")
+	//@JsonProperty("TERRITORY")
 	private String territory;
 	
 	

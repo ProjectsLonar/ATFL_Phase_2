@@ -1,6 +1,8 @@
 package com.atflMasterManagement.masterservice.servcies;
 
 import java.io.IOException;
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,6 +11,8 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
 
 import com.atflMasterManagement.masterservice.common.ServiceException;
@@ -30,6 +34,9 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 
 	@Autowired
 	private LtMastProductsRepository ltMastProductsRepository;
+	
+	@Autowired
+    private JdbcTemplate jdbcTemplate;
 
 	@Override
 	public Status getProduct(RequestDto requestDto) throws ServiceException, IOException {
@@ -320,7 +327,8 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 //		return status;
 //	}
 // this end of original code */	
-		
+
+/*	 this is working code comment on 10-july 2024 to call procedure
 	@Override
 	public Status getInStockProduct(RequestDto requestDto) throws ServiceException, IOException {
 		Status status = new Status();
@@ -368,18 +376,6 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 		//	System.out.println("ProductList = "+ list);
 		//	System.out.println("productCount = "+ productCount);
 			
-/*			for (ProductDto product : list) {
-                // Initialize MRP1 list if it is null
-                if (product.getMRP1() == null) {
-                    product.setMRP1(new ArrayList<>());
-                }
-                for (ProductDto mrpProduct : mrpList) {
-                    if (product.getProductId().equalsIgnoreCase(mrpProduct.getProductId())) {
-                        product.getMRP1().add(mrpProduct.getMRP());
-                    }
-                }
-            }
-*/
 		//	System.out.println("ProductList below for loop = "+ list);
 			if(!list.isEmpty()) {
 				status.setCode(RECORD_FOUND);
@@ -472,6 +468,90 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
         status.setTimeDifference(timeDifference);
 		return status;
 	}
+end of original working code */	
+	
+	
+	@Override
+	public Status getInStockProduct(RequestDto requestDto) throws ServiceException, IOException {
+		long methodIn = System.currentTimeMillis();
+		Map<String,String> timeDifference = new HashMap<>();
+		Status status = new Status();
+		Connection con = null;
+		CallableStatement callableStatement = null;
+		try {
+			con = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
+			callableStatement = con.prepareCall("{ call LT_GET_INSTOCK_PRODUCT(?, ?, ?, ?, ?, ?, ?, ?, ?) }");
+ 
+			Long userId = Long.parseLong(requestDto.getUserId());
+			callableStatement.setLong(1, userId);
+			callableStatement.setInt(2, requestDto.getLimit());
+			callableStatement.setInt(3, requestDto.getOffset());
+			callableStatement.setString(4, requestDto.getSearchField());
+			callableStatement.setString(5, requestDto.getProductId());
+			callableStatement.setString(6, requestDto.getCategoryId());
+			callableStatement.setString(7, requestDto.getDistId());
+			callableStatement.setString(8, requestDto.getOutletId());
+			callableStatement.setString(9, requestDto.getPriceList());
+ 
+			boolean result = callableStatement.execute();
+ 
+			List<ProductDto> productDataGt = new ArrayList<>();
+			List<ProductDto> multipleMrpGt = new ArrayList<>();
+ 
+			productDataGt = ltMastProductDao.getProductListFromProcedure();
+			multipleMrpGt = ltMastProductDao.getMultipleMrpFromProcedure();
+ 
+			if (productDataGt != null) {
+ 
+				List<ProductDto> productDtoList = new ArrayList<ProductDto>();
+				// System.out.println("Above for loop at = "+LocalDateTime.now());
+				for (Iterator iterator = productDataGt.iterator(); iterator.hasNext();) {
+ 
+					ProductDto productDto = (ProductDto) iterator.next();
+ 
+					System.out.print(productDto);
+ 
+					if (productDto.getPtrFlag().equalsIgnoreCase("Y")) {
+						// productDto.setPtrPrice(productDto.getListPrice());
+						productDto.setPtrPrice(productDto.getPtrPrice());
+					}
+ 
+					
+					if (productDto.getInventoryQuantity() != null) {
+					} else {
+						productDto.setInventoryQuantity("0");
+					}
+ 
+					productDtoList.add(productDto);
+				}
+ 
+				for (ProductDto product : productDtoList) {
+					// Initialize MRP1 list if it is null
+					if (product.getMRP1() == null) {
+						product.setMRP1(new ArrayList<>());
+					}
+					for (ProductDto mrpProduct : multipleMrpGt) {
+						if (product.getProductId().equalsIgnoreCase(mrpProduct.getProductId())) {
+							product.getMRP1().add(mrpProduct.getMRP());
+						}
+					}
+				}
+				status.setCode(RECORD_FOUND);
+				status.setData(productDtoList);
+				//status.setRecordCount(productCount);
+			} else {
+				status.setCode(RECORD_NOT_FOUND);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		long methodOut = System.currentTimeMillis();
+        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+        status.setTimeDifference(timeDifference);
+		System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+		return status;
+	}
+	
 	
 	public String timeDiff(long startTime,long endTime) {
 		// Step 4: Calculate the time difference in milliseconds

@@ -3,6 +3,7 @@ package com.users.usersmanagement.dao;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -21,6 +22,8 @@ import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.model.UserDto;
 import com.users.usersmanagement.repository.LtConfigurationRepository;
 import com.users.usersmanagement.repository.LtMastUsersRepository;
+import com.users.usersmanagement.service.ConsumeApiService;
+
 
 @Repository
 @PropertySource(value = "classpath:queries/userMasterQueries.properties", ignoreResourceNotFound = true)
@@ -205,20 +208,36 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 		if (requestDto.getSearchField() != null) {
 			userName = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		List<LtMastUsers> ltMastOutletslist = new ArrayList<>();
 		try {
-			List<LtMastUsers> ltMastOutletslist = jdbcTemplate.query(query,
+//			List<LtMastUsers> ltMastOutletslist = jdbcTemplate.query(query,
+//					new Object[] { requestDto.getOrgId(), requestDto.getDistributorId(), requestDto.getOutletId(),
+//							requestDto.getStatus(), requestDto.getUserType(), userName,
+//							requestDto.getSalesPersonId(), userId ,
+//							requestDto.getLimit(), requestDto.getOffset() },
+//					new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+
+			ltMastOutletslist = consumeApiService.consumeApi(query, 
 					new Object[] { requestDto.getOrgId(), requestDto.getDistributorId(), requestDto.getOutletId(),
 							requestDto.getStatus(), requestDto.getUserType(), userName,
 							requestDto.getSalesPersonId(), userId ,
-							requestDto.getLimit(), requestDto.getOffset() },
-					new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
-
+							requestDto.getLimit(), requestDto.getOffset() }, 
+					LtMastUsers.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
 			if (!ltMastOutletslist.isEmpty()) {
 				return ltMastOutletslist;
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 		return null;
 

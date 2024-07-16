@@ -1,6 +1,8 @@
 package com.atflMasterManagement.masterservice.dao;
 
 import java.util.List;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -18,6 +20,7 @@ import com.atflMasterManagement.masterservice.dto.UserDetailsDto;
 import com.atflMasterManagement.masterservice.model.CodeMaster;
 import com.atflMasterManagement.masterservice.model.LtMastFAQ;
 import com.atflMasterManagement.masterservice.repository.LtMastFAQRepository;
+import com.atflMasterManagement.masterservice.servcies.ConsumeApiService;
 
 @Repository
 @PropertySource(value = "classpath:queries/ltMasterQueries.properties", ignoreResourceNotFound = true)
@@ -51,14 +54,29 @@ public class LtMastFAQDaoImpl implements LtMastFAQDao,CodeMaster{
 	public List<LtMastFAQ> getAllFAQ(Long orgId, Long userId) throws ServiceException {
 		String query = env.getProperty("findFAQbyOrgId");
 		UserDetailsDto userDetailsDto = getUserTypeAndDisId(userId);
-		
+		System.out.println("in dao userDetailsDto = " + userDetailsDto);
+		List<LtMastFAQ> ltMastFAQlist = new ArrayList<>();
 		String userTypeStr = null;
 		if (userDetailsDto.getUserType() != null) {
 			userTypeStr = "%" + userDetailsDto.getUserType().toUpperCase().trim() + "%";
 		}
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+//		List<LtMastFAQ> ltMastFAQlist =jdbcTemplate.query(query, new Object[] { orgId, userTypeStr },
+//				new BeanPropertyRowMapper<LtMastFAQ>(LtMastFAQ.class));
+		System.out.println("in dao userDetailsDto = " + orgId + userTypeStr);
+		try {
+			ltMastFAQlist = consumeApiService.consumeApi(query, 
+					new Object[] { orgId, userTypeStr }, 
+					LtMastFAQ.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		List<LtMastFAQ> ltMastFAQlist =jdbcTemplate.query(query, new Object[] { orgId, userTypeStr },
-				new BeanPropertyRowMapper<LtMastFAQ>(LtMastFAQ.class));
 		logger.info("FAQ details"+ltMastFAQlist);
 		if(!ltMastFAQlist.isEmpty()) {
 			return ltMastFAQlist;
@@ -69,8 +87,22 @@ public class LtMastFAQDaoImpl implements LtMastFAQDao,CodeMaster{
 	
 	private UserDetailsDto getUserTypeAndDisId(Long userId) throws ServiceException {
 		String query = env.getProperty("getUserTypeAndDisId");
-		List<UserDetailsDto> list = jdbcTemplate.query(query, new Object[] { userId },
-				new BeanPropertyRowMapper<UserDetailsDto>(UserDetailsDto.class));
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		List<UserDetailsDto> list = new ArrayList<>();
+//		List<UserDetailsDto> list = jdbcTemplate.query(query, new Object[] { userId },
+//				new BeanPropertyRowMapper<UserDetailsDto>(UserDetailsDto.class));
+		try {
+			list = consumeApiService.consumeApi(query, 
+					new Object[] { userId }, 
+					UserDetailsDto.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (!list.isEmpty())
 			return list.get(0);
 		else

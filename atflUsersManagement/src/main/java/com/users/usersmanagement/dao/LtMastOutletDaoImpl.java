@@ -1,12 +1,22 @@
 package com.users.usersmanagement.dao;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -14,6 +24,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.model.BeatDetailsDto;
 import com.users.usersmanagement.model.CodeMaster;
@@ -96,17 +107,64 @@ public class LtMastOutletDaoImpl implements LtMastOutletDao, CodeMaster {
 		return null;
 	}
 
+	public static <T> List<T> consumeApi(String query, Object[] body,Class<T> clazz) throws IOException, InterruptedException {
+        List<T> result = new ArrayList<>();
+//		List<LtMastUsers> ltMastUsers = new ArrayList<LtMastUsers>();
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.name());
+
+        // Convert the Object[] to JSON string
+        String jsonBody = objectMapper.writeValueAsString(body);
+
+        // Build the URI
+        String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
+        //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery; 
+        // Create HttpPost request
+        HttpPost httpPost = new HttpPost(uri);
+        httpPost.setHeader("Content-Type", "application/json");
+        httpPost.setEntity(new StringEntity(jsonBody));
+
+        try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+            String responseBody = EntityUtils.toString(response.getEntity());
+            System.out.println(responseBody);
+            System.out.println("After response body = "+ LocalDateTime.now());
+        
+            //List<LtMastUsers> usersArray = objectMapper.readValue(responseBody, LtMastUsers(LtMastUsers.class));
+            //ltMastUsers = objectMapper.readValue(responseBody, new TypeReference<List<LtMastUsers>>() {});
+            
+            result = objectMapper.readValue(responseBody, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+            System.out.println("Result = " + result);
+            
+            //System.out.println("LtMastUsers = " + ltMastUsers);
+       }
+//		return ltMastUsers;
+        return result;
+    }
+	
 	@Override
 	public LtMastUsers getMastDataByOutletId(String outletId) throws ServiceException {
 
 		String query = env.getProperty("getMastDataByOutletId");
 
-		List<LtMastUsers> ltMastOutletslist = jdbcTemplate.query(query, new Object[] { outletId },
-				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		//List<LtMastUsers> ltMastOutletslist = jdbcTemplate.query(query, new Object[] { outletId },
+		//		new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
 
-		if (!ltMastOutletslist.isEmpty()) {
-			return ltMastOutletslist.get(0);
+		List<LtMastUsers> ltMastOutletslist;
+		try {
+			ltMastOutletslist = consumeApi(query, new Object[] { outletId },LtMastUsers.class);
+			if (!ltMastOutletslist.isEmpty()) {
+				return ltMastOutletslist.get(0);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		return null;
 	}
 	
