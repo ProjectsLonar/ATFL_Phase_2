@@ -294,7 +294,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
       String password = "Welcome12";    //"vjug xicp wiuw fakw";         
       // Outgoing email information
       String mailTo = to;        
-      String subject1 = "SALES_ORDER_APPROVAL";   
+      String subject1 = "Sub:- Outlet Approval";   
 //      text = "<html><head></head><body><h1>Greetings!</h1><p>We hope this message finds you well.</p></body></html>";
 //      String salesOrder ="myOrder123";
 //      String salespersonName = "Vaibhav";
@@ -307,7 +307,7 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
               + "<div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left\">"
               + "<p style=\"margin:0 0 16px\">Dear Sir/Ma’am,</p>"
               + "<p style=\"margin:0 0 16px\">An outlet has come for your approval. Please go to the app to approve/reject the outlet.</p>"
-              + "<h4 style=\"font-weight:bold\">Outlet Name:"+ salespersonName +"</h4>"
+              + "<h4 style=\"font-weight:bold\">Outlet Name:"+ outletName +"</h4>"
               + "<h4 style=\"font-weight:bold\">Created by:"+ salespersonName +"</h4>"
               + "<h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>"
               + "<p>Regards,</p><p>Lakshya App team.</p>"
@@ -681,7 +681,8 @@ LtMastOutletsDump ltMastOutletsDump1 = new LtMastOutletsDump();
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
 			status.setData(list);
 		} else {
-			status.setCode(FAIL);
+			//status.setCode(FAIL);
+			status.setCode(RECORD_NOT_FOUND);
 			status.setMessage("RECORD NOT FOUND");
 		}
 		return status;
@@ -820,21 +821,22 @@ try {
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
          con.setRequestMethod(method);
          con.setRequestProperty("Content-Type", "application/json");
-         con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpEMTBueXN1JA=="); // this is LONAR_TEST:D10nysu$
+        // con.setRequestProperty("Authorization", "Basic TE9OQVJfVEVTVDpEMTBueXN1JA=="); // this is LONAR_TEST:D10nysu$
          //"Basic TE9OQVJfVEVTVDpMb25hcjEyMw=="); this is LONAR_TEST:Lonar123//comment on 30-May-24 for auth 
                                                       
-/*         String username;
+         String username;
 	        if(ltMastOutletsDumps.getMobileNumber()!= null) {
 	         username = ltMastOutletDao.getUserNameFromSiebel(ltMastOutletsDumps.getMobileNumber());
 	         }else {
-	         username = "VINAY.KUMAR6";}
+	         username = "LONAR_TEST";}   // "VINAY.KUMAR6";}
 	        String password = "D10nysu$";
 	        String auth = username + ":" + password;
 	        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
 	        String authHeaderValue = "Basic " + new String(encodedAuth);
+	        System.out.println("This is user auth credentials = "+auth);
 	        System.out.println("This is user authHeaderValue"+authHeaderValue);
 	        con.setRequestProperty("Authorization", authHeaderValue);
-*/// this is comment on 05-June-24 bcz auth is not working  
+// this is comment on 05-June-24 bcz auth is not working  
          
         // Enable output and set request body
         con.setDoOutput(true);

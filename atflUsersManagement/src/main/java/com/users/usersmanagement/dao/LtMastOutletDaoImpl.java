@@ -40,6 +40,7 @@ import com.users.usersmanagement.model.NotificationDetails;
 import com.users.usersmanagement.model.OutletSequenceData;
 import com.users.usersmanagement.model.RequestDto;
 import com.users.usersmanagement.model.LtMastStates;
+import com.users.usersmanagement.service.ConsumeApiService;
 
 @Repository
 @PropertySource(value = "classpath:queries/userMasterQueries.properties", ignoreResourceNotFound = true)
@@ -204,11 +205,24 @@ public class LtMastOutletDaoImpl implements LtMastOutletDao, CodeMaster {
 	@Override
 	public LtMastOrganisations getOrganisationDetailsById(String orgId)throws ServiceException, IOException{
 String query = env.getProperty("getOrganisationDetailsById");
-		
+List<LtMastOrganisations> list = new ArrayList<>();
+ConsumeApiService consumeApiService = new ConsumeApiService();
 
-		List<LtMastOrganisations> list = jdbcTemplate.query(query,
-				new Object[] {orgId },
-				new BeanPropertyRowMapper<LtMastOrganisations>(LtMastOrganisations.class));
+//		List<LtMastOrganisations> list = jdbcTemplate.query(query,
+//				new Object[] {orgId },
+//				new BeanPropertyRowMapper<LtMastOrganisations>(LtMastOrganisations.class));
+try {
+	list = consumeApiService.consumeApi(query, 
+			new Object[] { orgId }, 
+			LtMastOrganisations.class);
+} catch (IOException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+} catch (InterruptedException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}        
+
 System.out.println("list"+list);
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -287,10 +301,25 @@ System.out.println("list"+list);
 	@Override
 	public LtMastOutletsDump getOutletToChangeStatus(String distributorId,String orgId,String primaryMobile)throws ServiceException, IOException{
 		String query = env.getProperty("getOutletToChangeStatus");
-		List<LtMastOutletsDump> ltMastOutletslist = jdbcTemplate.query(query,
-				new Object[] { distributorId,orgId,primaryMobile},
-				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+		List<LtMastOutletsDump> ltMastOutletslist = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
 
+//		List<LtMastOutletsDump> ltMastOutletslist = jdbcTemplate.query(query,
+//				new Object[] { distributorId,orgId,primaryMobile},
+//				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+
+		try {
+			ltMastOutletslist = consumeApiService.consumeApi(query, 
+					new Object[] { distributorId,orgId,primaryMobile }, 
+					LtMastOutletsDump.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (!ltMastOutletslist.isEmpty()) {
 			return ltMastOutletslist.get(0);
 		}else {
@@ -502,9 +531,24 @@ System.out.println("list"+list);
 		String query = env.getProperty("getOutletById");
 		System.out.println("outletId"+outletId);
 
-		List<LtMastOutletsDump> list = jdbcTemplate.query(query,
-				new Object[] {outletId},
-				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+//		List<LtMastOutletsDump> list = jdbcTemplate.query(query,
+//				new Object[] {outletId},
+//				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		List<LtMastOutletsDump> list = new ArrayList<>();
+
+		try {
+			list = consumeApiService.consumeApi(query, 
+					new Object[] { outletId}, 
+					LtMastOutletsDump.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		System.out.println("query"+query);
 System.out.println("list"+list);
 		if (!list.isEmpty()) {
@@ -518,8 +562,21 @@ System.out.println("list"+list);
 	public Long getStoreIdFromBeat(String beatId) throws ServiceException, IOException {
 		
 		String query = env.getProperty("getStoreIdFromBeat");
-		Long storeId = jdbcTemplate.queryForObject(query,new Object[] {beatId}, Long.class);
-        return storeId;
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		//Long storeId = jdbcTemplate.queryForObject(query,new Object[] {beatId}, Long.class);
+		try {
+			Long storeId = consumeApiService.consumeApiForCount(query, 
+					new Object[] { beatId });
+			return storeId;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

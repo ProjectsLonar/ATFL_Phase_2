@@ -236,12 +236,30 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 				searchField="";
 			}
                  System.out.println(query);
-			List<ProductDto> productsList = jdbcTemplate.query(query,
-					new Object[] {requestDto.getProductId(), requestDto.getCategoryId(),
-							 searchField,//requestDto.getOrgId(), 
-							 requestDto.getLimit(), requestDto.getOffset() },
-					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
-			if (!productsList.isEmpty()) {
+//			List<ProductDto> productsList = jdbcTemplate.query(query,
+//					new Object[] {requestDto.getProductId(), requestDto.getCategoryId(),
+//							 searchField,//requestDto.getOrgId(), 
+//							 requestDto.getLimit(), requestDto.getOffset() },
+//					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+                
+                 List<ProductDto> productsList = new ArrayList<>();
+     			ConsumeApiService consumeApiService = new ConsumeApiService();
+
+                 try {
+                	 productsList = consumeApiService.consumeApi(query, 
+         					new Object[] { requestDto.getProductId(), requestDto.getCategoryId(),
+       							 searchField,//requestDto.getOrgId(), 
+       							 requestDto.getLimit(), requestDto.getOffset() }, 
+         					ProductDto.class);
+         		} catch (IOException e) {
+         			// TODO Auto-generated catch block
+         			e.printStackTrace();
+         		} catch (InterruptedException e) {
+         			// TODO Auto-generated catch block
+         			e.printStackTrace();
+         		}
+         	     
+                 if (!productsList.isEmpty()) {
 				return productsList;
 			}
 		} catch (Exception e) {
@@ -257,10 +275,26 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
-		Long count = getJdbcTemplate().queryForObject(query, new Object[] { requestDto.getProductId(), 
-				requestDto.getCategoryId(), searchField//requestDto.getOrgId() 
-				}, Long.class);
-		return count;
+//		Long count = getJdbcTemplate().queryForObject(query, new Object[] { requestDto.getProductId(), 
+//				requestDto.getCategoryId(), searchField//requestDto.getOrgId() 
+//				}, Long.class);
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			Long count = consumeApiService.consumeApiForCount(query, 
+					new Object[] { requestDto.getProductId(), 
+							requestDto.getCategoryId(), searchField//requestDto.getOrgId() 
+							});
+			return count;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 	@Override
@@ -361,12 +395,31 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 			
 			System.out.println("Input requestDto= "+requestDto);
               System.out.println(query);
-			List<ProductDto> productsList = jdbcTemplate.query(query,
-					new Object[] { //requestDto.getOrgId(), 
-							requestDto.getProductId(), 
-							requestDto.getCategoryId(),
-							searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
-					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+//			List<ProductDto> productsList = jdbcTemplate.query(query,
+//					new Object[] { //requestDto.getOrgId(), 
+//							requestDto.getProductId(), 
+//							requestDto.getCategoryId(),
+//							searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
+//					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+              List<ProductDto> productsList = new ArrayList<>();
+  			ConsumeApiService consumeApiService = new ConsumeApiService();
+
+              try {
+            	  productsList = consumeApiService.consumeApiWithRequestBody(query, 
+      					new Object[] { //requestDto.getOrgId(), 
+    							requestDto.getProductId(), 
+    							requestDto.getCategoryId(),
+    							searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() }, 
+      					ProductDto.class);
+      		} catch (IOException e) {
+      			// TODO Auto-generated catch block
+      			e.printStackTrace();
+      		} catch (InterruptedException e) {
+      			// TODO Auto-generated catch block
+      			e.printStackTrace();
+      		}
+			
 			System.out.println("products dao is ======" +productsList);
 //			 return jdbcTemplate.query(query,new Object[] { requestDto.getOrgId(), requestDto.getProductId(), 
 //					 requestDto.getCategoryId(),searchField,requestDto.getOutletId(), requestDto.getLimit(), 
@@ -405,10 +458,27 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
-		Long count = getJdbcTemplate().queryForObject(query, new Object[] {//requestDto.getOrgId(), 
-				requestDto.getProductId(), requestDto.getCategoryId(),
-				searchField,requestDto.getOutletId() }, Long.class);
-		return count;
+//		Long count = getJdbcTemplate().queryForObject(query, new Object[] {//requestDto.getOrgId(), 
+//				requestDto.getProductId(), requestDto.getCategoryId(),
+//				searchField,requestDto.getOutletId() }, Long.class);
+		
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			Long count = consumeApiService.consumeApiForCountWithRequestBody(query, 
+					new Object[] { //requestDto.getOrgId(), 
+							requestDto.getProductId(), requestDto.getCategoryId(),
+							searchField,requestDto.getOutletId()  });
+			return count;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	@Override

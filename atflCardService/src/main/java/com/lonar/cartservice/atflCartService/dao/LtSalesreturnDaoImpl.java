@@ -119,16 +119,29 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	public List<LtSalesReturnAvailability> getLocationForSalesReturn(String distributorCode) throws ServerException{
 		try {
 		String query = env.getProperty("getLocationForSalesReturn");
+		//System.out.println("invoiceNumber = "+invoiceNumber);
+		List<LtSalesReturnAvailability> list = new ArrayList<>();
+//		List<LtSalesReturnAvailability> list = jdbcTemplate.query(query,
+//				new Object[] { distributorCode },
+//				new BeanPropertyRowMapper<LtSalesReturnAvailability>(LtSalesReturnAvailability.class));
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			list = consumeApiService.consumeApi(query, 
+					new Object[] { distributorCode },LtSalesReturnAvailability.class);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-
-		List<LtSalesReturnAvailability> list = jdbcTemplate.query(query,
-				new Object[] { distributorCode },
-				new BeanPropertyRowMapper<LtSalesReturnAvailability>(LtSalesReturnAvailability.class));
-
+		//System.out.println("list = "+location);
 		if (!list.isEmpty()) {
 			return list;
 		}
-
 	
 		}catch(Exception e){
 			e.printStackTrace();
@@ -137,6 +150,28 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		return null;
 	}
 	
+	
+	@Override
+	public String getDefaultLocationForSalesReturn(String distributorCode){
+		String query= env.getProperty("getLocationForSalesReturn");
+		
+		//String location= jdbcTemplate.queryForObject(query, new Object[] {distributorCode}, String.class);
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			String location = consumeApiService.consumeApiForString(query, 
+					new Object[] { distributorCode });
+			return location;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 	
 	@Override
 	public List<Long> getSalesReturnHeader(RequestDto requestDto)throws ServerException{

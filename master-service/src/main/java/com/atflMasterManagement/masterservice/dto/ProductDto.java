@@ -25,7 +25,7 @@ public class ProductDto {
 	private String primaryUom;
 	private String secondaryUom;
 	private String secondaryUomValue;
-	private String unitsPerCase;
+	//private String unitsPerCase;
 	private String segment;
 	private String brand;
 	private String subBrand;
@@ -58,7 +58,7 @@ public class ProductDto {
 	private String inventoryCode;
 	private String outletId;
 	private String subcategory;
-	private String unitPerCase;
+	private String unitsPerCase;
 	private String orderable;
 	private String categoryId1;
 	private String orgId1;
@@ -159,12 +159,12 @@ public class ProductDto {
 	public void setSubcategory(String subcategory) {
 		this.subcategory = subcategory;
 	}
-	public String getUnitPerCase() {
-		return unitPerCase;
-	}
-	public void setUnitPerCase(String unitPerCase) {
-		this.unitPerCase = unitPerCase;
-	}
+//	public String getUnitPerCase() {
+//		return unitPerCase;
+//	}
+//	public void setUnitPerCase(String unitPerCase) {
+//		this.unitPerCase = unitPerCase;
+//	}
 	public String getOrderable() {
 		return orderable;
 	}
@@ -454,7 +454,7 @@ public class ProductDto {
 				+ subCategoryCode + ", subCategoryName=" + subCategoryName + ", subCategoryDesc=" + subCategoryDesc
 				+ ", subCategoryImage=" + subCategoryImage + ", inventoryQuantity=" + inventoryQuantity
 				+ ", inventoryCode=" + inventoryCode + ", outletId=" + outletId + ", subcategory=" + subcategory
-				+ ", unitPerCase=" + unitPerCase + ", orderable=" + orderable + ", categoryId1=" + categoryId1
+				+ ", orderable=" + orderable + ", categoryId1=" + categoryId1
 				+ ", orgId1=" + orgId1 + ", locationName=" + locationName + ", distributorId=" + distributorId
 				+ ", prodShortDesc=" + prodShortDesc + ", inventoryName=" + inventoryName + ", inventoryId="
 				+ inventoryId + ", outletCode=" + outletCode + ", outletName=" + outletName + ", distributorName="

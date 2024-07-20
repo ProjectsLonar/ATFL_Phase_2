@@ -3,6 +3,7 @@ package com.lonar.cartservice.atflCartService.dao;
 import java.io.IOException;
 import java.rmi.ServerException;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -19,7 +20,7 @@ import com.lonar.cartservice.atflCartService.model.LtTemplateHeaders;
 import com.lonar.cartservice.atflCartService.model.LtTemplateLines;
 import com.lonar.cartservice.atflCartService.repository.LtTemplateHeadersRepository;
 import com.lonar.cartservice.atflCartService.repository.LtTemplateLinesRepository;
-
+import com.lonar.cartservice.atflCartService.service.ConsumeApiService;
 
 
 @Repository
@@ -48,12 +49,27 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 	@Override
 	public LtTemplateHeaders getTemplateAgainstDistributor(String distributorId,Long templateHeaderId)throws ServerException{
 	String query = env.getProperty("getTemplateAgainstDistributor");
+	List<LtTemplateHeaders> templateHeader = new ArrayList<>();
+	ConsumeApiService consumeApiService = new ConsumeApiService();
+
 	try {
 		
-		List<LtTemplateHeaders> templateHeader = jdbcTemplate.query(query,
-				new Object[] { distributorId, templateHeaderId },
-				new BeanPropertyRowMapper<LtTemplateHeaders>(LtTemplateHeaders.class));
+//		List<LtTemplateHeaders> templateHeader = jdbcTemplate.query(query,
+//				new Object[] { distributorId, templateHeaderId },
+//				new BeanPropertyRowMapper<LtTemplateHeaders>(LtTemplateHeaders.class));
 		 
+		try {
+			templateHeader = consumeApiService.consumeApi(query, 
+					new Object[] { distributorId, templateHeaderId }, 
+					LtTemplateHeaders.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		//LtTemplateHeaders templateHeader= jdbcTemplate.queryForObject(query, new Object[] {distributorId, templateHeaderId }, LtTemplateHeaders.class);
 	System.out.println("templateHeader"+templateHeader);
@@ -91,9 +107,24 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 	@Override
 	public List<LtTemplateLines> getProductDetailsAgainstheaderId(Long templateHeaderId)throws ServerException{
 		String query = env.getProperty("getProductDetailsAgainstheaderId");
-		List<LtTemplateLines> templateproductlist = jdbcTemplate.query(query,
-				new Object[] {templateHeaderId},
-				new BeanPropertyRowMapper<LtTemplateLines>(LtTemplateLines.class));
+		List<LtTemplateLines> templateproductlist = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+//		List<LtTemplateLines> templateproductlist = jdbcTemplate.query(query,
+//				new Object[] {templateHeaderId},
+//				new BeanPropertyRowMapper<LtTemplateLines>(LtTemplateLines.class));
+		try {
+			templateproductlist = consumeApiService.consumeApi(query, 
+					new Object[] { templateHeaderId }, 
+					LtTemplateLines.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (!templateproductlist.isEmpty()) {
 			return templateproductlist;
 		}
@@ -130,9 +161,25 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 	@Override
 	public LtTemplateHeaders getTemplateAgainstDistributor12(String distributorId) throws ServiceException {
 		String query = env.getProperty("getTemplateAgainstDistributor12");
-		List<LtTemplateHeaders> templateHeadersList = jdbcTemplate.query(query,
-				new Object[] {distributorId},
-				new BeanPropertyRowMapper<LtTemplateHeaders>(LtTemplateHeaders.class));
+		List<LtTemplateHeaders> templateHeadersList = new ArrayList<>();
+		
+//		List<LtTemplateHeaders> templateHeadersList = jdbcTemplate.query(query,
+//				new Object[] {distributorId},
+//				new BeanPropertyRowMapper<LtTemplateHeaders>(LtTemplateHeaders.class));
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			templateHeadersList = consumeApiService.consumeApi(query, 
+					new Object[] { distributorId }, 
+					LtTemplateHeaders.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		System.out.println("Hi I'm in query error..... "+templateHeadersList);
 		if (templateHeadersList.size()>0) {
 			return templateHeadersList.get(0);

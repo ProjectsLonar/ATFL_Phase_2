@@ -33,6 +33,8 @@ public interface LtSalesreturnDao {
 	
 	List<LtSalesReturnAvailability> getLocationForSalesReturn(String distributorCode) throws ServerException;
 	
+	String getDefaultLocationForSalesReturn(String distributorCode) throws ServerException;
+	
 	List<Long> getSalesReturnHeader(RequestDto requestDto)throws ServerException;
 	
 	Long getSalesReturnRecordCount(RequestDto requestDto)throws ServerException; 

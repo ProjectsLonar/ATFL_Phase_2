@@ -2,6 +2,9 @@ package com.lonar.cartservice.atflCartService.dto;
 
 import org.springframework.data.annotation.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true) // Ignore unknown properties in JSON
 public class DistributorDetailsDto {
 
 	private String distributorId;

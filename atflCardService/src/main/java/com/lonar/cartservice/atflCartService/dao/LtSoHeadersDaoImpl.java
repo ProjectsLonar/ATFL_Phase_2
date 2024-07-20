@@ -32,6 +32,7 @@ import com.lonar.cartservice.atflCartService.model.LtMastUsers;
 import com.lonar.cartservice.atflCartService.model.LtOrderCancellationReason;
 import com.lonar.cartservice.atflCartService.model.LtSalesPersonLocation;
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
+import com.lonar.cartservice.atflCartService.model.LtSoLines;
 import com.lonar.cartservice.atflCartService.repository.LtSalesPersonLocationRepository;
 import com.lonar.cartservice.atflCartService.repository.LtSoLinesRepository;
 import java.util.ArrayList;
@@ -68,10 +69,23 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	@Override
 	public LtSoHeaders checkHeaderStatusIsDraft(String outletId) throws ServiceException, IOException {
 		String query = env.getProperty("getStatusByOutletId");
+		List<LtSoHeaders> ltSoHeaderslist = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
 
-		List<LtSoHeaders> ltSoHeaderslist = jdbcTemplate.query(query, new Object[] { outletId },
-				new BeanPropertyRowMapper<LtSoHeaders>(LtSoHeaders.class));
+//		List<LtSoHeaders> ltSoHeaderslist = jdbcTemplate.query(query, new Object[] { outletId },
+//				new BeanPropertyRowMapper<LtSoHeaders>(LtSoHeaders.class));
 
+		try {
+			ltSoHeaderslist = consumeApiService.consumeApi(query, 
+					new Object[] { outletId }, LtSoHeaders.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (!ltSoHeaderslist.isEmpty()) {
 			return ltSoHeaderslist.get(0);
 		}
@@ -89,10 +103,24 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	@Override
 	public LtSoHeaders checkOrderStatus(String orderNumber) throws ServiceException, IOException {
 		String query = env.getProperty("checkOrderStatus");
+		List<LtSoHeaders> ltSoHeaderslist = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		
+//		List<LtSoHeaders> ltSoHeaderslist = jdbcTemplate.query(query, new Object[] { orderNumber.toUpperCase() },
+//				new BeanPropertyRowMapper<LtSoHeaders>(LtSoHeaders.class));
 
-		List<LtSoHeaders> ltSoHeaderslist = jdbcTemplate.query(query, new Object[] { orderNumber.toUpperCase() },
-				new BeanPropertyRowMapper<LtSoHeaders>(LtSoHeaders.class));
-
+		try {
+			ltSoHeaderslist = consumeApiService.consumeApi(query, 
+					new Object[] { orderNumber.toUpperCase() }, 
+					LtSoHeaders.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (!ltSoHeaderslist.isEmpty()) {
 			return ltSoHeaderslist.get(0);
 		}
@@ -118,7 +146,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 	public List<Long> getSoHeader(RequestDto requestDto) throws ServiceException, IOException {
 		List<Long> headerIdslist = new ArrayList<>();
 		try {
-			System.out.println("in method getAllPendingOrders dao line 113 ="+ LocalDateTime.now());
+			System.out.println("in method getSoHeaderv3 dao line 113 ="+ LocalDateTime.now());
 		String query = env.getProperty("getOrderHeaderV1");
        
 		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
@@ -336,13 +364,37 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 //					requestDto.getOrderNumber(),requestDto.getDistributorId(),  searchField,
 //					requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset());
 
-			headerIdslist = jdbcTemplate.queryForList(query, Long.class, 
+/*			headerIdslist = jdbcTemplate.queryForList(query, Long.class, 
 					requestDto.getDistributorId(),
 					requestDto.getStatus(),
 					requestDto.getOrderNumber(),
 					searchField, requestDto.getOutletId(),
 					requestDto.getLimit(), requestDto.getOffset());
-			
+*/					
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+
+			try {
+			List<RequestDto> headerIds = consumeApiService.consumeApiWithRequestBody(query, 
+						new Object[] { 
+								requestDto.getDistributorId(),
+								requestDto.getStatus(),
+								requestDto.getOrderNumber(),
+								searchField, requestDto.getOutletId(),
+								requestDto.getLimit(), requestDto.getOffset()
+						}, 
+						RequestDto.class);
+				for(int i=0; i<headerIds.size(); i++) {
+					headerIdslist.add(headerIds.get(i).getHeaderId());	
+				}
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+					
 			System.out.println("headerIdslist in Dao"+headerIdslist);
 			return headerIdslist;
 			
@@ -391,12 +443,36 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			
 			System.out.println("Issue for query ="+query);
 					    
-			headerIdslist = jdbcTemplate.queryForList(query, Long.class, 
+/*			headerIdslist = jdbcTemplate.queryForList(query, Long.class, 
 					requestDto.getDistributorId(),
 					requestDto.getStatus(),
 					requestDto.getOrderNumber(),
 					searchField,
 					requestDto.getLimit(), requestDto.getOffset());
+*/			
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+			System.out.println("input For sales requestDto "+ requestDto);
+			try {
+			List<RequestDto> headerIds = consumeApiService.consumeApiWithRequestBody(query, 
+						new Object[] { 
+								requestDto.getDistributorId(),
+								requestDto.getStatus(),
+								requestDto.getOrderNumber(),
+								searchField,
+								requestDto.getLimit(), requestDto.getOffset()
+						}, 
+						RequestDto.class);
+				for(int i=0; i<headerIds.size(); i++) {
+					headerIdslist.add(headerIds.get(i).getHeaderId());	
+				}
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			System.out.println(requestDto.getStatus());
 			System.out.println(requestDto.getOrderNumber());
@@ -451,10 +527,33 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 
 			System.out.println("Sales outletList query" + query);
 			
-			headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+/*			headerIdslist = jdbcTemplate.queryForList(query, Long.class,
 					requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
 					searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
 					);
+*/
+			
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+
+			try {
+			List<RequestDto> headerIds = consumeApiService.consumeApiWithRequestBody(query, 
+						new Object[] { 
+								requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+								searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
+						}, 
+						RequestDto.class);
+				for(int i=0; i<headerIds.size(); i++) {
+					headerIdslist.add(headerIds.get(i).getHeaderId());	
+				}
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			
 			System.out.println("headerIdslist for Other user query = "+headerIdslist);
 
@@ -462,7 +561,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			 * headerIdslist = jdbcTemplate.query(query, new Object[] { }, new
 			 * BeanPropertyRowMapper<Long>(Long.class));
 			 */
-           System.out.println("in method getAllPendingOrders dao line 408 ="+ LocalDateTime.now());
+           System.out.println("out method getSoHeaderV3 dao ="+ LocalDateTime.now());
 System.out.println("headerIdsSSSS "+headerIdslist);
 			return headerIdslist;
 		}}
@@ -994,7 +1093,7 @@ System.out.println("Query is "+query);
 //			//System.out.println("Below query dao method at = "+LocalDateTime.now());
 			
 			try {
-				headerIdslist = consumeApiService.consumeApi(query, 
+				headerIdslist = consumeApiService.consumeApiWithRequestBody(query, 
 						new Object[] { requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
 								searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset() }, 
 						ResponseDto.class);
@@ -1035,7 +1134,7 @@ System.out.println("Query is "+query);
 			//System.out.println("Below query dao method at = "+LocalDateTime.now());
  
 			try {
-				headerIdslist = consumeApiService.consumeApi(query, 
+				headerIdslist = consumeApiService.consumeApiWithRequestBody(query, 
 						new Object[] { requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
 								searchField,requestDto.getLimit(), requestDto.getOffset() }, 
 						ResponseDto.class);
@@ -1071,7 +1170,7 @@ System.out.println("Query is "+query);
  
            try {
         	   
-        	   headerIdslist = consumeApiService.consumeApi(query, 
+        	   headerIdslist = consumeApiService.consumeApiWithRequestBody(query, 
 						new Object[] { requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
 								searchField,requestDto.getOutletId(),requestDto.getLimit(),requestDto.getOffset() }, 
 						ResponseDto.class);
@@ -1140,7 +1239,7 @@ System.out.println("Query is "+query);
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<ResponseDto> getOrderV2(List<Long> headerIdList) throws ServiceException, IOException {
 		try {
-			System.out.println("in method getAllPendingOrders getOrderV2 dao line 438 ="+ LocalDateTime.now());
+			System.out.println("in method getOrderV3 dao = "+ LocalDateTime.now());
 			String query = env.getProperty("getOrderLineV1");
 			System.out.print("headerIdList =" +headerIdList);
 			if(headerIdList.size()>0) {
@@ -1154,10 +1253,25 @@ System.out.println("Query is "+query);
 				System.out.println("Concated query is "+query);
  
 			}
-			List<ResponseDto> headerDtolist = jdbcTemplate.query(query, new Object[] {},
+/*			List<ResponseDto> headerDtolist = jdbcTemplate.query(query, new Object[] {},
 					new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+*/
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+			List<ResponseDto> headerDtolist = new ArrayList<>();
 
-			System.out.println("in method getAllPendingOrders dao line 448 ="+ LocalDateTime.now());
+			try {
+				 headerDtolist = consumeApiService.consumeApiWithRequestBody(query, 
+						new Object[] { }, 
+						ResponseDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			System.out.println("out method getOrderV2 dao = "+ LocalDateTime.now());
 			return headerDtolist;
 		} catch (Exception e) {
 			logger.error("Error Description :", e);
@@ -1186,23 +1300,55 @@ System.out.println("Query is "+query);
 	@Override
 	public List<LtMastUsers> getActiveDistUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException {
 		String query = env.getProperty("getActiveDistUsersFromHeaderId");
-		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
-				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		List<LtMastUsers> userList = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+//		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
+//				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		
+		try {
+			userList = consumeApiService.consumeApi(query, 
+					new Object[] { headerId, orderNumber }, 
+					LtMastUsers.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return userList;
 	}
 
 	@Override
 	public List<LtMastUsers> getActiveSalesUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException {
-		String query = env.getProperty("getActiveSalesUsersFromHeaderId");
-		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
-				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		String query = env.getProperty("getActiveSalesUsersFromHeaderId"); 
+		List<LtMastUsers> userList = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+//		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
+//				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		
+		try {
+			userList = consumeApiService.consumeApi(query, 
+					new Object[] { headerId, orderNumber }, 
+					LtMastUsers.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return userList;
 	}
 
 	@Override
 	public Long getRecordCount(RequestDto requestDto) throws ServiceException, IOException {
 		
-		System.out.println("in method getAllPendingOrders service line 4454 ="+ LocalDateTime.now());
+		System.out.println("in method getRecordCountV3 dao = "+ LocalDateTime.now());
 		String searchField = null;
 		if (requestDto.getSearchField() != null) {
 			
@@ -1357,7 +1503,7 @@ System.out.println("Query is "+query);
 			System.out.println("searchField :: "+searchField);
 		}
 		
-		Long recordCount;
+		Long recordCount = 0L;
 		
 		String query = env.getProperty("getOrderHeaderCount");
 		
@@ -1389,11 +1535,28 @@ System.out.println("Query is "+query);
 			 * }, Long.class);
 			 */
 			
-			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
-					requestDto.getStatus(), requestDto.getOrderNumber(),  
-					requestDto.getDistributorId(), 
-					searchField,requestDto.getOutletId()
-			}, Long.class);
+//			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
+//					requestDto.getStatus(), requestDto.getOrderNumber(),  
+//					requestDto.getDistributorId(), 
+//					searchField,requestDto.getOutletId()
+//			}, Long.class);
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+
+			try {
+				recordCount = consumeApiService.consumeApiForCountWithRequestBody(query, 
+						new Object[] { 
+								requestDto.getStatus(), requestDto.getOrderNumber(),  
+								requestDto.getDistributorId(), 
+								searchField,requestDto.getOutletId()
+						});
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			return recordCount;
 		}else if(userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(SALES)) {
 	        System.out.println("Above getOutletIdsByPositionId query call method at = "+LocalDateTime.now());
@@ -1418,21 +1581,57 @@ System.out.println("Query is "+query);
 			 * requestDto.getDistributorId(), headerId, searchField }, Long.class);
 			 */
 			
-			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
-					requestDto.getStatus(), requestDto.getOrderNumber(),  
-					requestDto.getDistributorId(), 
-					searchField
-			}, Long.class);
+//			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
+//					requestDto.getStatus(), requestDto.getOrderNumber(),  
+//					requestDto.getDistributorId(), 
+//					searchField
+//			}, Long.class);
+			
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+			System.out.println("getOrderV2 query for count = " + query);
+			try {
+				recordCount = consumeApiService.consumeApiForCountWithRequestBody(query, 
+						new Object[] { 
+								requestDto.getStatus(), requestDto.getOrderNumber(),  
+								requestDto.getDistributorId(), 
+								searchField
+						});
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			return recordCount;
 		}else {
 			query = query +"and  COALESCE (lsh.outlet_id, 'xx')= COALESCE( ? ,  COALESCE (lsh.outlet_id, 'xx'))";
 			
-			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
-					requestDto.getStatus(), requestDto.getOrderNumber(),  
-					requestDto.getDistributorId(), 
-					searchField,requestDto.getOutletId()
-			}, Long.class);
-			System.out.println("in method getAllPendingOrders dao line 709 ="+ LocalDateTime.now());
+//			recordCount = jdbcTemplate.queryForObject(query, new Object[] { 
+//					requestDto.getStatus(), requestDto.getOrderNumber(),  
+//					requestDto.getDistributorId(), 
+//					searchField,requestDto.getOutletId()
+//			}, Long.class);
+			
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+
+			try {
+				recordCount = consumeApiService.consumeApiForCountWithRequestBody(query, 
+						new Object[] { 
+								requestDto.getStatus(), requestDto.getOrderNumber(),  
+								requestDto.getDistributorId(), 
+								searchField,requestDto.getOutletId()
+						});
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			System.out.println("out method getRecordCountV3 dao ="+ LocalDateTime.now());
 			/*
 			 * recordCount = jdbcTemplate.queryForObject(query, new Object[] {
 			 * requestDto.getStatus(), requestDto.getOrderNumber(),
@@ -1448,10 +1647,24 @@ System.out.println("Query is "+query);
 	@Override
 	public DistributorDetailsDto getDistributorDetailsByOutletId(String outletId) throws ServiceException, IOException {
 		String query = env.getProperty("getDistributorDetailsByOutletId");
+		List<DistributorDetailsDto> distributorDetailsDtoList = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
 
-		List<DistributorDetailsDto> distributorDetailsDtoList = jdbcTemplate.query(query, new Object[] { outletId },
-				new BeanPropertyRowMapper<DistributorDetailsDto>(DistributorDetailsDto.class));
+//		List<DistributorDetailsDto> distributorDetailsDtoList = jdbcTemplate.query(query, new Object[] { outletId },
+//				new BeanPropertyRowMapper<DistributorDetailsDto>(DistributorDetailsDto.class));
 
+		try {
+			distributorDetailsDtoList = consumeApiService.consumeApi(query, 
+					new Object[] { outletId }, 
+					DistributorDetailsDto.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (!distributorDetailsDtoList.isEmpty()) {
 			return distributorDetailsDtoList.get(0);
 		}
@@ -1466,10 +1679,24 @@ System.out.println("Query is "+query);
 
 	@Override
 	public String getMobileNumber(Long userId) throws ServiceException, IOException {
-		String mobileNumber;
+		//String mobileNumber;
 		String sql = env.getProperty("getMobileNumber");
-		mobileNumber = jdbcTemplate.queryForObject(sql, new Object[] { userId }, String.class);
-		return mobileNumber;
+		//mobileNumber = jdbcTemplate.queryForObject(sql, new Object[] { userId }, String.class);
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			String mobileNumber = consumeApiService.consumeApiForString(sql, 
+					new Object[] { userId });
+			return mobileNumber;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 	private UserDetailsDto getUserTypeAndDisId(Long userId) throws ServiceException {
@@ -1575,6 +1802,21 @@ System.out.println("Query is "+query);
 		String query = env.getProperty("deleteLineDataByHeaderId");
 		Object[] person = new Object[] { heaaderId };
 		int status = jdbcTemplate.update(query, person);
+//		ConsumeApiService consumeApiService = new ConsumeApiService();
+//		int i=0;
+//		try {
+//			Long status = consumeApiService.consumeApiForCount(query, 
+//					new Object[] { person });
+//			i= status.intValue();
+//			return i;
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
 		return status;
 	}
 	
@@ -1603,9 +1845,25 @@ System.out.println("Query is "+query);
 	public List<LtMastUsers> getActiveAreaHeadeUsersFromHeaderId(Long headerId, String orderNumber) throws ServiceException, IOException {
 		String query = env.getProperty("getActiveAreaHeadUsersFromHeaderId");
 		System.out.println("This is areaHead User query in Dao \n" + query+ "\n"+ headerId+"\n"+ orderNumber);
-		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
-				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
-		System.out.println("This is areaHead User List in Dao " + userList);
+		List<LtMastUsers> userList =  new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+//		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
+//				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+//		System.out.println("This is areaHead User List in Dao " + userList);
+		
+		try {
+			userList = consumeApiService.consumeApi(query, 
+					new Object[] {  headerId, orderNumber }, 
+					LtMastUsers.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
 		return userList;
 	}
 	
@@ -1626,11 +1884,27 @@ System.out.println("Query is "+query);
 	@Override
 	public List<LtMastOutles> getOutletDetailsById(String outletId) throws ServiceException, IOException {
 		String query = env.getProperty("getOutletDetailsByOutletId");
+		List<LtMastOutles> outlet = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
 		try {
-		List<LtMastOutles> outlet = jdbcTemplate.query(query, new Object[] {outletId}, 
-				new BeanPropertyRowMapper<LtMastOutles>(LtMastOutles.class));
+//		List<LtMastOutles> outlet = jdbcTemplate.query(query, new Object[] {outletId}, 
+//				new BeanPropertyRowMapper<LtMastOutles>(LtMastOutles.class));
 		//System.out.print("outlet =" +outlet);
-		if(!outlet.isEmpty() ) {
+		
+			try {
+				outlet = consumeApiService.consumeApi(query, 
+						new Object[] { outletId }, 
+						LtMastOutles.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if(!outlet.isEmpty() ) {
 			return outlet;
 		}
 		}catch(Exception e) {
@@ -1650,8 +1924,23 @@ System.out.println("Query is "+query);
 	@Override
 	public LtMastUsers getUserDetailsAgainsUserId(Long userId) throws ServiceException, IOException {
 		String query= env.getProperty("getuserTypeAgainsUserId");
-		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] {userId}, 
-				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		List<LtMastUsers> userList = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+//		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] {userId}, 
+//				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		try {
+			userList = consumeApiService.consumeApi(query, 
+					new Object[] { userId }, 
+					LtMastUsers.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if(!userList.isEmpty()) {
 		return userList.get(0);
 		}
@@ -1661,8 +1950,23 @@ System.out.println("Query is "+query);
 	@Override
 	public String getDefaultPriceListAgainstOutletId(String outletId) throws ServiceException, IOException {
 		String query= env.getProperty("getDefaultPriceListAgainstOutletId");
-		String priceList= jdbcTemplate.queryForObject(query, new Object[] {outletId}, String.class);
-		return priceList;
+		//String priceList= jdbcTemplate.queryForObject(query, new Object[] {outletId}, String.class);
+		//String priceList;
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			String priceList = consumeApiService.consumeApiForString(query, 
+					new Object[] { outletId });
+			return priceList;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 
@@ -1677,16 +1981,46 @@ System.out.println("Query is "+query);
 	public List<LtMastUsers> getActiveSysAdminUsersFromHeaderId(Long headerId, String orderNumber)
 			throws ServiceException, IOException {
 		String query = env.getProperty("getActiveSysAdminUsersFromHeaderId");
-		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
-				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		List<LtMastUsers> userList = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+//		List<LtMastUsers> userList = jdbcTemplate.query(query, new Object[] { headerId, orderNumber },
+//				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		
+		try {
+			userList = consumeApiService.consumeApi(query, 
+					new Object[] { headerId, orderNumber }, 
+					LtMastUsers.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return userList;
 	}
 
 	@Override
 	public String getUserTypeAgainsUserId(Long createdBy) throws ServiceException, IOException {
 		String query= env.getProperty("getUserTypeAgainsUserId");
-		String userType= jdbcTemplate.queryForObject(query, new Object[] {createdBy}, String.class);
-		return userType;
+		//String userType= jdbcTemplate.queryForObject(query, new Object[] {createdBy}, String.class);
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			String userType = consumeApiService.consumeApiForString(query, 
+					new Object[] { createdBy });
+			return userType;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -1703,15 +2037,44 @@ System.out.println("Query is "+query);
 	@Override
 	public String getEmailBody(String subject) throws ServiceException, IOException {
 		String query= env.getProperty("getEmailBody");
-		String body= jdbcTemplate.queryForObject(query, new Object[] {subject}, String.class);
-		return body;
+		//String body= jdbcTemplate.queryForObject(query, new Object[] {subject}, String.class);
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			String body = consumeApiService.consumeApiForString(query, 
+					new Object[] { subject });
+			return body;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	@Override
 	public String getUserNameAgainsUserId(Long createdBy) throws ServiceException, IOException {
 		String query= env.getProperty("getUserNameAgainsUserId");
-		String userName= jdbcTemplate.queryForObject(query, new Object[] {createdBy}, String.class);
-		return userName;
+		//String userName= jdbcTemplate.queryForObject(query, new Object[] {createdBy}, String.class);
+		
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			String userName = consumeApiService.consumeApiForString(query, 
+					new Object[] { createdBy });
+			return userName;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -1725,16 +2088,54 @@ System.out.println("Query is "+query);
 	@Override
 	public List<String> getTotalAmount1(Long headerId) throws ServiceException, IOException {
 		String query= env.getProperty("getTotalAmount");
-		List<String> amount= jdbcTemplate.queryForList(query, new Object[] {headerId}, String.class);
-		System.out.println("amount is........" + amount);
-		return amount;
+		List<String> amount= new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+//		List<String> amount= jdbcTemplate.queryForList(query, new Object[] {headerId}, String.class);
+//		System.out.println("amount is........" + amount);
+		
+		try {
+			List<LtSoLines>amount1 = consumeApiService.consumeApi(query, 
+					new Object[] { headerId},LtSoLines.class);
+			
+			for(int i=0; i<amount1.size(); i++) {
+				amount.add(amount1.get(i).getPtrPrice());
+			}
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(!amount.isEmpty()) {
+			return amount;
+			}
+		return null;
 	}
 	
 	@Override
 	public LtSoHeaders getSiebelDataById(Long headerId) throws ServiceException, IOException {
 		String query= env.getProperty("getSiebelDataById");
-		List<LtSoHeaders> siebelData= jdbcTemplate.query(query, new Object[] {headerId}, 
-				new BeanPropertyRowMapper<LtSoHeaders>(LtSoHeaders.class));
+		List<LtSoHeaders> siebelData= new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+//		List<LtSoHeaders> siebelData= jdbcTemplate.query(query, new Object[] {headerId}, 
+//				new BeanPropertyRowMapper<LtSoHeaders>(LtSoHeaders.class));
+		
+		try {
+			siebelData = consumeApiService.consumeApi(query, 
+					new Object[] { headerId }, 
+					LtSoHeaders.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (!siebelData.isEmpty())
 			return siebelData.get(0);
 		else
@@ -2128,7 +2529,7 @@ System.out.println("Query is "+query);
 //						new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
 
 				try {
-					headerDtolist = consumeApiService.consumeApi(query, 
+					headerDtolist = consumeApiService.consumeApiWithRequestBody(query, 
 							new Object[] { }, 
 							ResponseDto.class);
 				} catch (IOException e) {

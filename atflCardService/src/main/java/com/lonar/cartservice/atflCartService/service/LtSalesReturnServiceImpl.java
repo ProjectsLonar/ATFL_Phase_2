@@ -165,7 +165,7 @@ public void sendSimpleMessageWithAuth(String to, String subject, String text,Str
   String password = "Welcome12";    //"vjug xicp wiuw fakw";         
   // Outgoing email information
   String mailTo = to;        
-  String subject1 = "SALES_RETURN_APPROVAL";   
+  String subject1 = "Sub:- Sales Return Approval";   
 //  text = "<html><head></head><body><h1>Greetings!</h1><p>We hope this message finds you well.</p></body></html>";
 //  String salesOrder ="myOrder123";
 //  String salespersonName = "Vaibhav";
@@ -181,8 +181,8 @@ public void sendSimpleMessageWithAuth(String to, String subject, String text,Str
 		    + "                                <td valign=\"top\" style=\"padding:48px 48px 32px\">"
 		    + "                                    <div style=\"color:#101010;font-family:HelveticaNeue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left\">"
 		    + "                                         <p style=\"margin:0 0 16px\">Dear Sir/Ma’am,</p>"
-		    + "                                        <p style=\"margin:0 0 16px\">${salesReturnNo} has come for your approval. Please visit the app to approve/ reject the record.</p>"
-		    + "                                        <h4 style=\"font-weight:bold\">Created by:${salespersonName}</h4>"
+		    + "                                        <p style=\"margin:0 0 16px\">"+salesReturnNo+" has come for your approval. Please visit the app to approve/ reject the record.</p>"
+		    + "                                        <h4 style=\"font-weight:bold\">Created by:"+salespersonName+"</h4>"
 		    + "                                        <h4 style=\"font-weight:bold;color:blue\">This is a system-generated email. Please do not reply to this.</h4>"
 		    + "                                        <p>Regards,</p>"
 		    + "                                        <p>Lakshya App team.</p>"
@@ -1066,6 +1066,8 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		try {
 		Status status = new Status();
 		List<LtSalesReturnAvailability> list = ltSalesreturnDao.getLocationForSalesReturn(distributorCode);
+		//String list = ltSalesreturnDao.getDefaultLocationForSalesReturn(distributorCode);
+		
 		if (list != null) {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
@@ -1664,8 +1666,11 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 					//soHeaderDto.setInventoryId(SoHeaderDto1.getInventoryId());
 					//soHeaderDto.setLocation(SoHeaderDto1.getLocation());
 					
-					soHeaderDto.setPriceListName(SoHeaderDto1.getPriceListName());
-					//soHeaderDto.setPriceList(SoHeaderDto1.getPriceList()); // as pricelist name
+					//System.out.println("priceList1 = "+SoHeaderDto1.getPriceListName());
+					//System.out.println("priceList2 = "+SoHeaderDto1.getPriceList());
+					//soHeaderDto.setPriceListName(SoHeaderDto1.getPriceListName());
+					soHeaderDto.setPriceListName(SoHeaderDto1.getPriceList());
+					soHeaderDto.setPriceList(SoHeaderDto1.getPriceList()); // as pricelist name
 					
 					//soHeaderDto.setBeatName(beatName.get(i));          //(SoHeaderDto1.getBeatName());
 					//soHeaderDto.setBeatId(SoHeaderDto1.getBeatId()); // as Beat Name

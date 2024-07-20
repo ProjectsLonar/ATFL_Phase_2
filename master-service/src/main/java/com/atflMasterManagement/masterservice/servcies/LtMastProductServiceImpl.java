@@ -470,7 +470,7 @@ public class LtMastProductServiceImpl implements LtMastProductService, CodeMaste
 	}
 end of original working code */	
 	
-	
+// this is working procedure call code	
 	@Override
 	public Status getInStockProduct(RequestDto requestDto) throws ServiceException, IOException {
 		long methodIn = System.currentTimeMillis();
@@ -553,6 +553,137 @@ end of original working code */
 	}
 	
 	
+/*	// this below code is for .net query call 
+	@Override
+	public Status getInStockProduct(RequestDto requestDto) throws ServiceException, IOException {
+		Status status = new Status();
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetUserTypeByUserId = 0;
+		long outQuerygetUserTypeByUserId = 0;
+		long inQuerygetInStockProductAdmin = 0;
+		long outQuerygetInStockProductAdmin = 0;
+		long inQuerygetInStockProductCountForAdmin = 0;
+		long outQuerygetInStockProductCountForAdmin = 0;
+		long inQuerygetMultipleMrpForProduct = 0;
+		long outQuerygetMultipleMrpForProduct = 0;
+		long inQuerygetInStockProductWithInventory = 0;
+		long outQuerygetInStockProductWithInventory = 0;
+		long inQuerygetInStockProductCountWithInventory = 0;
+		long outQuerygetInStockProductCountWithInventory = 0;
+		try {
+		inQuerygetUserTypeByUserId = System.currentTimeMillis();
+		System.out.println("Above getUserTypeByUserId query call at = "+LocalDateTime.now());
+		String userType =  ltMastProductDao.getUserTypeByUserId(requestDto.getUserId());
+		outQuerygetUserTypeByUserId = System.currentTimeMillis();
+		System.out.println("Below getUserTypeByUserId query call at = "+LocalDateTime.now());
+
+ 
+		if(userType.equalsIgnoreCase(SALESOFFICER)||userType.equalsIgnoreCase(AREAHEAD) ||userType.equalsIgnoreCase("ORGANIZATION_USER")) {
+			System.out.println("Hi in prodAdmin query");
+			inQuerygetInStockProductAdmin = System.currentTimeMillis();
+			System.out.println("Above getInStockProductAdmin query call at = "+LocalDateTime.now());
+			List<ProductDto> list = ltMastProductDao.getInStockProductAdmin(requestDto);
+			System.out.println("Below getInStockProductAdmin query call at = "+LocalDateTime.now());
+			outQuerygetInStockProductAdmin = System.currentTimeMillis();
+			System.out.println("Above getInStockProductCountForAdmin query call at = "+LocalDateTime.now());
+			inQuerygetInStockProductCountForAdmin = System.currentTimeMillis();
+			Long productCount = ltMastProductDao.getInStockProductCountForAdmin(requestDto);
+			outQuerygetInStockProductCountForAdmin = System.currentTimeMillis();
+			System.out.println("Below getInStockProductCountForAdmin query call at = "+LocalDateTime.now());
+			
+			if(!list.isEmpty()) {
+				status.setCode(RECORD_FOUND);
+				status.setData(list);
+				status.setRecordCount(productCount);
+			}else {
+				status.setCode(RECORD_NOT_FOUND);
+			}
+			
+		}else {
+			inQuerygetMultipleMrpForProduct = System.currentTimeMillis();
+			System.out.println("Above getMultipleMrpForProduct query call at = "+LocalDateTime.now());
+			List<ProductDto> mrpList = ltMastProductDao.getMultipleMrpForProduct(requestDto.getDistId(),requestDto.getOutletId(),
+					requestDto.getProductId(),requestDto.getPriceList());
+			System.out.println("Below getMultipleMrpForProduct query call at = "+LocalDateTime.now());
+			outQuerygetMultipleMrpForProduct = System.currentTimeMillis();
+			
+			System.out.println("Above getInStockProductWithInventory query call at = "+LocalDateTime.now());
+			inQuerygetInStockProductWithInventory = System.currentTimeMillis();
+			List<ProductDto> list = ltMastProductDao.getInStockProductWithInventory(requestDto);
+			outQuerygetInStockProductWithInventory = System.currentTimeMillis();
+			System.out.println("Below getInStockProductWithInventory query call at = "+LocalDateTime.now());
+			System.out.println("Above getInStockProductCountWithInventory query call at = "+LocalDateTime.now());
+			inQuerygetInStockProductCountWithInventory = System.currentTimeMillis();
+			Long productCount = ltMastProductDao.getInStockProductCountWithInventory(requestDto);
+			outQuerygetInStockProductCountWithInventory = System.currentTimeMillis();
+			System.out.println("Below getInStockProductCountWithInventory query call at = "+LocalDateTime.now());
+ 
+			//System.out.print("Hi in prodInvent query");
+			System.out.println("ProductList = "+ list);
+			System.out.println("productCount = "+ productCount);
+			if (list != null) {
+				
+				List<ProductDto> productDtoList = new ArrayList<ProductDto>();
+			//	System.out.println("Above for loop at = "+LocalDateTime.now());
+				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+					
+					ProductDto productDto = (ProductDto) iterator.next();
+					
+					System.out.print(productDto);
+					
+					if(productDto.getPtrFlag().equalsIgnoreCase("Y")) {
+					//	productDto.setPtrPrice(productDto.getListPrice());
+						productDto.setPtrPrice(productDto.getPtrPrice());
+					}
+					
+					if(productDto.getInventoryQuantity() !=null) {
+					}else {
+						productDto.setInventoryQuantity("0");
+					}
+					
+					productDtoList.add(productDto);
+				}
+				
+				for (ProductDto product : productDtoList) {
+	                // Initialize MRP1 list if it is null
+	                if (product.getMRP1() == null) {
+	                    product.setMRP1(new ArrayList<>());
+	                }
+	                for (ProductDto mrpProduct : mrpList) {
+	                    if (product.getProductId().equalsIgnoreCase(mrpProduct.getProductId())) {
+	                        product.getMRP1().add(mrpProduct.getMRP());
+	                    }
+	                }
+	            }
+				
+				//System.out.println("Below for loop at = "+LocalDateTime.now());
+ 
+				status.setCode(RECORD_FOUND);
+				status.setData(productDtoList);
+				status.setRecordCount(productCount);
+			} else {
+				status.setCode(RECORD_NOT_FOUND);
+			}
+		}
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			System.out.println("In exception....");
+		}
+		timeDifference.put("QuerygetUserTypeByUserId", timeDiff(inQuerygetUserTypeByUserId,outQuerygetUserTypeByUserId));
+		timeDifference.put("QuerygetInStockProductAdmin", timeDiff(inQuerygetInStockProductAdmin,outQuerygetInStockProductAdmin));
+		timeDifference.put("QuerygetInStockProductCountForAdmin", timeDiff(inQuerygetInStockProductCountForAdmin, outQuerygetInStockProductCountForAdmin));
+		timeDifference.put("QuerygetMultipleMrpForProduct",timeDiff(inQuerygetMultipleMrpForProduct, outQuerygetMultipleMrpForProduct));
+		timeDifference.put("QuerygetInStockProductWithInventory", timeDiff(inQuerygetInStockProductWithInventory,outQuerygetInStockProductWithInventory));
+		timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
+		
+		long methodOut = System.currentTimeMillis();
+		System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+        status.setTimeDifference(timeDifference);
+		return status;
+	}
+*/	
 	public String timeDiff(long startTime,long endTime) {
 		// Step 4: Calculate the time difference in milliseconds
         long durationInMillis = endTime - startTime;

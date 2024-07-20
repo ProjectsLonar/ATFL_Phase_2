@@ -58,10 +58,10 @@ public class LtSalesReturnController implements  CodeMaster {
 	}
 	
 	
-	@GetMapping(value = "/getLocationForSalesReturn/{distributorCode}", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
-	public ResponseEntity<Status> getLocationForSalesReturn(@PathVariable String distributorCode) throws ServerException {
+	@GetMapping(value = "/getLocationForSalesReturn/{invoiceNumber}", produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getLocationForSalesReturn(@PathVariable String invoiceNumber) throws ServerException {
 		try {
-			return new ResponseEntity<Status>(ltSalesReturnService.getLocationForSalesReturn(distributorCode), HttpStatus.OK);
+			return new ResponseEntity<Status>(ltSalesReturnService.getLocationForSalesReturn(invoiceNumber), HttpStatus.OK);
 		} catch (Exception e) {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 		}
