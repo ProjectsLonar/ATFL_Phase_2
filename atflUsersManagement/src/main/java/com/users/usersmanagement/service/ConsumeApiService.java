@@ -30,8 +30,8 @@ public class ConsumeApiService {
         String jsonBody = objectMapper.writeValueAsString(body);
 
         // Build the URI
-        //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery; 
+        String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
+        //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery; 
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -67,8 +67,8 @@ public class ConsumeApiService {
         String jsonBody = objectMapper.writeValueAsString(body);
 
         // Build the URI
-        //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery; 
+        String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery;
+        //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery; 
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -91,5 +91,31 @@ public class ConsumeApiService {
 //		return ltMastUsers;
         return count;
     }
+	
+	
+	public String SiebelAPILog(String url, String jsonPayload, String response) {
+		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+	        //HttpPost postRequest = new HttpPost("http://174.138.187.142:8085/OrderApi/SiebelAPILog");
+			HttpPost postRequest = new HttpPost("http://10.245.4.74/OrderApi/SiebelAPILog");
+	        postRequest.setHeader("Content-Type", "application/json");
+	        postRequest.setHeader("Accept", "text/plain");//"application/json");
+
+	        // Create JSON payload
+	        String json = "{\"url\": \" "+url.toString()+" \",  \"requestBody\": "+jsonPayload+",  \"responseBody\": "+response+"}";  
+            postRequest.setEntity(new StringEntity(json));
+
+	        try (CloseableHttpResponse response1 = httpClient.execute(postRequest)) {
+	            String responseBody = EntityUtils.toString(response1.getEntity(), "UTF-8");
+	            System.out.println("Response: " + responseBody);
+	        }
+	     catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+		return response;
+		}
 	
 }

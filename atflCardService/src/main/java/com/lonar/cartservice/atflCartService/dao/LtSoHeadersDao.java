@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.DistributorDetailsDto;
 import com.lonar.cartservice.atflCartService.dto.LtOrderLineDataGt;
@@ -118,4 +119,17 @@ public interface LtSoHeadersDao {
 	List<LtOrderLineDataGt> getOrderV2DataFromProcedure()throws ServiceException, IOException;
 
 	List<LtOrderLineDataGt> getDataFromProcedure()throws ServiceException, IOException;
+
+	List<ResponseDto> getMultipleMrpForProductV1(String prodId, String distributorId)throws ServiceException, IOException;
+	List<ResponseDto> getMultipleMrpForInstockProductV1(String prodId, String distributorId, String priceList)throws ServiceException, IOException;
+	
+	List<ResponseDto> getMultipleMrpForOutofStockProductV1(String prodId, String distributorId)throws ServiceException, IOException;
+	
+	String checkOrderNoInSiebel(String orderNumber)throws ServiceException, IOException;
+
+	List<String> getPriceListAgainstHeaderId(String headerIdList)throws ServiceException, IOException;
+
+	List<ResponseDto> getOpenOrderWithNewStatusFromSiebel(String prod, String distributorId, String outletId)throws ServiceException, IOException;
+	
+	List<ResponseDto> getMrpForMultipleProductV1(String prodId, String distributorId)throws ServiceException, IOException;
 }

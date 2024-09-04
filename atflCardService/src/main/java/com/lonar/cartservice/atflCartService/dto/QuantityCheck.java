@@ -1,5 +1,5 @@
 package com.lonar.cartservice.atflCartService.dto;
- 
+
 public class QuantityCheck {
 	
 	private long quantity;

@@ -7,15 +7,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dao.LtTemplateDao;
 import com.lonar.cartservice.atflCartService.dto.LtTemplateDto;
+import com.lonar.cartservice.atflCartService.dto.ResponseDto;
 import com.lonar.cartservice.atflCartService.model.CodeMaster;
 import com.lonar.cartservice.atflCartService.model.LtTemplateHeaders;
 import com.lonar.cartservice.atflCartService.model.LtTemplateLines;
@@ -73,7 +76,7 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			ltTemplateDto.setLastUpdatedBy(templateHeaders.getLastUpdatedBy());
 			ltTemplateDto.setLastUpdatedLogin(templateHeaders.getLastUpdatedLogin());
 			ltTemplateDto.setLastUpdatedDate(templateHeaders.getLastUpdatedDate());
-			
+						
 			if(!templateLineDetails.isEmpty()) {
 				ltTemplateDto.setLtTemplateLines(templateLineDetails);
 			}else {
@@ -333,6 +336,30 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 		    ltTemplateDto.setLastUpdatedLogin(getAllTemplateHeaders.getLastUpdatedLogin());
 		    ltTemplateDto.setLastUpdatedDate(getAllTemplateHeaders.getLastUpdatedDate());
 		
+		    
+		    List<String> prodIdList = new ArrayList<>();
+			prodIdList = templateLineDetails.stream().map(LtTemplateLines::getProductId).collect(Collectors.toList());
+			String ids = prodIdList.stream().map(id->"'"+id +"'").collect(Collectors.joining(", "));
+			List<LtTemplateLines> mrpList = new ArrayList<>();
+			mrpList = ltTemplateDao.getMultipleMrpForTemplateProductV1(ids, distributorId);
+			
+			for (LtTemplateLines product : templateLineDetails) {
+                // Initialize MRP1 list if it is null
+                if (product.getListPrice() == null) {
+                    product.setMRP1(new ArrayList<>());
+                }
+                List<LtTemplateLines>mrpList2 = mrpList.stream().filter(x-> x.getProductId().equalsIgnoreCase(product.getProductId())).collect(Collectors.toList());
+                
+                product.setMRP2(mrpList2);
+                if(mrpList2.size()> 1) {
+                	//product.setAvailableQuantity(mrpList2.get(0).getAvailableQuantity());
+                	product.setAvailableQuantity(mrpList2.get(0).getInventoryQuantity());
+                }
+                product.setAvailableQuantity(mrpList2.get(0).getInventoryQuantity());
+                System.out.println("mrpList2 is = "+mrpList2);
+            }
+		    
+		    
 		    if(templateLineDetails!= null && !templateLineDetails.isEmpty()) {
 		    	ltTemplateDto.setLtTemplateLines(templateLineDetails);
 		    }else {
@@ -463,6 +490,30 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			ltTemplateDto.setLastUpdatedBy(getAllTemplateHeaders.getLastUpdatedBy());
 			ltTemplateDto.setLastUpdatedLogin(getAllTemplateHeaders.getLastUpdatedLogin());
 			ltTemplateDto.setLastUpdatedDate(getAllTemplateHeaders.getLastUpdatedDate());
+			
+			
+			List<String> prodIdList = new ArrayList<>();
+			prodIdList = templateLineDetails.stream().map(LtTemplateLines::getProductId).collect(Collectors.toList());
+			String ids = prodIdList.stream().map(id->"'"+id +"'").collect(Collectors.joining(", "));
+			List<LtTemplateLines> mrpList = new ArrayList<>();
+			mrpList = ltTemplateDao.getMultipleMrpForTemplateProductV1(ids, distributorId);
+			
+			for (LtTemplateLines product : templateLineDetails) {
+                // Initialize MRP1 list if it is null
+                if (product.getListPrice() == null) {
+                    product.setMRP1(new ArrayList<>());
+                }
+                List<LtTemplateLines>mrpList2 = mrpList.stream().filter(x-> x.getProductId().equalsIgnoreCase(product.getProductId())).collect(Collectors.toList());
+                
+                product.setMRP2(mrpList2);
+                if(mrpList2.size()> 1) {
+                	//product.setAvailableQuantity(mrpList2.get(0).getAvailableQuantity());
+                	product.setAvailableQuantity(mrpList2.get(0).getInventoryQuantity());
+                }
+                product.setAvailableQuantity(mrpList2.get(0).getInventoryQuantity());
+                System.out.println("mrpList2 is = "+mrpList2);
+            }
+			
 			
 			if(templateLineDetails!= null && !templateLineDetails.isEmpty()) {
 				ltTemplateDto.setLtTemplateLines(templateLineDetails);

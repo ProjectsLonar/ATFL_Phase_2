@@ -66,10 +66,50 @@ public class LtMastProductsController implements CodeMaster {
 		}
 	}
 	
+	@RequestMapping(value = "/getInStockProductV1", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getInStockProductV1(@RequestBody RequestDto requestDto) {
+		try {
+			
+			System.out.print("In Controller getInStockProduct");
+			return new ResponseEntity<Status>(ltMastProductService.getInStockProductV1(requestDto), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+	}
+	
+	@RequestMapping(value = "/getInStockProductV2", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getInStockProductV2(@RequestBody RequestDto requestDto) {
+		try {
+			
+			System.out.print("In Controller getInStockProduct");
+			return new ResponseEntity<Status>(ltMastProductService.getInStockProductV2(requestDto), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+	}
+	
 	@RequestMapping(value = "/getOutOfStockProduct", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> getOutOfStockProduct(@RequestBody RequestDto requestDto) {
 		try {
 			return new ResponseEntity<Status>(ltMastProductService.getOutOfStockProduct(requestDto), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+	}
+	
+	@RequestMapping(value = "/getOutOfStockProductV1", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getOutOfStockProductV1(@RequestBody RequestDto requestDto) {
+		try {
+			return new ResponseEntity<Status>(ltMastProductService.getOutOfStockProductV1(requestDto), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+	}
+	
+	@RequestMapping(value = "/getOutOfStockProductV2", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getOutOfStockProductV2(@RequestBody RequestDto requestDto) {
+		try {
+			return new ResponseEntity<Status>(ltMastProductService.getOutOfStockProductV2(requestDto), HttpStatus.OK);
 		} catch (Exception e) {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 		}
@@ -80,6 +120,14 @@ public class LtMastProductsController implements CodeMaster {
 			@PathVariable("outId") String outId, @PathVariable("prodId") String prodId, @PathVariable("priceList") String priceList) throws ServiceException, FileNotFoundException, IOException 
 	{
 		return new ResponseEntity<Status>(ltMastProductService.getMultipleMrpForProduct(distId, outId, prodId, priceList), HttpStatus.OK);	
+	}
+	
+	
+	@RequestMapping(value = "/getMultipleMrpForProductV1/{prodId}/{distId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getMultipleMrpForProductV1(@PathVariable("prodId") String prodId, 
+			@PathVariable("distId") String distId) throws ServiceException, FileNotFoundException, IOException 
+	{
+		return new ResponseEntity<Status>(ltMastProductService.getMultipleMrpForProductV1(prodId,distId), HttpStatus.OK);	
 	}
 	
 	@RequestMapping(value= "/getTlForProductDescription/{priceList}/{productId}", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0")

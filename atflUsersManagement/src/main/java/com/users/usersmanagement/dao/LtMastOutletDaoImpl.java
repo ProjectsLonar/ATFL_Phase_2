@@ -304,21 +304,21 @@ System.out.println("list"+list);
 		List<LtMastOutletsDump> ltMastOutletslist = new ArrayList<>();
 		ConsumeApiService consumeApiService = new ConsumeApiService();
 
-//		List<LtMastOutletsDump> ltMastOutletslist = jdbcTemplate.query(query,
-//				new Object[] { distributorId,orgId,primaryMobile},
-//				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+		 ltMastOutletslist = jdbcTemplate.query(query,
+				new Object[] { distributorId,orgId,primaryMobile},
+				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
 
-		try {
-			ltMastOutletslist = consumeApiService.consumeApi(query, 
-					new Object[] { distributorId,orgId,primaryMobile }, 
-					LtMastOutletsDump.class);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			ltMastOutletslist = consumeApiService.consumeApi(query, 
+//					new Object[] { distributorId,orgId,primaryMobile }, 
+//					LtMastOutletsDump.class);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		if (!ltMastOutletslist.isEmpty()) {
 			return ltMastOutletslist.get(0);
@@ -531,23 +531,24 @@ System.out.println("list"+list);
 		String query = env.getProperty("getOutletById");
 		System.out.println("outletId"+outletId);
 
-//		List<LtMastOutletsDump> list = jdbcTemplate.query(query,
-//				new Object[] {outletId},
-//				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
-		ConsumeApiService consumeApiService = new ConsumeApiService();
-		List<LtMastOutletsDump> list = new ArrayList<>();
-
-		try {
-			list = consumeApiService.consumeApi(query, 
-					new Object[] { outletId}, 
-					LtMastOutletsDump.class);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		List<LtMastOutletsDump> list = jdbcTemplate.query(query,
+				new Object[] {outletId},
+				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+		// if use below pin_code is not getting so siebel approve outlet api is not working hence commit it on 26-july-2024 
+//		ConsumeApiService consumeApiService = new ConsumeApiService();
+//		List<LtMastOutletsDump> list = new ArrayList<>();
+//
+//		try {
+//			list = consumeApiService.consumeApi(query, 
+//					new Object[] { outletId}, 
+//					LtMastOutletsDump.class);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		System.out.println("query"+query);
 System.out.println("list"+list);
@@ -591,6 +592,13 @@ System.out.println("list"+list);
 		String query= env.getProperty("getUserNameAgainsUserId");
 		String userName= jdbcTemplate.queryForObject(query, new Object[] {createdBy}, String.class);
 		return userName;
+	}
+
+	@Override
+	public String getPriceListId(String priceList) throws ServiceException, IOException {
+		String query= env.getProperty("getPriceListId");
+		String priceListName= jdbcTemplate.queryForObject(query, new Object[] {priceList}, String.class);
+		return priceListName;
 	}
 	
 }

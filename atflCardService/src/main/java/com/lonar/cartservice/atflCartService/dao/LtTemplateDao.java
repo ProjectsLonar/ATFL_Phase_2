@@ -1,5 +1,6 @@
 package com.lonar.cartservice.atflCartService.dao;
 
+import java.io.IOException;
 import java.rmi.ServerException;
 import java.util.List;
 
@@ -30,5 +31,8 @@ public interface LtTemplateDao {
 	LtTemplateHeaders getAllTemplateAgainstDistributors(String distId)throws ServerException;
 
 	Long getAvailableQuantity(String distributorId, String productId)throws ServerException;
+
+	public List<LtTemplateLines> getMultipleMrpForTemplateProductV1(String prodId, String distId)throws ServiceException, IOException;
+	
 	
 }

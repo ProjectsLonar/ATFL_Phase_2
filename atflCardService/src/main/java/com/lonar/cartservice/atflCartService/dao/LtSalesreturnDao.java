@@ -86,6 +86,8 @@ public interface LtSalesreturnDao {
 	ResponseDto getSalesReturnForAprroval1(Long long1, RequestDto requestDto)throws ServerException;
 
 	String getInvoiceNumber(String orderNumber)throws ServerException;
+	
+	String getOrderType(String orderNumber)throws ServerException;
 
 	String getUserNameAgainsUserId(Long userId)throws ServerException;
 

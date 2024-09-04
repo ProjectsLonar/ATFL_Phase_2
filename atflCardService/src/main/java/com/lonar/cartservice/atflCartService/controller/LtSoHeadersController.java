@@ -239,4 +239,13 @@ public class LtSoHeadersController implements CodeMaster {
 			}
 
 		}
+		
+		@RequestMapping(value = "/getOpenOrderWithNewStatusFromSiebel", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, headers= "X-API-Version=v1.0")
+         public ResponseEntity<Status> getOpenOrderWithNewStatusFromSiebel(@RequestBody SoHeaderDto soHeaderDto) throws ServerException{
+			try {
+				return new ResponseEntity<Status>(ltSoHeadersService.getOpenOrderWithNewStatusFromSiebel(soHeaderDto), HttpStatus.OK);
+			}catch(Exception e) {
+				throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+			}
+		}
 }

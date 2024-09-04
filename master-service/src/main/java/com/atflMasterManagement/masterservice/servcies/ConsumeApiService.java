@@ -147,8 +147,8 @@ public class ConsumeApiService {
   //      System.out.println("apiRequestBody for headerIdList is = "+ jsonBody);
         
         // Build the URI
-        //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParamsWithRequestBody"; // this is for uat server
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParamsWithRequestBody";  // this is for local
+           //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParamsWithRequestBody"; // this is for uat server
+           String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParamsWithRequestBody";  // this is for local
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -157,7 +157,7 @@ public class ConsumeApiService {
 
         try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
             String responseBody = EntityUtils.toString(response.getEntity());
-   //         System.out.println(responseBody);
+          System.out.println("jsonBody =" +jsonBody);
    //         System.out.println("After response body = "+ LocalDateTime.now());
         
             //List<LtMastUsers> usersArray = objectMapper.readValue(responseBody, LtMastUsers(LtMastUsers.class));
@@ -191,8 +191,8 @@ public class ConsumeApiService {
  //       System.out.println("apiRequestBody for count is = "+ jsonBody);
 
         // Build the URI
-        //String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithRequestBody";
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithRequestBody"; 
+            //String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithRequestBody";
+           String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithRequestBody"; 
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);

@@ -1,5 +1,7 @@
 package com.lonar.cartservice.atflCartService.model;
 
+import java.util.List;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -68,7 +71,62 @@ public class LtTemplateLines {
 	@Transient
 	String listPrice;
 	
+	@Transient
+	String unitsPerCase;
 	
+	@Transient
+	private Long inventoryQuantity;
+	
+	@Transient
+	private double MRP;
+	
+	@Transient
+	List<Double> MRP1;
+	
+	@Transient
+	List<LtTemplateLines> MRP2;
+	
+	
+	public Long getInventoryQuantity() {
+		return inventoryQuantity;
+	}
+
+	public void setInventoryQuantity(Long inventoryQuantity) {
+		this.inventoryQuantity = inventoryQuantity;
+	}
+
+	public double getMRP() {
+		return MRP;
+	}
+
+	public void setMRP(double mRP) {
+		MRP = mRP;
+	}
+
+	public List<Double> getMRP1() {
+		return MRP1;
+	}
+
+	public void setMRP1(List<Double> mRP1) {
+		MRP1 = mRP1;
+	}
+
+	public List<LtTemplateLines> getMRP2() {
+		return MRP2;
+	}
+
+	public void setMRP2(List<LtTemplateLines> mRP2) {
+		MRP2 = mRP2;
+	}
+
+	public String getUnitsPerCase() {
+		return unitsPerCase;
+	}
+
+	public void setUnitsPerCase(String unitsPerCase) {
+		this.unitsPerCase = unitsPerCase;
+	}
+
 	public String getListPrice() {
 		return listPrice;
 	}
@@ -189,6 +247,7 @@ public class LtTemplateLines {
 		this.lastUpdatedLogin = lastUpdatedLogin;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "LtTemplateLines [templateLineId=" + templateLineId + ", templateHeaderId=" + templateHeaderId
@@ -196,8 +255,10 @@ public class LtTemplateLines {
 				+ ", productDescription=" + productDescription + ", ptrPrice=" + ptrPrice + ", quantity=" + quantity
 				+ ", availableQuantity=" + availableQuantity + ", creationDate=" + creationDate + ", createdBy="
 				+ createdBy + ", lastUpdatedDate=" + lastUpdatedDate + ", lastUpdatedBy=" + lastUpdatedBy
-				+ ", lastUpdatedLogin=" + lastUpdatedLogin + ", listPrice=" + listPrice + "]";
+				+ ", lastUpdatedLogin=" + lastUpdatedLogin + ", listPrice=" + listPrice + ", unitsPerCase="
+				+ unitsPerCase + ", inventoryQuantity=" + inventoryQuantity + ", MRP=" + MRP + ", MRP1=" + MRP1
+				+ ", MRP2=" + MRP2 + "]";
 	}
-	
+
 	
 }

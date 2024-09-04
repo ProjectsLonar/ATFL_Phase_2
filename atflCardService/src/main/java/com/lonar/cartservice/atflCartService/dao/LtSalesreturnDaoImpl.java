@@ -931,11 +931,25 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 	public String getInvoiceNumber(String orderNumber) throws ServerException {
 		String query= env.getProperty("getInvoiceNumber");
 		String invoiceNumber= jdbcTemplate.queryForObject(query, new Object[] {orderNumber}, String.class);
-		//if (invoiceNumber!= null) {
-		//return invoiceNumber;}
+//		List<ResponseDto> siebelInvoicenumber= jdbcTemplate.query(query, new Object[] {orderNumber}, 
+//				new BeanPropertyRowMapper<ResponseDto>(ResponseDto.class));
+		System.out.println("invoiceNumber is = "+invoiceNumber);
+		//if (siebelInvoicenumber!= null) {
+		//return siebelInvoicenumber.get(0).getSiebelInvoicenumber();
+	//	}//else {
+//			return "";
+//		}
 		return invoiceNumber;
 	}
 
+	@Override
+	public String getOrderType(String orderNumber) throws ServerException {
+		String query= env.getProperty("getOrderType");
+		String orderType= jdbcTemplate.queryForObject(query, new Object[] {orderNumber}, String.class);
+		System.out.println("invoiceNumber is = "+orderType);
+		return orderType;
+	}
+	
 	@Override
 	public String getUserNameAgainsUserId(Long userId) throws ServerException {
 		String query= env.getProperty("getUserNameAgainsUserIdForSalesReturn");

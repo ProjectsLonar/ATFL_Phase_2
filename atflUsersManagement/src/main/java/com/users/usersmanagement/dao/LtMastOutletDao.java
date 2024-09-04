@@ -69,4 +69,6 @@ public interface LtMastOutletDao {
 
 	public String getUserNameAgainsUserId(Long createdBy)throws ServiceException, IOException;
 
+	public String getPriceListId(String priceList)throws ServiceException, IOException;
+
 }

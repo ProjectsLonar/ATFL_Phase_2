@@ -98,6 +98,9 @@ public class ResponseDto {
 	private Double price;
 	private Double totalPrice;
 	private String beatName;
+	
+	private String mrp;
+	
 		
 //	public String getPTR_PRICE() {
 //		return PTR_PRICE;
@@ -107,6 +110,13 @@ public class ResponseDto {
 //	}
 	
 	
+	public String getMrp() {
+		return mrp;
+	}
+	public void setMrp(String mrp) {
+		this.mrp = mrp;
+	}
+
 	private List<LtSalesReturnLines> LtSalesReturnLines;
 	
 	public List<LtSalesReturnLines> getLtSalesReturnLines() {
@@ -620,10 +630,10 @@ public class ResponseDto {
 				+ ", shippedQuantity=" + shippedQuantity + ", availability=" + availability + ", remainingQuantity="
 				+ remainingQuantity + ", returnQuantity=" + returnQuantity + ", location=" + location
 				+ ", salesReturnAmount=" + salesReturnAmount + ", price=" + price + ", totalPrice=" + totalPrice
-				+ ", beatName=" + beatName + ", LtSalesReturnLines=" + LtSalesReturnLines + ", Test=" + Test + "]";
+				+ ", beatName=" + beatName + ", mrp=" + mrp + ", LtSalesReturnLines=" + LtSalesReturnLines + ", Test="
+				+ Test + "]";
 	}
-	
-	
+		
 	
 				
 }

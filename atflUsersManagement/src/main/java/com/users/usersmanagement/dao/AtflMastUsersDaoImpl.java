@@ -221,7 +221,8 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 			ltMastOutletslist = consumeApiService.consumeApi(query, 
 					new Object[] { requestDto.getOrgId(), requestDto.getDistributorId(), requestDto.getOutletId(),
 							requestDto.getStatus(), requestDto.getUserType(), userName,
-							requestDto.getSalesPersonId(), userId ,
+							//requestDto.getSalesPersonId(), 
+							userId ,
 							requestDto.getLimit(), requestDto.getOffset() }, 
 					LtMastUsers.class);
 		} catch (IOException e) {

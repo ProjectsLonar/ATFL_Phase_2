@@ -222,4 +222,39 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 //		}
 		return quantity;
 	}
+	@Override
+	public List<LtTemplateLines> getMultipleMrpForTemplateProductV1(String prodId, String distId)
+			throws ServiceException, IOException {
+		
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		List<LtTemplateLines> productList = new ArrayList<>();
+		try{
+			String query = env.getProperty("getMultipleMrpForTemplateProductV1");
+//		    List<ProductDto> productList = jdbcTemplate.query(query,new Object[] { distId, outId, prodId, priceList },
+//				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+			try {
+				System.out.println("prodId & distId = " + prodId +"/t"+ distId);
+				productList = consumeApiService.consumeApiWithRequestBody(query, 
+						new Object[] { prodId,distId,prodId,prodId,distId,prodId }, 
+						LtTemplateLines.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("productList o/p = "+ productList);
+		   if(productList!= null) 
+		    {
+			  return productList;
+		    }
+		}catch (Exception e) 
+		    {
+			  e.printStackTrace();
+		    }
+		return null;
+	
+	}
 }

@@ -12,8 +12,15 @@ public interface LtMastProductService {
 	Status readImageProduct() throws ServiceException, IOException;
 	Status getProductV2(RequestDto requestDto) throws ServiceException, IOException;
 	Status getInStockProduct(RequestDto requestDto)throws ServiceException, IOException;
+	Status getInStockProductV1(RequestDto requestDto)throws ServiceException, IOException;
+	Status getInStockProductV2(RequestDto requestDto)throws ServiceException, IOException;
+	
 	Status getOutOfStockProduct(RequestDto requestDto)throws ServiceException, IOException;
+	Status getOutOfStockProductV1(RequestDto requestDto)throws ServiceException, IOException;
+	Status getOutOfStockProductV2(RequestDto requestDto)throws ServiceException, IOException;
+	
 	Status getMultipleMrpForProduct(String distId, String outId, String prodId, String priceList)throws ServiceException, IOException;
+	Status getMultipleMrpForProductV1(String prodId, String distId)throws ServiceException, IOException;
 	Status getTlForProductDescription(String priceList, String productId) throws ServiceException, IOException;
 	Status getEtlForProductDescription(String priceList, String productId)throws ServiceException, IOException;
 }

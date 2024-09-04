@@ -35,8 +35,17 @@ public class RequestDto {
 	
 	String mobileNumber;
 	private String positionId;
+	private String priceList;
 	
 	
+	public String getPriceList() {
+		return priceList;
+	}
+
+	public void setPriceList(String priceList) {
+		this.priceList = priceList;
+	}
+
 	public String getPositionId() {
 		return positionId;
 	}
@@ -242,7 +251,7 @@ public class RequestDto {
 				+ ", returnStatus=" + returnStatus + ", salesReturnHeaderId=" + salesReturnHeaderId
 				+ ", salesReturnNumber=" + salesReturnNumber + ", price=" + price + ", totalPrice=" + totalPrice
 				+ ", loginId=" + loginId + ", siebelStatus=" + siebelStatus + ", siebelRemark=" + siebelRemark
-				+ ", mobileNumber=" + mobileNumber + ", positionId=" + positionId + "]";
+				+ ", mobileNumber=" + mobileNumber + ", positionId=" + positionId + ", priceList=" + priceList + "]";
 	}
 
 		

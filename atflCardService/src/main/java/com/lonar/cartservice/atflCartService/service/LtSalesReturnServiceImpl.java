@@ -878,6 +878,9 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	        	          System.out.println("Error Response Body: " + response);
 	        	    }
 			  			
+		        ConsumeApiService consumeApiService = new ConsumeApiService();
+		        consumeApiService.SiebelAPILog(url.toString(), jsonPayload, response.toString());
+		        
 		        //saving siebel response & status code in to table
 		        
 		        //LtSalesReturnHeader ltSalesReturnHeader = new LtSalesReturnHeader();
@@ -1865,6 +1868,9 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	            	     System.out.println("Error Response Body: " + response);
 	            	 }
                    
+	            ConsumeApiService consumeApiService = new ConsumeApiService();
+	            consumeApiService.SiebelAPILog(url, jsonPayload, response.toString());
+	            
 	         // saving response details in to table 
 	            String resCode= Integer.toString(responseCode);
 	            //tableNameToStore.setSiebelStatus(resCode);
@@ -2289,6 +2295,12 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		Status status = new Status();
 		try {
 			//Status status = new Status();
+			String instockFlag = ltSalesreturnDao.getOrderType(requestDto.getOrderNumber());
+			if(instockFlag.equalsIgnoreCase("N")) {
+				String msg = "{\"ERROR\": \"This is out-of-stock order, hence invoice is not generated\"}"; 
+				response.append(msg);
+				return response;
+			}else {
 			
 			String invoiceNum = ltSalesreturnDao.getInvoiceNumber(requestDto.getOrderNumber());
 			System.out.println("invoiceNum" + invoiceNum);
@@ -2400,7 +2412,10 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	            	     System.out.println("Error response: " + responseCode + " - " + msg);
 	            	     System.out.println("Error Response Body: " + response);
 	            	 }
-                   
+	            
+	            ConsumeApiService consumeApiService = new ConsumeApiService();
+                consumeApiService.SiebelAPILog(url.toString(), jsonPayload, "PDF response");
+	            
 	         // saving response details in to table 
 	            String resCode= Integer.toString(responseCode);
 	            //tableNameToStore.setSiebelStatus(resCode);
@@ -2447,6 +2462,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 					 status.setCode(RECORD_NOT_FOUND);
 					}*/
 	           //status.setStringBuilder(response);
+			}
 			}
 			}catch(Exception e) {
 				e.printStackTrace();

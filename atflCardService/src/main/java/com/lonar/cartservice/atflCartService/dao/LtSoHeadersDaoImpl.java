@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.dto.DistributorDetailsDto;
 import com.lonar.cartservice.atflCartService.dto.LtOrderLineDataGt;
@@ -424,7 +425,10 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 //						 System.out.print("2nd outList =\n"+outList+outList1);}
 //					
 //				}
-				
+				if(requestDto.getOutletId()!= null) {
+				outletList.add(requestDto.getOutletId());
+				}
+//				System.out.println(outletList);
 				String outletListString = outletList.stream()
                         .map(id -> "'" + id + "'")
                         .collect(Collectors.joining(", "));
@@ -441,7 +445,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 				query = query +" ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 			}
 			
-			System.out.println("Issue for query ="+query);
+//			System.out.println("Issue for query ="+query);
 					    
 /*			headerIdslist = jdbcTemplate.queryForList(query, Long.class, 
 					requestDto.getDistributorId(),
@@ -1973,8 +1977,23 @@ System.out.println("Query is "+query);
 	@Override
 	public String getOrderSequence() throws ServiceException, IOException {
 		String query= env.getProperty("getOrderSequence");
-		String sequenceNumber= jdbcTemplate.queryForObject(query, new Object[] {}, String.class);
-		return sequenceNumber;
+		//String sequenceNumber= jdbcTemplate.queryForObject(query, new Object[] {}, String.class);
+		
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			String sequenceNumber = consumeApiService.consumeApiForString(query, 
+					new Object[] {});
+			return sequenceNumber;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -2606,7 +2625,7 @@ System.out.println("Query is "+query);
 	        params.toArray(),
 	        new BeanPropertyRowMapper<>(QuantityCheck.class)
 	    );
-	    
+	     	     
 	    return productList;
 	}
 	  catch(Exception e) {
@@ -2676,5 +2695,224 @@ System.out.println("Query is "+query);
 				new BeanPropertyRowMapper<LtOrderLineDataGt>(LtOrderLineDataGt.class));
 		return data;
 	}
+
+	
+	@Override
+	public List<ResponseDto> getMultipleMrpForProductV1(String prodId, String distributorId)
+			throws ServiceException, IOException {
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		List<ResponseDto> productList = new ArrayList<>();
+		try{
+			String query = env.getProperty("getMultipleMrpForProductV1");
+//		    List<ProductDto> productList = jdbcTemplate.query(query,new Object[] { distId, outId, prodId, priceList },
+//				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+			try {
+				System.out.println("prodId & distId & query = " + prodId +"/t"+ distributorId + query);
+				productList = consumeApiService.consumeApiWithRequestBody(query, 
+						//new Object[] { prodId,distributorId,prodId,prodId,distributorId,prodId },
+						new Object[] { distributorId, distributorId, prodId,distributorId,prodId,prodId,distributorId,prodId },
+						ResponseDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("productList o/p = "+ productList);
+		   if(productList!= null) 
+		    {
+			  return productList;
+		    }
+		}catch (Exception e) 
+		    {
+			  e.printStackTrace();
+		    }
+		return null;
+	}
+
+	@Override
+	public String checkOrderNoInSiebel(String orderNumber) throws ServiceException, IOException {
+		
+		String query = env.getProperty("checkOrderNoInSiebel");
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		String	siebelOrderNoList = null;
+		try {
+			siebelOrderNoList = consumeApiService.consumeApiForString(query, new Object[] {orderNumber});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return siebelOrderNoList;
+	}
+
+	@Override
+	public List<ResponseDto> getMultipleMrpForOutofStockProductV1(String prodId, String distributorId)
+			throws ServiceException, IOException {
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		List<ResponseDto> productList = new ArrayList<>();
+		try{
+			String query = env.getProperty("getMultipleMrpForOutofStockProductV1");
+//		    List<ProductDto> productList = jdbcTemplate.query(query,new Object[] { distId, outId, prodId, priceList },
+//				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+			try {
+				System.out.println("prodId & distId = " + prodId +"/t"+ distributorId);
+				productList = consumeApiService.consumeApiWithRequestBody(query, 
+						new Object[] { prodId,distributorId,prodId,prodId,distributorId,prodId }, 
+						ResponseDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("productList o/p = "+ productList);
+		   if(productList!= null) 
+		    {
+			  return productList;
+		    }
+		}catch (Exception e) 
+		    {
+			  e.printStackTrace();
+		    }
+		return null;
+	}
+
+	@Override
+	public List<String> getPriceListAgainstHeaderId(String headerIdList) throws ServiceException, IOException {
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		List<String> priceList = new ArrayList<>();
+		String query = env.getProperty("getPriceListAgainstHeaderId");
+//		priceList = jdbcTemplate.queryForList(query, new Object[] {headerIdList}, String.class);
+		System.out.println("Query getPriceListAgainstHeaderId = "+ query);
+		
+		try {
+			List<ResponseDto> list = consumeApiService.consumeApi(query, 
+					new Object[] { headerIdList }, 
+					ResponseDto.class);
+			for(int i =0; i < list.size();i++) {
+				
+				priceList.add(list.get(i).getPriceList());
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("price List = "+ priceList);		
+		if (!priceList.isEmpty())
+			return priceList;   
+		else
+			return null;
+	}
+
+	@Override
+	public List<ResponseDto> getMultipleMrpForInstockProductV1(String prodId, String distributorId, String priceList)
+			throws ServiceException, IOException {
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		List<ResponseDto> productList = new ArrayList<>();
+		try{
+			String query = env.getProperty("getMultipleMrpForInstockProductV1");
+//		    List<ProductDto> productList = jdbcTemplate.query(query,new Object[] { distId, outId, prodId, priceList },
+//				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+			try {
+				System.out.println("prodId & distId & query = " + prodId +"/t"+ distributorId + query);
+				productList = consumeApiService.consumeApiWithRequestBody(query, 
+						new Object[] { prodId,distributorId,prodId,prodId,distributorId,prodId,priceList }, 
+						ResponseDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("productList o/p = "+ productList);
+		   if(productList!= null) 
+		    {
+			  return productList;
+		    }
+		}catch (Exception e) 
+		    {
+			  e.printStackTrace();
+		    }
+		return null;
+	}
+
+	@Override
+	public List<ResponseDto> getOpenOrderWithNewStatusFromSiebel(String prod, String distributorId, String outletId)
+			throws ServiceException, IOException {
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		List<ResponseDto> productList = new ArrayList<>();
+		try{
+			String query = env.getProperty("getOpenOrderWithNewStatusFromSiebel");
+//		    List<ProductDto> productList = jdbcTemplate.query(query,new Object[] { distId, outId, prodId, priceList },
+//				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+			try {
+				System.out.println("prodId & distId & query = " + prod +"/t"+ distributorId + outletId + query);
+				productList = consumeApiService.consumeApiWithRequestBody(query, 
+						new Object[] { prod,distributorId,outletId }, 
+						ResponseDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("productList o/p = "+ productList);
+		   if(productList!= null) 
+		    {
+			  return productList;
+		    }
+		}catch (Exception e) 
+		    {
+			  e.printStackTrace();
+		    }
+		return null;
+	}
+
+	@Override
+	public List<ResponseDto> getMrpForMultipleProductV1(String prodId, String distributorId)
+			throws ServiceException, IOException {
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		List<ResponseDto> productList = new ArrayList<>();
+		try{
+			String query = env.getProperty("getMrpForMultipleProductV1");
+//		    List<ProductDto> productList = jdbcTemplate.query(query,new Object[] { distId, outId, prodId, priceList },
+//				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+			try {
+				System.out.println("prodId & distId & query = " + prodId +"/t"+ distributorId + query);
+				productList = consumeApiService.consumeApiWithRequestBody(query, 
+						//new Object[] { prodId,distributorId,prodId,prodId,distributorId,prodId },
+						new Object[] { prodId,distributorId,prodId,prodId,distributorId,prodId },
+						ResponseDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("productList o/p = "+ productList);
+		   if(productList!= null) 
+		    {
+			  return productList;
+		    }
+		}catch (Exception e) 
+		    {
+			  e.printStackTrace();
+		    }
+		return null;
+	}
+	
 }
 	

@@ -45,6 +45,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.controller.WebController;
 import com.users.usersmanagement.dao.AtflMastUsersDao;
@@ -704,7 +705,8 @@ try {
 		ltMastOutletsDump.setLastUpdateDate(new Date());
 		
 		ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
-		  LtMastOrganisations ltMastOrganisations =
+		System.out.println("Table ltMastOutletsDump = "+ ltMastOutletsDump);
+		LtMastOrganisations ltMastOrganisations =
 		  ltMastOutletDao.getOrganisationDetailsById(ltMastOutletsDump.getOrgId());
 		  System.out.println("ltMastOrganisations"+ltMastOrganisations);
           
@@ -713,6 +715,8 @@ try {
              storeId= storeId+id;
              System.out.println("storeId Beat Sequence is --" + storeId);
 		  
+            String priceListId= ltMastOutletDao.getPriceListId(ltMastOutletsDump.getPriceList());
+             
 		  String url = "https://10.245.4.70:9014/siebel/v1.0/service/Siebel%20Outlet%20Integration/InsertOrUpdate?matchrequestformat=y";
          System.out.println("Url is---" + url);
 		  String method = "POST";
@@ -743,6 +747,7 @@ try {
 		  businessAddress.put("State", ltMastOutletsDump.getState());
 //		  businessAddress.put("State", "MH");
 		  businessAddress.put("Country", "India");
+//		  System.out.println("Input ltMastOutletsDump.getPin_code() = " + ltMastOutletsDump.getPin_code());
 		  businessAddress.put("Postal Code", ltMastOutletsDump.getPin_code());
 //		  businessAddress.put("Postal Code","411045");
 		  businessAddress.put("Province", "");
@@ -755,7 +760,9 @@ try {
 		  
 		  JSONObject accounts = new JSONObject();
 		  accounts.put("Account Status", "Active");
-		  accounts.put("Price List", ltMastOutletsDump.getPriceList()); 
+		  System.out.println("Get ltMastOutletsDump.getPriceList() = "+ltMastOutletsDump.getPriceList());
+		  accounts.put("Price List", ltMastOutletsDump.getPriceList());
+		  accounts.put("Price List Id", priceListId);
 		  accounts.put("Type", ltMastOutletsDump.getOutletType());
 //		  accounts.put("Type", "Retailer");
 		  accounts.put("Account Id", "1");
@@ -906,6 +913,10 @@ try {
   		  String outletCode = accountId;   //once you got response add outlet code and pass it here.
   	      outletDetails =ltMastOutletDao.getOutletByOutletCode(outletCode);
   	
+  	      
+  	    ConsumeApiService consumeApiService = new ConsumeApiService();
+        consumeApiService.SiebelAPILog(url.toString(), jsonPayload, response.toString());
+  	      
   	 // saving siebel response & status code in to table
   	    String resCode = Integer.toString(responseCode);
         String res = responseBody.toString();
@@ -951,7 +962,7 @@ try {
 			  status.setData(outletDetails);
 			  status.setMessage("INSERT_SUCCESSFULLY");
 			  }
-          
+		            
         }}else {
         	     reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
                  String line;
@@ -966,16 +977,21 @@ try {
         	     System.out.println("Error response: " + responseCode + " - " + msg);
         	     System.out.println("Error Response Body: " + responseBody);
         	 
+        	     ConsumeApiService consumeApiService = new ConsumeApiService();
+                 consumeApiService.SiebelAPILog(url.toString(), jsonPayload, response.toString());
+        	     
         	  // saving siebel response & status code in to table   
         	        String resCode = Integer.toString(responseCode);
         	        String res = responseBody.toString();
         	        System.out.println("Final response = "+resCode+res);
         	        ltMastOutletsDump.setSiebelStatus(resCode);
         	        ltMastOutletsDump.setSiebelRemark(res);
+        	        ltMastOutletsDump.setSiebelJsonpaylod(jsonPayload);
         	        
         	  	    ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
         	  	  status.setCode(INSERT_FAIL); 
         		  status.setMessage("INSERT_FAIL");
+        		  
         }
                 
 //		  if(outletDetails !=null) {

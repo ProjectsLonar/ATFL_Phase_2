@@ -76,11 +76,25 @@ public class ProductDto {
 	private Date lotMaufacturingDate;
 	private String distributorCode;
 	private double MRP; 
+	private String mrp11;
 	
 	List<Double> MRP1;
 	
+	List<ProductDto> MRP2;
 	
 	
+	public String getMrp11() {
+		return mrp11;
+	}
+	public void setMrp11(String mrp11) {
+		this.mrp11 = mrp11;
+	}
+	public List<ProductDto> getMRP2() {
+		return MRP2;
+	}
+	public void setMRP2(List<ProductDto> mRP2) {
+		MRP2 = mRP2;
+	}
 	public List<Double> getMRP1() {
 		return MRP1;
 	}
@@ -444,24 +458,25 @@ public class ProductDto {
 				+ ", subCategoryId=" + subCategoryId + ", productType=" + productType + ", category=" + category
 				+ ", subCategory=" + subCategory + ", productCode=" + productCode + ", productName=" + productName
 				+ ", productDesc=" + productDesc + ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom
-				+ ", secondaryUomValue=" + secondaryUomValue + ", unitsPerCase=" + unitsPerCase + ", segment=" + segment
-				+ ", brand=" + brand + ", subBrand=" + subBrand + ", style=" + style + ", flavor=" + flavor
-				+ ", casePack=" + casePack + ", hsnCode=" + hsnCode + ", productImage=" + productImage + ", status="
-				+ status + ", thumbnailImage=" + thumbnailImage + ", ptrFlag=" + ptrFlag + ", currency=" + currency
-				+ ", listPrice=" + listPrice + ", priceList=" + priceList + ", ptrPrice=" + ptrPrice + ", categoryCode="
-				+ categoryCode + ", categoryName=" + categoryName + ", categoryDesc=" + categoryDesc
-				+ ", categoryThumbnail=" + categoryThumbnail + ", categoryImage=" + categoryImage + ", subCategoryCode="
-				+ subCategoryCode + ", subCategoryName=" + subCategoryName + ", subCategoryDesc=" + subCategoryDesc
+				+ ", secondaryUomValue=" + secondaryUomValue + ", segment=" + segment + ", brand=" + brand
+				+ ", subBrand=" + subBrand + ", style=" + style + ", flavor=" + flavor + ", casePack=" + casePack
+				+ ", hsnCode=" + hsnCode + ", productImage=" + productImage + ", status=" + status + ", thumbnailImage="
+				+ thumbnailImage + ", ptrFlag=" + ptrFlag + ", currency=" + currency + ", listPrice=" + listPrice
+				+ ", priceList=" + priceList + ", ptrPrice=" + ptrPrice + ", categoryCode=" + categoryCode
+				+ ", categoryName=" + categoryName + ", categoryDesc=" + categoryDesc + ", categoryThumbnail="
+				+ categoryThumbnail + ", categoryImage=" + categoryImage + ", subCategoryCode=" + subCategoryCode
+				+ ", subCategoryName=" + subCategoryName + ", subCategoryDesc=" + subCategoryDesc
 				+ ", subCategoryImage=" + subCategoryImage + ", inventoryQuantity=" + inventoryQuantity
 				+ ", inventoryCode=" + inventoryCode + ", outletId=" + outletId + ", subcategory=" + subcategory
-				+ ", orderable=" + orderable + ", categoryId1=" + categoryId1
+				+ ", unitsPerCase=" + unitsPerCase + ", orderable=" + orderable + ", categoryId1=" + categoryId1
 				+ ", orgId1=" + orgId1 + ", locationName=" + locationName + ", distributorId=" + distributorId
 				+ ", prodShortDesc=" + prodShortDesc + ", inventoryName=" + inventoryName + ", inventoryId="
 				+ inventoryId + ", outletCode=" + outletCode + ", outletName=" + outletName + ", distributorName="
 				+ distributorName + ", lotNumber=" + lotNumber + ", lotMaufacturingDate=" + lotMaufacturingDate
-				+ ", distributorCode=" + distributorCode + ", MRP=" + MRP + ", MRP1=" + MRP1 + "]";
+				+ ", distributorCode=" + distributorCode + ", MRP=" + MRP + ", mrp11=" + mrp11 + ", MRP1=" + MRP1
+				+ ", MRP2=" + MRP2 + "]";
 	}
 	
 	
-					
+						
 }
