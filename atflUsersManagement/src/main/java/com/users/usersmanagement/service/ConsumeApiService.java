@@ -118,4 +118,42 @@ public class ConsumeApiService {
 		return response;
 		}
 	
+	
+	public String consumeApiForString(String query, Object[] body) throws IOException, InterruptedException {
+        String count;
+//		List<LtMastUsers> ltMastUsers = new ArrayList<LtMastUsers>();
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.name());
+
+        // Convert the Object[] to JSON string
+        String jsonBody = objectMapper.writeValueAsString(body);
+
+        // Build the URI
+        String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery;
+        //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery; 
+        
+        // Create HttpPost request
+        HttpPost httpPost = new HttpPost(uri);
+        httpPost.setHeader("Content-Type", "application/json");
+        httpPost.setEntity(new StringEntity(jsonBody));
+
+        try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+            String responseBody = EntityUtils.toString(response.getEntity());
+   //         System.out.println(responseBody);
+   //         System.out.println("After response body = "+ LocalDateTime.now());
+        
+            //List<LtMastUsers> usersArray = objectMapper.readValue(responseBody, LtMastUsers(LtMastUsers.class));
+            //ltMastUsers = objectMapper.readValue(responseBody, new TypeReference<List<LtMastUsers>>() {});
+            
+            count = responseBody.toString();
+  //          System.out.println("Result = " + count);
+            
+            //System.out.println("LtMastUsers = " + ltMastUsers);
+       }
+//		return ltMastUsers;
+        return count;
+    }
+
 }

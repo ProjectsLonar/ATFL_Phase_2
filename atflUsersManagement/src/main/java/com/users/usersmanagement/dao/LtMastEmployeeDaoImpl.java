@@ -104,6 +104,52 @@ public class LtMastEmployeeDaoImpl implements LtMastEmployeeDao {
 		return null;
 	}
 
+	
+	@Override
+	public List<LtMastPositions> getSalesPersonsForDistributorV2(RequestDto requestDto) throws ServiceException {
+		String query = env.getProperty("getSalesPersonsForDistributorV2");
+
+		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+		
+		if(requestDto.getOffset() == 0) {
+			requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
+		String searchField = null;
+		if (requestDto.getSearchField() != null) {
+			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+		}
+		List<LtMastPositions> positionsList = new ArrayList<>();
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+//		List<LtMastPositions> positionsList = jdbcTemplate.query(
+//				query, new Object[] { requestDto.getDistributorId(), //requestDto.getOrgId(), 
+//						searchField,
+//						requestDto.getLimit(), requestDto.getOffset() },
+//				new BeanPropertyRowMapper<LtMastPositions>(LtMastPositions.class));
+		
+		try {
+			positionsList = consumeApiService.consumeApi(query, 
+					new Object[] { //requestDto.getDistributorId(), //requestDto.getOrgId(), 
+							searchField,
+							requestDto.getLimit(), requestDto.getOffset() }, 
+					LtMastPositions.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (!positionsList.isEmpty()) {
+			return positionsList;
+		}
+		return null;
+	}
+
+	
 	@Override
 	public LtMastEmployees verifySalesOfficer(String primaryMobile, String emailId, String positionCode)
 			throws ServiceException {
@@ -196,6 +242,29 @@ public class LtMastEmployeeDaoImpl implements LtMastEmployeeDao {
 		if (!ltMastEmployees.isEmpty()) {
 			return ltMastEmployees.get(0);
 		}
+		return null;
+
+	}
+
+	@Override
+	public String getUserTypeById(Long userId) throws ServiceException {
+		String query = env.getProperty("getUserTypeById");
+	//	String userType= jdbcTemplate.queryForObject(query, new Object[] { userId },String.class);
+		
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+
+		try {
+			String userType = consumeApiService.consumeApiForString(query, 
+					new Object[] {userId});
+			return userType;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
 
 	}

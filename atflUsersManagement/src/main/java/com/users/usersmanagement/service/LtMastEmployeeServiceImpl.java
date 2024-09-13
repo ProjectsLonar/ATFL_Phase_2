@@ -2,6 +2,7 @@ package com.users.usersmanagement.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -107,7 +108,15 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 	public Status getSalesPersonsForDistributorV1(RequestDto requestDto) throws ServiceException {
 		Status status = new Status();
 		
-		List<LtMastPositions> list = ltMastEmployeeDao.getSalesPersonsForDistributorV1(requestDto);
+		List<LtMastPositions> list = new ArrayList<>();
+		String userType = ltMastEmployeeDao.getUserTypeById(requestDto.getUserId());
+		
+		if(userType.equalsIgnoreCase("SYSTEMADMINISTRATOR")) {
+			list = ltMastEmployeeDao.getSalesPersonsForDistributorV2(requestDto);
+		}
+		else {			
+		         list = ltMastEmployeeDao.getSalesPersonsForDistributorV1(requestDto);
+		     }
 		if (list != null) {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
@@ -118,6 +127,7 @@ public class LtMastEmployeeServiceImpl implements LtMastEmployeeService, CodeMas
 			status.setMessage("RECORD NOT FOUND");
 		}
 		return status;
+	
 	}
 
 	@Override

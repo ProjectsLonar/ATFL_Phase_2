@@ -406,6 +406,11 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			List<String> outletList = getOutletIdsByPositionId(userDetailsDto.getPositionId());
 			System.out.println("Below getOutletIdsByPositionId query call method at = "+LocalDateTime.now());
 			
+			if(requestDto.getOutletId()!= null) {
+				query = query + " and lsh.outlet_id in (" + "'"+requestDto.getOutletId() +"'"+
+						 ")  ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+			}else {
+						
 			if(!outletList.isEmpty() && outletList != null) {
 				//query = query +" and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
 				//query = query + " and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
@@ -443,7 +448,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 //				query = query +" ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
 			//	query = query +" ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ?";
 				query = query +" ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-			}
+			}}
 			
 //			System.out.println("Issue for query ="+query);
 					    
@@ -455,7 +460,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 					requestDto.getLimit(), requestDto.getOffset());
 */			
 			ConsumeApiService consumeApiService = new ConsumeApiService();
-			System.out.println("input For sales requestDto "+ requestDto);
+		//	System.out.println("input For sales requestDto "+ requestDto);
 			try {
 			List<RequestDto> headerIds = consumeApiService.consumeApiWithRequestBody(query, 
 						new Object[] { 
@@ -489,9 +494,9 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			
 			System.out.println(requestDto.getOffset() +"\n"+ requestDto);
 
-			System.out.println("Sales outletList query" + query);
+		//	System.out.println("Sales outletList query" + query);
 			
-			System.out.println("headerIdslist for Sales query = "+headerIdslist);
+		//	System.out.println("headerIdslist for Sales query = "+headerIdslist);
 			/*
 			 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
 			 * requestDto.getStatus(), requestDto.getOrderNumber(),
@@ -1245,7 +1250,7 @@ System.out.println("Query is "+query);
 		try {
 			System.out.println("in method getOrderV3 dao = "+ LocalDateTime.now());
 			String query = env.getProperty("getOrderLineV1");
-			System.out.print("headerIdList =" +headerIdList);
+		//	System.out.print("headerIdList =" +headerIdList);
 			if(headerIdList.size()>0) {
 			//query = query + "  and lsh.header_id IN ( 164) ) a order by a.status_o, a.cdate desc, a.header_id ";
 			query = query + "  and lsh.header_id IN ( " + headerIdList.toString().replace("[", "").replace("]", "")
@@ -2890,7 +2895,42 @@ System.out.println("Query is "+query);
 //				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
 			
 			try {
-				System.out.println("prodId & distId & query = " + prodId +"/t"+ distributorId + query);
+				//System.out.println("prodId & distId & query = " + prodId +"/t"+ distributorId + query);
+				productList = consumeApiService.consumeApiWithRequestBody(query, 
+						//new Object[] { prodId,distributorId,prodId,prodId,distributorId,prodId },
+						new Object[] { prodId,distributorId,prodId,prodId,distributorId,prodId },
+						ResponseDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("productList o/p = "+ productList);
+		   if(productList!= null) 
+		    {
+			  return productList;
+		    }
+		}catch (Exception e) 
+		    {
+			  e.printStackTrace();
+		    }
+		return null;
+	}
+
+	@Override
+	public List<ResponseDto> getMultiMrpAndInventQtyForProd(String prodId, String distributorId) throws ServiceException, IOException {
+		
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		List<ResponseDto> productList = new ArrayList<>();
+		try{
+			String query = env.getProperty("getMultiMrpAndInventQtyForProd");
+//		    List<ProductDto> productList = jdbcTemplate.query(query,new Object[] { distId, outId, prodId, priceList },
+//				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+			try {
+				//System.out.println("prodId & distId & query = " + prodId +"/t"+ distributorId + query);
 				productList = consumeApiService.consumeApiWithRequestBody(query, 
 						//new Object[] { prodId,distributorId,prodId,prodId,distributorId,prodId },
 						new Object[] { prodId,distributorId,prodId,prodId,distributorId,prodId },

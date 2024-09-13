@@ -12,6 +12,7 @@ public interface LtMastEmployeeDao {
 	LtMastEmployees verifyEmployee(String employeeCode, String distributorCrmCode, String positionCode)throws ServiceException;
 
 	List<LtMastPositions> getSalesPersonsForDistributorV1(RequestDto requestDto) throws ServiceException;
+	List<LtMastPositions> getSalesPersonsForDistributorV2(RequestDto requestDto) throws ServiceException;
 	
 	LtMastEmployees verifySalesOfficer(String primaryMobile,String emailId,String positionCode)throws ServiceException;
 	
@@ -25,5 +26,7 @@ public interface LtMastEmployeeDao {
 	LtMastEmployees verifyAreaHeadV1(String employeeCode)throws ServiceException;
 	
 	LtMastEmployees verifySystemAdministrator(String employeeCode)throws ServiceException;
+
+	String getUserTypeById(Long userId)throws ServiceException;
 
 }

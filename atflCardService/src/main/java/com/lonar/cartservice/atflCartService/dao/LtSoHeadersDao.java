@@ -132,4 +132,9 @@ public interface LtSoHeadersDao {
 	List<ResponseDto> getOpenOrderWithNewStatusFromSiebel(String prod, String distributorId, String outletId)throws ServiceException, IOException;
 	
 	List<ResponseDto> getMrpForMultipleProductV1(String prodId, String distributorId)throws ServiceException, IOException;
+
+	List<ResponseDto> getMultiMrpAndInventQtyForProd(String ids, String distributorId)throws ServiceException, IOException;
+	
+	
+
 }
