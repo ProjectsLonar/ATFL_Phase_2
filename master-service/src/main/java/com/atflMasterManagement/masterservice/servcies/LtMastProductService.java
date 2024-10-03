@@ -23,5 +23,7 @@ public interface LtMastProductService {
 	Status getMultipleMrpForProductV1(String prodId, String distId)throws ServiceException, IOException;
 	Status getTlForProductDescription(String priceList, String productId) throws ServiceException, IOException;
 	Status getEtlForProductDescription(String priceList, String productId)throws ServiceException, IOException;
+	Status getInstockProductsForSysAdminTemplate(RequestDto requestDto)throws ServiceException, IOException;
+	Status getOutOfStockProductsForSysAdminTemplate(RequestDto requestDto)throws ServiceException, IOException;
 }
  

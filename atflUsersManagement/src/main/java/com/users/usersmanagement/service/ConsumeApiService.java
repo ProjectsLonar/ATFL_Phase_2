@@ -28,7 +28,8 @@ public class ConsumeApiService {
 
         // Convert the Object[] to JSON string
         String jsonBody = objectMapper.writeValueAsString(body);
-
+        System.out.println("jsonReqBody = " +jsonBody);
+        
         // Build the URI
         String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
         //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery; 
@@ -65,7 +66,9 @@ public class ConsumeApiService {
 
         // Convert the Object[] to JSON string
         String jsonBody = objectMapper.writeValueAsString(body);
-
+        System.out.println("query = " + query);
+        System.out.println("jsonBody = " + jsonBody);
+        
         // Build the URI
         String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery;
         //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery; 

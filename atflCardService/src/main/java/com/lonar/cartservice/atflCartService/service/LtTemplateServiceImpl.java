@@ -479,9 +479,9 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			LtTemplateHeaders getAllTemplateHeaders = ltTemplateDao.getAllTemplateAgainstDistributors(distId);
 			outQuerygetAllTemplateAgainstDistributors = System.currentTimeMillis();
 			inQuerygetProductDetailsAgainstheaderId2 = System.currentTimeMillis(); 
-			templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId(getAllTemplateHeaders.getTemplateHeaderId(), priceList);
+			templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId2(distributorId,getAllTemplateHeaders.getTemplateHeaderId(), priceList);
 			outQuerygetProductDetailsAgainstheaderId2 = System.currentTimeMillis();
-			System.out.println(templateLineDetails);
+			System.out.println("templateLineDetails = "+templateLineDetails);
 			ltTemplateDto.setTemplateHeaderId(getAllTemplateHeaders.getTemplateHeaderId());
 			ltTemplateDto.setDistributorId(getAllTemplateHeaders.getDistributorId());
 			ltTemplateDto.setStatus(getAllTemplateHeaders.getStatus());
@@ -509,8 +509,11 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
                 if(mrpList2.size()> 1) {
                 	//product.setAvailableQuantity(mrpList2.get(0).getAvailableQuantity());
                 	product.setAvailableQuantity(mrpList2.get(0).getInventoryQuantity());
+                }else {
+                	product.setAvailableQuantity(product.getInventoryQuantity());
                 }
-                product.setAvailableQuantity(mrpList2.get(0).getInventoryQuantity());
+                //product.setAvailableQuantity(mrpList2.get(0).getInventoryQuantity());
+                
                 System.out.println("mrpList2 is = "+mrpList2);
             }
 			
@@ -552,8 +555,7 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		return status;	
-	
+		return status;		
 	}
 
 	

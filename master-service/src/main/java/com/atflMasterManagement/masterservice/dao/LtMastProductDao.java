@@ -73,4 +73,12 @@ public interface LtMastProductDao {
 	
 	public Long getProductCountFromProcedure() throws ServiceException, IOException;
 
+	public List<ProductDto> getInstockProductsForSysAdminTemplate(RequestDto requestDto)throws ServiceException, IOException;
+	//public Long<ProductDto> getInstockProductsForSysAdminTemplateCount(RequestDto requestDto)throws ServiceException, IOException;
+
+	public List<ProductDto> getOutOfStockProductsForSysAdminTemplate(RequestDto requestDto)throws ServiceException, IOException;
+
+	public List<ProductDto> getInStockProductWithInventoryHardCode(RequestDto requestDto)throws ServiceException, IOException;
+
+
 }

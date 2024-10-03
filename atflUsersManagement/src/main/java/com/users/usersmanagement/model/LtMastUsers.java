@@ -200,7 +200,60 @@ public class LtMastUsers extends BaseClass {
 	@Transient
 	private String positionId;
 	
+	@Transient
+	private String rowId;
+	@Transient
+	private String areaHeadName;
+	@Transient
+	private String positionName;
+	@Transient
+	private String locationName;
+	@Transient
+	private String area;
 	
+	
+	
+	
+	public String getRowId() {
+		return rowId;
+	}
+
+	public void setRowId(String rowId) {
+		this.rowId = rowId;
+	}
+
+	public String getAreaHeadName() {
+		return areaHeadName;
+	}
+
+	public void setAreaHeadName(String areaHeadName) {
+		this.areaHeadName = areaHeadName;
+	}
+
+	public String getPositionName() {
+		return positionName;
+	}
+
+	public void setPositionName(String positionName) {
+		this.positionName = positionName;
+	}
+
+	public String getLocationName() {
+		return locationName;
+	}
+
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
+	}
+
 	public Optional<Integer> getLatitud() {
 		return latitud;
 	}
@@ -590,12 +643,14 @@ public class LtMastUsers extends BaseClass {
 				+ distributorAddress + ", employeeId=" + employeeId + ", empName=" + empName + ", empCode=" + empCode
 				+ ", organisationCode=" + organisationCode + ", organisationName=" + organisationName + ", outletName="
 				+ outletName + ", outletCode=" + outletCode + ", outletAddress=" + outletAddress + ", proprietorName="
-				+ proprietorName + ", orgStatus=" + orgStatus + ", position=" + position + ", territory=" + territory
-				+ ", inventoryLocationName=" + inventoryLocationName + ", priceList=" + priceList + ", recentSearchId="
-				+ recentSearchId + ", status=" + status + ", latitud=" + latitud + ", longitud=" + longitud
-				+ ", address=" + address + ", homephNum=" + homephNum + ", asstOPhNum=" + asstOPhNum + ", positionId="
-				+ positionId + "]";
+				+ proprietorName + ", orgStatus=" + orgStatus + ", position=" + position + ", inventoryLocationName="
+				+ inventoryLocationName + ", priceList=" + priceList + ", recentSearchId=" + recentSearchId
+				+ ", status=" + status + ", latitud=" + latitud + ", longitud=" + longitud + ", address=" + address
+				+ ", homephNum=" + homephNum + ", asstOPhNum=" + asstOPhNum + ", positionId=" + positionId + ", rowId="
+				+ rowId + ", areaHeadName=" + areaHeadName + ", positionName=" + positionName + ", locationName="
+				+ locationName + ", area=" + area + "]";
 	}
+
 	
 	
 }

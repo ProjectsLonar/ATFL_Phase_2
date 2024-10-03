@@ -40,9 +40,14 @@ public interface LtMastOutletDao {
 	public LtMastOutletsDump getOutletToChangeStatus(String distributorId,String orgId,String primaryMobile)throws ServiceException, IOException;
 	
 	public LtMastUsers getSystemAdministartorDetails(String orgId) throws ServiceException, IOException;
+	public List<LtMastUsers> getSystemAdministartorsDetails(String orgId) throws ServiceException, IOException;
 	
 	public List<LtMastUsers> getAllSalesOfficerAgainstDist(String distributorId,String orgId)throws ServiceException, IOException;
-
+	
+	public List<LtMastUsers> getAllAreaHeadAgainstDist(String distributorId)throws ServiceException, IOException;
+	
+	public List<LtMastUsers> getAllSalesOfficersAgainstDist(String distributorId)throws ServiceException, IOException;
+	
 	//public BeatDetailsDto getBeatDetailsAgainsDistirbutorCodeAndBeatName(String distributorCode, String beatName)throws ServiceException, IOException;
 	public BeatDetailsDto getBeatDetailsAgainsDistirbutorCodeAndBeatName(BeatDetailsDto beatDetailsDto)throws ServiceException, IOException;
 
@@ -70,5 +75,7 @@ public interface LtMastOutletDao {
 	public String getUserNameAgainsUserId(Long createdBy)throws ServiceException, IOException;
 
 	public String getPriceListId(String priceList)throws ServiceException, IOException;
+
+	public Long getUserIdFromMobileNo(String mobileNumber)throws ServiceException, IOException;
 
 }

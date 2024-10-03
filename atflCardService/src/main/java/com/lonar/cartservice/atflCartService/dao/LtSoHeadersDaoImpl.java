@@ -2953,6 +2953,95 @@ System.out.println("Query is "+query);
 		    }
 		return null;
 	}
+
+	@Override
+	public String getPriceListId(String priceList) throws ServiceException, IOException {
+		String query = env.getProperty("getPriceListId");
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		String	priceListId = null;
+		try {
+			priceListId = consumeApiService.consumeApiForString(query, new Object[] {priceList});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} //if(priceListId!=null)
+		return priceListId;
+		
+	}
 	
+	@Override
+	public String findDistributorIdAgainstOutletId(String outletId) throws ServiceException, IOException {
+		String distId;
+		String sql = env.getProperty("findDistributorIdAgainstOutletId");
+		distId = jdbcTemplate.queryForObject(sql, new Object[] { outletId }, String.class);
+		return distId;
+	}
+	
+	@Override
+	public List<LtMastUsers> getAllAreaHeadAgainstDist(String distributorId)throws ServiceException, IOException{
+		String query = env.getProperty("getAllAreaHeadAgainstDist");
+		List<LtMastUsers> ltMastUserslist = jdbcTemplate.query(query,
+				new Object[] {distributorId },
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+
+		if (!ltMastUserslist.isEmpty()) {
+			return ltMastUserslist;
+		}else {
+			return null;
+		}
+	}
+	
+	@Override
+	public List<LtMastUsers> getSystemAdministartorsDetails(String orgId) throws ServiceException, IOException{
+		String query = env.getProperty("getSystemAdministartorDetails");
+		List<LtMastUsers> ltMastUserslist = jdbcTemplate.query(query,
+				new Object[] { orgId},
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+
+		if (!ltMastUserslist.isEmpty()) {
+			return ltMastUserslist;
+		}else {
+			return null;
+		}
+	}
+	
+	@Override
+	public List<LtMastUsers> getAllSalesOfficersAgainstDist(String distributorId)throws ServiceException, IOException{
+		String query = env.getProperty("getAllSalesOfficersAgainstDist");
+		List<LtMastUsers> ltMastUserslist = jdbcTemplate.query(query,
+				new Object[] {distributorId },
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+
+		if (!ltMastUserslist.isEmpty()) {
+			return ltMastUserslist;
+		}else {
+			return null;
+		}
+	}
+	
+	@Override
+	public Long getUserIdFromMobileNo(String mobileNumber) throws ServiceException, IOException {
+		
+		String query = env.getProperty("getUserIdFromMobileNo");
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		Long userId =0L;
+//		Long userId = jdbcTemplate.queryForObject(query,new Object[] {mobileNumber}, Long.class);
+		System.out.println("Notification query == " +query+mobileNumber);
+		if(mobileNumber!= null) {
+		try {
+			userId = consumeApiService.consumeApiForCount(query, 
+					new Object[] { mobileNumber });
+			if(userId!= null) {
+			return userId;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+		return null;
+	}
 }
 	

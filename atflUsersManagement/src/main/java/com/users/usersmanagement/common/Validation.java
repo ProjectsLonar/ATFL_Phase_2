@@ -9,7 +9,7 @@ import java.util.GregorianCalendar;
 
 public class Validation {
 	public static boolean validatePhoneNumber(String phoneNo) {
-		if (phoneNo.matches("^[6-9]\\d{9}$"))
+		if (phoneNo.matches("^[1-9]\\d{9}$"))
 		return true;
 		return false;
 	}

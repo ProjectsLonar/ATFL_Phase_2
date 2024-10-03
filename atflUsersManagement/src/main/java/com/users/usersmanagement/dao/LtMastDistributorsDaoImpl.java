@@ -131,6 +131,7 @@ public class LtMastDistributorsDaoImpl implements LtMastDistributorsDao {
 		List<NotificationDetails> notificationList = jdbcTemplate.query(query,
 				new Object[] {requestDto.getDistributorId(),requestDto.getUserId(),searchField,
 						requestDto.getDistributorId(),requestDto.getUserId(),searchField,
+						requestDto.getUserId(),searchField,requestDto.getUserId(),searchField,
 						requestDto.getLimit(),requestDto.getOffset() },
 				new BeanPropertyRowMapper<NotificationDetails>(NotificationDetails.class));
 		if (!notificationList.isEmpty()) {

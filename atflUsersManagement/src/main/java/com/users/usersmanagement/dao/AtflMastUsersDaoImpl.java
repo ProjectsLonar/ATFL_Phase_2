@@ -218,8 +218,11 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 //							requestDto.getLimit(), requestDto.getOffset() },
 //					new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
 
+			System.out.println("query =  "+query);
+			
 			ltMastOutletslist = consumeApiService.consumeApi(query, 
-					new Object[] { requestDto.getOrgId(), requestDto.getDistributorId(), requestDto.getOutletId(),
+					new Object[] { requestDto.getOrgId(), requestDto.getOrgId() ,//requestDto.getDistributorId(), 
+							requestDto.getOutletId(),
 							requestDto.getStatus(), requestDto.getUserType(), userName,
 							//requestDto.getSalesPersonId(), 
 							userId ,

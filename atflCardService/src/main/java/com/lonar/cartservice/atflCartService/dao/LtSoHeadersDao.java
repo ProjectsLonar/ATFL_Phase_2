@@ -134,7 +134,18 @@ public interface LtSoHeadersDao {
 	List<ResponseDto> getMrpForMultipleProductV1(String prodId, String distributorId)throws ServiceException, IOException;
 
 	List<ResponseDto> getMultiMrpAndInventQtyForProd(String ids, String distributorId)throws ServiceException, IOException;
-	
+
+	String getPriceListId(String priceList)throws ServiceException, IOException;
+
+	String findDistributorIdAgainstOutletId(String outletId)throws ServiceException, IOException;
+
+	List<LtMastUsers> getAllAreaHeadAgainstDist(String distributorId)throws ServiceException, IOException;
+
+	List<LtMastUsers> getSystemAdministartorsDetails(String orgId)throws ServiceException, IOException;
+
+	List<LtMastUsers> getAllSalesOfficersAgainstDist(String distributorId)throws ServiceException, IOException;
+
+	public Long getUserIdFromMobileNo(String mobileNumber)throws ServiceException, IOException;	
 	
 
 }

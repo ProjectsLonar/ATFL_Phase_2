@@ -21,7 +21,7 @@ public class LtOutletDto {
 	String country;
 	String state;
 	String city;
-	String pin_code;
+	String pinCode;
 	String region;
 	String area;
 	String territory;
@@ -54,8 +54,15 @@ public class LtOutletDto {
 	String employeeCode;
 	Long userId;
 	
+	String pin_code;
 	
 	
+	public String getPin_code() {
+		return pinCode;
+	}
+	public void setPin_code(String pin_code) {
+		this.pin_code = pinCode;
+	}
 	public String getOutletId() {
 		return outletId;
 	}
@@ -140,11 +147,12 @@ public class LtOutletDto {
 	public void setCity(String city) {
 		this.city = city;
 	}
-	public String getPin_code() {
-		return pin_code;
+	
+	public String getPinCode() {
+		return pinCode;
 	}
-	public void setPin_code(String pin_code) {
-		this.pin_code = pin_code;
+	public void setPinCode(String pinCode) {
+		this.pinCode = pinCode;
 	}
 	public String getRegion() {
 		return region;
@@ -328,7 +336,7 @@ public class LtOutletDto {
 				+ ", outletType=" + outletType + ", outletName=" + outletName + ", proprietorName=" + proprietorName
 				+ ", outletAddress=" + outletAddress + ", address2=" + address2 + ", address3=" + address3
 				+ ", address4=" + address4 + ", landmark=" + landmark + ", country=" + country + ", state=" + state
-				+ ", city=" + city + ", pin_code=" + pin_code + ", region=" + region + ", area=" + area + ", territory="
+				+ ", city=" + city + ", pinCode=" + pinCode + ", region=" + region + ", area=" + area + ", territory="
 				+ territory + ", outletGstn=" + outletGstn + ", phone=" + phone + ", email=" + email
 				+ ", primaryMobile=" + primaryMobile + ", beatName=" + beatName + ", status=" + status + ", startDate="
 				+ startDate + ", endDate=" + endDate + ", createdBy=" + createdBy + ", priceList=" + priceList
@@ -337,8 +345,9 @@ public class LtOutletDto {
 				+ ", outletPan=" + outletPan + ", licenceNo=" + licenceNo + ", distributorCode=" + distributorCode
 				+ ", distributorCrmCode=" + distributorCrmCode + ", distributorStatus=" + distributorStatus
 				+ ", distributorName=" + distributorName + ", employeeId=" + employeeId + ", empName=" + empName
-				+ ", employeeCode=" + employeeCode + ", userId=" + userId + "]";
+				+ ", employeeCode=" + employeeCode + ", userId=" + userId + ", pin_code=" + pin_code + "]";
 	}
+	
 	
 	
 }

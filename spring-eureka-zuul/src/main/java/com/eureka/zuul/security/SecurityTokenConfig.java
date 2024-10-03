@@ -127,6 +127,8 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/master" + "/products" + "/getInStockProduct/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER","SYSTEMADMINISTRATOR")
 				.antMatchers("/master" + "/products" + "/getInStockProductV1/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER","SYSTEMADMINISTRATOR")
 				.antMatchers("/master" + "/products" + "/getInStockProductV2/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER","SYSTEMADMINISTRATOR")
+				.antMatchers("/master" + "/products" + "/getInstockProductsForSysAdminTemplate/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER","SYSTEMADMINISTRATOR")
+				.antMatchers("/master" + "/products" + "/getOutOfStockProductsForSysAdminTemplate/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER","SYSTEMADMINISTRATOR") 
 				
 				.antMatchers("/master" + "/products" + "/getOutOfStockProduct/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER", "SYSTEMADMINISTRATOR")
 				.antMatchers("/master" + "/products" + "/getOutOfStockProductV2/**").hasAnyRole( "DISTRIBUTOR", "ADMIN", "SALES","RETAILER","SUPERADMIN","SALESOFFICER","AREAHEAD", "ORGANIZATION_USER","SYSTEMADMINISTRATOR")

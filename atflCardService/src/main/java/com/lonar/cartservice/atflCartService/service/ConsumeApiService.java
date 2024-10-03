@@ -29,7 +29,8 @@ public class ConsumeApiService {
 
         // Convert the Object[] to JSON string
         String jsonBody = objectMapper.writeValueAsString(body);
-
+        System.out.println("jsonBody is ="+jsonBody);
+        System.out.println("query is ="+query);
         // Build the URI
         //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery; // this is for uat server
         String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;  // this is for local

@@ -191,7 +191,7 @@ public class ConsumeApiService {
  //       System.out.println("apiRequestBody for count is = "+ jsonBody);
 
         // Build the URI
-            //String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithRequestBody";
+           //String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithRequestBody";
            String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithRequestBody"; 
         
         // Create HttpPost request

@@ -1,6 +1,8 @@
 package com.users.usersmanagement.controller;
 
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -13,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.users.usersmanagement.common.ServiceException;
+import com.users.usersmanagement.dao.LtMastOutletDao;
 import com.users.usersmanagement.model.LtMastOutletsDump;
 import com.users.usersmanagement.model.LtMastUsers;
 import com.users.usersmanagement.model.NotificationDetails;
@@ -29,6 +33,11 @@ public class WebController {
 	@Autowired
 	NotificationDetailsRepository notificationDetailsRepository;
 
+	@Autowired
+	private LtMastOutletDao ltMastOutletDao;
+	
+	Long userId = 0L;
+	
 	//@RequestMapping(value = "/send", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<String> send(LtMastUsers ltMastUsers, LtMastUsers pendingAppUsers) throws JSONException {
 		
@@ -96,10 +105,22 @@ public class WebController {
 		
 		JSONObject body = new JSONObject();
 		//body.put("to", "/topics/" + TOPIC);
-		body.put("to", ltMastUsers.getToken());
+		//body.put("to", ltMastUsers.getToken()); original code comment on 26-Sep-2024
+		body.put("to", ltMastUsers.getMobileNumber());
 		body.put("collapse_key", "type_a");
 		//body.put("priority", "high");
-
+		
+		try {
+			userId = ltMastOutletDao.getUserIdFromMobileNo(ltMastUsers.getMobileNumber());
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		String pendingOutletName = "";
 		String pendingOutletType = "";
 		if(ltMastOutletsDump.getOutletName() != null) {
@@ -115,7 +136,8 @@ public class WebController {
 		
 		JSONObject data = new JSONObject();
 		data.put("objectType", "retailer");
-		data.put("userId",  ltMastOutletsDump.getUserId()); 
+		//data.put("userId",  ltMastOutletsDump.getUserId()); original code comment on 26-sep-2024 bcz venkat query not have userid 
+		data.put("userId", userId);
 		data.put("outletName",  ltMastOutletsDump.getOutletName());
 		//data.put("outletType",  ltMastOutletsDump.getOutletType());
 		data.put("outletId",  ltMastOutletsDump.getOutletId());
@@ -149,7 +171,8 @@ public class WebController {
 	private void saveNotificationDetailsForOutletApproval(LtMastUsers ltMastUsers,JSONObject data,JSONObject notificationTitle) {
 		NotificationDetails notification = new NotificationDetails();
 		notification.setReadFlag("N");
-		notification.setUserId(ltMastUsers.getUserId());  // Pass PENDINGAPPROVAL status user id
+		//notification.setUserId(ltMastUsers.getUserId());  // Pass PENDINGAPPROVAL status user id  //original code comment on 26-sep-2024 bcz venkat query not have userid
+		notification.setUserId(userId);
 		notification.setTokenId(ltMastUsers.getToken());   // Token Pass
 		notification.setNotificationTitle(notificationTitle.toString());
 		notification.setNotificationBody(data.toJSONString());

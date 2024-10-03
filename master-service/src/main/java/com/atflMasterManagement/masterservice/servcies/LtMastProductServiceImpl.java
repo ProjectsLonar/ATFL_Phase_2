@@ -729,6 +729,7 @@ end of original working code */
  
 		if(userType.equalsIgnoreCase(SALESOFFICER)||userType.equalsIgnoreCase(AREAHEAD) 
 				||userType.equalsIgnoreCase("ORGANIZATION_USER")) {
+			Long productCount = 0L;
 			System.out.println("Hi in prodAdmin query");
 			inQuerygetInStockProductAdmin = System.currentTimeMillis();
 			System.out.println("Above getInStockProductAdmin query call at = "+LocalDateTime.now());
@@ -737,7 +738,7 @@ end of original working code */
 			outQuerygetInStockProductAdmin = System.currentTimeMillis();
 			System.out.println("Above getInStockProductCountForAdmin query call at = "+LocalDateTime.now());
 			inQuerygetInStockProductCountForAdmin = System.currentTimeMillis();
-			Long productCount = ltMastProductDao.getInStockProductCountForAdmin(requestDto);
+			productCount = ltMastProductDao.getInStockProductCountForAdmin(requestDto);
 			outQuerygetInStockProductCountForAdmin = System.currentTimeMillis();
 			System.out.println("Below getInStockProductCountForAdmin query call at = "+LocalDateTime.now());
 			
@@ -745,21 +746,77 @@ end of original working code */
 				status.setCode(RECORD_FOUND);
 				status.setData(list);
 				status.setRecordCount(productCount);
+				status.setTotalCount(productCount);
 			}else {
 				status.setCode(RECORD_NOT_FOUND);
 			}
 			
-		}/*else if(userType.equalsIgnoreCase(AREAHEAD)){
-			List<ProductDto> list = ltMastProductDao.getInStockProductForAreaHead(requestDto);
-			Long productCount = ltMastProductDao.getInStockProductCountForAdmin(requestDto);
-			if(!list.isEmpty()) {
+		}else if(userType.equalsIgnoreCase("SYSTEMADMINISTRATOR")){		
+			Long productCount = 0L;
+			List<ProductDto> list = new ArrayList<>();
+		 list = ltMastProductDao.getInStockProductWithInventoryHardCode(requestDto);
+		 productCount = ltMastProductDao.getInStockProductCountWithInventory(requestDto);
+		 List<String> prodIdList = new ArrayList<>();
+			List<ProductDto> mrpList = new ArrayList<>();
+			if (list != null) {
+				List<ProductDto> productDtoList = new ArrayList<ProductDto>();
+				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+					
+					ProductDto productDto = (ProductDto) iterator.next();
+					
+					if(productDto.getPtrFlag().equalsIgnoreCase("Y")) {
+					//	productDto.setPtrPrice(productDto.getListPrice());
+						productDto.setPtrPrice(productDto.getPtrPrice());
+					}
+					
+					if(productDto.getInventoryQuantity() !=null) {
+					}else {
+						productDto.setInventoryQuantity("0");
+					}
+					
+					productDto.setProductId(productDto.getProductId());
+					prodIdList.add(productDto.getProductId());
+					productDtoList.add(productDto);
+				}
+				
+				String ids = prodIdList.stream().map(id ->"'"+ id +"'").collect(Collectors.joining(", "));
+				System.out.println("prodIdList = "+ prodIdList);
+				inQuerygetMultipleMrpForProductV1 = System.currentTimeMillis();
+				System.out.println("before for getMultipleMrpForProductV1 query call = "+ LocalDateTime.now());
+				mrpList = ltMastProductDao.getMultipleMrpForProductV1(ids, requestDto.getDistId());
+				System.out.println("after for getMultipleMrpForProductV1 query call = "+ LocalDateTime.now());
+				outQuerygetMultipleMrpForProductV1 = System.currentTimeMillis();
+				System.out.println("before for loop of mrp2 = "+ LocalDateTime.now());
+				for (ProductDto product : productDtoList) {
+	                // Initialize MRP1 list if it is null
+	                if (product.getMRP1() == null) {
+	                    product.setMRP1(new ArrayList<>());
+	                }
+	                List<ProductDto>mrpList2 = mrpList.stream().filter(x-> x.getProductId().equalsIgnoreCase(product.getProductId())).collect(Collectors.toList());
+                 
+	                product.setMRP2(mrpList2);
+	            }
+//			if(requestDto.getOutletId()== null) {
+//				list = ltMastProductDao.getInstockProductsForSysAdminTemplate(requestDto);
+//				productCount = ltMastProductDao.getInStockProductCountForAdmin(requestDto);
+//
+//			}else if(requestDto.getOutletId()!= null) {
+//				list = ltMastProductDao.getInStockProductWithInventory(requestDto);
+//				
+//				productCount = ltMastProductDao.getInStockProductCountWithInventory(requestDto);
+//				if(list==null) {
+//					list = ltMastProductDao.getInStockProductAdmin(requestDto);
+//					productCount = ltMastProductDao.getInStockProductCountForAdmin(requestDto);
+//				}
+//			}
+				if(!list.isEmpty()) {
 				status.setCode(RECORD_FOUND);
 				status.setData(list);
 				status.setRecordCount(productCount);
 			}else {
 				status.setCode(RECORD_NOT_FOUND);
 			}
-		}*/
+		}}
 		else {
 			inQuerygetMultipleMrpForProduct = System.currentTimeMillis();
 			outQuerygetMultipleMrpForProduct = System.currentTimeMillis();
@@ -1667,6 +1724,95 @@ end of original working code */
         timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
         status.setTimeDifference(timeDifference);
 		return status;
+	}
+
+	@Override
+	public Status getInstockProductsForSysAdminTemplate(RequestDto requestDto) {
+		
+		Status status = new Status();
+		Map<String,String> timeDifference = new HashMap<>();
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetInStockProductAdmin = 0;
+		long outQuerygetInStockProductAdmin = 0;
+		long inQuerygetInStockProductCountForAdmin = 0;
+		long outQuerygetInStockProductCountForAdmin = 0;
+		try {	
+		if(requestDto!= null) {			
+			System.out.println("Hi in prodAdmin query");
+			inQuerygetInStockProductAdmin = System.currentTimeMillis();
+			System.out.println("Above getInStockProductAdmin query call at = "+LocalDateTime.now());
+			List<ProductDto> list = ltMastProductDao.getInstockProductsForSysAdminTemplate(requestDto);
+			System.out.println("Below getInStockProductAdmin query call at = "+LocalDateTime.now());
+			outQuerygetInStockProductAdmin = System.currentTimeMillis();
+			System.out.println("Above getInStockProductCountForAdmin query call at = "+LocalDateTime.now());
+			inQuerygetInStockProductCountForAdmin = System.currentTimeMillis();
+			Long productCount = ltMastProductDao.getInStockProductCountForAdmin(requestDto);
+			outQuerygetInStockProductCountForAdmin = System.currentTimeMillis();
+			System.out.println("Below getInStockProductCountForAdmin query call at = "+LocalDateTime.now());
+			
+			if(!list.isEmpty()) {
+				status.setCode(RECORD_FOUND);
+				status.setData(list);
+				status.setRecordCount(productCount);
+			}else {
+				status.setCode(RECORD_NOT_FOUND);
+				status.setData(null);
+			}			
+		}
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			System.out.println("In exception....");
+		}
+		timeDifference.put("getInStockProductAdmin", timeDiff(inQuerygetInStockProductAdmin,outQuerygetInStockProductAdmin));
+		timeDifference.put("getInStockProductCountForAdmin", timeDiff(inQuerygetInStockProductCountForAdmin,outQuerygetInStockProductCountForAdmin));
+		long methodOut = System.currentTimeMillis();
+		//System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+        status.setTimeDifference(timeDifference);
+		return status;
+	
+	}
+
+	@Override
+	public Status getOutOfStockProductsForSysAdminTemplate(RequestDto requestDto) throws ServiceException, IOException {
+		long methodIn = System.currentTimeMillis();
+		long inQuerygetOutOfStockProductsForSysAdminTemplate = 0;
+		long outQuerygetOutOfStockProductsForSysAdminTemplate = 0;
+		long inQuerygetOutOfStockProductCountForAdmin = 0;
+		long outQuerygetOutOfStockProductCountForAdmin = 0;
+		Status status = new Status();
+		Map<String,String> timeDifference = new HashMap<>();
+		try {
+		if(requestDto!= null){
+			System.out.print("Hi in prodAdmin query");
+			inQuerygetOutOfStockProductsForSysAdminTemplate = System.currentTimeMillis();
+			List<ProductDto> list = ltMastProductDao.getOutOfStockProductsForSysAdminTemplate(requestDto);
+			outQuerygetOutOfStockProductsForSysAdminTemplate = System.currentTimeMillis();
+			inQuerygetOutOfStockProductCountForAdmin = System.currentTimeMillis();
+			Long productCount = ltMastProductDao.getOutOfStockProductCountForAdmin(requestDto);
+			outQuerygetOutOfStockProductCountForAdmin = System.currentTimeMillis();
+			if(!list.isEmpty()) {
+				status.setCode(RECORD_FOUND);
+				status.setData(list);
+				status.setRecordCount(productCount);
+			}else {
+				status.setCode(RECORD_NOT_FOUND);
+				status.setData(null);
+			}
+			
+		}
+	}catch(Exception ex) {
+		ex.printStackTrace();
+		System.out.println("In exception....");
+	}
+	timeDifference.put("getInStockProductAdmin", timeDiff(inQuerygetOutOfStockProductsForSysAdminTemplate,outQuerygetOutOfStockProductsForSysAdminTemplate));
+	timeDifference.put("getInStockProductCountForAdmin", timeDiff(inQuerygetOutOfStockProductCountForAdmin,outQuerygetOutOfStockProductCountForAdmin));
+	long methodOut = System.currentTimeMillis();
+	//System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+    timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
+    status.setTimeDifference(timeDifference);
+	return status;
+
 	}
 	
 }

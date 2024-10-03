@@ -198,6 +198,19 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 		}
 		return null;
 	}
+	
+	@Override
+	public List<LtTemplateLines> getProductDetailsAgainstheaderId2(String DistributorID ,Long templateHeaderId, String priceList)throws ServerException{
+		String query = env.getProperty("getProductDetailsAgainstheaderId2");
+		List<LtTemplateLines> templateproductlist = jdbcTemplate.query(query,
+				new Object[] {DistributorID,templateHeaderId, priceList},
+				new BeanPropertyRowMapper<LtTemplateLines>(LtTemplateLines.class));
+		if (!templateproductlist.isEmpty()) {
+			return templateproductlist;
+		}
+		return null;
+	}
+	
 	@Override
 	public LtTemplateHeaders getAllTemplateAgainstDistributors(String distId) throws ServerException {
 		String query = env.getProperty("getTemplateAgainstDistributors");

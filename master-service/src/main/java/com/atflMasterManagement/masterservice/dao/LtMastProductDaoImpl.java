@@ -929,6 +929,182 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 		return productCount;
 	}
 
+	@Override
+	public List<ProductDto> getInstockProductsForSysAdminTemplate(RequestDto requestDto)
+			throws ServiceException, IOException {
+		try {
+			System.out.println("In dao getInStockProduct");
+			String query = env.getProperty("getInstockProductsForSysAdminTemplate");
+			
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
+
+			String searchField = null;
+			if (requestDto.getSearchField() != null) {
+				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+			}else {
+				searchField="";
+			}
+                 System.out.println(query);
+//			List<ProductDto> productsList = jdbcTemplate.query(query,
+//					new Object[] {requestDto.getProductId(), requestDto.getCategoryId(),
+//							 searchField,//requestDto.getOrgId(), 
+//							 requestDto.getLimit(), requestDto.getOffset() },
+//					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+                
+                 List<ProductDto> productsList = new ArrayList<>();
+     			ConsumeApiService consumeApiService = new ConsumeApiService();
+
+                 try {
+                	 productsList = consumeApiService.consumeApi(query, 
+         					new Object[] { requestDto.getProductId(), requestDto.getCategoryId(),
+       							 searchField,//requestDto.getOrgId(), 
+       							 requestDto.getLimit(), requestDto.getOffset() }, 
+         					ProductDto.class);
+         		} catch (IOException e) {
+         			// TODO Auto-generated catch block
+         			e.printStackTrace();
+         		} catch (InterruptedException e) {
+         			// TODO Auto-generated catch block
+         			e.printStackTrace();
+         		}
+         	     
+                 if (!productsList.isEmpty()) {
+				return productsList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<ProductDto> getOutOfStockProductsForSysAdminTemplate(RequestDto requestDto)
+			throws ServiceException, IOException {
+		List<ProductDto> productsList =  new ArrayList<>();
+		ConsumeApiService consumeApiService =  new ConsumeApiService();
+		try {
+			String query = env.getProperty("getOutOfStockProductsForSysAdminTemplate");
+			
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
+
+			String searchField = null;
+			if (requestDto.getSearchField() != null) {
+				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+			}
+                 System.out.println(query);                 
+                 try {
+                	 productsList = consumeApiService.consumeApi(query, 
+                			 new Object[] {requestDto.getProductId(), requestDto.getCategoryId(),
+        							 searchField, 
+        							 requestDto.getLimit(), requestDto.getOffset() }, 
+                					 ProductDto.class);
+         		} catch (IOException e) {
+         			e.printStackTrace();
+         		} catch (InterruptedException e) {
+         			e.printStackTrace();
+         		}
+			if (!productsList.isEmpty()) {
+				return productsList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<ProductDto> getInStockProductWithInventoryHardCode(RequestDto requestDto) throws ServiceException, IOException {
+		try {
+			//System.out.println("In daoooo getInStockProduct");
+			String query = env.getProperty("getInStockProductWithInventoryHardCode");
+			
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
+
+			String searchField = null;
+			if (requestDto.getSearchField() != null) {
+				searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+			}else {
+				searchField="";
+			}
+			
+			//System.out.println("Input requestDto= "+requestDto);
+             // System.out.println(query);
+//			List<ProductDto> productsList = jdbcTemplate.query(query,
+//					new Object[] { //requestDto.getOrgId(), 
+//							requestDto.getProductId(), 
+//							requestDto.getCategoryId(),
+//							searchField,requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() },
+//					new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
+			
+              List<ProductDto> productsList = new ArrayList<>();
+  			ConsumeApiService consumeApiService = new ConsumeApiService();
+                 String outletId="1-EEWE-159";
+                 System.out.println("query are = "+query+outletId);
+              try {
+            	  productsList = consumeApiService.consumeApiWithRequestBody(query, 
+      					new Object[] { //requestDto.getOrgId(), 
+    							requestDto.getProductId(), 
+    							requestDto.getCategoryId(),
+    							searchField, outletId, //requestDto.getOutletId(), 
+    							requestDto.getLimit(), requestDto.getOffset() }, 
+      					ProductDto.class);
+      		} catch (IOException e) {
+      			// TODO Auto-generated catch block
+      			e.printStackTrace();
+      		} catch (InterruptedException e) {
+      			// TODO Auto-generated catch block
+      			e.printStackTrace();
+      		}
+			
+			System.out.println("products dao is ======" +productsList);
+//			 return jdbcTemplate.query(query,new Object[] { requestDto.getOrgId(), requestDto.getProductId(), 
+//					 requestDto.getCategoryId(),searchField,requestDto.getOutletId(), requestDto.getLimit(), 
+//					 requestDto.getOffset()},
+//					new BeanPropertyRowMapper<ProductDto>(){
+//				 public ProductDto mapRow(ResultSet rs, int row) throws SQLException {    
+//					ProductDto e=new ProductDto();  
+//					
+//					 e.setInventoryCode(rs.getString("INVENTORY_CODE"));
+//					 System.out.println(rs.getString("INVENTORY_CODE"));
+//					 e.setProductId(rs.getString("PRODUCT_ID"));
+//					 System.out.println("1234="+rs.getString("productId"));
+//					 System.out.println("123="+rs.getString("PRODUCT_ID"));
+//					 System.out.print("ProductList " + e);
+//					 e.setOrgId(rs.getString("ORG_ID"));
+//					 e.setCategoryId(rs.getString("CATEGORY_ID"));
+//					 return e;
+//					 
+//			        }    
+//			    });    
+//			 
+					
+			if (!productsList.isEmpty()) {				return productsList;
+			}
+			System.out.println("products List is ======" +productsList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	
 }
 

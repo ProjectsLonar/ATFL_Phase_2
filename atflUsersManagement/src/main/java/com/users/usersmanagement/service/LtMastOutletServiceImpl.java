@@ -248,8 +248,9 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 	
 	private void sendEmail(LtMastOutletsDump ltMastOutletsDumpupdated) throws ServiceException, IOException {
 		
-		List<LtMastUsers> ltMastAllUsers = ltMastOutletDao.getAllSalesOfficerAgainstDist(ltMastOutletsDumpupdated.getDistributorId(),
-				ltMastOutletsDumpupdated.getOrgId());
+//		List<LtMastUsers> ltMastAllUsers = ltMastOutletDao.getAllSalesOfficerAgainstDist(ltMastOutletsDumpupdated.getDistributorId(),
+//				ltMastOutletsDumpupdated.getOrgId());this is old logic comment on 26-Sep-2024 bcz get new query from venkat
+		List<LtMastUsers> ltMastAllUsers = ltMastOutletDao.getAllAreaHeadAgainstDist(ltMastOutletsDumpupdated.getDistributorId());
 		
 		if(!ltMastAllUsers.isEmpty()) 
 		      {			
@@ -448,18 +449,62 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 			try {
 			LtMastOutletsDump ltMastOutletsDumpupdated = ltMastOutletDumpRepository.save(ltMastOutletsDump);
 			
-			LtMastUsers ltMastUsersSysAdmin = ltMastOutletDao.getSystemAdministartorDetails(ltMastOutletsDumpupdated.getOrgId());
+			System.out.println("ltMastUsers user = "+ltMastOutletsDumpupdated);
+//			LtMastUsers ltMastUsersSysAdmin = ltMastOutletDao.getSystemAdministartorDetails(ltMastOutletsDumpupdated.getOrgId()); this is for single sysadmin
+			List<LtMastUsers> ltMastUsersSysAdmin = ltMastOutletDao.getSystemAdministartorsDetails(ltMastOutletsDumpupdated.getOrgId());
+			
+			System.out.println("ltMastUsersSysAdmin user = "+ltMastUsersSysAdmin);
 			if(ltMastUsersSysAdmin!=null) {
-			webController.sendOutletApprovalNotification(ltMastUsersSysAdmin, ltMastOutletsDumpupdated);
+				System.out.println("Hi im in sysadmin notification"); 
+			
+				for(LtMastUsers user:ltMastUsersSysAdmin) {
+					System.out.println("user"+user);
+					if(user !=null) {
+					  CompletableFuture.runAsync(() -> {
+			                try {
+			                	webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated);
+			    				sendEmail(ltMastOutletsDumpupdated);
+			                } catch (Exception e) {
+			                    e.printStackTrace();
+			                }
+			            }, executor);
+						
+				}}
+				
+				//webController.sendOutletApprovalNotification(ltMastUsersSysAdmin, ltMastOutletsDumpupdated); for single sysAdmin
 			}
 			
 			if (ltMastOutletsDumpupdated != null) {
 				// send notification to mapped system administrator and sales officer
 				
-				List<LtMastUsers> ltMastUsers = ltMastOutletDao.getAllSalesOfficerAgainstDist(ltMastOutletsDumpupdated.getDistributorId(),
-						ltMastOutletsDumpupdated.getOrgId());
-				if(ltMastUsers !=null) {
-				for(LtMastUsers user:ltMastUsers) {
+///				List<LtMastUsers> ltMastUsers = ltMastOutletDao.getAllSalesOfficerAgainstDist(ltMastOutletsDumpupdated.getDistributorId(),
+//						ltMastOutletsDumpupdated.getOrgId()); this is old logic comment on 26-Sep-2024 bcz get new query from venkat
+				List<LtMastUsers> ltMastUsersAreaHead = ltMastOutletDao.getAllAreaHeadAgainstDist(ltMastOutletsDumpupdated.getDistributorId());
+				System.out.println("ltMastUsers user = "+ltMastUsersAreaHead);
+				if(ltMastUsersAreaHead !=null) {
+					System.out.println("Hi im in areahead notification"); 
+				for(LtMastUsers user:ltMastUsersAreaHead) {
+					System.out.println("user"+user);
+					if(user !=null) {
+				//webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated); this is original code
+				//sendEmail(ltMastOutletsDumpupdated);                                          this is original code    
+						CompletableFuture.runAsync(() -> {
+			                try {
+			                	webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated);
+			    				sendEmail(ltMastOutletsDumpupdated);
+			                } catch (Exception e) {
+			                    e.printStackTrace();
+			                }
+			            }, executor);
+						
+				}}
+				} 
+				
+				List<LtMastUsers> ltMastUsersSalesOfficers = ltMastOutletDao.getAllSalesOfficersAgainstDist(ltMastOutletsDumpupdated.getDistributorId());
+				System.out.println("ltMastUsers user = "+ltMastUsersSalesOfficers);
+				if(ltMastUsersSalesOfficers !=null) {
+					System.out.println("Hi im in salesOfficers notification"); 
+				for(LtMastUsers user:ltMastUsersSalesOfficers) {
 					System.out.println("user"+user);
 					if(user !=null) {
 				//webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated); this is original code
@@ -574,16 +619,38 @@ LtMastOutletsDump ltMastOutletsDump1 = new LtMastOutletsDump();
 			try {
 			LtMastOutletsDump ltMastOutletsDumpupdated = ltMastOutletDumpRepository.save(ltMastOutletsDump1);
 			
-			LtMastUsers ltMastUsersSysAdmin = ltMastOutletDao.getSystemAdministartorDetails(ltMastOutletsDumpupdated.getOrgId());
+//			LtMastUsers ltMastUsersSysAdmin = ltMastOutletDao.getSystemAdministartorDetails(ltMastOutletsDumpupdated.getOrgId());
+//			if(ltMastUsersSysAdmin!=null) {
+//			webController.sendOutletApprovalNotification(ltMastUsersSysAdmin, ltMastOutletsDumpupdated);
+//			}
+			
+            List<LtMastUsers> ltMastUsersSysAdmin = ltMastOutletDao.getSystemAdministartorsDetails(ltMastOutletsDumpupdated.getOrgId());
+			System.out.println("ltMastUsersSysAdmin user = "+ltMastUsersSysAdmin);
 			if(ltMastUsersSysAdmin!=null) {
-			webController.sendOutletApprovalNotification(ltMastUsersSysAdmin, ltMastOutletsDumpupdated);
+				System.out.println("Hi im in sysadmin notification"); 
+				for(LtMastUsers user:ltMastUsersSysAdmin) {
+					System.out.println("user"+user);
+					if(user !=null) {
+					  CompletableFuture.runAsync(() -> {
+			                try {
+			                	webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated);
+			    				sendEmail(ltMastOutletsDumpupdated);
+			                } catch (Exception e) {
+			                    e.printStackTrace();
+			                }
+			            }, executor);
+						
+				}}
+				
+				//webController.sendOutletApprovalNotification(ltMastUsersSysAdmin, ltMastOutletsDumpupdated); for single sysAdmin
 			}
 			
 			if (ltMastOutletsDumpupdated != null) {
 				// send notification to mapped system administrator and sales officer
 				
-				List<LtMastUsers> ltMastUsers = ltMastOutletDao.getAllSalesOfficerAgainstDist(ltMastOutletsDumpupdated.getDistributorId(),
-						ltMastOutletsDumpupdated.getOrgId());
+//				List<LtMastUsers> ltMastUsers = ltMastOutletDao.getAllSalesOfficerAgainstDist(ltMastOutletsDumpupdated.getDistributorId(),
+//						ltMastOutletsDumpupdated.getOrgId());  this is old logic comment on 26-Sep-2024 bcz get new query from venkat
+				List<LtMastUsers> ltMastUsers = ltMastOutletDao.getAllAreaHeadAgainstDist(ltMastOutletsDumpupdated.getDistributorId());
 				if(ltMastUsers !=null) {
 				for(LtMastUsers user:ltMastUsers) {
 					System.out.println("user"+user);
@@ -592,6 +659,27 @@ LtMastOutletsDump ltMastOutletsDump1 = new LtMastOutletsDump();
 				//sendEmail(ltMastOutletsDumpupdated);
 				}}
 				} 
+				
+				List<LtMastUsers> ltMastUsersSalesOfficers = ltMastOutletDao.getAllSalesOfficersAgainstDist(ltMastOutletsDumpupdated.getDistributorId());
+				System.out.println("ltMastUsers user = "+ltMastUsersSalesOfficers);
+				if(ltMastUsersSalesOfficers !=null) {
+					System.out.println("Hi im in salesOfficers notification"); 
+				for(LtMastUsers user:ltMastUsersSalesOfficers) {
+					System.out.println("user"+user);
+					if(user !=null) {
+				//webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated); this is original code
+				//sendEmail(ltMastOutletsDumpupdated);                                          this is original code    
+						CompletableFuture.runAsync(() -> {
+			                try {
+			                	webController.sendOutletApprovalNotification(user, ltMastOutletsDumpupdated);
+			    				sendEmail(ltMastOutletsDumpupdated);
+			                } catch (Exception e) {
+			                    e.printStackTrace();
+			                }
+			            }, executor);
+						
+				}}
+				}
 
 				status.setMessage("Send For approval.");
 				status.setData(ltMastOutletsDumpupdated);
@@ -605,7 +693,6 @@ LtMastOutletsDump ltMastOutletsDump1 = new LtMastOutletsDump();
 			    // Log the exception or handle it accordingly
 			    e.printStackTrace();
 			}
-			
 		
 		}
 		}

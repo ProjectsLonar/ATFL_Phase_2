@@ -33,6 +33,9 @@ public interface LtTemplateDao {
 	Long getAvailableQuantity(String distributorId, String productId)throws ServerException;
 
 	public List<LtTemplateLines> getMultipleMrpForTemplateProductV1(String prodId, String distId)throws ServiceException, IOException;
+
+	List<LtTemplateLines> getProductDetailsAgainstheaderId2(String distributorId, Long templateHeaderId,
+			String priceList)throws ServiceException, IOException;
 	
 	
 }

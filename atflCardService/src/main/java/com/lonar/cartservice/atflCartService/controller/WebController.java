@@ -1,5 +1,6 @@
 package com.lonar.cartservice.atflCartService.controller;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lonar.cartservice.atflCartService.common.ServiceException;
+import com.lonar.cartservice.atflCartService.dao.LtSoHeadersDao;
 import com.lonar.cartservice.atflCartService.model.LtMastUsers;
 import com.lonar.cartservice.atflCartService.model.LtSalesReturnHeader;
 import com.lonar.cartservice.atflCartService.model.LtSoHeaders;
@@ -33,7 +36,12 @@ public class WebController {
 	
 	@Autowired
 	NotificationDetailsRepository notificationDetailsRepository;
+	
+	@Autowired
+	LtSoHeadersDao ltSoHeadersDao;
 
+	Long userId = 0L;
+	
 	//@RequestMapping(value = "/send", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<String> send(LtMastUsers ltMastUsers, LtSoHeaders ltSoHeader
 			,String outletCode, String outletName ) throws JSONException {
@@ -54,16 +62,30 @@ public class WebController {
 		
 		JSONObject body = new JSONObject();
 		//body.put("to", "/topics/" + TOPIC);
-		body.put("to", ltMastUsers.getTokenData());
+		//body.put("to", ltMastUsers.getTokenData());  original code comment on 30-Sep-2024 bcz venkat query in use
+		body.put("to", ltMastUsers.getMobileNumber());
 		body.put("collapse_key", "type_a");
 		//body.put("priority", "high");
 
+		
+		try {
+			userId = ltSoHeadersDao.getUserIdFromMobileNo(ltMastUsers.getMobileNumber());
+			System.out.println("Notification userId == " +userId);
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		JSONObject notification = new JSONObject();
 		notification.put("title", "Pending approval");
 		notification.put("body", outletName +"( "+outletCode +")"+" has placed an "+orderType +" order "+orderNo+" and is pending for approval.");
 		
 		JSONObject data = new JSONObject();
 		data.put("objectType", "order");
+		data.put("userId", userId);
 		data.put("outletId", ltSoHeader.getOutletId());
 		data.put("outletName", outletName);
 		data.put("outletCode", outletCode);
@@ -73,13 +95,17 @@ public class WebController {
 		body.put("notification", notification);
 		body.put("data", data);
 		
+		CompletableFuture<String> pushNotification = null;
+		try {
 		saveNotificationDetails(ltMastUsers, data, notification);
 		
 		HttpEntity<String> request = new HttpEntity<>(body.toString());
-
-		CompletableFuture<String> pushNotification = androidPushNotificationsService.send(request);
+		
+		 pushNotification = androidPushNotificationsService.send(request);
 		CompletableFuture.allOf(pushNotification).join();
-
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		try {
 			String firebaseResponse = pushNotification.get();
 			
@@ -88,7 +114,7 @@ public class WebController {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
 			e.printStackTrace();
-		}
+		}System.out.println("Hi THis is notification catch block...+ pushNotification" + pushNotification);
 
 		return new ResponseEntity<>("Push Notification ERROR!", HttpStatus.BAD_REQUEST);
 	}
@@ -165,7 +191,8 @@ public ResponseEntity<String> sendSalesReturnNotification(LtSalesReturnHeader lt
 	private void saveNotificationDetails(LtMastUsers ltMastUsers, JSONObject data, JSONObject  notification) {
 		NotificationDetails notifictn  = new NotificationDetails();
 		notifictn.setReadFlag("N");
-		notifictn.setUserId(ltMastUsers.getUserId()); 
+//		notifictn.setUserId(ltMastUsers.getUserId()); // original code comment on 30-sep-2024 bcz venkat query not have userid
+		notifictn.setUserId(userId);
 		notifictn.setTokenId(ltMastUsers.getTokenData()); 
 		notifictn.setDistributorId(ltMastUsers.getDistributorId());
 		notifictn.setNotificationBody(data.toString());
