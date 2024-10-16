@@ -145,7 +145,19 @@ public interface LtSoHeadersDao {
 
 	List<LtMastUsers> getAllSalesOfficersAgainstDist(String distributorId)throws ServiceException, IOException;
 
-	public Long getUserIdFromMobileNo(String mobileNumber)throws ServiceException, IOException;	
+	public Long getUserIdFromMobileNo(String mobileNumber)throws ServiceException, IOException;
+
+	String getMobileNoFromOrderNo(String orderNumber)throws ServiceException, IOException;
+
+	List<String> getEmpCodeFromDistributorId(String distCode)throws ServiceException, IOException;
+
+	List<String> getDistributorIdFromAreaHead(String empcode)throws ServiceException, IOException;
+
+	List<Long> getSoHeaderRemovingPendingOrdersFromGetOrderV2ForAreaHead(RequestDto requestDto, String distIdList)throws ServiceException, IOException;
+	
+	List<String> getDistributorIdFromAreaHeadNew(String empcode)throws ServiceException, IOException;
+	
+//	String getDistIdFromOutletCode(String outletCode)throws ServiceException, IOException;	
 	
 
 }

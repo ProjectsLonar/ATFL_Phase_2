@@ -59,7 +59,7 @@ public class ResponseDto {
 	//private String PTR_PRICE;
 	private Date deliveryDate1;
 	private String ptrFlag;
-	private String linelistPrice;
+	private String lineListPrice;
 	private String linePtrPrice;
 	private String inventoryQuantity;
 	
@@ -259,8 +259,9 @@ public class ResponseDto {
 	public String getListPrice() {
 		return listPrice;
 	}
-	public void setListPrice(String listPrice) {
-		this.listPrice = listPrice;
+	public void setListPrice(String lineListPrice) {
+		//this.listPrice = listPrice;
+		this.listPrice = lineListPrice;
 	}
 	public String getPriceList() {
 		return priceList;
@@ -434,11 +435,11 @@ public class ResponseDto {
 	public void setProprietorName(String proprietorName) {
 		this.proprietorName = proprietorName;
 	}
-	public String getLinelistPrice() {
-		return linelistPrice;
+	public String getLineListPrice() {
+		return lineListPrice;
 	}
-	public void setLinelistPrice(String linelistPrice) {
-		this.linelistPrice = linelistPrice;
+	public void setLineListPrice(String lineListPrice) {
+		this.lineListPrice = lineListPrice;
 	}
 	public String getLinePtrPrice() {
 		return linePtrPrice;
@@ -616,8 +617,8 @@ public class ResponseDto {
 				+ siebelRemark + ", siebelInvoicenumber=" + siebelInvoicenumber + ", siebelJsonpayload="
 				+ siebelJsonpayload + ", lineId=" + lineId + ", productId=" + productId + ", quantity=" + quantity
 				+ ", productCode=" + productCode + ", productDesc=" + productDesc + ", productName=" + productName
-				+ ", listPrice=" + listPrice + ", priceList=" + priceList + ", ptrPrice=" + ptrPrice
-				+ ", deliveryDate1=" + deliveryDate1 + ", ptrFlag=" + ptrFlag + ", linelistPrice=" + linelistPrice
+				+ ", listPrice=" + lineListPrice + ", priceList=" + priceList + ", ptrPrice=" + ptrPrice
+				+ ", deliveryDate1=" + deliveryDate1 + ", ptrFlag=" + ptrFlag + ", linelistPrice=" + lineListPrice
 				+ ", linePtrPrice=" + linePtrPrice + ", inventoryQuantity=" + inventoryQuantity + ", orgId=" + orgId
 				+ ", categoryId=" + categoryId + ", productType=" + productType + ", category=" + category
 				+ ", subCategory=" + subCategory + ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom

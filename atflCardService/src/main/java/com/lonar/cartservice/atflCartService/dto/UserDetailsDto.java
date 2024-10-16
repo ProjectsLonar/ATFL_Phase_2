@@ -12,6 +12,16 @@ public class UserDetailsDto {
 	private String distributorId;
 	private Long userId;
 	private String positionId;
+	private String employeeCode;
+	
+
+	public String getEmployeeCode() {
+		return employeeCode;
+	}
+
+	public void setEmployeeCode(String employeeCode) {
+		this.employeeCode = employeeCode;
+	}
 
 	public String getUserType() {
 		return userType;
@@ -44,4 +54,13 @@ public class UserDetailsDto {
 	public void setPositionId(String positionId) {
 		this.positionId = positionId;
 	}
+
+	
+	@Override
+	public String toString() {
+		return "UserDetailsDto [userType=" + userType + ", distributorId=" + distributorId + ", userId=" + userId
+				+ ", positionId=" + positionId + ", employeeCode=" + employeeCode + "]";
+	}
+
+	
 }

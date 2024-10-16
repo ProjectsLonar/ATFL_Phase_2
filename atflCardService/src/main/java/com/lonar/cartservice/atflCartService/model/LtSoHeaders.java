@@ -84,8 +84,18 @@ public class LtSoHeaders extends BaseClass1{
 	@Column(name= "SIEBEL_JSONPAYLOAD")
 	private String siebelJsonpayload;
 	
-		
+	@Column(name= "DISTRIBUTOR_ID")
+	private String distributorId;	
 	
+	
+	public String getDistributorId() {
+		return distributorId;
+	}
+
+	public void setDistributorId(String distributorId) {
+		this.distributorId = distributorId;
+	}
+
 	public String getSiebelJsonpayload() {
 		return siebelJsonpayload;
 	}
@@ -243,7 +253,8 @@ public class LtSoHeaders extends BaseClass1{
 				+ latitude + ", longitude=" + longitude + ", remark=" + remark + ", customerId=" + customerId
 				+ ", userId=" + userId + ", inStockFlag=" + inStockFlag + ", beatId=" + beatId + ", priceList="
 				+ priceList + ", siebelInvoiceNumber=" + siebelInvoiceNumber + ", siebelStatus=" + siebelStatus
-				+ ", siebelRemark=" + siebelRemark + ", siebelJsonpayload=" + siebelJsonpayload + "]";
+				+ ", siebelRemark=" + siebelRemark + ", siebelJsonpayload=" + siebelJsonpayload + ", distributorId="
+				+ distributorId + "]";
 	}
 
 		

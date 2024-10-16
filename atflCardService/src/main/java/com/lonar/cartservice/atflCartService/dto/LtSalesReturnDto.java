@@ -38,7 +38,17 @@ public class LtSalesReturnDto {
 	String status;
 	
 	String mobileNumber;
+	String distributorId;
 	
+	
+	public String getDistributorId() {
+		return distributorId;
+	}
+
+	public void setDistributorId(String distributorId) {
+		this.distributorId = distributorId;
+	}
+
 	public String getMobileNumber() {
 		return mobileNumber;
 	}
@@ -250,7 +260,6 @@ public class LtSalesReturnDto {
 		this.beatName = beatName;
 	}
 
-	
 	@Override
 	public String toString() {
 		return "LtSalesReturnDto [salesReturnHeaderId=" + salesReturnHeaderId + ", salesReturnNumber="
@@ -260,8 +269,9 @@ public class LtSalesReturnDto {
 				+ outletName + ", outletCode=" + outletCode + ", userId=" + userId + ", totalSalesreturnAmount="
 				+ totalSalesreturnAmount + ", price=" + price + ", beatName=" + beatName + ", priceList=" + priceList
 				+ ", orderNumber=" + orderNumber + ", inventoryId=" + inventoryId + ", test=" + test + ", status="
-				+ status + ", mobileNumber=" + mobileNumber + ", ltSalesReturnLines=" + ltSalesReturnLines + "]";
+				+ status + ", mobileNumber=" + mobileNumber + ", distributorId=" + distributorId
+				+ ", ltSalesReturnLines=" + ltSalesReturnLines + "]";
 	}
 
-
+	
 }

@@ -1056,7 +1056,12 @@ public class LtMastProductDaoImpl implements LtMastProductDao, CodeMaster {
 			
               List<ProductDto> productsList = new ArrayList<>();
   			ConsumeApiService consumeApiService = new ConsumeApiService();
-                 String outletId="1-EEWE-159";
+  			String outletId="";
+  			if(requestDto.getOutletId().equalsIgnoreCase("") || requestDto.getOutletId()==null) {
+  				outletId = "1-EEWE-159";
+  			}else {
+  				outletId = requestDto.getOutletId();
+  			} 
                  System.out.println("query are = "+query+outletId);
               try {
             	  productsList = consumeApiService.consumeApiWithRequestBody(query, 

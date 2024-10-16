@@ -120,4 +120,13 @@ public interface LtSalesreturnDao {
 	List<LtSalesReturnLineDto> getSalesReturnLineData(List<Long> long1, RequestDto requestDto)throws ServerException;
 
 	List<LtMastUsers> getAllUsersForEmail(String outletId)throws ServerException;
+
+	String getMobileNoFromOrderNo(String orderNumber)throws ServerException;
+	
+	String findDistributorIdAgainstUser(Long createdBy)throws ServiceException, IOException;
+	
+	List<LtMastUsers> getAllAreaHeadAgainstDist(String distributorId)throws ServiceException, IOException;
+	List<LtMastUsers> getAllSalesOfficersAgainstDist(String distributorId)throws ServiceException, IOException;
+
+	String getMobileNoFromCreatedBy(Long createdBy)throws ServiceException, IOException;
 }

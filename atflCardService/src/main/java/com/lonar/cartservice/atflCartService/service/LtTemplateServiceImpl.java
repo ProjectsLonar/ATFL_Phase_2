@@ -438,20 +438,22 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 //		long inQuerygetInStockProductCountWithInventory = 0;
 //		long outQuerygetInStockProductCountWithInventory = 0;
 		try {
-			System.out.println("distributorId"+distributorId);
+		//	System.out.println("distributorId"+distributorId);
 			inQuerygetTemplateAgainstDistributors = System.currentTimeMillis();
 		LtTemplateHeaders templateHeaders = ltTemplateDao.getTemplateAgainstDistributors(distributorId);
 		outQuerygetTemplateAgainstDistributors = System.currentTimeMillis();
 
-		System.out.println(templateHeaders);
+	//	System.out.println(templateHeaders);
 		List<LtTemplateLines> templateLineDetails = new ArrayList<LtTemplateLines>();
 		LtTemplateDto ltTemplateDto = new LtTemplateDto();
 		if(templateHeaders !=null) {
 			inQuerygetProductDetailsAgainstheaderId = System.currentTimeMillis(); 
-			templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId(templateHeaders.getTemplateHeaderId(), priceList);
+			//templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId(templateHeaders.getTemplateHeaderId(), priceList);
+			templateLineDetails =ltTemplateDao.getProductDetailsAgainstheaderId2(distributorId,templateHeaders.getTemplateHeaderId(), priceList);
+			
 			outQuerygetProductDetailsAgainstheaderId = System.currentTimeMillis(); 
 
-			System.out.println(templateLineDetails);
+			System.out.println("templateLineDetails"+templateLineDetails);
 			ltTemplateDto.setTemplateHeaderId(templateHeaders.getTemplateHeaderId());
 			ltTemplateDto.setDistributorId(templateHeaders.getDistributorId());
 			ltTemplateDto.setStatus(templateHeaders.getStatus());
@@ -460,7 +462,37 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			ltTemplateDto.setLastUpdatedBy(templateHeaders.getLastUpdatedBy());
 			ltTemplateDto.setLastUpdatedLogin(templateHeaders.getLastUpdatedLogin());
 			ltTemplateDto.setLastUpdatedDate(templateHeaders.getLastUpdatedDate());
+						
+//			List<String> prodIdList = new ArrayList<>();
+//			prodIdList = templateLineDetails.stream().map(LtTemplateLines::getProductId).collect(Collectors.toList());
+//			String ids = prodIdList.stream().map(id->"'"+id +"'").collect(Collectors.joining(", "));
+//			List<LtTemplateLines> mrpList = new ArrayList<>();
+//			mrpList = ltTemplateDao.getMultipleMrpForTemplateProductV1(ids, distributorId);
 			
+			for (LtTemplateLines product : templateLineDetails) {
+                // Initialize MRP1 list if it is null
+				product.setAvailableQuantity(product.getInventoryQuantity());
+				
+//                if (product.getListPrice() == null) {
+//                    product.setMRP1(new ArrayList<>());
+//                }
+//                List<LtTemplateLines>mrpList2 = mrpList.stream().filter(x-> x.getProductId().equalsIgnoreCase(product.getProductId())).collect(Collectors.toList());
+//                
+//                product.setMRP2(mrpList2);
+//                if(mrpList2.size()> 1) {
+//                	//product.setAvailableQuantity(mrpList2.get(0).getAvailableQuantity());
+//                	product.setAvailableQuantity(mrpList2.get(0).getInventoryQuantity());
+//                }else {
+//                	product.setAvailableQuantity(product.getInventoryQuantity());
+//                }
+                //product.setAvailableQuantity(mrpList2.get(0).getInventoryQuantity());
+                
+                //System.out.println("mrpList2 is = "+mrpList2);
+                System.out.println("mrpList2 product is = "+product.getMRP()+product.getMRP1()+product.getMRP2());
+                System.out.println("mrpList2 inventory is = "+product.getInventoryQuantity() + "mrpList2 Available is = "+product.getInventoryQuantity());
+                System.out.println("mrpList2 prodId is ="+product.getProductId());
+            }
+						
 			if(templateLineDetails!= null && !templateLineDetails.isEmpty()) {
 				ltTemplateDto.setLtTemplateLines(templateLineDetails);
 			}else {
@@ -500,6 +532,7 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
 			
 			for (LtTemplateLines product : templateLineDetails) {
                 // Initialize MRP1 list if it is null
+				product.setAvailableQuantity(product.getInventoryQuantity());
                 if (product.getListPrice() == null) {
                     product.setMRP1(new ArrayList<>());
                 }
@@ -515,6 +548,9 @@ public class LtTemplateServiceImpl implements LtTemplateService,CodeMaster {
                 //product.setAvailableQuantity(mrpList2.get(0).getInventoryQuantity());
                 
                 System.out.println("mrpList2 is = "+mrpList2);
+                System.out.println("mrpList2 product is = "+product.getMRP()+product.getMRP1()+product.getMRP2());
+                System.out.println("mrpList2 inventory is = "+product.getInventoryQuantity());
+                System.out.println("mrpList2 prodId is ="+product.getProductId());
             }
 			
 			

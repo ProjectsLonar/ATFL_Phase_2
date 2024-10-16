@@ -21,7 +21,7 @@ public class SoLineDto {
 	private Date deliveryDate;
 	private String status;
 	
-	private String linelistPrice;
+	private String lineListPrice;
 	private String linePtrPrice;
 	private String inventoryQuantity;
 	
@@ -345,12 +345,12 @@ public class SoLineDto {
 		this.productImage = productImage;
 	}
 
-	public String getLinelistPrice() {
-		return linelistPrice;
+	public String getLineListPrice() {
+		return lineListPrice;
 	}
 
-	public void setLinelistPrice(String linelistPrice) {
-		this.linelistPrice = linelistPrice;
+	public void setLineListPrice(String lineListPrice) {
+		this.lineListPrice = lineListPrice;
 	}
 
 	public String getLinePtrPrice() {
@@ -375,7 +375,7 @@ public class SoLineDto {
 		return "SoLineDto [lineId=" + lineId + ", productId=" + productId + ", quantity=" + quantity + ", productCode="
 				+ productCode + ", productDesc=" + productDesc + ", productName=" + productName + ", listPrice="
 				+ listPrice + ", priceList=" + priceList + ", ptrPrice=" + ptrPrice + ", deliveryDate=" + deliveryDate
-				+ ", status=" + status + ", linelistPrice=" + linelistPrice + ", linePtrPrice=" + linePtrPrice
+				+ ", status=" + status + ", lineListPrice=" + lineListPrice + ", linePtrPrice=" + linePtrPrice
 				+ ", inventoryQuantity=" + inventoryQuantity + ", orgId=" + orgId + ", categoryId=" + categoryId
 				+ ", productType=" + productType + ", category=" + category + ", subCategory=" + subCategory
 				+ ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom + ", secondaryUomValue="

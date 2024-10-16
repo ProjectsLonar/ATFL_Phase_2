@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.rmi.ServerException;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -62,6 +63,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lonar.cartservice.atflCartService.dao.LtSalesreturnDao;
+import com.lonar.cartservice.atflCartService.dao.LtSoHeadersDao;
 import com.lonar.cartservice.atflCartService.dto.LtInvoiceDetailsDto;
 import com.lonar.cartservice.atflCartService.dto.LtInvoiceDetailsLineDto;
 import com.lonar.cartservice.atflCartService.dto.LtInvoiceDetailsResponseDto;
@@ -100,6 +102,9 @@ public class LtSalesReturnServiceImpl implements LtSalesReturnService,CodeMaster
 
 	@Autowired
 	LtSalesreturnDao  ltSalesreturnDao;
+	
+	@Autowired
+	LtSoHeadersDao ltSoHeadersDao;
 	
 	@Autowired
 	LtSalesReturnRepository ltSalesReturnRepository;
@@ -302,6 +307,13 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		if(ltSalesReturnDto !=null) {
 			if(ltSalesReturnDto.getSalesReturnHeaderId() !=null && ltSalesReturnDto.getSalesReturnNumber() !=null) {
 				//code for update
+				System.out.print("ltSalesReturnDto.getSalesReturnDate() is==="+ltSalesReturnDto.getSalesReturnDate());
+//				if(ltSalesReturnDto.getSalesReturnDate()!= null) {
+//				String date= ltSalesReturnDto.getSalesReturnDate().toString();
+//				date= date.replace("Z", "");
+//				//Date date1=new SimpleDateFormat("yyyy/mm/dd").parse(date); 
+//				ltSalesReturnDto.setSalesReturnDate(date);
+//				}
 				
 				//delete sales return lines
 				inQuerydeleteSalesReturnLinesByHeaderId = System.currentTimeMillis();
@@ -355,6 +367,10 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 				LtSalesReturnHeader siebelData = ltSalesreturnDao.getSalesReturnSiebelDataById(ltSalesReturnDto.getSalesReturnHeaderId());
 				outQuerygetSalesReturnSiebelDataById = System.currentTimeMillis(); 
 				
+				if(siebelData.getCreatedBy()!= null) {
+					ltSalesReturnHeader.setCreatedBy(siebelData.getCreatedBy());
+				}
+				
 				if(siebelData.getSiebelRemark()!= null) {
 				ltSalesReturnHeader.setSiebelRemark(siebelData.getSiebelRemark());
 				}
@@ -369,6 +385,10 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 				//ltSalesReturnHeader.setCreationDate(new Date());
 				ltSalesReturnHeader.setLastUpdatedBy(ltSalesReturnDto.getUserId());
 				ltSalesReturnHeader.setLastUpdateDate(new Date());
+				
+				if(ltSalesReturnDto.getDistributorId()!= null){
+					ltSalesReturnHeader.setDistributorId(ltSalesReturnDto.getDistributorId());
+				}
 				
 				ltSalesReturnHeader = updateSalesReturnHeader(ltSalesReturnHeader);
 				
@@ -465,6 +485,10 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 				ltSalesReturnHeader.setLastUpdatedBy(ltSalesReturnDto.getUserId());
 				ltSalesReturnHeader.setLastUpdateDate(new Date());
 				
+				if(ltSalesReturnDto.getDistributorId()!= null){
+					ltSalesReturnHeader.setDistributorId(ltSalesReturnDto.getDistributorId());
+				}
+				
 				ltSalesReturnHeader = updateSalesReturnHeader(ltSalesReturnHeader);
 				
 				List<LtSalesReturnLines> salesReturnLines = ltSalesReturnDto.getLtSalesReturnLines();
@@ -512,57 +536,76 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			//System.out.println("Hi This is the sales return number for notification:"+ltSalesReturnHeader.getSalesReturnNumber());
 			//List<LtMastUsers> ltMastUsersAreaHead = ltSalesreturnDao.getAreaHeadDetails(ltSalesReturnHeader.getInvoiceNumber(), ltSalesReturnHeader.getSalesReturnNumber());
 				inQuerygetAreaHeadDetails = System.currentTimeMillis();
-				List<LtMastUsers> ltMastUsersAreaHead = ltSalesreturnDao.getAreaHeadDetails(ltSalesReturnHeader.getOutletId());
+//				List<LtMastUsers> ltMastUsersAreaHead = ltSalesreturnDao.getAreaHeadDetails(ltSalesReturnHeader.getOutletId());
+				String distributorId = ltSalesreturnDao.findDistributorIdAgainstUser(ltSalesReturnHeader.getCreatedBy());
+				System.out.println("Notific distributorId"+distributorId);
+				List<LtMastUsers> areaHeadUserList = ltSoHeadersDao.getAllAreaHeadAgainstDist(distributorId);
+				System.out.println("Notific ltMastUsersAreaHead"+areaHeadUserList);
 				outQuerygetAreaHeadDetails = System.currentTimeMillis();
 				inQuerygetSalesOfficersDetails = System.currentTimeMillis();
 				//List<LtMastUsers> sysAdminUserList = ltSoHeadersDao.getActiveSysAdminUsersFromHeaderId(ltSoHeader.getHeaderId(), ltSoHeader.getOrderNumber());
-			List<LtMastUsers> ltMastUsersSalesOfficer = ltSalesreturnDao.getSalesOfficersDetails(ltSalesReturnHeader.getOutletId());
-			outQuerygetSalesOfficersDetails = System.currentTimeMillis();
+//			List<LtMastUsers> ltMastUsersSalesOfficer = ltSalesreturnDao.getSalesOfficersDetails(ltSalesReturnHeader.getOutletId());
+//				List<LtMastUsers> ltMastUsersSalesOfficer = ltSalesreturnDao.getAllSalesOfficersAgainstDist(distributorId);
+				List<LtMastUsers> ltMastUsersSalesOfficers = ltSoHeadersDao.getAllSalesOfficersAgainstDist(distributorId);
+				System.out.println("Notific ltMastUsersSalesOfficer"+ltMastUsersSalesOfficers);
+				outQuerygetSalesOfficersDetails = System.currentTimeMillis();
 			inQuerygetSysAdminDetails = System.currentTimeMillis();
-			List<LtMastUsers> ltMastUsersSysAdmin = ltSalesreturnDao.getSysAdminDetails(ltSalesReturnHeader.getOutletId());
+//			List<LtMastUsers> ltMastUsersSysAdmin = ltSalesreturnDao.getSysAdminDetails(ltSalesReturnHeader.getOutletId());
+			String orgId="1";
+			List<LtMastUsers> sysAdminUserList = ltSoHeadersDao.getSystemAdministartorsDetails(orgId);
+			System.out.println("Notific ltMastUsersSysAdmin"+sysAdminUserList);
 			outQuerygetSysAdminDetails = System.currentTimeMillis();
 			final LtSalesReturnHeader ltSalesReturnHeader1 = ltSalesReturnHeader;
 			CompletableFuture.runAsync(() -> {
                 try {
 			//System.out.println("Hi this is AreaHead" + ltMastUsersAreaHead);
-			if(ltMastUsersAreaHead !=null) {
-				for(LtMastUsers user:ltMastUsersAreaHead) {
+			if(areaHeadUserList !=null) {
+				for(LtMastUsers user:areaHeadUserList) {
 					System.out.println("This is user for notification: "+user);
 					if(user !=null) {   
 			//sending notification to areahead
-						
+						try {				
 						//System.out.println("Hi this is before notification");
 			webController.sendSalesReturnNotification(ltSalesReturnHeader1, user);
 			            //System.out.println("Hi this is after notification");
 			          sendEmail(ltSalesReturnHeader1, user, ltSalesReturnDto);
+			          }catch(Exception e) {
+			        	  e.printStackTrace();
+			          }
 					}
 				  }
 				}
 			
-			if(ltMastUsersSalesOfficer !=null) {
-				for(LtMastUsers user:ltMastUsersSalesOfficer) {
+			if(ltMastUsersSalesOfficers !=null) {
+				for(LtMastUsers user:ltMastUsersSalesOfficers) {
 					System.out.println("This is user for notification: "+user);
 					if(user !=null) {   
 			//sending notification to areahead
-						
+						try {
 						//System.out.println("Hi this is before notification");
 			webController.sendSalesReturnNotification(ltSalesReturnHeader1, user);
 			            //System.out.println("Hi this is after notification");
 			sendEmail(ltSalesReturnHeader1, user, ltSalesReturnDto);
+					 }catch(Exception e) {
+			        	  e.printStackTrace();
+			          }
 					}
 				  }
 				}
 			
-			if(ltMastUsersSysAdmin !=null) {
-				for(LtMastUsers user:ltMastUsersSysAdmin) {
+			if(sysAdminUserList !=null) {
+				for(LtMastUsers user:sysAdminUserList) {
 					System.out.println("This is user for notification: "+user);
 					if(user !=null) {   
 			//sending notification to areahead
-						
+						try {
 						//System.out.println("Hi this is before notification");
 			webController.sendSalesReturnNotification(ltSalesReturnHeader1, user);
 			            //System.out.println("Hi this is after notification");
 			sendEmail(ltSalesReturnHeader1, user, ltSalesReturnDto);
+					 }catch(Exception e) {
+			        	  e.printStackTrace();
+			          }
 					}
 				  }
 				}}catch (Exception e) {
@@ -812,12 +855,16 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		       // String username = "VINAY.KUMAR6";
 		       // String password = "Welcome1";
 		        String username;
-		        if(ltSalesReturnDto.getMobileNumber()!= null) {
-		         username = ltSalesreturnDao.getUserNameFromSiebel(ltSalesReturnDto.getMobileNumber());
+		        String mobileNo= ltSalesreturnDao.getMobileNoFromCreatedBy(ltSalesReturnHeader.getCreatedBy());
+//		        if(ltSalesReturnDto.getMobileNumber()!= null) {
+		        	if(mobileNo!= null) {
+//		         username = ltSalesreturnDao.getUserNameFromSiebel(ltSalesReturnDto.getMobileNumber());
+		        		username = ltSalesreturnDao.getUserNameFromSiebel(mobileNo);
 		         }else {
 		         username = "VINAY.KUMAR6";}
 		        String password = "D10nysu$";
 		        String auth = username + ":" + password;
+		        System.out.println("Authentication of siebel api Siebel auth is = "+auth+mobileNo);
 		        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
 		        String authHeaderValue = "Basic " + new String(encodedAuth);
 		        System.out.println("This is user authHeaderValue"+authHeaderValue);
@@ -879,7 +926,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	        	    }
 			  			
 		        ConsumeApiService consumeApiService = new ConsumeApiService();
-		        consumeApiService.SiebelAPILog(url.toString(), jsonPayload, response.toString());
+		        consumeApiService.SiebelAPILog(url.toString(), jsonPayload+auth, response.toString());
 		        
 		        //saving siebel response & status code in to table
 		        
@@ -1820,6 +1867,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	            String username = "VINAY.KUMAR6";
 	            String password = "Welcome1";
 	            String auth = username + ":" + password;
+	            System.out.println("Authentication of siebel api Siebel auth is = "+auth);
 	            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
 	            String authHeaderValue = "Basic " + new String(encodedAuth);
 	            System.out.println("This is user authHeaderValue"+authHeaderValue);
@@ -1869,7 +1917,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	            	 }
                    
 	            ConsumeApiService consumeApiService = new ConsumeApiService();
-	            consumeApiService.SiebelAPILog(url, jsonPayload, response.toString());
+	            consumeApiService.SiebelAPILog(url, jsonPayload+auth, response.toString());
 	            
 	         // saving response details in to table 
 	            String resCode= Integer.toString(responseCode);
@@ -2359,12 +2407,17 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	            //String username = "VINAY.KUMAR6";
 	            //String password = "Welcome1";
 	            String username;
-	            if(requestDto.getMobileNumber()!= null) {
-	             username = ltSalesreturnDao.getUserNameFromSiebel(requestDto.getMobileNumber());
+	            
+	            String mobileNo = ltSalesreturnDao.getMobileNoFromOrderNo(requestDto.getOrderNumber());
+	            
+	            //if(requestDto.getMobileNumber()!= null) {
+	            if(mobileNo!= null) {
+	             username = ltSalesreturnDao.getUserNameFromSiebel(mobileNo);
 	             }else {
 	             username = "VINAY.KUMAR6";}
 	            String password = "D10nysu$";
 	            String auth = username + ":" + password;
+	            System.out.println("Authentication of siebel api Siebel auth is = "+auth);
 	            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
 	            String authHeaderValue = "Basic " + new String(encodedAuth);
 	            System.out.println("This is user authHeaderValue"+authHeaderValue);
@@ -2414,7 +2467,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	            	 }
 	            
 	            ConsumeApiService consumeApiService = new ConsumeApiService();
-                consumeApiService.SiebelAPILog(url.toString(), jsonPayload, "PDF response");
+                consumeApiService.SiebelAPILog(url.toString(), jsonPayload+auth, "PDF response");
 	            
 	         // saving response details in to table 
 	            String resCode= Integer.toString(responseCode);

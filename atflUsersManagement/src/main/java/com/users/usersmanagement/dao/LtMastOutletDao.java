@@ -77,5 +77,13 @@ public interface LtMastOutletDao {
 	public String getPriceListId(String priceList)throws ServiceException, IOException;
 
 	public Long getUserIdFromMobileNo(String mobileNumber)throws ServiceException, IOException;
+	
+	String getMobileNoFromOutletName(String OutletName)throws ServiceException, IOException;
+
+	public LtMastUsers getUserFromUserId(Long userId)throws ServiceException, IOException;
+
+	public List<String> getDistributorIdFromAreaHead(String employeeCode)throws ServiceException, IOException;
+
+	public List<LtMastOutletsDump> getPendingAprrovalOutletForAreaHead(RequestDto requestDto, List<String> distId);
 
 }

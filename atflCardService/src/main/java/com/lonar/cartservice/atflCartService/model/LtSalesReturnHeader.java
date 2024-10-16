@@ -65,6 +65,8 @@ public class LtSalesReturnHeader extends BaseClass {
 	@Column(name = "SIEBEL_REMARK")
 	String siebelRemark;
 	
+	@Column(name = "DISTRIBUTOR_ID")
+	String distributorId;
 	
 	@Transient
 	private String outletCode;
@@ -237,6 +239,14 @@ public class LtSalesReturnHeader extends BaseClass {
 		this.siebelRemark = siebelRemark;
 	}
 
+	public String getDistributorId() {
+		return distributorId;
+	}
+
+	public void setDistributorId(String distributorId) {
+		this.distributorId = distributorId;
+	}
+
 	
 	@Override
 	public String toString() {
@@ -245,9 +255,9 @@ public class LtSalesReturnHeader extends BaseClass {
 				+ returnStatus + ", address=" + address + ", latitude=" + latitude + ", longitude=" + longitude
 				+ ", returnReason=" + returnReason + ", salesReturnDate=" + salesReturnDate + ", outletName="
 				+ outletName + ", beatName=" + beatName + ", siebelStatus=" + siebelStatus + ", siebelRemark="
-				+ siebelRemark + ", outletCode=" + outletCode + ", priceList=" + priceList + ", test=" + test
-				+ ", siebelJsonpayload=" + siebelJsonpayload + ", userId=" + userId + "]";
+				+ siebelRemark + ", distributorId=" + distributorId + ", outletCode=" + outletCode + ", priceList="
+				+ priceList + ", test=" + test + ", siebelJsonpayload=" + siebelJsonpayload + ", userId=" + userId
+				+ "]";
 	}
-
 		
 }

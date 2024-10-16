@@ -763,7 +763,20 @@ LtMastOutletsDump ltMastOutletsDump1 = new LtMastOutletsDump();
 	@Override
 	public Status getPendingAprrovalOutlet(RequestDto requestDto) throws ServiceException, IOException {
 		Status status = new Status();
-		List<LtMastOutletsDump> list = ltMastOutletDao.getPendingAprrovalOutlet(requestDto);
+		try {
+		List<LtMastOutletsDump> list = new ArrayList<>();
+		
+		LtMastUsers ltMastUsers = ltMastOutletDao.getUserFromUserId(requestDto.getUserId());	
+		System.out.println("ltMastUsers is ="+ltMastUsers);
+		if(ltMastUsers.getUserType().equalsIgnoreCase("AREAHEAD")) {
+		List<String> distId=ltMastOutletDao.getDistributorIdFromAreaHead(ltMastUsers.getEmployeeCode());
+		System.out.println("distIdList123"+distId);
+
+			list = ltMastOutletDao.getPendingAprrovalOutletForAreaHead(requestDto,distId);
+		}
+		else {		
+		list = ltMastOutletDao.getPendingAprrovalOutlet(requestDto);
+		}
 		if (list != null) {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
@@ -773,7 +786,10 @@ LtMastOutletsDump ltMastOutletsDump1 = new LtMastOutletsDump();
 			status.setCode(RECORD_NOT_FOUND);
 			status.setMessage("RECORD NOT FOUND");
 		}
-		return status;
+		
+	}catch(Exception e) {
+		e.printStackTrace();
+	}return status;
 	}
 
 	@Override
@@ -919,15 +935,17 @@ try {
          //"Basic TE9OQVJfVEVTVDpMb25hcjEyMw=="); this is LONAR_TEST:Lonar123//comment on 30-May-24 for auth 
                                                       
          String username;
-	        if(ltMastOutletsDumps.getMobileNumber()!= null) {
-	         username = ltMastOutletDao.getUserNameFromSiebel(ltMastOutletsDumps.getMobileNumber());
+         String mobileNo = ltMastOutletDao.getMobileNoFromOutletName(ltMastOutletsDumps.getOutletName());
+	        if(mobileNo!= null) {
+	         //username = ltMastOutletDao.getUserNameFromSiebel(mobileNo); // comment on 15-Oct-2024 bcz of siebel auth error
+	        	username = "LONAR_TEST";
 	         }else {
 	         username = "LONAR_TEST";}   // "VINAY.KUMAR6";}
 	        String password = "D10nysu$";
 	        String auth = username + ":" + password;
 	        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
 	        String authHeaderValue = "Basic " + new String(encodedAuth);
-	        System.out.println("This is user auth credentials = "+auth);
+	        System.out.println("This is user auth credentials = "+auth+mobileNo);
 	        System.out.println("This is user authHeaderValue"+authHeaderValue);
 	        con.setRequestProperty("Authorization", authHeaderValue);
 // this is comment on 05-June-24 bcz auth is not working  
@@ -1050,7 +1068,8 @@ try {
 			  status.setMessage("INSERT_SUCCESSFULLY");
 			  }
 		            
-        }}else {
+        }
+		  }else {
         	     reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
                  String line;
                    while ((line = reader.readLine()) != null) 
@@ -1078,6 +1097,7 @@ try {
         	  	    ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
         	  	  status.setCode(INSERT_FAIL); 
         		  status.setMessage("INSERT_FAIL");
+        		  status.setData(ltMastOutletsDump.getSiebelRemark());
         		  
         }
                 

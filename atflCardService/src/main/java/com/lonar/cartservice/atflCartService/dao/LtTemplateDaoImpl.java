@@ -216,7 +216,7 @@ public class LtTemplateDaoImpl implements LtTemplateDao,CodeMaster{
 		String query = env.getProperty("getTemplateAgainstDistributors");
 		List<LtTemplateHeaders> templateHeadersList = jdbcTemplate.query(query, new Object[] {distId},
 				new BeanPropertyRowMapper<LtTemplateHeaders>(LtTemplateHeaders.class));
-		System.out.println("All tempalte query"+query);
+//		System.out.println("All tempalte query"+query);
 		System.out.println("All Template HeadersList =="+templateHeadersList);
 		if(!templateHeadersList.isEmpty()) {
 			return templateHeadersList.get(0);

@@ -1,6 +1,7 @@
 package com.lonar.cartservice.atflCartService.dao;
 
 import java.io.IOException;
+import java.rmi.ServerException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -895,6 +896,8 @@ System.out.println("Query is "+query);
 		//System.out.println("In getSoHeader111 dao method at = "+LocalDateTime.now());
 		try {
 		String query = env.getProperty("getOrderHeaderV13");
+		String query1 = env.getProperty("getOrderHeaderV133");
+		String query11 = env.getProperty("getOrderHeaderV13AreaHead");
        
 		if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 			requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
@@ -1069,11 +1072,12 @@ System.out.println("Query is "+query);
 
 		//Long headerId =0l;
 		//System.out.println("Above getUserTypeAndDisId dao method at = "+LocalDateTime.now());
-		UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
+		//UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
+		UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getLoginId());
 		//String userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
 		//System.out.println("Below getUserTypeAndDisId dao method at = "+LocalDateTime.now());
 		
-		System.out.println("userDetailsDto = "+userDetailsDto);
+//		System.out.println("userDetailsDto = "+userDetailsDto);
 		
 		if (userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
 			System.out.println("In distributor");		
@@ -1084,12 +1088,12 @@ System.out.println("Query is "+query);
 			
 			if(!userList.isEmpty() && userList != null) {
 				System.out.println("In if distributor");
-				query = query + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
+				query1 = query1 + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
 				        + ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx'))  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 			}else {
 				System.out.println("In else distributor");
 				//query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  where rownum BETWEEN ? AND ? ";
-				query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx'))  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY  ";
+				query1 = query1 +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx'))  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY  ";
 			}
 			
 			System.out.println("Query = " +query);
@@ -1102,8 +1106,8 @@ System.out.println("Query is "+query);
 //			//System.out.println("Below query dao method at = "+LocalDateTime.now());
 			
 			try {
-				headerIdslist = consumeApiService.consumeApiWithRequestBody(query, 
-						new Object[] { requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+				headerIdslist = consumeApiService.consumeApiWithRequestBody(query1, 
+						new Object[] { requestDto.getDistributorId(), requestDto.getLoginId(), requestDto.getStatus(), requestDto.getOrderNumber(),
 								searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset() }, 
 						ResponseDto.class);
 			} catch (IOException e) {
@@ -1126,14 +1130,14 @@ System.out.println("Query is "+query);
                         .map(id -> "'" + id + "'")
                         .collect(Collectors.joining(", "));
 				System.out.println("In if of Sales Person");
-				query = query + " and lsh.outlet_id in (" + outletListString +
+				query1 = query1 + " and lsh.outlet_id in (" + outletListString +
 				 ")  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 			}else {
 				System.out.println("In else of Sales Person");
-				query = query +"  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+				query1 = query1 +"  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 			}
 			
-			System.out.print("Query = "+query);
+//			System.out.print("Query = "+query);
 			//System.out.println("Above query dao method at = "+LocalDateTime.now());
  
 //			headerIdslist = jdbcTemplate.query(query, new Object[] {
@@ -1143,8 +1147,8 @@ System.out.println("Query is "+query);
 			//System.out.println("Below query dao method at = "+LocalDateTime.now());
  
 			try {
-				headerIdslist = consumeApiService.consumeApiWithRequestBody(query, 
-						new Object[] { requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+				headerIdslist = consumeApiService.consumeApiWithRequestBody(query1, 
+						new Object[] { requestDto.getDistributorId(),requestDto.getLoginId(), requestDto.getStatus(), requestDto.getOrderNumber(),
 								searchField,requestDto.getLimit(), requestDto.getOffset() }, 
 						ResponseDto.class);
 			} catch (IOException e) {
@@ -1157,18 +1161,49 @@ System.out.println("Query is "+query);
 			
 			return headerIdslist;
 			
-		}else {
+		}else if(userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase("AREAHEAD")) {
+			System.out.println("in AREAHEAD else");
+		
+			List<String> distId= getDistributorIdFromAreaHead(userDetailsDto.getEmployeeCode());
+			String distIdList = null;
+			if(!distId.isEmpty() && distId != null) {
+				      distIdList = distId.stream()
+		                .map(id -> "'" + id + "'")
+		                .collect(Collectors.joining(", "));
+				
+			}
+//			System.out.println("distId are= "+distId);
+			query11 = query11 + "and COALESCE(lsh.outlet_id ,'xx') =  COALESCE(? ,COALESCE(lsh.outlet_id,'xx')) ORDER BY STATUS_O, CDATE DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+//			System.out.println("query11 == "+query11);
+//			System.out.println("requestDto data is == "+requestDto+ searchField);
+			try {
+				headerIdslist = consumeApiService.consumeApiWithRequestBody(query11, 
+						new Object[] { distIdList, requestDto.getStatus(), requestDto.getOrderNumber(),
+								searchField, requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset() }, 
+						ResponseDto.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return headerIdslist;
+		}
+		
+		else {
 			System.out.println("in else");
 			query = query + "and COALESCE(lsh.outlet_id ,'xx') =  COALESCE(? ,COALESCE(lsh.outlet_id,'xx')) ORDER BY STATUS_O, CDATE DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 			
-			System.out.println(requestDto.getHeaderId());
-			System.out.println(query);  
+////			System.out.println(requestDto.getHeaderId());
+//			System.out.println(query);  
  
           // System.out.println("Above else dao query at = "+LocalDateTime.now());
            String result = String.join("  ", requestDto.getDistributorId(), requestDto.getStatus(),requestDto.getOrderNumber(),searchField,requestDto.getOutletId());
-           System.out.println("result = "+result);
-           System.out.println(requestDto.getLimit());
-           System.out.println(requestDto.getOffset());
+//           System.out.println("result = "+result);
+//           System.out.println(requestDto.getLimit());
+//           System.out.println(requestDto.getOffset());
 		//	System.out.println("Above query dao method at = "+LocalDateTime.now());
  
 //           headerIdslist = jdbcTemplate.query(query, new Object[] {
@@ -1195,11 +1230,11 @@ System.out.println("Query is "+query);
 				e.printStackTrace();
 			}           
            
-           System.out.println("headerIdslist below = "+headerIdslist);
+//           System.out.println("headerIdslist below = "+headerIdslist);
          //  System.out.println("Below else dao query at = "+LocalDateTime.now());
-           System.out.println("headerIdsSSSS "+headerIdslist);
-           System.out.println("Query is "+query);
-        //   System.out.println("Exit from dao method at = "+LocalDateTime.now());
+//           System.out.println("headerIdsSSSS "+headerIdslist);
+//           System.out.println("Query is "+query);
+//        //   System.out.println("Exit from dao method at = "+LocalDateTime.now());
            return headerIdslist;
 		
 		}
@@ -1254,7 +1289,8 @@ System.out.println("Query is "+query);
 			if(headerIdList.size()>0) {
 			//query = query + "  and lsh.header_id IN ( 164) ) a order by a.status_o, a.cdate desc, a.header_id ";
 			query = query + "  and lsh.header_id IN ( " + headerIdList.toString().replace("[", "").replace("]", "")
-					+ " ) ) a order by a.status_o, a.cdate desc, a.header_id ";
+				//	+ " ) ) a order by a.status_o, a.cdate desc, a.header_id "; comment by milind sir on 16-Oct2024 for shuffle issue
+					+ " ) ) a order by a.header_id, a.line_id ";
 			}
 			else {
 				System.out.println("in else");
@@ -1726,11 +1762,13 @@ System.out.println("Query is "+query);
 			e.printStackTrace();
 		}
 				
-		if (!list.isEmpty())
+		//if (!list.isEmpty()) {
+		if(list.size()>0) {
 			return list.get(0);
-		else
+			}
+		else {
 			return null;
-		
+		}
 //		if(list!= null) {
 //			return (UserDetailsDto) list;
 //		}return null;
@@ -2713,7 +2751,7 @@ System.out.println("Query is "+query);
 //				new BeanPropertyRowMapper<ProductDto>(ProductDto.class));
 			
 			try {
-				System.out.println("prodId & distId & query = " + prodId +"/t"+ distributorId + query);
+//				System.out.println("prodId & distId & query = " + prodId +"/t"+ distributorId + query);
 				productList = consumeApiService.consumeApiWithRequestBody(query, 
 						//new Object[] { prodId,distributorId,prodId,prodId,distributorId,prodId },
 						new Object[] { distributorId, distributorId, prodId,distributorId,prodId,prodId,distributorId,prodId },
@@ -3023,25 +3061,443 @@ System.out.println("Query is "+query);
 		
 		String query = env.getProperty("getUserIdFromMobileNo");
 		ConsumeApiService consumeApiService = new ConsumeApiService();
-		Long userId =0L;
-//		Long userId = jdbcTemplate.queryForObject(query,new Object[] {mobileNumber}, Long.class);
-		System.out.println("Notification query == " +query+mobileNumber);
+//		Long userId =0L;
 		if(mobileNumber!= null) {
-		try {
-			userId = consumeApiService.consumeApiForCount(query, 
-					new Object[] { mobileNumber });
-			if(userId!= null) {
+		Long userId = jdbcTemplate.queryForObject(query,new Object[] {mobileNumber}, Long.class);
+		if(userId!= null) {
 			return userId;
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		}
+		System.out.println("Notification query == " +query+mobileNumber);
+//		if(mobileNumber!= null) {
+//		try {
+//			userId = consumeApiService.consumeApiForCount(query, 
+//					new Object[] { mobileNumber });
+//			if(userId!= null) {
+//			return userId;
+//			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		}
+		
 		return null;
 	}
+	
+	@Override
+	public String getMobileNoFromOrderNo(String orderNo) throws ServerException {
+		String query = env.getProperty("getMobileNoFromOrderNo");
+		String mobileNo = jdbcTemplate.queryForObject(query, new Object[] {orderNo}, String.class);
+		return mobileNo;
+	}
+	
+//	@Override
+//	public String getDistIdFromOutletCode(String outletCode) throws ServerException {
+//		String query = env.getProperty("getDistIdFromOutletCode");
+//		String distId = jdbcTemplate.queryForObject(query, new Object[] {outletCode}, String.class);
+//		return distId;
+//	}
+	
+		public List<String> getDistributorIdFromAreaHead(String employeeCodse) throws ServiceException, IOException {
+			
+			String query = env.getProperty("getDistributorIdFromAreaHead");
+			System.out.println("ltMastUsers employeeCode is ="+employeeCodse);
+			List<String> distIds = jdbcTemplate.queryForList(query, new Object[] {employeeCodse}, String.class);
+			System.out.println("distId is ="+distIds +query+employeeCodse);
+			 if (!distIds.isEmpty()) {
+					return distIds;
+				}else {
+					return null;
+				}		
+		}	
+		
+		public List<String> getEmpCodeFromDistributorId(String distCode) throws ServiceException, IOException {
+			
+			String query = env.getProperty("getEmpCodeFromDistributorId");
+			System.out.println("ltMastUsers distCode is ="+distCode);
+			List<String> empCode = jdbcTemplate.queryForList(query, new Object[] {distCode}, String.class);
+			 if (!empCode.isEmpty()) {
+					return empCode;
+				}else {
+					return null;
+				}		
+		}
+
+public List<String> getDistributorIdFromAreaHeadNew(String employeeCodse) throws ServiceException, IOException {
+			
+			String query = env.getProperty("getDistributorIdFromAreaHeadNew");
+			System.out.println("ltMastUsers employeeCode is ="+employeeCodse);
+			List<String> distIds = jdbcTemplate.queryForList(query, new Object[] {}, String.class);
+			System.out.println("distId is ="+distIds +query+employeeCodse);
+			 if (!distIds.isEmpty()) {
+					return distIds;
+				}else {
+					return null;
+				}		
+		}	
+		
+
+		@Override
+		public List<Long> getSoHeaderRemovingPendingOrdersFromGetOrderV2ForAreaHead(RequestDto requestDto,
+				String distIdList)throws ServiceException, IOException {
+			try {
+			String query = env.getProperty("getSoHeaderRemovingPendingOrdersFromGetOrderV2ForAreaHead");
+	       
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
+			
+	 String headerId = null;
+			if(requestDto.getHeaderId() !=null) {
+				headerId = requestDto.getHeaderId().toString();
+					}
+			
+			
+			String searchField = null;
+			if (requestDto.getSearchField() != null) {
+				
+				String searchStr = requestDto.getSearchField().toUpperCase();
+				
+				String dayStr = "";
+			    String yearStr = "";
+				if(searchStr.contains("JAN")) {
+					 String[] arr = searchStr.trim().split("JAN"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-01-"+dayStr+"%";
+					
+				}else if (searchStr.contains("FEB")) {
+					 String[] arr = searchStr.trim().split("FEB"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-02-"+dayStr+"%";
+					
+				}else if (searchStr.contains("MAR")) {
+					 String[] arr = searchStr.trim().split("MAR"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-03-"+dayStr+"%";
+					
+				}else if (searchStr.contains("APR")) {
+					 String[] arr = searchStr.trim().split("APR"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-04-"+dayStr+"%";
+					
+				}else if (searchStr.contains("MAY")) {
+					 String[] arr = searchStr.trim().split("MAY"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-05-"+dayStr+"%";
+					
+				}else if (searchStr.contains("JUN")) {
+					 String[] arr = searchStr.trim().split("JUN"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-06-"+dayStr+"%";
+					
+				}else if (searchStr.contains("JUL")) {
+					 String[] arr = searchStr.trim().split("JUL"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-07-"+dayStr+"%";
+					
+				}else if (searchStr.contains("AUG")) {
+					 String[] arr = searchStr.trim().split("AUG"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-08-"+dayStr+"%";
+					
+				}else if (searchStr.contains("SEP")) {
+					 String[] arr = searchStr.trim().split("SEP"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-09-"+dayStr+"%";
+				}else if (searchStr.contains("OCT")) {
+					 String[] arr = searchStr.trim().split("OCT"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-10-"+dayStr+"%";
+					
+				}else if (searchStr.contains("NOV")) {
+					 String[] arr = searchStr.trim().split("NOV"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-11-"+dayStr+"%";
+				}else if (searchStr.contains("DEC")) {
+					 String[] arr = searchStr.trim().split("DEC"); 
+				        for (String st : arr) 
+				        {
+				        	 if(st.trim().length() == 2) {
+				        		 dayStr = st.trim();
+				        	 }else {
+				        		 yearStr = st.trim();
+				        	 }
+				        }
+					searchField = "%"+yearStr+"-12-"+dayStr+"%";
+				}else {
+					searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+				}
+			}
+			System.out.println("searchField :: "+searchField);
+			
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+			List<Long> headerIdslist = new ArrayList<>();	
+			//List<Long> headerIdslist = null;
+			//Long headerId =0l;
+			UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
+			
+			System.out.println("AlluserDetailsDto"+userDetailsDto);
+			if (userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
+				//get userList by distributorID
+				
+		/*Keyur		if(userDetailsDto != null) {
+					query = query + " and lsh.created_by not in ( " + requestDto.getUserId() + ")";
+					System.out.println("New AlluserDetailsDto"+query);
+				}
+				query = query +" ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+				System.out.println("New123 AlluserDetailsDto"+query);
+		*/		
+				List<Long> userList = getUsersByDistributorId(userDetailsDto.getDistributorId());
+				
+				System.out.println("AlluserListDto"+userList);
+				
+				if(!userList.isEmpty() && userList != null) {
+					query = query + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
+						//	+ ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx')) )a order by a.status_o, a.creation_date desc ) b where rownum BETWEEN ? AND ? ";
+				// on 7-May-24	        + ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx')) )a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+							+ ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx')) )a order by a.last_update_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				}else {
+					//query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  where rownum BETWEEN ? AND ? ";
+			//on 7-May-24		query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+					query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.last_update_date desc ) b  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				}
+				
+				
+				
+				
+				/*
+				 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+				 * requestDto.getStatus(),
+				 * requestDto.getOrderNumber(),requestDto.getDistributorId(), headerId,
+				 * searchField, requestDto.getOutletId(), requestDto.getLimit(),
+				 * requestDto.getOffset());
+				 */
+				
+//				headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
+//						requestDto.getOrderNumber(),requestDto.getDistributorId(),  searchField,
+//						requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset());
+
+				try {
+					headerIdslist = consumeApiService.consumeApi(query, 
+							new Object[] { requestDto.getStatus(),
+									requestDto.getOrderNumber(),requestDto.getDistributorId(),  searchField,
+									requestDto.getOutletId(), requestDto.getLimit(), requestDto.getOffset() }, 
+							Long.class);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				System.out.println("headerIdslist in Dao"+headerIdslist);
+				return headerIdslist;
+				
+			}else if(userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(SALES)) {
+				//String positionId = getPositionIdByUserId(requestDto.getUserId());
+				//List<Long> outletList = getOutletIdsByPositionId(userDetailsDto.getPositionId()); //comment on 12-March-24 vaibhav
+				List<String> outletList = getOutletIdsByPositionId(userDetailsDto.getPositionId());
+				
+				if(!outletList.isEmpty() && outletList != null) {
+					//query = query +" and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
+					//query = query + " and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
+					//		+ " ) ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
+
+					//				String outList = null;   comment on 13-march-2024 vaibhav 320-333
+//					String newList = null;
+//					for(int i=1; i< outletList.size(); i++) { 
+//						if(i!=outletList.size()) {
+//						 outList= "'" + outletList.get(i).toString().replace("[", "").replace("]", "") + "'"+",";
+//						 //outList.charAt(outList.length() - 1);
+//						 outList.substring(0, outList.length() - 1);
+//						 //outList.replace(",", "");
+//						 System.out.println("Issue for outList =\n"+newList);}
+//						if(i==outletList.size()-1) {
+//							String outList1= "'" + outletList.get(i).toString().replace("[", "").replace("]", "") + "'";
+//							 System.out.print("2nd outList =\n"+outList+outList1);}
+//						
+//					}
+					
+					query = query + " and lsh.outlet_id in (" + outletList.toString().replace("[", "").replace("]", "")
+						//	+ " ) ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
+					//7-May-24      +  ") ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+							+  ") ) a order by a.last_update_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				}else {
+//					query = query +" ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
+				//	query = query +" ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ?";
+		// 7-may-24	query = query +" ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+					query = query +" ) a order by a.last_update_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+				}
+				
+				System.out.print("Issue for query ="+query);
+				
+//				headerIdslist = jdbcTemplate.queryForList(query, Long.class, requestDto.getStatus(),
+//						requestDto.getOrderNumber(), requestDto.getDistributorId(), searchField,
+//						requestDto.getLimit(), requestDto.getOffset());
+				
+				try {
+					headerIdslist = consumeApiService.consumeApi(query, 
+							new Object[] { requestDto.getStatus(),
+									requestDto.getOrderNumber(), requestDto.getDistributorId(), searchField,
+									requestDto.getLimit(), requestDto.getOffset() }, 
+							Long.class);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+				/*
+				 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+				 * requestDto.getStatus(), requestDto.getOrderNumber(),
+				 * requestDto.getDistributorId(), headerId, searchField, requestDto.getLimit(),
+				 * requestDto.getOffset());
+				 */
+				return headerIdslist;
+				
+			}else {
+			//	query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
+	//07-May-24			query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.last_update_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				
+				/*
+				 * if(requestDto.getHeaderId() !=null) { headerId = requestDto.getHeaderId();
+				 * }else { headerId = null; }
+				 */
+				
+				System.out.println(requestDto.getHeaderId()); 
+				System.out.println(query);  
+				
+				/*
+				 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+				 * requestDto.getDistributorId(),requestDto.getStatus(),
+				 * requestDto.getOrderNumber(), searchField
+				 * ,headerId,requestDto.getOutletId(),requestDto.getLimit(),
+				 * requestDto.getOffset() );
+				 */
+	           
+//	           headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+//						requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+//						searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
+//						);
+				List<RequestDto>headerIdslist1 = new ArrayList<>();
+				try {
+					headerIdslist1 = consumeApiService.consumeApi(query, 
+							new Object[] { distIdList,requestDto.getStatus(), requestDto.getOrderNumber(),
+									searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset() }, 
+							RequestDto.class);
+					for(int i =0; i<headerIdslist1.size(); i++) {
+						headerIdslist.add(headerIdslist1.get(i).getHeaderId());
+					}
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				/*
+				 * headerIdslist = jdbcTemplate.query(query, new Object[] { }, new
+				 * BeanPropertyRowMapper<Long>(Long.class));
+				 */
+	System.out.println("headerIdsSSSS "+headerIdslist);
+				return headerIdslist;
+			}}catch(Exception e) {
+				logger.error("Error Description :", e);
+				e.printStackTrace();
+			}return null;
+		
+		}
 }
 	

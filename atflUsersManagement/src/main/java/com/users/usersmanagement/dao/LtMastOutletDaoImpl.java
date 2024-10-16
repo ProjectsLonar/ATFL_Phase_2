@@ -3,6 +3,7 @@ package com.users.usersmanagement.dao;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.rmi.ServerException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.users.usersmanagement.common.ServiceException;
 import com.users.usersmanagement.model.BeatDetailsDto;
 import com.users.usersmanagement.model.CodeMaster;
@@ -689,4 +691,88 @@ System.out.println("list"+list);
 		return null;
 	}
 	
+	@Override
+	public String getMobileNoFromOutletName(String OutletName) throws ServerException {
+		String query = env.getProperty("getMobileNoFromOutletName");
+		String mobileNo = jdbcTemplate.queryForObject(query, new Object[] {OutletName}, String.class);
+		return mobileNo;
+	}
+	
+	@Override
+	public LtMastUsers getUserFromUserId(Long userId) throws ServerException {
+		String query = env.getProperty("getUserFromUserId");
+		List<LtMastUsers> ltMastUserslist = jdbcTemplate.query(query,
+				new Object[] {userId },
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+//		String usertype = jdbcTemplate.queryForObject(query, new Object[] {userId}, String.class);
+//		return usertype;
+			if (!ltMastUserslist.isEmpty()) {
+				return ltMastUserslist.get(0);
+			}else {
+				return null;
+			}
+	}
+	
+	@Override
+	public List<String> getDistributorIdFromAreaHead(String employeeCode) throws ServiceException, IOException {
+		
+		String query = env.getProperty("getDistributorIdFromAreaHead");
+		System.out.println("ltMastUsers employeeCode is ="+employeeCode);
+		List<String> distId = jdbcTemplate.queryForList(query, new Object[] {employeeCode}, String.class);
+		 if (!distId.isEmpty()) {
+				return distId;
+			}else {
+				return null;
+			}		
+	}
+
+	@Override
+	public List<LtMastOutletsDump> getPendingAprrovalOutletForAreaHead(RequestDto requestDto, List<String> distId) {
+		String query = env.getProperty("getPendingAprrovalOutletForAreaHead");
+		try {
+			ConsumeApiService consumeApiService = new ConsumeApiService();
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
+		String searchField = null;
+		if (requestDto.getSearchField() != null) {
+			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+		}
+
+		String distIdList = distId.stream()
+                .map(id -> "'" + id + "'")
+                .collect(Collectors.joining(", "));
+		
+		System.out.println("distIdList"+distIdList);
+		
+		System.out.println("query is "+query);
+		System.out.println("query param are "+ requestDto.getOrgId() +requestDto.getPrimaryMobile()+requestDto.getOutletName()+searchField+ requestDto.getLimit()+ requestDto.getOffset());
+		
+		List<LtMastOutletsDump> ltMastOutletslist =consumeApiService.consumeApi(query, 
+				new Object[] {distIdList, requestDto.getOrgId(),requestDto.getPrimaryMobile(),requestDto.getOutletName(),
+				searchField, requestDto.getLimit(), requestDto.getOffset()}, 
+				LtMastOutletsDump.class);
+		
+//		List<LtMastOutletsDump> ltMastOutletslist = jdbcTemplate.query(query,
+//				new Object[] { distIdList, requestDto.getOrgId(),requestDto.getPrimaryMobile(),requestDto.getOutletName(),
+//						searchField, requestDto.getLimit(), requestDto.getOffset() },
+//				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+
+		System.out.println("list"+ltMastOutletslist);
+		if (!ltMastOutletslist.isEmpty()) {
+			return ltMastOutletslist;
+		}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	
+
 }

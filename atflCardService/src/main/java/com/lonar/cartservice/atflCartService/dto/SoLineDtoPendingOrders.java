@@ -13,7 +13,7 @@ public class SoLineDtoPendingOrders {
     String priceList;
     String ptrPrice;
     Date deliveryDate1;
-    String linelistPrice;
+    String lineListPrice;
     String linePtrPrice;
     String inventoryQuantity;
     String orgId;
@@ -37,8 +37,9 @@ public class SoLineDtoPendingOrders {
  
 	
 	public SoLineDtoPendingOrders(Long lineId, String productId, Long quantity, String productCode, String productDesc,
-			String productName, String listPrice, String priceList, String ptrPrice, Date deliveryDate1,
-			String linelistPrice, String linePtrPrice, String inventoryQuantity, String orgId, String categoryId,
+			String productName, String listPrice, String priceList, 
+			String ptrPrice, Date deliveryDate1,
+			String lineListPrice, String linePtrPrice, String inventoryQuantity, String orgId, String categoryId,
 			String productType, String category, String subCategory, String primaryUom, String secondaryUom,
 			String secondaryUomValue, String unitsPerCase, String segment, String brand, String casePack,
 			String hsnCode, String BeatId) {
@@ -49,11 +50,11 @@ public class SoLineDtoPendingOrders {
 		this.productCode = productCode;
 		this.productDesc = productDesc;
 		this.productName = productName;
-		this.listPrice = listPrice;
+		this.listPrice =  lineListPrice; //listPrice;
 		this.priceList = priceList;
-		this.ptrPrice = ptrPrice;
+		this.ptrPrice =  linePtrPrice;     //ptrPrice;
 		this.deliveryDate1 = deliveryDate1;
-		this.linelistPrice = linelistPrice;
+		this.lineListPrice = lineListPrice;
 		this.linePtrPrice = linePtrPrice;
 		this.inventoryQuantity = inventoryQuantity;
 		this.orgId = orgId;
@@ -137,8 +138,9 @@ public class SoLineDtoPendingOrders {
 	}
  
  
-	public void setListPrice(String listPrice) {
-		this.listPrice = listPrice;
+	public void setListPrice(String lineListPrice) {
+		//this.listPrice = listPrice;
+		this.listPrice =lineListPrice;
 	}
  
  
@@ -157,8 +159,9 @@ public class SoLineDtoPendingOrders {
 	}
  
  
-	public void setPtrPrice(String ptrPrice) {
-		this.ptrPrice = ptrPrice;
+	public void setPtrPrice(String linePtrPrice) {
+		//this.ptrPrice = ptrPrice;
+		this.ptrPrice = linePtrPrice;
 	}
  
  
@@ -172,13 +175,13 @@ public class SoLineDtoPendingOrders {
 	}
  
  
-	public String getLinelistPrice() {
-		return linelistPrice;
+	public String getLineListPrice() {
+		return lineListPrice;
 	}
  
  
-	public void setLinelistPrice(String linelistPrice) {
-		this.linelistPrice = linelistPrice;
+	public void setLineListPrice(String lineListPrice) {
+		this.lineListPrice = lineListPrice;
 	}
  
  
@@ -346,8 +349,8 @@ public class SoLineDtoPendingOrders {
 	public String toString() {
 		return "SoLineDtoPendingOrders [lineId=" + lineId + ", productId=" + productId + ", quantity=" + quantity
 				+ ", productCode=" + productCode + ", productDesc=" + productDesc + ", productName=" + productName
-				+ ", listPrice=" + listPrice + ", priceList=" + priceList + ", ptrPrice=" + ptrPrice
-				+ ", deliveryDate1=" + deliveryDate1 + ", linelistPrice=" + linelistPrice + ", linePtrPrice="
+				+ ", listPrice=" + lineListPrice + ", priceList=" + priceList + ", ptrPrice=" + linePtrPrice
+				+ ", deliveryDate1=" + deliveryDate1 + ", linelistPrice=" + lineListPrice + ", linePtrPrice="
 				+ linePtrPrice + ", inventoryQuantity=" + inventoryQuantity + ", orgId=" + orgId + ", categoryId="
 				+ categoryId + ", productType=" + productType + ", category=" + category + ", subCategory="
 				+ subCategory + ", primaryUom=" + primaryUom + ", secondaryUom=" + secondaryUom + ", secondaryUomValue="

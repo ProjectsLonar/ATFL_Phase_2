@@ -29,11 +29,11 @@ public class ConsumeApiService {
 
         // Convert the Object[] to JSON string
         String jsonBody = objectMapper.writeValueAsString(body);
-        System.out.println("jsonBody is ="+jsonBody);
-        System.out.println("query is ="+query);
+      //  System.out.println("jsonBody is ="+jsonBody);
+      //  System.out.println("query is ="+query);
         // Build the URI
-        //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery; // this is for uat server
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;  // this is for local
+        String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery; // this is for uat server
+        //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;  // this is for local
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -70,8 +70,8 @@ public class ConsumeApiService {
         String jsonBody = objectMapper.writeValueAsString(body);
 
         // Build the URI
-        //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery; 
+        String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
+        //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery; 
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -108,8 +108,8 @@ public class ConsumeApiService {
         String jsonBody = objectMapper.writeValueAsString(body);
 
         // Build the URI
-        //String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery;
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery; 
+        String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery;
+        //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery; 
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -146,8 +146,8 @@ public class ConsumeApiService {
         String jsonBody = objectMapper.writeValueAsString(body);
 
         // Build the URI
-        //String uri = "http://10.245.4.74/OrderApi/ExecuteInsertQuery";
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteInsertQuery"; 
+        String uri = "http://10.245.4.74/OrderApi/ExecuteInsertQuery";
+        //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteInsertQuery"; 
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -223,8 +223,8 @@ public class ConsumeApiService {
   //      System.out.println("apiRequestBody for headerIdList is = "+ jsonBody);
         
         // Build the URI
-        //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParamsWithRequestBody"; // this is for uat server
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParamsWithRequestBody";  // this is for local
+        String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParamsWithRequestBody"; // this is for uat server
+        //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParamsWithRequestBody";  // this is for local
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -233,7 +233,11 @@ public class ConsumeApiService {
 
         try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
             String responseBody = EntityUtils.toString(response.getEntity());
-   //         System.out.println(responseBody);
+            
+          //  System.out.println("query in consume api"+query);
+          //  System.out.println("jsonBody in consume api"+jsonBody);
+          //  System.out.println("responseBody in consume api"+responseBody);
+            
    //         System.out.println("After response body = "+ LocalDateTime.now());
         
             //List<LtMastUsers> usersArray = objectMapper.readValue(responseBody, LtMastUsers(LtMastUsers.class));
@@ -267,8 +271,8 @@ public class ConsumeApiService {
  //       System.out.println("apiRequestBody for count is = "+ jsonBody);
 
         // Build the URI
-        //String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithRequestBody";
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithRequestBody"; 
+        String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithRequestBody";
+        //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithRequestBody"; 
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -294,8 +298,8 @@ public class ConsumeApiService {
 
 	public String SiebelAPILog(String url, String jsonPayload, String response) {
 	try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-        HttpPost postRequest = new HttpPost("http://174.138.187.142:8085/OrderApi/SiebelAPILog");
-        //HttpPost postRequest = new HttpPost("http://10.245.4.74/OrderApi/SiebelAPILog");
+        //HttpPost postRequest = new HttpPost("http://174.138.187.142:8085/OrderApi/SiebelAPILog");
+        HttpPost postRequest = new HttpPost("http://10.245.4.74/OrderApi/SiebelAPILog");
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setHeader("Accept", "text/plain");//"application/json");
 

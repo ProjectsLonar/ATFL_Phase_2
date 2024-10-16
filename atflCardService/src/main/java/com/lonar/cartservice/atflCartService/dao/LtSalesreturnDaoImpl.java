@@ -1053,7 +1053,9 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 
 	@Override
 	public List<LtMastUsers> getSysAdminDetails(String outletId) throws ServerException {
-		String query = env.getProperty("getSysAdminDetails");
+//		String query = env.getProperty("getSysAdminDetails");
+		String query = env.getProperty("getSysAdminDetailsForSalesReturn");
+		outletId="1";
 		List<LtMastUsers> ltMastUserslist = jdbcTemplate.query(query,
 				new Object[] {outletId },
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
@@ -1247,5 +1249,58 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 			}
 	}
 	
+	@Override
+	public String getMobileNoFromOrderNo(String orderNo) throws ServerException {
+		String query = env.getProperty("getMobileNoFromOrderNo");
+		String mobileNo = jdbcTemplate.queryForObject(query, new Object[] {orderNo}, String.class);
+		return mobileNo;
+	}
+
+	@Override
+	public String findDistributorIdAgainstUser(Long createdBy) throws ServiceException, IOException {
+		String distId;
+		String sql = env.getProperty("findDistributorIdAgainstUser");
+		distId = jdbcTemplate.queryForObject(sql, new Object[] { createdBy }, String.class);
+		return distId;
+	}
+	
+	@Override
+	public List<LtMastUsers> getAllAreaHeadAgainstDist(String distributorId) throws ServiceException, IOException {
+		String query = env.getProperty("getAllAreaHeadAgainstDist");
+		System.out.println("getAllAreaHeadAgainstDist query=="+ query);
+		System.out.println("distributorId ---"+distributorId);
+		List<LtMastUsers> ltMastUserslist = jdbcTemplate.query(query,
+				new Object[] {distributorId },
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		System.out.println("ltMastUserslist --"+ltMastUserslist);
+		if (!ltMastUserslist.isEmpty()) {
+			return ltMastUserslist;
+		}else {
+			return null;
+		}
+	}
+	
+	@Override
+	public List<LtMastUsers> getAllSalesOfficersAgainstDist(String distributorId)throws ServiceException, IOException{
+		String query = env.getProperty("getAllSalesOfficersAgainstDist");
+		System.out.println("getAllSalesOfficersAgainstDist query=="+ query);
+		System.out.println("distributorId ---"+distributorId);
+		List<LtMastUsers> ltMastUserslist = jdbcTemplate.query(query,
+				new Object[] {distributorId },
+				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
+		System.out.println("ltMastUserslist --"+ltMastUserslist);
+		if (!ltMastUserslist.isEmpty()) {
+			return ltMastUserslist;
+		}else {
+			return null;
+		}
+	}
+	
+	@Override
+	public String getMobileNoFromCreatedBy(Long createdBy) throws ServerException {
+		String query = env.getProperty("getMobileNoFromCreatedBy");
+		String mobileNo = jdbcTemplate.queryForObject(query, new Object[] {createdBy}, String.class);
+		return mobileNo;
+	}
 }
 

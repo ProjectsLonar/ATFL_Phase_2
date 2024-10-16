@@ -410,10 +410,13 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		String distributorId = ltSoHeadersDao.findDistributorIdAgainstOutletId(ltSoHeader.getOutletId());
 		
 		List<LtMastUsers> areaHeadUserList = ltSoHeadersDao.getAllAreaHeadAgainstDist(distributorId);
+		System.out.print("areaHeadUserList = "+areaHeadUserList);
 		String orgId="1";
 		List<LtMastUsers> sysAdminUserList = ltSoHeadersDao.getSystemAdministartorsDetails(orgId);
+		System.out.print("sysAdminUserList = "+sysAdminUserList);
 		List<LtMastUsers> ltMastUsersSalesOfficers = ltSoHeadersDao.getAllSalesOfficersAgainstDist(distributorId);
-				
+		System.out.print("ltMastUsersSalesOfficers = "+ltMastUsersSalesOfficers);
+		
 		//	Optional<LtMastOutles> outletsObj =ltMastOutletRepository.findById(ltSoHeader.getOutletId());
 		//List<LtMastOutles> ltMastOutle = new ArrayList<LtMastOutles>();
 		List<LtMastOutles>ltMastOutle = ltSoHeadersDao.getOutletDetailsById(ltSoHeader.getOutletId());
@@ -590,7 +593,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						//		}
 							}
 				}
-								  
+					try {			  
 				  if(!ltMastUsersSalesOfficers.isEmpty() && !ltSoHeader.getInStockFlag().equalsIgnoreCase("Y") && 
 							ltSoHeader.getStatus().equalsIgnoreCase("PENDING_APPROVAL") && ltSoHeader.getOrderNumber()!= null)
 						 
@@ -611,8 +614,13 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							}
 							//	}
 							}
-					}// send salesOrder approval notification to sysAdmin if order is inStock & priceList is not default
-					  if(!ltMastUsersSalesOfficers.isEmpty() && !ltSoHeader.getInStockFlag().equalsIgnoreCase("N") && 
+					}
+				  }catch(Exception e) {
+						e.printStackTrace();
+					}
+					// send salesOrder approval notification to sysAdmin if order is inStock & priceList is not default
+					try {  
+					if(!ltMastUsersSalesOfficers.isEmpty() && !ltSoHeader.getInStockFlag().equalsIgnoreCase("N") && 
 							  ltSoHeader.getStatus().equalsIgnoreCase("PENDING_APPROVAL") && ltSoHeader.getOrderNumber()!= null 
 							  && !ltSoHeader.getPriceList().equals(defailtPriceList)) 
 						  
@@ -629,6 +637,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							//		}
 								}
 					}
+					}catch(Exception e) {e.printStackTrace();}
 				  
 				  
 			}
@@ -1682,8 +1691,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						soLineDto.setListPrice(responseDto.getListPrice());
 					}
 				}else {
-					if (responseDto.getLinelistPrice() != null) {
-						soLineDto.setListPrice(responseDto.getLinelistPrice());
+					if (responseDto.getLineListPrice() != null) {
+						soLineDto.setListPrice(responseDto.getLineListPrice());
 					}
 				}
 				
@@ -1706,8 +1715,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 								soLineDto.setListPrice(responseDto.getListPrice());
 							}
 						}else {
-							if (responseDto.getLinelistPrice() != null) {
-								soLineDto.setListPrice(responseDto.getLinelistPrice());
+							if (responseDto.getLineListPrice() != null) {
+								soLineDto.setListPrice(responseDto.getLineListPrice());
 							}
 						}
 					}else {
@@ -2875,6 +2884,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							ltSoHeader.setRemark(soHeaderDto.getRemark());
 						}
 
+						if (soHeaderDto.getDistributorId() != null) {
+							ltSoHeader.setDistributorId(soHeaderDto.getDistributorId());
+						}
+						
 						ltSoHeader.setOrderDate(new Date()); //new Date()
 						ltSoHeader.setLastUpdateDate(new Date()); // new Date()
 						ltSoHeader.setCreationDate(new Date()); // new Date()
@@ -3231,6 +3244,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						ltSoHeader.setRemark(soHeaderDto.getRemark());
 					}
 
+					if (soHeaderDto.getDistributorId() != null) {
+						ltSoHeader.setDistributorId(soHeaderDto.getDistributorId());
+					}
+					
 					ltSoHeader.setOrderDate(new Date()); //new Date()
 					ltSoHeader.setLastUpdateDate(new Date()); // new Date()
 					ltSoHeader.setCreationDate(new Date()); // new Date()
@@ -3568,6 +3585,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							ltSoHeader.setRemark(soHeaderDto.getRemark());
 						}
 
+						if (soHeaderDto.getDistributorId() != null) {
+							ltSoHeader.setDistributorId(soHeaderDto.getDistributorId());
+						}
+						
 						ltSoHeader.setOrderDate(new Date()); //new Date()
 						ltSoHeader.setLastUpdateDate(new Date()); // new Date()
 						ltSoHeader.setCreationDate(new Date()); // new Date()
@@ -4813,12 +4834,15 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         //String username = "VINAY.KUMAR6";
         //String password = "Welcome1";
         String username;
-        if(soHeaderDto.getMobileNumber()!= null) {
-         username = ltSoHeadersDao.getUserNameFromSiebel(soHeaderDto.getMobileNumber());
+        String mobileNo = ltSoHeadersDao.getMobileNoFromOrderNo(ltSoHeader.getOrderNumber());
+        if(mobileNo!= null) {
+         username = ltSoHeadersDao.getUserNameFromSiebel(mobileNo);
          }else {
-         username = "VINAY.KUMAR6";}String password = "D10nysu$";
+                username = "VINAY.KUMAR6";
+                }
+        String password = "D10nysu$";
         String auth = username + ":" + password;
-        System.out.println("Siebel auth is = "+auth);
+        System.out.println("Authentication of siebel api Siebel auth is = "+auth);
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
         String authHeaderValue = "Basic " + new String(encodedAuth);
         System.out.println("This is user authHeaderValue"+authHeaderValue);
@@ -4871,7 +4895,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         	 }
         
         ConsumeApiService consumeApiService = new ConsumeApiService();
-        consumeApiService.SiebelAPILog(url.toString(), jsonPayload, response.toString());
+        consumeApiService.SiebelAPILog(url.toString(), jsonPayload+auth, response.toString());
                 
 //        // saving response details in to table 
         //LtSoHeaders  ltSoHeader1 = new LtSoHeaders();
@@ -5160,12 +5184,14 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         //String username = "VINAY.KUMAR6";
         //String password = "Welcome1";
         String username;
-        if(soHeaderDto.getMobileNumber()!= null) {
-         username = ltSoHeadersDao.getUserNameFromSiebel(soHeaderDto.getMobileNumber());
+        String mobileNo = ltSoHeadersDao.getMobileNoFromOrderNo(ltSoHeader.getOrderNumber());
+        if(mobileNo!= null) {
+         username = ltSoHeadersDao.getUserNameFromSiebel(mobileNo);
          }else {
          username = "VINAY.KUMAR6";}
         String password = "D10nysu$";
         String auth = username + ":" + password;
+        System.out.println("authentication of siebel api ="+auth);
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
         String authHeaderValue = "Basic " + new String(encodedAuth);
         System.out.println("This is user authHeaderValue"+authHeaderValue);
@@ -5216,7 +5242,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
         	 }
         
         ConsumeApiService consumeApiService = new ConsumeApiService();
-        consumeApiService.SiebelAPILog(url.toString(), jsonPayload, response.toString());
+        consumeApiService.SiebelAPILog(url.toString(), jsonPayload+auth, response.toString());
         
 //        // saving response details in to table 
         //LtSoHeaders  ltSoHeader1 = new LtSoHeaders();
@@ -5520,6 +5546,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 //		System.out.println("below if ="+soHeaderDto.getPriceList());
 		if(soHeaderDto.getInstockFlag()!= null) {
 			ltSoHeader.setInStockFlag(soHeaderDto.getInstockFlag());
+		}
+		
+		if (soHeaderDto.getDistributorId() != null) {
+			ltSoHeader.setDistributorId(soHeaderDto.getDistributorId());
 		}
 		
 		ltSoHeader.setCreationDate(creationDate); //(new Date());
@@ -6416,7 +6446,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	        
 	        System.out.println("above for loop of MrpForMultipleProductV1 method at = "+LocalDateTime.now());
 	        for (ResponseDto responseDto : responseDtoList) {
-	        	
+	        	System.out.println("responseDto InventoryQuantity is = "+responseDto.getInventoryQuantity());
 	        	if(responseDto.getInstockFlag().equalsIgnoreCase("Y")) {
 	        	try {
 	        		
@@ -6428,7 +6458,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	        			
 	        		List<ResponseDto> qty = mrpProdList.stream()
 			                    .filter(x -> x.getProductId().equalsIgnoreCase(responseDto.getProductId())
-			                            && x.getMrp().equalsIgnoreCase(responseDto.getLinelistPrice()))
+			                            && x.getMrp().equalsIgnoreCase(responseDto.getLineListPrice()))
 			                    .collect(Collectors.toList());
 	        		//	System.out.println("New prodId = " + responseDto.getProductId() + " MRP is" + responseDto.getLinelistPrice());
 	    	        //    System.out.println("New qty = " + qty.get(0).getInventoryQuantity() + "orderNo is " + responseDto.getOrderNumber());
@@ -6449,7 +6479,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	        			System.out.println("In else mrpList.size()>1 = "+mrpProdList.size());
 		            List<ResponseDto> qty = mrpProdList.stream()
 		                    .filter(x -> x.getProductId().equalsIgnoreCase(responseDto.getProductId())
-		                            && x.getMrp().equalsIgnoreCase(responseDto.getLinelistPrice()))
+		                            && x.getMrp().equalsIgnoreCase(responseDto.getLineListPrice()))
 		                    .collect(Collectors.toList());
 		     //   System.out.println("New prodId = " + responseDto.getProductId() + " MRP is" + responseDto.getLinelistPrice());
 	         //   System.out.println("New qty = " + qty.get(0).getInventoryQuantity() + "orderNo is " + responseDto.getOrderNumber());
@@ -6467,7 +6497,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	        		try {
 			            List<ResponseDto> qty = mrpListOutStockProd.stream()
 			                    .filter(x -> x.getProductId().equalsIgnoreCase(responseDto.getProductId())
-			                            && x.getMrp().equalsIgnoreCase(responseDto.getLinelistPrice()))
+			                            && x.getMrp().equalsIgnoreCase(responseDto.getLineListPrice()))
 			                    .collect(Collectors.toList());
 			     //       System.out.println("New prodId = " + responseDto.getProductId() + " MRP is" + responseDto.getListPrice());
 			     //       System.out.println("New qty = " +qty);
@@ -6491,7 +6521,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		        }
 	        	
 	            SoLineDto soLineDto = buildSoLineDto(responseDto);
-	       //     System.out.println("New qty = " + soLineDto.getInventoryQuantity());
+	            System.out.println("New soLineDto = " + soLineDto);
 	            
 
 	            // Add soLineDto to the soLineDtoMap only if lineId is not null
@@ -7295,9 +7325,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		        responseDto.getStatus().equalsIgnoreCase(PENDINGAPPROVAL) ||
 		        responseDto.getStatus().equals("APPROVED")) {
 		        //return responseDto.getListPrice();
-		        return responseDto.getLinelistPrice();
+		        return responseDto.getLineListPrice();
 		    } else {
-		        return responseDto.getLinelistPrice();
+		        return responseDto.getLineListPrice();
 		    }
 		}
 	 
@@ -7313,6 +7343,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		                return responseDto.getLinePtrPrice();
 		            } else {
 		                return responseDto.getLinePtrPrice();
+		                //return responseDto.getptr
 		            }
 		        }
 		    }
@@ -7431,8 +7462,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						soLineDto.setListPrice(responseDto.getListPrice());
 					}
 				}else {
-					if (responseDto.getLinelistPrice() != null) {
-						soLineDto.setListPrice(responseDto.getLinelistPrice());
+					if (responseDto.getLineListPrice() != null) {
+						soLineDto.setListPrice(responseDto.getLineListPrice());
 					}
 				}
 								
@@ -7454,8 +7485,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 								soLineDto.setListPrice(responseDto.getListPrice());
 							}
 						}else {
-							if (responseDto.getLinelistPrice() != null) {
-								soLineDto.setListPrice(responseDto.getLinelistPrice());
+							if (responseDto.getLineListPrice() != null) {
+								soLineDto.setListPrice(responseDto.getLineListPrice());
 							}
 						}
 					}else {
@@ -8048,10 +8079,22 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	        inQuerygetSoHeader111 = System.currentTimeMillis();
 	        List<ResponseDto> responseList = ltSoHeadersDao.getSoHeader111(requestDto);
 	        outQuerygetSoHeader111 = System.currentTimeMillis();
-	        System.out.println("Below getSoHeader11 query call at =" + LocalDateTime.now());
-	        System.out.println("headerIdsList size is = " + responseList.size());
-	        System.out.println("headerIdsList is = " + responseList);
+//	        System.out.println("Below getSoHeader11 query call at =" + LocalDateTime.now());
+//	        System.out.println("headerIdsList size is = " + responseList.size());
+//	        System.out.println("headerIdsList is = " + responseList);
  
+//	        List<String> prodIdList =  new ArrayList<>();
+//		     List<ResponseDto> mrpList = new ArrayList<>();
+//		     List<ResponseDto> mrpProdList = new ArrayList<>();
+//		     List<ResponseDto> mrpListOutStockProd = new ArrayList<>();
+//	        prodIdList = responseList.stream().map(ResponseDto::getProductId).collect(Collectors.toList());
+//	        String ids = prodIdList.stream().map(id->"'"+id +"'").collect(Collectors.joining(", "));
+//	        mrpList = ltSoHeadersDao.getMultipleMrpForProductV1(ids, requestDto.getDistributorId());
+//	        mrpProdList= getMultiMrpAndInventQtyForProd(ids, requestDto.getDistributorId());
+//	        System.out.println("ProdId = "+ids);
+//	        System.out.println("mrpProdList = "+mrpProdList);
+//	        System.out.println("mrpList"+mrpList);
+	        
 	        // Use a Map to store SoHeaderDtoPendingOrders and their corresponding SoLineDtoPendingOrders
 	        Map<Long, SoHeaderDtoPendingOrders> headerMap = new HashMap<>();
 	        Map<SoHeaderDtoPendingOrders, List<SoLineDtoPendingOrders>> resultMap = new HashMap<>();
@@ -8062,7 +8105,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	            // Extract header and line information from response
 	            SoHeaderDtoPendingOrders header = extractSoHeader(response);
 	            SoLineDtoPendingOrders line = extractSoLine(response);
- 
+	            System.out.println("line =="+line);
+	            System.out.println("response =="+response);
 	            // If header is not in the map, add it
 	            if (!headerMap.containsKey(headerId)) {
 	                headerMap.put(headerId, header);
@@ -8169,11 +8213,11 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		        response.getProductCode(),
 		        response.getProductDesc(),
 		        response.getProductName(),
-		        response.getListPrice(),
-		        response.getPriceList(),
-		        response.getPtrPrice(),
+		        response.getListPrice(),  
+		        response.getPtrPrice(),    
+		        response.getPriceList(),		       
 		        response.getDeliveryDate1(),
-		        response.getLinelistPrice(),
+		        response.getLineListPrice(),
 		        response.getLinePtrPrice(),
 		        response.getInventoryQuantity(),
 		        response.getOrgId(),
@@ -8212,9 +8256,34 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 //		long outQuerygetInStockProductCountWithInventory = 0;
 			try {
 				Status status = new Status();
+				List<Long> headerIdsList = new ArrayList<>();
 				//System.out.println("Login Id is ="+requestDto.getLoginId());
 				inQuerygetSoHeaderRemovingPendingOrdersFromGetOrderV2 = System.currentTimeMillis();
-				List<Long> headerIdsList = ltSoHeadersDao.getSoHeaderRemovingPendingOrdersFromGetOrderV2(requestDto);
+				
+				if(requestDto.getDistributorId().equalsIgnoreCase("1-1OC0")){
+					String distCode= "1-1OC0";
+					List<String> empcode= ltSoHeadersDao.getEmpCodeFromDistributorId(distCode);
+					String empCodeList = null;
+					if(!empcode.isEmpty() && empcode != null) {
+						empCodeList = empcode.stream()
+			                .map(id -> "'" + id + "'")
+			                .collect(Collectors.joining(", "));
+					
+				}System.out.println("empCodeList == "+empCodeList);
+					List<String> distId= ltSoHeadersDao.getDistributorIdFromAreaHeadNew(empCodeList);
+					String distIdList = null;
+					if(!distId.isEmpty() && distId != null) {
+						      distIdList = distId.stream()
+				                .map(id -> "'" + id + "'")
+				                .collect(Collectors.joining(", "));
+						
+					}System.out.println("distIdList is =="+distIdList);
+					headerIdsList = ltSoHeadersDao.getSoHeaderRemovingPendingOrdersFromGetOrderV2ForAreaHead(requestDto,distIdList);
+				
+				}else {
+				headerIdsList = ltSoHeadersDao.getSoHeaderRemovingPendingOrdersFromGetOrderV2(requestDto);
+				}
+				
 				outQuerygetSoHeaderRemovingPendingOrdersFromGetOrderV2 = System.currentTimeMillis();
 				System.out.print("headerIdsList is ====" +headerIdsList);
 				System.out.print("requestDto data is =="+requestDto);
@@ -8313,7 +8382,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		        			
 		        		List<ResponseDto> qty = mrpProdList.stream()
 				                    .filter(x -> x.getProductId().equalsIgnoreCase(responseDto.getProductId())
-				                            && x.getMrp().equalsIgnoreCase(responseDto.getLinelistPrice()))
+				                            && x.getMrp().equalsIgnoreCase(responseDto.getLineListPrice()))
 				                    .collect(Collectors.toList());
 		        		//	System.out.println("New prodId = " + responseDto.getProductId() + " MRP is" + responseDto.getLinelistPrice());
 		    	        //    System.out.println("New qty = " + qty.get(0).getInventoryQuantity() + "orderNo is " + responseDto.getOrderNumber());
@@ -8373,7 +8442,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		        		try {
 				            List<ResponseDto> qty = mrpListOutStockProd.stream()
 				                    .filter(x -> x.getProductId().equalsIgnoreCase(responseDto.getProductId())
-				                            && x.getMrp().equalsIgnoreCase(responseDto.getLinelistPrice()))
+				                            && x.getMrp().equalsIgnoreCase(responseDto.getLineListPrice()))
 				                    .collect(Collectors.toList());
 				     //       System.out.println("New prodId = " + responseDto.getProductId() + " MRP is" + responseDto.getListPrice());
 				     //       System.out.println("New qty = " +qty);
@@ -8418,8 +8487,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							soLineDto.setListPrice(responseDto.getListPrice());
 						}
 					}else {
-						if (responseDto.getLinelistPrice() != null) {
-							soLineDto.setListPrice(responseDto.getLinelistPrice());
+						if (responseDto.getLineListPrice() != null) {
+							soLineDto.setListPrice(responseDto.getLineListPrice());
 						}
 					}
 									
@@ -8441,8 +8510,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 									soLineDto.setListPrice(responseDto.getListPrice());
 								}
 							}else {
-								if (responseDto.getLinelistPrice() != null) {
-									soLineDto.setListPrice(responseDto.getLinelistPrice());
+								if (responseDto.getLineListPrice() != null) {
+									soLineDto.setListPrice(responseDto.getLineListPrice());
 								}
 							}
 						}else {
