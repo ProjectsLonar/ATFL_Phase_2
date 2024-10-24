@@ -1744,7 +1744,7 @@ System.out.println("Query is "+query);
 		return null;
 	}
 	
-	private UserDetailsDto getUserTypeAndDisId(Long userId) throws ServiceException {
+	public UserDetailsDto getUserTypeAndDisId(Long userId) throws ServiceException {
 		String query = env.getProperty("getUserTypeAndDisId");
 		List<UserDetailsDto> list = new ArrayList<>();
 		ConsumeApiService consumeApiService = new ConsumeApiService();
@@ -2209,6 +2209,7 @@ System.out.println("Query is "+query);
 			throws ServiceException, IOException {
 			try {
 			String query = env.getProperty("getOrderHeaderV1RemovingPendingOrders");
+			String query1 = env.getProperty("getSoHeaderRemovingPendingOrdersFromGetOrderV2ForAreaHead");
 	       
 			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
 				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
@@ -2382,7 +2383,9 @@ System.out.println("Query is "+query);
 			List<Long> headerIdslist = new ArrayList<>();	
 			//List<Long> headerIdslist = null;
 			//Long headerId =0l;
-			UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
+			Long userId = 0L;
+			//UserDetailsDto userDetailsDto = getUserTypeAndDisId(requestDto.getUserId());
+			UserDetailsDto userDetailsDto = getUserTypeAndDisId(userId);
 			
 			System.out.println("AlluserDetailsDto"+userDetailsDto);
 			if (userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(DISTRIBUTOR)) {
@@ -2443,6 +2446,7 @@ System.out.println("Query is "+query);
 				return headerIdslist;
 				
 			}else if(userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(SALES)) {
+				System.out.println("else if SALES = ");
 				//String positionId = getPositionIdByUserId(requestDto.getUserId());
 				//List<Long> outletList = getOutletIdsByPositionId(userDetailsDto.getPositionId()); //comment on 12-March-24 vaibhav
 				List<String> outletList = getOutletIdsByPositionId(userDetailsDto.getPositionId());
@@ -2460,7 +2464,7 @@ System.out.println("Query is "+query);
 //						 //outList.charAt(outList.length() - 1);
 //						 outList.substring(0, outList.length() - 1);
 //						 //outList.replace(",", "");
-//						 System.out.println("Issue for outList =\n"+newList);}
+						 System.out.println("Issue for outList = "+outletList);//}
 //						if(i==outletList.size()-1) {
 //							String outList1= "'" + outletList.get(i).toString().replace("[", "").replace("]", "") + "'";
 //							 System.out.print("2nd outList =\n"+outList+outList1);}
@@ -2472,6 +2476,7 @@ System.out.println("Query is "+query);
 					//7-May-24      +  ") ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 							+  ") ) a order by a.last_update_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 				}else {
+					System.out.println("else for outList = ");//}
 //					query = query +" ) a order by a.status_o, a.creation_date desc ) b LIMIT ?  OFFSET ? ";
 				//	query = query +" ) a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ?";
 		// 7-may-24	query = query +" ) a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -2507,7 +2512,69 @@ System.out.println("Query is "+query);
 				 */
 				return headerIdslist;
 				
-			}else {
+			}
+//				else if(userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase("AREAHEAD")){
+//				
+//				List<String> distId= getDistributorIdFromAreaHead(userDetailsDto.getEmployeeCode());
+//				String distIdList = null;
+//				if(!distId.isEmpty() && distId != null) {
+//					      distIdList = distId.stream()
+//			                .map(id -> "'" + id + "'")
+//			                .collect(Collectors.joining(", "));
+//				}
+//				
+//						//	query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
+//		//07-May-24			query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+//					      query1 = query1 +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.last_update_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+//					
+//					/*
+//					 * if(requestDto.getHeaderId() !=null) { headerId = requestDto.getHeaderId();
+//					 * }else { headerId = null; }
+//					 */
+//					
+//					System.out.println(requestDto.getHeaderId()); 
+//					System.out.println("In else AREAHEAD ="+query1);  
+//					
+//					/*
+//					 * headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+//					 * requestDto.getDistributorId(),requestDto.getStatus(),
+//					 * requestDto.getOrderNumber(), searchField
+//					 * ,headerId,requestDto.getOutletId(),requestDto.getLimit(),
+//					 * requestDto.getOffset() );
+//					 */
+//		           
+////		           headerIdslist = jdbcTemplate.queryForList(query, Long.class,
+////							requestDto.getDistributorId(),requestDto.getStatus(), requestDto.getOrderNumber(),
+////							searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset()
+////							);
+//					List<RequestDto>headerIdslist1 = new ArrayList<>();
+//					try {
+//						headerIdslist1 = consumeApiService.consumeApi(query1, 
+//								new Object[] { distIdList,requestDto.getStatus(), requestDto.getOrderNumber(),
+//										searchField,requestDto.getOutletId(),requestDto.getLimit(), requestDto.getOffset() }, 
+//								RequestDto.class);
+//						for(int i =0; i<headerIdslist1.size(); i++) {
+//							headerIdslist.add(headerIdslist1.get(i).getHeaderId());
+//						}
+//						
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					
+//					/*
+//					 * headerIdslist = jdbcTemplate.query(query, new Object[] { }, new
+//					 * BeanPropertyRowMapper<Long>(Long.class));
+//					 */
+//		System.out.println("headerIdsSSSS "+headerIdslist);
+//					return headerIdslist;
+//				
+//			}
+			
+			else {
 			//	query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
 	//07-May-24			query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 				query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.last_update_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";

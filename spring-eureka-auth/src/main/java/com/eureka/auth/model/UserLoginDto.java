@@ -3,6 +3,8 @@ package com.eureka.auth.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Transient;
+
 public class UserLoginDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -40,9 +42,21 @@ public class UserLoginDto implements Serializable {
     private String status;
     private Long tokenId;
 
+    //@Transient
+	private String firstLogin;
+    
+	
     // Getters and Setters
 
-    // User fields
+    public String getFirstLogin() {
+		return firstLogin;
+	}
+
+	public void setFirstLogin(String firstLogin) {
+		this.firstLogin = firstLogin;
+	}
+
+	// User fields
     public Long getUserId() {
         return userId;
     }

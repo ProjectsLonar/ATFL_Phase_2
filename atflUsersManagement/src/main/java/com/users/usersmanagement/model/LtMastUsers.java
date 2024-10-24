@@ -99,8 +99,18 @@ public class LtMastUsers extends BaseClass {
 	@Column(name = "TERRITORY")
 	private String territory;
 	
+	@Transient
+	private String firstLogin;
 	
 	
+	public String getFirstLogin() {
+		return firstLogin;
+	}
+
+	public void setFirstLogin(String firstLogin) {
+		this.firstLogin = firstLogin;
+	}
+
 	public String getTrrritory() {
 		return territory;
 	}
@@ -638,19 +648,19 @@ public class LtMastUsers extends BaseClass {
 				+ latitude + ", longitude=" + longitude + ", imageType=" + imageType + ", imageName=" + imageName
 				+ ", imageData=" + imageData + ", addressDetails=" + addressDetails + ", recentSerachId="
 				+ recentSerachId + ", token=" + token + ", isFirstLogin=" + isFirstLogin + ", territory=" + territory
-				+ ", distributorCode=" + distributorCode + ", primaryMobile=" + primaryMobile + ", distributorCrmCode="
-				+ distributorCrmCode + ", distributorName=" + distributorName + ", distributorAddress="
-				+ distributorAddress + ", employeeId=" + employeeId + ", empName=" + empName + ", empCode=" + empCode
-				+ ", organisationCode=" + organisationCode + ", organisationName=" + organisationName + ", outletName="
-				+ outletName + ", outletCode=" + outletCode + ", outletAddress=" + outletAddress + ", proprietorName="
-				+ proprietorName + ", orgStatus=" + orgStatus + ", position=" + position + ", inventoryLocationName="
-				+ inventoryLocationName + ", priceList=" + priceList + ", recentSearchId=" + recentSearchId
-				+ ", status=" + status + ", latitud=" + latitud + ", longitud=" + longitud + ", address=" + address
-				+ ", homephNum=" + homephNum + ", asstOPhNum=" + asstOPhNum + ", positionId=" + positionId + ", rowId="
-				+ rowId + ", areaHeadName=" + areaHeadName + ", positionName=" + positionName + ", locationName="
-				+ locationName + ", area=" + area + "]";
+				+ ", firstLogin=" + firstLogin + ", distributorCode=" + distributorCode + ", primaryMobile="
+				+ primaryMobile + ", distributorCrmCode=" + distributorCrmCode + ", distributorName=" + distributorName
+				+ ", distributorAddress=" + distributorAddress + ", employeeId=" + employeeId + ", empName=" + empName
+				+ ", empCode=" + empCode + ", organisationCode=" + organisationCode + ", organisationName="
+				+ organisationName + ", outletName=" + outletName + ", outletCode=" + outletCode + ", outletAddress="
+				+ outletAddress + ", proprietorName=" + proprietorName + ", orgStatus=" + orgStatus + ", position="
+				+ position + ", inventoryLocationName=" + inventoryLocationName + ", priceList=" + priceList
+				+ ", recentSearchId=" + recentSearchId + ", status=" + status + ", latitud=" + latitud + ", longitud="
+				+ longitud + ", address=" + address + ", homephNum=" + homephNum + ", asstOPhNum=" + asstOPhNum
+				+ ", positionId=" + positionId + ", rowId=" + rowId + ", areaHeadName=" + areaHeadName
+				+ ", positionName=" + positionName + ", locationName=" + locationName + ", area=" + area + "]";
 	}
 
 	
-	
+		
 }

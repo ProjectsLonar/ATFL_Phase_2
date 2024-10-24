@@ -87,6 +87,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lonar.cartservice.atflCartService.common.ServiceException;
 import com.lonar.cartservice.atflCartService.controller.WebController;
 import com.lonar.cartservice.atflCartService.dao.LtSoHeadersDao;
+import com.lonar.cartservice.atflCartService.dao.LtSoHeadersDaoImpl;
 import com.lonar.cartservice.atflCartService.dto.DistributorDetailsDto;
 import com.lonar.cartservice.atflCartService.dto.LtOrderLineDataGt;
 import com.lonar.cartservice.atflCartService.dto.OrderDetailsDto;
@@ -98,6 +99,7 @@ import com.lonar.cartservice.atflCartService.dto.SoHeaderDto;
 import com.lonar.cartservice.atflCartService.dto.SoHeaderDtoPendingOrders;
 import com.lonar.cartservice.atflCartService.dto.SoLineDto;
 import com.lonar.cartservice.atflCartService.dto.SoLineDtoPendingOrders;
+import com.lonar.cartservice.atflCartService.dto.UserDetailsDto;
 import com.lonar.cartservice.atflCartService.model.CodeMaster;
 import com.lonar.cartservice.atflCartService.model.LtMastOutles;
 
@@ -123,6 +125,9 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	@Autowired
 	LtSoHeadersDao ltSoHeadersDao;
 
+	@Autowired
+	LtSoHeadersDaoImpl ltSoHeadersDaoImpl;
+	
 	@Autowired
 	LtSoLinesRepository ltSoLinesRepository;
 
@@ -2888,6 +2893,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 							ltSoHeader.setDistributorId(soHeaderDto.getDistributorId());
 						}
 						
+						if (soHeaderDto.getSalesPersonId() != null) {
+							ltSoHeader.setSalesPersonId(soHeaderDto.getSalesPersonId()); ;
+						}
+						
 						ltSoHeader.setOrderDate(new Date()); //new Date()
 						ltSoHeader.setLastUpdateDate(new Date()); // new Date()
 						ltSoHeader.setCreationDate(new Date()); // new Date()
@@ -3248,6 +3257,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 						ltSoHeader.setDistributorId(soHeaderDto.getDistributorId());
 					}
 					
+					if (soHeaderDto.getSalesPersonId() != null) {
+						ltSoHeader.setSalesPersonId(soHeaderDto.getSalesPersonId()); ;
+					}
+					
 					ltSoHeader.setOrderDate(new Date()); //new Date()
 					ltSoHeader.setLastUpdateDate(new Date()); // new Date()
 					ltSoHeader.setCreationDate(new Date()); // new Date()
@@ -3587,6 +3600,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 
 						if (soHeaderDto.getDistributorId() != null) {
 							ltSoHeader.setDistributorId(soHeaderDto.getDistributorId());
+						}
+						
+						if (soHeaderDto.getSalesPersonId() != null) {
+							ltSoHeader.setSalesPersonId(soHeaderDto.getSalesPersonId()); ;
 						}
 						
 						ltSoHeader.setOrderDate(new Date()); //new Date()
@@ -5550,6 +5567,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		
 		if (soHeaderDto.getDistributorId() != null) {
 			ltSoHeader.setDistributorId(soHeaderDto.getDistributorId());
+		}
+		
+		if (soHeaderDto.getSalesPersonId() != null) {
+			ltSoHeader.setSalesPersonId(soHeaderDto.getSalesPersonId()); ;
 		}
 		
 		ltSoHeader.setCreationDate(creationDate); //(new Date());
@@ -8260,6 +8281,25 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 				//System.out.println("Login Id is ="+requestDto.getLoginId());
 				inQuerygetSoHeaderRemovingPendingOrdersFromGetOrderV2 = System.currentTimeMillis();
 				
+				
+				//LtMastUsers ltMastUsers = ltMastOutletDao.getUserFromUserId(requestDto.getUserId());	
+/*				UserDetailsDto ltMastUsers = ltSoHeadersDaoImpl.getUserTypeAndDisId(requestDto.getUserId());
+				System.out.println("ltMastUsers is ="+ltMastUsers);
+				if(ltMastUsers.getUserType().equalsIgnoreCase("AREAHEAD")) {
+					List<String> distIdList= ltSoHeadersDao.getDistributorIdFromAreaHeadNew(ltMastUsers.getEmployeeCode());
+				System.out.println("distIdList123"+distIdList);
+
+				String distId = null;
+				if(!distIdList.isEmpty() && distIdList != null) {
+					      distId = distIdList.stream()
+			                .map(id -> "'" + id + "'")
+			                .collect(Collectors.joining(", "));
+					
+				}System.out.println("distIdList is =="+distIdList);
+					headerIdsList = ltSoHeadersDao.getSoHeaderRemovingPendingOrdersFromGetOrderV2ForAreaHead(requestDto,distId);
+				}
+*/				
+				
 				if(requestDto.getDistributorId().equalsIgnoreCase("1-1OC0")){
 					String distCode= "1-1OC0";
 					List<String> empcode= ltSoHeadersDao.getEmpCodeFromDistributorId(distCode);
@@ -8280,7 +8320,8 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 					}System.out.println("distIdList is =="+distIdList);
 					headerIdsList = ltSoHeadersDao.getSoHeaderRemovingPendingOrdersFromGetOrderV2ForAreaHead(requestDto,distIdList);
 				
-				}else {
+				}
+				else {
 				headerIdsList = ltSoHeadersDao.getSoHeaderRemovingPendingOrdersFromGetOrderV2(requestDto);
 				}
 				

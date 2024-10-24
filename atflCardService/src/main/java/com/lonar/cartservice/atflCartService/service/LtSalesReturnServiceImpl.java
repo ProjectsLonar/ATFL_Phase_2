@@ -359,7 +359,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 					ltSalesReturnHeader.setStatus(ltSalesReturnDto.getStatus());
 				}
 				
-				System.out.print("SalesReturn PriceList111 = "+ltSalesReturnDto.getPriceList());
+//				System.out.print("SalesReturn PriceList111 = "+ltSalesReturnDto.getPriceList());
 				if(ltSalesReturnDto.getPriceList()!=null) {
 					ltSalesReturnHeader.setPriceList(ltSalesReturnDto.getPriceList());
 				}
@@ -395,7 +395,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 				//save sales return lines
 				List<LtSalesReturnLines> salesReturnLines = ltSalesReturnDto.getLtSalesReturnLines();
 				
-				System.out.println("salesReturnLines"+salesReturnLines);
+//				System.out.println("salesReturnLines"+salesReturnLines);
 				for (Iterator iterator = salesReturnLines.iterator(); iterator.hasNext();) {
 					LtSalesReturnLines soLine = (LtSalesReturnLines) iterator.next();
 
@@ -427,9 +427,14 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 					if(soLine.getLotNumber()!= null) {
 					ltSoLinestosave.setLotNumber(soLine.getLotNumber());
 					}
+					
+					if(soLine.getProductDesc()!= null) {
+						ltSoLinestosave.setProductDesc(soLine.getProductDesc());;
+						}
+					
 					ltSoLinestosave = updateLines(ltSoLinestosave);
 					
-					System.out.println("ltSoLinestosave"+ltSoLinestosave);
+//					System.out.println("ltSoLinestosave"+ltSoLinestosave);
 				}
 				
 			}else {
@@ -470,7 +475,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 				if(ltSalesReturnDto.getBeatName() !=null) {
 					ltSalesReturnHeader.setBeatName(ltSalesReturnDto.getBeatName());
 				}
-				System.out.print("SalesReturn PriceList = "+ltSalesReturnDto.getPriceList());
+//				System.out.print("SalesReturn PriceList = "+ltSalesReturnDto.getPriceList());
 				//if(ltSalesReturnDto.getPriceList()!=null) {
 					ltSalesReturnHeader.setPriceList(ltSalesReturnDto.getPriceList());
 					ltSalesReturnHeader.setTest(ltSalesReturnDto.getTest());
@@ -525,6 +530,10 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 						ltSoLinestosave.setLotNumber(soLine.getLotNumber());
 						}
 					
+					if(soLine.getProductDesc()!= null) {
+						ltSoLinestosave.setProductDesc(soLine.getProductDesc());;
+						}
+					
 					ltSoLinestosave = updateLines(ltSoLinestosave);
 				}
 				
@@ -538,22 +547,22 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 				inQuerygetAreaHeadDetails = System.currentTimeMillis();
 //				List<LtMastUsers> ltMastUsersAreaHead = ltSalesreturnDao.getAreaHeadDetails(ltSalesReturnHeader.getOutletId());
 				String distributorId = ltSalesreturnDao.findDistributorIdAgainstUser(ltSalesReturnHeader.getCreatedBy());
-				System.out.println("Notific distributorId"+distributorId);
+//				System.out.println("Notific distributorId"+distributorId);
 				List<LtMastUsers> areaHeadUserList = ltSoHeadersDao.getAllAreaHeadAgainstDist(distributorId);
-				System.out.println("Notific ltMastUsersAreaHead"+areaHeadUserList);
+//				System.out.println("Notific ltMastUsersAreaHead"+areaHeadUserList);
 				outQuerygetAreaHeadDetails = System.currentTimeMillis();
 				inQuerygetSalesOfficersDetails = System.currentTimeMillis();
 				//List<LtMastUsers> sysAdminUserList = ltSoHeadersDao.getActiveSysAdminUsersFromHeaderId(ltSoHeader.getHeaderId(), ltSoHeader.getOrderNumber());
 //			List<LtMastUsers> ltMastUsersSalesOfficer = ltSalesreturnDao.getSalesOfficersDetails(ltSalesReturnHeader.getOutletId());
 //				List<LtMastUsers> ltMastUsersSalesOfficer = ltSalesreturnDao.getAllSalesOfficersAgainstDist(distributorId);
 				List<LtMastUsers> ltMastUsersSalesOfficers = ltSoHeadersDao.getAllSalesOfficersAgainstDist(distributorId);
-				System.out.println("Notific ltMastUsersSalesOfficer"+ltMastUsersSalesOfficers);
+//				System.out.println("Notific ltMastUsersSalesOfficer"+ltMastUsersSalesOfficers);
 				outQuerygetSalesOfficersDetails = System.currentTimeMillis();
 			inQuerygetSysAdminDetails = System.currentTimeMillis();
 //			List<LtMastUsers> ltMastUsersSysAdmin = ltSalesreturnDao.getSysAdminDetails(ltSalesReturnHeader.getOutletId());
 			String orgId="1";
 			List<LtMastUsers> sysAdminUserList = ltSoHeadersDao.getSystemAdministartorsDetails(orgId);
-			System.out.println("Notific ltMastUsersSysAdmin"+sysAdminUserList);
+//			System.out.println("Notific ltMastUsersSysAdmin"+sysAdminUserList);
 			outQuerygetSysAdminDetails = System.currentTimeMillis();
 			final LtSalesReturnHeader ltSalesReturnHeader1 = ltSalesReturnHeader;
 			CompletableFuture.runAsync(() -> {
@@ -561,7 +570,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			//System.out.println("Hi this is AreaHead" + ltMastUsersAreaHead);
 			if(areaHeadUserList !=null) {
 				for(LtMastUsers user:areaHeadUserList) {
-					System.out.println("This is user for notification: "+user);
+//					System.out.println("This is user for notification: "+user);
 					if(user !=null) {   
 			//sending notification to areahead
 						try {				
@@ -578,7 +587,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			
 			if(ltMastUsersSalesOfficers !=null) {
 				for(LtMastUsers user:ltMastUsersSalesOfficers) {
-					System.out.println("This is user for notification: "+user);
+//					System.out.println("This is user for notification: "+user);
 					if(user !=null) {   
 			//sending notification to areahead
 						try {
@@ -595,7 +604,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			
 			if(sysAdminUserList !=null) {
 				for(LtMastUsers user:sysAdminUserList) {
-					System.out.println("This is user for notification: "+user);
+//					System.out.println("This is user for notification: "+user);
 					if(user !=null) {   
 			//sending notification to areahead
 						try {
@@ -619,7 +628,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	}
 
 			///siebel json creation
-			System.out.println("Hi I'm in Siebel Mehtod");
+//			System.out.println("Hi I'm in Siebel Mehtod");
 			
 			//if(ltSalesReturnDto.getReturnStatus().equalsIgnoreCase("APPROVED")) {
 			if(ltSalesReturnDto.getStatus().equalsIgnoreCase("APPROVED")) {
@@ -636,7 +645,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			JSONObject Header = new JSONObject();
 			JSONObject ListOfLineItem = new JSONObject();
 */			JSONArray LineItem = new JSONArray();
-			JSONObject lineData = new JSONObject();
+//			JSONObject lineData = new JSONObject();
 			JSONObject ListOfXA = new JSONObject();
 			JSONObject XA = new JSONObject();
 /*			
@@ -681,21 +690,27 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			List<LtSalesReturnLines>lineItem= ltSalesReturnDto.getLtSalesReturnLines();
      		    for(int i=0; i<lineItem.size(); i++) 
      		    {
+     		    	JSONObject lineData = new JSONObject();
      		    	
      			    //LtSalesReturnLines ltSalesReturnLines= new LtSalesReturnLines();
-     		    	System.out.println("Hi Test Line Data == "+lineItem.get(i).getProductId());
+//     		    	System.out.println("Hi Test Line Data == "+lineItem.get(i).getProductId());
      			    String prodId= lineItem.get(i).getProductId();
      			    String prodName= lineItem.get(i).getProductName();
      			    
      			   String qty= null;
      			    if(lineItem.get(i).getReturnQuantity()!=null) {
      			    qty=   Long.toString(lineItem.get(i).getReturnQuantity());    			   
-     			   }else {qty= null;}
+     			   }else {
+     				       qty= null;
+     				     }
      			    
      			    //data for listOfXA
      			   String qty1= null;
     			    if(lineItem.get(i).getReturnQuantity()!= null) {
-     			    qty1 = Long.toString(lineItem.get(i).getReturnQuantity()); }else {qty1= null;}
+     			    qty1 = Long.toString(lineItem.get(i).getReturnQuantity()); 
+     			    }else {
+     			    	    qty1= null;
+     			    	  }
     			    
      			    String location = lineItem.get(i).getLocation();
      			    String availability = lineItem.get(i).getAvailability();
@@ -705,6 +720,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
      			//  lineItem.add(ltSalesReturnLines);
      			
      			    lineData.put("Product Id", prodId);
+//     			   System.out.println(" New prodId of LineItem is ==***=== :" + prodId);
      			    lineData.put("Name", prodName );
      			    lineData.put("Quantity", qty);
      			
@@ -730,12 +746,16 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
      			    
      			   ListOfXA.put("XA", XA);
      			   lineData.put("ListOfXA", ListOfXA);
+     			   
      			   LineItem.put(lineData);
+     			  
+//     			  System.out.println("==***=== :");
+//     			 System.out.println(" New line data is ==***=== :" + lineData);
+//     			System.out.println(" In for loop LineItem is ==***=== :" + LineItem);
      					
    		}
-     		   System.out.print(" New line data of LineItem is :" + LineItem);
-     				
-			//  String jsonPayload =salesReturnDetail.toString();
+//     		   System.out.println(" ==***=== :");
+//     		    System.out.println(" New LineItem is ==***=== :" + LineItem);
 
 			  String payload = "{\n" +
 					    "    \"InvoiceNumber\": \"INV-29686-2223-000218\",\n" +
@@ -764,19 +784,19 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			    // Replace Header Data
 			    String invoiceNum= "\"InvoiceNumber\":\""+ ltSalesReturnDto.getInvoiceNumber()+"\"";
 		        jsonPayload= jsonPayload.replace("\"InvoiceNumber\": \"INV-29686-2223-000218\"", invoiceNum);
-		        System.out.print(" New invoiceNum is :" + invoiceNum);
+//		        System.out.print(" New invoiceNum is :" + invoiceNum);
 		        
 		        String returnReason= "\"ReturnReason\":\""+ ltSalesReturnDto.getReturnReason()+"\"";
 		        jsonPayload= jsonPayload.replace("\"ReturnReason\": \"SHORT RECEIVED BY CUSTOMER\"", returnReason);
-		        System.out.print(" New returnReason is :" + returnReason);
+//		        System.out.print(" New returnReason is :" + returnReason);
 		         
 		        String outletId= "\"Account Id\":\""+ ltSalesReturnDto.getOutletId()+"\"";
 		        jsonPayload= jsonPayload.replace("\"Account Id\": \"1-EEWE-478\"", outletId);
-		        System.out.print(" New outLid is :" + outletId);
+//		        System.out.print(" New outLid is :" + outletId);
 		        
 		        String outletName= "\"Account\":\""+ ltSalesReturnDto.getOutletName()+"\"";
 		        jsonPayload= jsonPayload.replace("\"Account\": \"3M CAR CARE\"", outletName);
-		        System.out.print(" New outletName is :" + outletName);
+//		        System.out.print(" New outletName is :" + outletName);
 		        
 		        //Order Number", "RMA-29686-2223-000078"
 		        // query to find order number 
@@ -789,8 +809,9 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			      
 		        String orderNumber= "\"Order Number\":\""+ ltSalesReturnDto.getSalesReturnNumber()+"\"";
 		        jsonPayload= jsonPayload.replace("\"Order Number\": \"RMA-29686-2224-000019\"", orderNumber);
-		        System.out.print(" New orderNumber is :" + orderNumber);
+//		        System.out.print(" New orderNumber is :" + orderNumber);
 		        
+		       // System.out.print(" New jsonPayload is :" + jsonPayload);
 		        
 		        // query to find inventory Id
 		        //SELECT DISTINCT lmiv.INVENTORY_ID FROM LT_MAST_INVENTORY_V lmiv, LT_MAST_DISTRIBUTORS_V lmdv,  
@@ -804,7 +825,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		        String invntId = "1-2FPGVLJ";
 		        String inventoryId= "\"Source Inventory Id\":\""+ invntId+"\"";  //ltSalesReturnDto.getInventoryId()+"\"";
 		        jsonPayload= jsonPayload.replace("\"Source Inventory Id\": \"1-2C7QNZG\"", inventoryId);
-		        System.out.print(" New inventoryId is :" + inventoryId);
+//		        System.out.print(" New inventoryId is :" + inventoryId);
 		        
 		       /* // Replace Line Item Data
 		        //String lineItemData= "\"Source Inventory Id\":\""+ ltSalesReturnDto.getOutletId()+"\"";
@@ -880,8 +901,8 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		     // Get response code
 		        int responseCode = con.getResponseCode();
 		        String msg = con.getResponseMessage();
-		        System.out.println("Response Code : " + responseCode);
-		        System.out.println("Response Message : " + msg);
+//		        System.out.println("Response Code : " + responseCode);
+//		        System.out.println("Response Message : " + msg);
 		        
 		     // Read the response body
 //		        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -903,9 +924,9 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		        	reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		            String line;
 		          while ((line = reader.readLine()) != null) {
-		        	  System.out.println("line success response is="+line);
+//		        	  System.out.println("line success response is="+line);
 		              response.append(line);
-		              System.out.println("success response is = " + response);
+//		              System.out.println("success response is = " + response);
 		          }
 		          reader.close();
 		  
@@ -917,12 +938,12 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	                    String line;
 	                      while ((line = reader.readLine()) != null) 
 	                   {
-	      	              System.out.println("line error response is="+line);
+//	      	              System.out.println("line error response is="+line);
 	                      response.append(line);
 	                   }        
 	        	          inputStream = con.getErrorStream();
-	        	          System.out.println("Error response: " + responseCode + " - " + msg);
-	        	          System.out.println("Error Response Body: " + response);
+//	        	          System.out.println("Error response: " + responseCode + " - " + msg);
+//	        	          System.out.println("Error Response Body: " + response);
 	        	    }
 			  			
 		        ConsumeApiService consumeApiService = new ConsumeApiService();
@@ -932,14 +953,14 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 		        
 		        //LtSalesReturnHeader ltSalesReturnHeader = new LtSalesReturnHeader();
 		        String resCode = Integer.toString(responseCode);
-		        System.out.println("Save Response before Body: " + resCode);
+//		        System.out.println("Save Response before Body: " + resCode);
 		        ltSalesReturnHeader.setSiebelStatus(resCode);
-		        System.out.println("Save Response after Body: " + resCode);
+//		        System.out.println("Save Response after Body: " + resCode);
 
 		        String res = response.toString();
-		        System.out.println("Save Response before Body: " + res);
+//		        System.out.println("Save Response before Body: " + res);
 		        ltSalesReturnHeader.setSiebelRemark(res);
-		        System.out.println("Save Response after Body: " + res);
+//		        System.out.println("Save Response after Body: " + res);
 		        
 		        ltSalesReturnHeader.setSiebelJsonpayload(jsonPayload);
                    if(resCode.equalsIgnoreCase("200")) {
@@ -974,7 +995,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 			//	timeDifference.put("QuerygetInStockProductCountWithInventory", timeDiff(inQuerygetInStockProductCountWithInventory,outQuerygetInStockProductCountWithInventory));
 				
 				long methodOut = System.currentTimeMillis();
-				System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
+//				System.out.println("Exit from method getInStockProduct at "+LocalDateTime.now());
 		        timeDifference.put("durationofMethodInOut", timeDiff(methodIn,methodOut));
 		        status.setTimeDifference(timeDifference);
 				return status;
@@ -1749,6 +1770,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 						ltSoLineDto.setHeaderId(id);	
 						//ltSoLineDto.setProductId(SoLineData.get(line).getProductId());  // as product code 
 						ltSoLineDto.setProductCode(SoLineData.get(line).getProductCode());
+						ltSoLineDto.setProductDesc(SoLineData.get(line).getProductDesc());
 						ltSoLineDto.setProductName(SoLineData.get(line).getProductName());
 						ltSoLineDto.setPtrPrice(SoLineData.get(line).getPtrPrice());
 			     		//ltSoLineDto.setQuantity(SoLineData.get(line).getQuantity());
@@ -2288,12 +2310,14 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	                // Set line details
 	                List<LtSalesReturnLineDto> lines = linesByHeaderId.getOrDefault(id1, new ArrayList<>());
 	                System.out.println("lines = "+lines);
-	                for (LtSalesReturnLineDto line : lines) {
-	                	inQuerygetProdNameFromProdId = System.currentTimeMillis();
-	                    String productName = ltSalesreturnDao.getProdNameFromProdId(line.getProductId());
-	                	outQuerygetProdNameFromProdId = System.currentTimeMillis();
-	                    line.setProductName(productName);
-	                }
+//	                for (LtSalesReturnLineDto line : lines) {
+//	                	inQuerygetProdNameFromProdId = System.currentTimeMillis();
+//	                    String productDesc = ltSalesreturnDao.getProdNameFromProdId(line.getProductId());
+//	                    String productName = ltSalesreturnDao.getProdDescFromProdId(line.getProductId());
+//	                	outQuerygetProdNameFromProdId = System.currentTimeMillis();
+//	                    line.setProductName(productName);
+//	                    line.setProductDesc(productDesc);
+//	                }
 	                ltSalesReturnHeaderDto.setLtSalesReturnLineDto(lines);
 	                ltSalesReturnHeaderList.add(ltSalesReturnHeaderDto);
 	            }
@@ -2564,6 +2588,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
             	  LtSalesReturnLineDto.setLotNumber(LtSalesReturnResponseDto1.get(i).getLotNumber());
             	  LtSalesReturnLineDto.setStatus1(LtSalesReturnResponseDto1.get(i).getStatus1());
             	  LtSalesReturnLineDto.setLocation(LtSalesReturnResponseDto1.get(i).getLocation());
+            	  LtSalesReturnLineDto.setProductDesc(LtSalesReturnResponseDto1.get(i).getProductDesc());
             	  
             	  salesLineList.add(LtSalesReturnLineDto);
               }

@@ -16,9 +16,13 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.atflMasterManagement.masterservice.dto.QueryHostName;
 
 public class ConsumeApiService {
 
+	String host= new QueryHostName().getHostName();
+	//String host = "http://174.138.187.142:8085";
+	
 	public <T> List<T> consumeApi(String query, Object[] body,Class<T> clazz) throws IOException, InterruptedException {
         List<T> result = new ArrayList<>();
 //		List<LtMastUsers> ltMastUsers = new ArrayList<LtMastUsers>();
@@ -32,7 +36,7 @@ public class ConsumeApiService {
 
         // Build the URI
         //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery; 
+        String uri = host +"/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery; 
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -70,7 +74,7 @@ public class ConsumeApiService {
 
         // Build the URI
         //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery; 
+        String uri = host +"/OrderApi/ExecuteCountQueryWithParams?query=" + encodedQuery; 
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -148,7 +152,7 @@ public class ConsumeApiService {
         
         // Build the URI
            //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParamsWithRequestBody"; // this is for uat server
-           String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParamsWithRequestBody";  // this is for local
+           String uri = host +"/OrderApi/ExecuteQueryWithParamsWithRequestBody";  // this is for local
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
@@ -192,7 +196,7 @@ public class ConsumeApiService {
 
         // Build the URI
            //String uri = "http://10.245.4.74/OrderApi/ExecuteCountQueryWithRequestBody";
-           String uri = "http://174.138.187.142:8085/OrderApi/ExecuteCountQueryWithRequestBody"; 
+           String uri = host +"/OrderApi/ExecuteCountQueryWithRequestBody"; 
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);

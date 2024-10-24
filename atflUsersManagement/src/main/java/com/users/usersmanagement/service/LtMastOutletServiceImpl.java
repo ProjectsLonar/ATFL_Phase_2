@@ -175,7 +175,26 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 	public Status getOutlet(RequestDto requestDto) throws ServiceException, IOException {
 		Status status = new Status();
 		System.out.println("requestDto"+requestDto);
-		List<LtOutletDto> list = ltMastOutletDao.getOutlet(requestDto);
+		
+		List<LtOutletDto> list = new ArrayList<>();
+		
+		if(requestDto.getUserId()!= null) {
+		LtMastUsers ltMastUsers = ltMastOutletDao.getUserFromUserId(requestDto.getUserId());	
+		System.out.println("ltMastUsers is ="+ltMastUsers);
+		if(ltMastUsers.getUserType().equalsIgnoreCase("AREAHEAD")) {
+		List<String> distId=ltMastOutletDao.getDistributorIdFromAreaHead(ltMastUsers.getEmployeeCode());
+		System.out.println("distIdList123"+distId);
+
+			list = ltMastOutletDao.getOutletForAreaHead(requestDto,distId);
+		}
+		else {
+		      list = ltMastOutletDao.getOutlet(requestDto);
+		}
+		}
+		else {
+		      list = ltMastOutletDao.getOutlet(requestDto);
+		}
+		
 		System.out.println("list"+list);
 		if (list != null) {
 			status.setCode(SUCCESS);
@@ -401,7 +420,9 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		try {
 		LtMastOutletsDump ltMastOutletsDump = new LtMastOutletsDump();
-
+		
+		LtMastUsers ltMastUser = ltMastOutletDao.getUserFromUserId(ltMastOutlets.getUserId());
+		
 		if (ltMastOutlets != null) {
 			System.out.println("ltMastOutlets"+ltMastOutlets);
 				if (ltMastOutlets.getOutletCode()== null) {
@@ -434,7 +455,8 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 				ltMastOutletsDump.setRegion(ltMastOutlets.getRegion());
 			}
 			ltMastOutletsDump.setArea(ltMastOutlets.getArea());
-			ltMastOutletsDump.setTerritory(ltMastOutlets.getTerritory());
+			//ltMastOutletsDump.setTerritory(ltMastOutlets.getTerritory());
+			ltMastOutletsDump.setTerritory(ltMastUser.getTerritory());
 			ltMastOutletsDump.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
 			ltMastOutletsDump.setStatus("PENDING_APPROVAL");
 			ltMastOutletsDump.setPriceList(ltMastOutlets.getPriceList());
@@ -572,7 +594,8 @@ LtMastOutletsDump ltMastOutletsDump1 = new LtMastOutletsDump();
 					ltMastOutletsDump1.setRegion(ltMastOutlets.getRegion());
 				}
 				ltMastOutletsDump1.setArea(ltMastOutlets.getArea());
-				ltMastOutletsDump1.setTerritory(ltMastOutlets.getTerritory());
+				//ltMastOutletsDump1.setTerritory(ltMastOutlets.getTerritory());
+				ltMastOutletsDump.setTerritory(ltMastUser.getTerritory());
 				ltMastOutletsDump1.setPrimaryMobile(ltMastOutlets.getPrimaryMobile());
 				ltMastOutletsDump1.setStatus("PENDING_APPROVAL");
 				ltMastOutletsDump1.setPriceList(ltMastOutlets.getPriceList());
@@ -802,7 +825,7 @@ try {
 		LtMastOutletsDump ltMastOutletsDump = ltMastOutletDao.getOutletToChangeStatus(ltMastOutletsDumps.getDistributorId(),
 				ltMastOutletsDumps.getOrgId(),ltMastOutletsDumps.getPrimaryMobile());
 		System.out.println("ltMastOutletsDump is ---"+ltMastOutletsDump);
-		ltMastOutletsDump.setStatus(ltMastOutletsDumps.getStatus());
+		//ltMastOutletsDump.setStatus(ltMastOutletsDumps.getStatus());
 		ltMastOutletsDump.setLastUpdatedBy(ltMastOutletsDumps.getUserId());
 		ltMastOutletsDump.setLastUpdateLogin(ltMastOutletsDumps.getUserId());
 		ltMastOutletsDump.setLastUpdateDate(new Date());
@@ -819,6 +842,8 @@ try {
              System.out.println("storeId Beat Sequence is --" + storeId);
 		  
             String priceListId= ltMastOutletDao.getPriceListId(ltMastOutletsDump.getPriceList());
+            
+            String distName= ltMastOutletDao.getDistNameFromDistId(ltMastOutletsDumps.getDistributorId());
              
 		  String url = "https://10.245.4.70:9014/siebel/v1.0/service/Siebel%20Outlet%20Integration/InsertOrUpdate?matchrequestformat=y";
          System.out.println("Url is---" + url);
@@ -830,7 +855,7 @@ try {
 		  JSONObject relatedOrganizationDetail = new JSONObject();
 		  
 		  relatedOrganizationDetail.put("IsPrimaryMVG","Y");
-		  relatedOrganizationDetail.put("Organization",ltMastOutletsDumps.getDistributorName());//ltMastOrganisations.getOrganisationName());
+		  relatedOrganizationDetail.put("Organization",distName);//ltMastOutletsDumps.getDistributorName());//ltMastOrganisations.getOrganisationName());
 //		  relatedOrganizationDetail.put("Organization", "JSB AGENCIES");
 		  
 		  
@@ -874,7 +899,7 @@ try {
 		  accounts.put("Name", ltMastOutletsDump.getOutletName());
 //		  accounts.put("Name", "Up South");
 //		  accounts.put("AT Territory","30801:AMDAVAD RURAl");
-//		  accounts.put("AT Territory", ltMastOutletsDump.getTerritory());
+		  accounts.put("AT Territory", ltMastOutletsDump.getTerritory());
 		  accounts.put("Rule Attribute 1", ltMastOutletsDump.getBeatId());
 		  accounts.put("Store Size", storeId);
 //		  accounts.put("Location", "Pimpri");
@@ -937,8 +962,8 @@ try {
          String username;
          String mobileNo = ltMastOutletDao.getMobileNoFromOutletName(ltMastOutletsDumps.getOutletName());
 	        if(mobileNo!= null) {
-	         //username = ltMastOutletDao.getUserNameFromSiebel(mobileNo); // comment on 15-Oct-2024 bcz of siebel auth error
-	        	username = "LONAR_TEST";
+	         username = ltMastOutletDao.getUserNameFromSiebel(mobileNo); // comment on 15-Oct-2024 bcz of siebel auth error
+	        	//username = "LONAR_TEST";
 	         }else {
 	         username = "LONAR_TEST";}   // "VINAY.KUMAR6";}
 	        String password = "D10nysu$";
@@ -1093,6 +1118,7 @@ try {
         	        ltMastOutletsDump.setSiebelStatus(resCode);
         	        ltMastOutletsDump.setSiebelRemark(res);
         	        ltMastOutletsDump.setSiebelJsonpaylod(jsonPayload);
+        	        ltMastOutletsDump.setStatus("PENDING_APPROVAL");
         	        
         	  	    ltMastOutletsDump = ltMastOutletDumpRepository.save(ltMastOutletsDump);
         	  	  status.setCode(INSERT_FAIL); 

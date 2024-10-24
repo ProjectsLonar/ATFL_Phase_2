@@ -128,6 +128,68 @@ public class LtMastOutletDaoImpl implements LtMastOutletDao, CodeMaster {
 		return null;
 	}
 
+	
+	@Override
+	public List<LtOutletDto> getOutletForAreaHead(RequestDto requestDto, List<String> distId) throws ServiceException, IOException {
+		String query = env.getProperty("getOutletForAreaHead");
+		try {
+			if (requestDto.getLimit() == 0 || requestDto.getLimit() == 1) {
+				requestDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+			}
+			
+			if(requestDto.getOffset() == 0) {
+				requestDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+			}
+
+		String searchField = null;
+		if (requestDto.getSearchField() != null) {
+			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
+		}
+		
+		String distIdList = distId.stream()
+                .map(id -> "'" + id + "'")
+                .collect(Collectors.joining(", "));
+		
+		System.out.println("distIdList"+distIdList);
+		
+		String status = null;
+		if(requestDto.getStatus() !=null) {
+			status = requestDto.getStatus().toUpperCase();
+		}
+
+		List<LtOutletDto> ltMastOutletslist = new ArrayList<>();
+//		List<LtOutletDto> ltMastOutletslist = jdbcTemplate.query(query,
+//				new Object[] {status, requestDto.getDistributorId(), requestDto.getOrgId(),// requestDto.getSalesPersonId(),
+//						searchField, requestDto.getLimit(), requestDto.getOffset() },
+//				new BeanPropertyRowMapper<LtOutletDto>(LtOutletDto.class));
+		
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		try {
+			System.out.println("query =  "+query);
+			
+			ltMastOutletslist = consumeApiService.consumeApi(query, 
+					new Object[] { status, distIdList, requestDto.getOrgId(),// requestDto.getSalesPersonId(),
+							searchField, requestDto.getLimit(), requestDto.getOffset() }, 
+							LtOutletDto.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("ltMastOutletslist"+ltMastOutletslist);
+		if (!ltMastOutletslist.isEmpty()) {
+			return ltMastOutletslist;
+		}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
 	public static <T> List<T> consumeApi(String query, Object[] body,Class<T> clazz) throws IOException, InterruptedException {
         List<T> result = new ArrayList<>();
 //		List<LtMastUsers> ltMastUsers = new ArrayList<LtMastUsers>();
@@ -665,6 +727,13 @@ System.out.println("list"+list);
 		return priceListName;
 	}
 
+	
+	@Override
+	public String getDistNameFromDistId(String distId) throws ServiceException, IOException {
+		String query= env.getProperty("getDistNameFromDistId");
+		String priceListName= jdbcTemplate.queryForObject(query, new Object[] {distId}, String.class);
+		return priceListName;
+	}
 	
 	@Override
 	public Long getUserIdFromMobileNo(String mobileNumber) throws ServiceException, IOException {

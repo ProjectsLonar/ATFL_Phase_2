@@ -112,7 +112,8 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
 //		List<LtMastUsers> list = jdbcTemplate.query(query, new Object[] { mobileNumber.trim() },
 //				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
 //		System.out.println("list"+list);
-		System.out.println("Time for mobile query = "+ LocalDateTime.now());
+//		System.out.println("Time for mobile query = "+ LocalDateTime.now());
+//		return list.get(0);
 		try {
 			List<LtMastUsers> list = consumeApi(query, new Object[] { mobileNumber.trim() },LtMastUsers.class);
 			System.out.println("Time after mobile query = "+ LocalDateTime.now());

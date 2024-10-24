@@ -96,6 +96,8 @@ public interface LtSalesreturnDao {
 	String getDistIdFromOutletCode(String outletId)throws ServerException;
 
 	String getProdNameFromProdId(String productId)throws ServerException;
+	
+	String getProdDescFromProdId(String productId)throws ServerException;
 
 	SoLineDto getProductId(String siebelInvoicenumber)throws ServerException;
 

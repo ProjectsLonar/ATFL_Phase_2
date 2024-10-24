@@ -51,7 +51,8 @@ public class UserDetailsServiceImpl implements UserDetailsService, CodeMaster {
 			ltMastUsersMap.put(username, ltMastUser);
 			System.out.println("49. = "+ltMastUsersMap+"\n");
 			// LtMastLogins ltMastLogins =new LtMastLogins();
-
+			
+			
 			if (ltMastUser.getStatus().equals("INACTIVE")) {
 				System.out.println("in get status = inactive");
 				// System.out.println("User is Inactive");
@@ -88,6 +89,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, CodeMaster {
 						ltMastUserInprocess.setLastUpdateDate(new Date());
 						ltMastUserInprocess.setTokenData(ltMastUser.getTokenData());
 
+						
 						// set null nikhil changes
 						ltMastUserInprocess.setOrgId(null);
 						ltMastUserInprocess.setDistributorId("0");

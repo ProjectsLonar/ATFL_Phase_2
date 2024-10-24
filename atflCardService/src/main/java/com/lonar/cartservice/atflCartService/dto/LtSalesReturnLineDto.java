@@ -29,8 +29,15 @@ public class LtSalesReturnLineDto {
 	String status;
 	String status1;
 	
+	String productDesc;
 	
 	
+	public String getProductDesc() {
+		return productDesc;
+	}
+	public void setProductDesc(String productDesc) {
+		this.productDesc = productDesc;
+	}
 	public String getStatus1() {
 		return status1;
 	}
@@ -124,9 +131,8 @@ public class LtSalesReturnLineDto {
 				+ ", returnQuantity=" + returnQuantity + ", remainingQuantity=" + remainingQuantity + ", availability="
 				+ availability + ", location=" + location + ", price=" + price + ", totalPrice=" + totalPrice
 				+ ", productName=" + productName + ", lotNumber=" + lotNumber + ", status=" + status + ", status1="
-				+ status1 + "]";
+				+ status1 + ", productDesc=" + productDesc + "]";
 	}
-		
 	
 	
 }

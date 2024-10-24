@@ -745,6 +745,7 @@ public Status sendOTPToUser(String mobileNumber) throws ServiceException, IOExce
 	        if (user == null) {
 	        	inQuerycreateUser = System.currentTimeMillis();
 	            user = createUser(mobileNumber);
+	            status.setData("Y");
 	            outQuerycreateUser = System.currentTimeMillis();
 	            timeDifference.put("QuerycreateUser", timeDiff(inQuerycreateUser,outQuerycreateUser));
 	            if (user == null) {
@@ -858,6 +859,7 @@ private LtMastUsers createUser(String mobileNumber) throws ServiceException {
     ltMastUser.setLastUpdateLogin(-1L);
     ltMastUser.setIsFirstLogin("Y");
     ltMastUser.setTerritory(userDto.getTerritory());
+    //ltMastUser.setFirstLogin("Y");
 
     return ltMastUsersDao.saveLtMastUsers(ltMastUser);
 }

@@ -22,6 +22,8 @@ public interface LtMastOutletDao {
 	public LtMastUsers getMastDataByOutletId(String getMastDataByOutletId) throws ServiceException;
 
 	public List<LtOutletDto> getOutlet(RequestDto requestDto) throws ServiceException, IOException;
+	
+	public List<LtOutletDto> getOutletForAreaHead(RequestDto requestDto, List<String> distId)throws ServiceException, IOException;
 
 	public LtMastOutlets verifyOutlet(String outletCode, String distributorCrmCode) throws ServiceException;
 	
@@ -75,6 +77,8 @@ public interface LtMastOutletDao {
 	public String getUserNameAgainsUserId(Long createdBy)throws ServiceException, IOException;
 
 	public String getPriceListId(String priceList)throws ServiceException, IOException;
+	
+	public String getDistNameFromDistId(String distId)throws ServiceException, IOException;
 
 	public Long getUserIdFromMobileNo(String mobileNumber)throws ServiceException, IOException;
 	
@@ -85,5 +89,7 @@ public interface LtMastOutletDao {
 	public List<String> getDistributorIdFromAreaHead(String employeeCode)throws ServiceException, IOException;
 
 	public List<LtMastOutletsDump> getPendingAprrovalOutletForAreaHead(RequestDto requestDto, List<String> distId);
+	
+	//public String getTerritoryFromUserId(Long userId)throws ServiceException, IOException;
 
 }

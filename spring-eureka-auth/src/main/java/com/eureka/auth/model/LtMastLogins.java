@@ -65,6 +65,31 @@ public class LtMastLogins {
 	
 	@Transient
 	private String outletId;
+	
+	@Transient
+	private String isFirstLogin;
+	
+	
+	@Transient
+	private String firstLogin;
+	
+	
+	
+	public String getFirstLogin() {
+		return firstLogin;
+	}
+
+	public void setFirstLogin(String firstLogin) {
+		this.firstLogin = firstLogin;
+	}
+
+	public String getIsFirstLogin() {
+		return isFirstLogin;
+	}
+
+	public void setIsFirstLogin(String isFirstLogin) {
+		this.isFirstLogin = isFirstLogin;
+	}
 
 	public Long getLoginId() {
 		return loginId;
@@ -162,12 +187,14 @@ public class LtMastLogins {
 		this.outletId = outletId;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "LtMastLogins [loginId=" + loginId + ", userId=" + userId + ", loginDate=" + loginDate + ", ipAddress="
 				+ ipAddress + ", device=" + device + ", otp=" + otp + ", status=" + status + ", tokenId=" + tokenId
 				+ ", mobile=" + mobile + ", orgId=" + orgId + ", distributorId=" + distributorId + ", outletId="
-				+ outletId + "]";
+				+ outletId + ", isFirstLogin=" + isFirstLogin + ", firstLogin=" + firstLogin + "]";
 	}
-	
+
+		
 }

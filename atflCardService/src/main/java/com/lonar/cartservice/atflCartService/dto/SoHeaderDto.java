@@ -41,8 +41,7 @@ public class SoHeaderDto {
 	 
 	 private String beatName;
 	 
-	
-	
+	 
 	private List<SoLineDto> soLineDtoList;
 
 	
@@ -67,8 +66,19 @@ public class SoHeaderDto {
          
 	private String mobileNumber;
 	private String disrtibutorId;
-	 
 	
+	private String salesPersonId;
+	
+	
+	
+	public String getSalesPersonId() {
+		return salesPersonId;
+	}
+
+	public void setSalesPersonId(String salesPersonId) {
+		this.salesPersonId = salesPersonId;
+	}
+
 	public String getDisrtibutorId() {
 		return disrtibutorId;
 	}
@@ -422,8 +432,9 @@ public class SoHeaderDto {
 				+ ", siebelRemark=" + siebelRemark + ", siebelInvoicenumber=" + siebelInvoicenumber
 				+ ", siebelJsonpayload=" + siebelJsonpayload + ", orderDate1=" + orderDate1 + ", inventoryId="
 				+ inventoryId + ", location=" + location + ", mobileNumber=" + mobileNumber + ", disrtibutorId="
-				+ disrtibutorId + "]";
+				+ disrtibutorId + ", salesPersonId=" + salesPersonId + "]";
 	}
 
 	
+		
 }

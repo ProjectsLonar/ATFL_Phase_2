@@ -59,6 +59,19 @@ public class LtSalesReturnLines extends BaseClass {
 	@Column(name = "LOT_NUMBER")
 	String lotNumber;
 
+	@Column(name = "PRODUCT_DESC")
+	String productDesc;
+	
+	
+	
+	public String getProductDesc() {
+		return productDesc;
+	}
+
+	public void setProductDesc(String productDesc) {
+		this.productDesc = productDesc;
+	}
+
 	public String getProductName() {
 		return productName;
 	}
@@ -165,8 +178,8 @@ public class LtSalesReturnLines extends BaseClass {
 				+ salesReturnHeaderId + ", productId=" + productId + ", shippedQuantity=" + shippedQuantity
 				+ ", returnQuantity=" + returnQuantity + ", remainingQuantity=" + remainingQuantity + ", availability="
 				+ availability + ", location=" + location + ", price=" + price + ", totalPrice=" + totalPrice
-				+ ", productName=" + productName + ", lotNumber=" + lotNumber + "]";
-	}	
-	
+				+ ", productName=" + productName + ", lotNumber=" + lotNumber + ", productDesc=" + productDesc + "]";
+	}
+
 	
 }

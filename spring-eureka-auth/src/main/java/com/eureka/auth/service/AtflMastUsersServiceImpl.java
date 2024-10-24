@@ -141,6 +141,9 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 		ltMastLogins.setStatus(userLoginDto.getStatus());
 		ltMastLogins.setTokenId(userLoginDto.getTokenId());
 		
+		ltMastLogins.setFirstLogin(userLoginDto.getFirstLogin());
+
+		
 		System.out.println("userLoginDto = "+userLoginDto);
 		if (userLoginDto != null) {
 			System.out.println("in ltMastLogin not null");
@@ -159,6 +162,8 @@ public class AtflMastUsersServiceImpl implements AtflMastUsersService, CodeMaste
 				entity.setStatus(userLoginDto.getStatus());
 				entity.setUserName(userLoginDto.getUserName());
 				entity.setLastLoginId(userLoginDto.getLoginId());
+				
+				ltMastLogins.setFirstLogin(userLoginDto.getFirstLogin());
 
 			} else {
 				entity.setCode(FAIL);

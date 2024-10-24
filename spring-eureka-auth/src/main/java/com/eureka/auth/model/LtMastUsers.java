@@ -184,7 +184,18 @@ public class LtMastUsers extends BaseClass {
 	@Transient
 	String position;
 	
+	@Transient
+	String firstLogin;
+	
+	
+	public String getFirstLogin() {
+		return firstLogin;
+	}
 
+	public void setFirstLogin(String firstLogin) {
+		this.firstLogin = firstLogin;
+	}
+	
 	public Long getUserId() {
 		return userId;
 	}
@@ -488,6 +499,7 @@ public class LtMastUsers extends BaseClass {
 		this.tokenData = tokenData;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "LtMastUsers [userId=" + userId + ", orgId=" + orgId + ", distributorId=" + distributorId + ", outletId="
@@ -503,9 +515,8 @@ public class LtMastUsers extends BaseClass {
 				+ ", empCode=" + empCode + ", organisationCode=" + organisationCode + ", organisationName="
 				+ organisationName + ", outletName=" + outletName + ", outletCode=" + outletCode + ", outletAddress="
 				+ outletAddress + ", proprietorName=" + proprietorName + ", orgStatus=" + orgStatus + ", position="
-				+ position + "]";
+				+ position + ", firstLogin=" + firstLogin + "]";
 	}
-
 	
 	
 }

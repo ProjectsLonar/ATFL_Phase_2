@@ -994,6 +994,27 @@ public class LtSalesreturnDaoImpl implements LtSalesreturnDao,CodeMaster{
 		return prodName;
 	}
 
+	
+	@Override
+	public String getProdDescFromProdId(String productId) throws ServerException {
+		String query= env.getProperty("getProdDescFromProdId");
+		ConsumeApiService consumeApiService = new ConsumeApiService();
+		String ProdDesc = "";
+		//String prodName= jdbcTemplate.queryForObject(query, new Object[] {productId}, String.class);
+		try {
+			ProdDesc = consumeApiService.consumeApiForString(query, 
+					new Object[] { productId });
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ProdDesc;
+	}
+	
+	
 	@Override
 	public SoLineDto getProductId(String siebelInvoicenumber) throws ServerException {
 		String query= env.getProperty("getProductId");

@@ -87,7 +87,19 @@ public class LtSoHeaders extends BaseClass1{
 	@Column(name= "DISTRIBUTOR_ID")
 	private String distributorId;	
 	
+	@Column(name= "SALES_PERSON_ID")
+	private String salesPersonId;
 	
+	
+	
+	public String getSalesPersonId() {
+		return salesPersonId;
+	}
+
+	public void setSalesPersonId(String salesPersonId) {
+		this.salesPersonId = salesPersonId;
+	}
+
 	public String getDistributorId() {
 		return distributorId;
 	}
@@ -254,8 +266,9 @@ public class LtSoHeaders extends BaseClass1{
 				+ ", userId=" + userId + ", inStockFlag=" + inStockFlag + ", beatId=" + beatId + ", priceList="
 				+ priceList + ", siebelInvoiceNumber=" + siebelInvoiceNumber + ", siebelStatus=" + siebelStatus
 				+ ", siebelRemark=" + siebelRemark + ", siebelJsonpayload=" + siebelJsonpayload + ", distributorId="
-				+ distributorId + "]";
+				+ distributorId + ", salesPersonId=" + salesPersonId + "]";
 	}
 
-		
+	
+			
 }
