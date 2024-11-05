@@ -186,7 +186,17 @@ public class LtMastOutletServiceImpl implements LtMastOutletService, CodeMaster 
 		System.out.println("distIdList123"+distId);
 
 			list = ltMastOutletDao.getOutletForAreaHead(requestDto,distId);
-		}
+		}else if(ltMastUsers.getUserType().equalsIgnoreCase("SALESOFFICER")) {
+			String emp= "GOPAGANI_ANIL";
+			List<String> distId=ltMastOutletDao.getDistributorIdFromSalesOfficer(emp);
+			System.out.println("distIdList123"+distId);
+                  if(distId==null) {
+                	 List<String> distId1=ltMastOutletDao.getDistributorIdFromAreaHead(emp);
+                	  list = ltMastOutletDao.getOutletForAreaHead(requestDto,distId1);
+                  }else {
+				   list = ltMastOutletDao.getOutletForAreaHead(requestDto,distId);
+				}
+			}
 		else {
 		      list = ltMastOutletDao.getOutlet(requestDto);
 		}
@@ -762,10 +772,16 @@ LtMastOutletsDump ltMastOutletsDump1 = new LtMastOutletsDump();
 	}
 
 	@Override
-	public Status getPriceListAgainstDistributor(String distributorId) throws ServiceException, IOException {
+	public Status getPriceListAgainstDistributor(String distributorId, String priceist) throws ServiceException, IOException {
 		Status status = new Status();
+		System.out.println("In controller priceist"+priceist);
+		List<LtMastPricelist> list = new ArrayList<>();
 		try {
-		List<LtMastPricelist> list = ltMastOutletDao.getPriceListAgainstDistributor(distributorId);
+			if(priceist!= null) {
+				list = ltMastOutletDao.getPriceListAgainstPriceListName(priceist);
+			}else {
+		        list = ltMastOutletDao.getPriceListAgainstDistributor(distributorId);
+		    }
 		if (list != null) {
 			status.setCode(SUCCESS);
 			status.setMessage("RECORD FOUND SUCCESSFULLY");
@@ -1196,11 +1212,33 @@ try {
 
 	@Override
 	public Status getBeatDetailsAgainsDistirbutorCode(BeatDetailsDto beatDetailsDto) throws ServiceException, IOException {
+		System.out.println("Beat NAme is in controller "+beatDetailsDto.getBeatName());
 		try {   
 		Status status = new Status();
 		//BeatDetailsDto beatDetailsDto1 = new BeatDetailsDto();
 		List<OutletSequenceData> outletSequenceData= new ArrayList<OutletSequenceData>();
 		  //BeatDetailsDto headerlist = ltMastOutletDao.getBeatDetailsAgainsDistirbutorCodeAndBeatName(beatDetailsDto);
+		
+//		LtMastUsers ltMastUsers = ltMastOutletDao.getUserFromUserId(beatDetailsDto.getUserId());	
+//		System.out.println("ltMastUsers is ="+ltMastUsers);
+//		if(ltMastUsers.getUserType().equalsIgnoreCase("AREAHEAD")) {
+//		List<String> distId=ltMastOutletDao.getDistributorIdFromAreaHead(ltMastUsers.getEmployeeCode());
+//		System.out.println("distIdList123"+distId);
+//		outletSequenceData = ltMastOutletDao.getBeatDetailsAgainsDistirbutorCodeForAreaHead(beatDetailsDto, distId);
+//		}
+		if(beatDetailsDto.getBeatName()!= null) {
+			//OutletSequenceData outletSequenceData1= new OutletSequenceData();
+			//String beatDetails = ltMastOutletDao.getBeatDetailsAgainsBeatName(beatName);
+			String beatName = beatDetailsDto.getBeatName();
+			System.out.println("Beat NAme is beatName "+beatDetailsDto.getBeatName());
+			OutletSequenceData outletSequenceData1= new OutletSequenceData();
+			outletSequenceData1.setBeatName(beatName);
+			
+			outletSequenceData.add(outletSequenceData1);
+			status.setCode(RECORD_FOUND);
+    		status.setMessage("Record Found Successfully");
+    		status.setData(outletSequenceData);
+		}else {
 		  outletSequenceData = ltMastOutletDao.getBeatDetailsAgainsDistirbutorCode(beatDetailsDto);
 	    	if(outletSequenceData!= null) {
 	    		status.setCode(RECORD_FOUND);
@@ -1210,6 +1248,7 @@ try {
 		    	status.setCode(FAIL);
 		    	status.setMessage("RECORD NOT FOUND");
 		    }
+    	}
 		    return status;
 	      }
 	 catch(Exception e) {

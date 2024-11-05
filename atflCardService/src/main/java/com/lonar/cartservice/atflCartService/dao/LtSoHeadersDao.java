@@ -159,5 +159,8 @@ public interface LtSoHeadersDao {
 	
 //	String getDistIdFromOutletCode(String outletCode)throws ServiceException, IOException;	
 	
+	String getDistIdFromOrderNo(String orderNumber) throws ServiceException, IOException;
+
+	
 
 }

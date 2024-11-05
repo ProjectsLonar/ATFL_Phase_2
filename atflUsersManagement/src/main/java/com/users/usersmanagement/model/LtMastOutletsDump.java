@@ -158,6 +158,11 @@ public class LtMastOutletsDump extends BaseClass {
 	@Transient   
 	String mobileNumber;
 	
+	@Transient
+	String pinCode;
+	
+	
+	
 	/*public String getCreatedby() {
 		return createdby;
 	}
@@ -165,6 +170,14 @@ public class LtMastOutletsDump extends BaseClass {
 	public void setCreatedby(String createdby) {
 		this.createdby = createdby;
 	}*/
+
+	public String getPinCode() {
+		return pinCode;
+	}
+
+	public void setPinCode(String pinCode) {
+		this.pin_code = pinCode;
+	}
 
 	public String getMobileNumber() {
 		return mobileNumber;
@@ -322,8 +335,8 @@ public class LtMastOutletsDump extends BaseClass {
 		return pin_code;
 	}
 
-	public void setPin_code(String pin_code) {
-		this.pin_code = pin_code;
+	public void setPin_code(String pinCode) {
+		this.pin_code = pinCode;
 	}
 
 	public String getRegion() {
@@ -518,8 +531,9 @@ public class LtMastOutletsDump extends BaseClass {
 				+ ", beatId=" + beatId + ", distributorCode=" + distributorCode + ", distributorCrmCode="
 				+ distributorCrmCode + ", distributorStatus=" + distributorStatus + ", employeeId=" + employeeId
 				+ ", empName=" + empName + ", employeeCode=" + employeeCode + ", outletAddress=" + outletAddress
-				+ ", userId=" + userId + ", mobileNumber=" + mobileNumber + "]";
+				+ ", userId=" + userId + ", mobileNumber=" + mobileNumber + ", pinCode=" + pinCode + "]";
 	}
 
+	
 			
 }

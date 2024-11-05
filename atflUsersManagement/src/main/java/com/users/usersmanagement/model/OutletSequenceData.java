@@ -12,6 +12,13 @@ public class OutletSequenceData {
 	private int outletSequence;
 	private String address;
 	
+	private String data;
+	
+	
+	
+//	public OutletSequenceData(String data) {
+//        this.data = data;
+//    }
 	
 	public String getOutletName() {
 		return outletName;

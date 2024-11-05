@@ -69,10 +69,16 @@ public class BeatDetailsDto {
 	String position;
 	String beatId;
 		
+	Long userId;
 	
 	
-	
-    public String getAddress_3() {
+    public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public String getAddress_3() {
 		return address_3;
 	}
 	public void setAddress_3(String address_3) {
@@ -444,7 +450,7 @@ public List<OutletSequenceData> getOutletSequenceData() {
 				+ ", createdBy=" + createdBy + ", priceList=" + priceList + ", positionsId=" + positionsId + ", orgId="
 				+ orgId + ", lastUpdateDate=" + lastUpdateDate + ", address1=" + address1 + ", outletChannel="
 				+ outletChannel + ", name_position=" + name_position + ", position=" + position + ", beatId=" + beatId
-				+ "]";
+				+ ", userId=" + userId + "]";
 	}
 	
 	

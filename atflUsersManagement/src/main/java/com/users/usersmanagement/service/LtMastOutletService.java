@@ -26,7 +26,7 @@ public interface LtMastOutletService {
 	
 	Status createOutlet(LtMastOutletsDump ltMastOutlets) throws ServiceException, IOException;
 	
-	Status getPriceListAgainstDistributor(String distributorId )throws ServiceException, IOException;
+	Status getPriceListAgainstDistributor(String distributorId, String priceList )throws ServiceException, IOException;
 	
 	Status getPendingAprrovalOutlet(RequestDto requestDto) throws ServiceException, IOException;
 	

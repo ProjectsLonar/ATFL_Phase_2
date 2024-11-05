@@ -88,7 +88,9 @@ public class UserDetailsServiceImpl implements UserDetailsService, CodeMaster {
 						ltMastUserInprocess.setLastUpdateLogin(ltMastUser.getLastUpdateLogin());
 						ltMastUserInprocess.setLastUpdateDate(new Date());
 						ltMastUserInprocess.setTokenData(ltMastUser.getTokenData());
-
+						
+						//ltMastUserInprocess.setIsFirstLogin(ltMastUser.getIsFirstLogin());
+						//ltMastUserInprocess.setFirstLogin(ltMastUser.getFirstLogin());
 						
 						// set null nikhil changes
 						ltMastUserInprocess.setOrgId(null);
@@ -120,6 +122,8 @@ public class UserDetailsServiceImpl implements UserDetailsService, CodeMaster {
 				} else {
 					System.out.println("hi in else");
 					roles.add(ltMastUser.getUserType());
+					//ltMastUser.setIsFirstLogin(ltMastUser.getIsFirstLogin());
+					//ltMastUser.setFirstLogin(ltMastUser.getFirstLogin());
 					ltMastUsersDao.saveLtMastUsers(ltMastUser);
 				}
 			}

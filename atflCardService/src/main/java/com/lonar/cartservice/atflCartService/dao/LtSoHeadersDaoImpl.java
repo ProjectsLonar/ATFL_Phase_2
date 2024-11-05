@@ -340,7 +340,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			List<Long> userList = getUsersByDistributorId(userDetailsDto.getDistributorId());
 			System.out.println("Below getUsersByDistributorId query call method at = "+LocalDateTime.now());
 			
-			System.out.println("AlluserListDto"+userList);
+			//System.out.println("AlluserListDto"+userList);
 			
 			if(!userList.isEmpty() && userList != null) {
 				query = query + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
@@ -397,7 +397,7 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 				e.printStackTrace();
 			}
 					
-			System.out.println("headerIdslist in Dao"+headerIdslist);
+			//System.out.println("headerIdslist in Dao"+headerIdslist);
 			return headerIdslist;
 			
 		}else if(userDetailsDto!= null && userDetailsDto.getUserType().equalsIgnoreCase(SALES)) {
@@ -484,16 +484,16 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 				e.printStackTrace();
 			}
 			
-			System.out.println(requestDto.getStatus());
-			System.out.println(requestDto.getOrderNumber());
+			//System.out.println(requestDto.getStatus());
+			//System.out.println(requestDto.getOrderNumber());
 
-			System.out.println(requestDto.getDistributorId());
+			//System.out.println(requestDto.getDistributorId());
 
-			System.out.println(searchField);
+			//System.out.println(searchField);
 
-			System.out.println(requestDto.getLimit());
+			//System.out.println(requestDto.getLimit());
 			
-			System.out.println(requestDto.getOffset() +"\n"+ requestDto);
+			//System.out.println(requestDto.getOffset() +"\n"+ requestDto);
 
 		//	System.out.println("Sales outletList query" + query);
 			
@@ -506,7 +506,9 @@ public class LtSoHeadersDaoImpl implements LtSoHeadersDao,CodeMaster {
 			 */
 			return headerIdslist;
 			
-		}else {
+		}
+		
+		else {
 		//	query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b WHERE rownum BETWEEN ? AND ? ";
 			query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 			/*
@@ -1089,7 +1091,7 @@ System.out.println("Query is "+query);
 			if(!userList.isEmpty() && userList != null) {
 				System.out.println("In if distributor");
 				query1 = query1 + " and lsh.created_by in (" + userList.toString().replace("[", "").replace("]", "")
-				        + ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx'))  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				        + ") and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx'))  order by CDATE desc OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 			}else {
 				System.out.println("In else distributor");
 				//query = query +" and COALESCE(lsh.outlet_id ,'xx') =  COALESCE( ? ,COALESCE(lsh.outlet_id,'xx') ) )a order by a.status_o, a.creation_date desc ) b  where rownum BETWEEN ? AND ? ";
@@ -1131,7 +1133,7 @@ System.out.println("Query is "+query);
                         .collect(Collectors.joining(", "));
 				System.out.println("In if of Sales Person");
 				query1 = query1 + " and lsh.outlet_id in (" + outletListString +
-				 ")  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+				 ")  order by CDATE desc OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 			}else {
 				System.out.println("In else of Sales Person");
 				query1 = query1 +"  order by status_o, CDATE desc  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -1173,8 +1175,10 @@ System.out.println("Query is "+query);
 				
 			}
 //			System.out.println("distId are= "+distId);
-			query11 = query11 + "and COALESCE(lsh.outlet_id ,'xx') =  COALESCE(? ,COALESCE(lsh.outlet_id,'xx')) ORDER BY STATUS_O, CDATE DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-//			System.out.println("query11 == "+query11);
+			query11 = query11 + "and COALESCE(lsh.outlet_id ,'xx') =  COALESCE(? ,COALESCE(lsh.outlet_id,'xx')) ORDER BY CDATE DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+//			query11 = query11 + "and COALESCE(lsh.outlet_id ,'xx') =  COALESCE(? ,COALESCE(lsh.outlet_id,'xx')) ORDER BY STATUS_O, CDATE DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+					
+			//			System.out.println("query11 == "+query11);
 //			System.out.println("requestDto data is == "+requestDto+ searchField);
 			try {
 				headerIdslist = consumeApiService.consumeApiWithRequestBody(query11, 
@@ -1295,7 +1299,7 @@ System.out.println("Query is "+query);
 			else {
 				System.out.println("in else");
 			    query = query + "  and lsh.header_id IN (NULL) ) a order by a.status_o, a.cdate desc, a.header_id ";
-				System.out.println("Concated query is "+query);
+				//System.out.println("Concated query is "+query);
  
 			}
 /*			List<ResponseDto> headerDtolist = jdbcTemplate.query(query, new Object[] {},
@@ -3087,7 +3091,8 @@ System.out.println("Query is "+query);
 		List<LtMastUsers> ltMastUserslist = jdbcTemplate.query(query,
 				new Object[] {distributorId },
 				new BeanPropertyRowMapper<LtMastUsers>(LtMastUsers.class));
-
+		System.out.println("getAllAreaHeadAgainstDist query& distributorId"+query+"\t"+distributorId);
+		System.out.println("getAllAreaHeadAgainstDist query o/p =" +ltMastUserslist);
 		if (!ltMastUserslist.isEmpty()) {
 			return ltMastUserslist;
 		}else {
@@ -3565,6 +3570,18 @@ public List<String> getDistributorIdFromAreaHeadNew(String employeeCodse) throws
 				e.printStackTrace();
 			}return null;
 		
+		}
+		
+		
+		@Override
+		public String getDistIdFromOrderNo(String orderNo) throws ServiceException, IOException {
+			String distCode;
+			String sql = env.getProperty("getDistIdFromOrderNo");
+			distCode = jdbcTemplate.queryForObject(sql, new Object[] { orderNo }, String.class);
+			//if(distCode!= null) {
+			return distCode;
+			//}
+			//return null;
 		}
 }
 	

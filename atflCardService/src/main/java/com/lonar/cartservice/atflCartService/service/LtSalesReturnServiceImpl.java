@@ -2310,6 +2310,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 	                // Set line details
 	                List<LtSalesReturnLineDto> lines = linesByHeaderId.getOrDefault(id1, new ArrayList<>());
 	                System.out.println("lines = "+lines);
+/* old comment 	                
 //	                for (LtSalesReturnLineDto line : lines) {
 //	                	inQuerygetProdNameFromProdId = System.currentTimeMillis();
 //	                    String productDesc = ltSalesreturnDao.getProdNameFromProdId(line.getProductId());
@@ -2318,6 +2319,8 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
 //	                    line.setProductName(productName);
 //	                    line.setProductDesc(productDesc);
 //	                }
+   end old comment */	                
+	        
 	                ltSalesReturnHeaderDto.setLtSalesReturnLineDto(lines);
 	                ltSalesReturnHeaderList.add(ltSalesReturnHeaderDto);
 	            }
@@ -2326,7 +2329,7 @@ private void sendEmail(String host, String port, String mailFrom, String passwor
  
 	            SalesReturnDto salesReturnDto = new SalesReturnDto();
 	            salesReturnDto.setLtSalesReturnHeaderDto(ltSalesReturnHeaderList);
- 
+	            
 	            if (!salesReturnResponse.isEmpty()) {
 	                status.setCode(RECORD_FOUND);
 	                status.setMessage("Recod_Found_Successfully");

@@ -37,6 +37,8 @@ public interface LtMastOutletDao {
 	
 	public List<LtMastPricelist> getPriceListAgainstDistributor(String outletId)throws ServiceException, IOException;
 	
+	public List<LtMastPricelist> getPriceListAgainstPriceListName(String priceList)throws ServiceException, IOException;
+	
 	public List<LtMastOutletsDump> getPendingAprrovalOutlet(RequestDto requestDto)throws ServiceException, IOException;
 	
 	public LtMastOutletsDump getOutletToChangeStatus(String distributorId,String orgId,String primaryMobile)throws ServiceException, IOException;
@@ -87,9 +89,16 @@ public interface LtMastOutletDao {
 	public LtMastUsers getUserFromUserId(Long userId)throws ServiceException, IOException;
 
 	public List<String> getDistributorIdFromAreaHead(String employeeCode)throws ServiceException, IOException;
+	
+	public List<String> getDistributorIdFromSalesOfficer(String employeeCode)throws ServiceException, IOException;
 
 	public List<LtMastOutletsDump> getPendingAprrovalOutletForAreaHead(RequestDto requestDto, List<String> distId);
+
+	public List<OutletSequenceData> getBeatDetailsAgainsDistirbutorCodeForAreaHead(BeatDetailsDto beatDetailsDto,
+			List<String> distId)throws ServiceException, IOException;
 	
 	//public String getTerritoryFromUserId(Long userId)throws ServiceException, IOException;
+	
+	public String getBeatDetailsAgainsBeatName(String beatName)throws ServiceException, IOException;
 
 }

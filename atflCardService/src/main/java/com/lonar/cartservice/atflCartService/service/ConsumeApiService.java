@@ -33,7 +33,7 @@ public class ConsumeApiService {
         // Convert the Object[] to JSON string
         String jsonBody = objectMapper.writeValueAsString(body);
       //  System.out.println("jsonBody is ="+jsonBody);
-        System.out.println("query is ="+query);
+        //System.out.println("query is ="+query);
         // Build the URI
         
         //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery; // this is for uat server
@@ -46,7 +46,7 @@ public class ConsumeApiService {
 
         try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
             String responseBody = EntityUtils.toString(response.getEntity());
-            System.out.println(responseBody);
+          //  System.out.println(responseBody);
           //  System.out.println("After response body = "+ LocalDateTime.now());
         
             //List<LtMastUsers> usersArray = objectMapper.readValue(responseBody, LtMastUsers(LtMastUsers.class));

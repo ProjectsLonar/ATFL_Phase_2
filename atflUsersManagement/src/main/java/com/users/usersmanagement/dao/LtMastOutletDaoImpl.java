@@ -347,6 +347,25 @@ System.out.println("list"+list);
 		return null;
 	}
 	
+	
+	@Override
+	public List<LtMastPricelist> getPriceListAgainstPriceListName(String priceList)throws ServiceException, IOException{
+
+		String query = env.getProperty("getPriceListAgainstPriceListName");
+		System.out.println("outletId"+priceList);
+
+		List<LtMastPricelist> list = jdbcTemplate.query(query,
+				new Object[] {priceList},
+				new BeanPropertyRowMapper<LtMastPricelist>(LtMastPricelist.class));
+		System.out.println("query"+query);
+System.out.println("list"+list);
+		if (!list.isEmpty()) {
+			return list;
+		}
+
+		return null;
+	}
+	
 	@Override
 	public List<LtMastOutletsDump> getPendingAprrovalOutlet(RequestDto requestDto)throws ServiceException, IOException{
 		String query = env.getProperty("getPendingAprrovalOutlet");
@@ -362,12 +381,18 @@ System.out.println("list"+list);
 		if (requestDto.getSearchField() != null) {
 			searchField = "%" + requestDto.getSearchField().toUpperCase() + "%";
 		}
+		ConsumeApiService consumeApiService = new ConsumeApiService();
 
-		List<LtMastOutletsDump> ltMastOutletslist = jdbcTemplate.query(query,
-				new Object[] { requestDto.getDistributorId(), requestDto.getOrgId(),requestDto.getPrimaryMobile(),requestDto.getOutletName(),
-						searchField, requestDto.getLimit(), requestDto.getOffset() },
-				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
+//		List<LtMastOutletsDump> ltMastOutletslist = jdbcTemplate.query(query,
+//				new Object[] { requestDto.getDistributorId(), requestDto.getOrgId(),requestDto.getPrimaryMobile(),requestDto.getOutletName(),
+//						searchField, requestDto.getLimit(), requestDto.getOffset() },
+//				new BeanPropertyRowMapper<LtMastOutletsDump>(LtMastOutletsDump.class));
 
+		List<LtMastOutletsDump> ltMastOutletslist =consumeApiService.consumeApi(query, 
+				new Object[] {requestDto.getDistributorId(), requestDto.getOrgId(),requestDto.getPrimaryMobile(),requestDto.getOutletName(),
+				searchField, requestDto.getLimit(), requestDto.getOffset()}, 
+				LtMastOutletsDump.class);
+		
 		System.out.println("list"+ltMastOutletslist);
 		if (!ltMastOutletslist.isEmpty()) {
 			return ltMastOutletslist;
@@ -534,6 +559,38 @@ System.out.println("list"+list);
 				return null;
 			}
 
+	
+	@Override
+	public List<OutletSequenceData> getBeatDetailsAgainsDistirbutorCodeForAreaHead(BeatDetailsDto beatDetailsDto, List<String> distId)throws ServiceException, IOException {
+		
+		String searchField= null;
+		if (beatDetailsDto.getSearchField() != null) {
+			searchField = "%" + beatDetailsDto.getSearchField().toUpperCase() + "%";
+		}
+/*		if(beatDetailsDto.getLimit() == 0 || beatDetailsDto.getLimit() == 1) {
+			beatDetailsDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
+		}
+		if(beatDetailsDto.getOffset() ==0) {
+			beatDetailsDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
+		}
+	*/	
+		String distIdList = distId.stream()
+                .map(id -> "'" + id + "'")
+                .collect(Collectors.joining(", "));
+		
+		String query = env.getProperty("getBeatDetailsAgainsDistirbutorCodeForAreaHead");
+	       List<OutletSequenceData> list = jdbcTemplate.query(query, new Object[] 
+	    		   {distIdList, searchField 
+	    			//	   beatDetailsDto.getLimit(), beatDetailsDto.getOffset()
+	    			}, 
+				
+	    		   new BeanPropertyRowMapper<OutletSequenceData>(OutletSequenceData.class));
+	               if(!list.isEmpty()) {
+				                         return list;
+			                           }
+				return null;
+			}
+	
 	@Override
 	public void updateBeatSequence(int outletSeq, String distCode, String beatName, String outletCode)throws ServiceException, IOException {
 		String query =  env.getProperty("updateBeatSequence");
@@ -796,6 +853,20 @@ System.out.println("list"+list);
 	}
 
 	@Override
+	public List<String> getDistributorIdFromSalesOfficer(String employeeCode) throws ServiceException, IOException {
+		
+		String query = env.getProperty("getDistributorIdFromSalesOfficer");
+		System.out.println("ltMastUsers employeeCode is ="+employeeCode);
+		List<String> distId = jdbcTemplate.queryForList(query, new Object[] {employeeCode}, String.class);
+		 if (!distId.isEmpty()) {
+				return distId;
+			}else {
+				return null;
+			}		
+	}
+	
+	
+	@Override
 	public List<LtMastOutletsDump> getPendingAprrovalOutletForAreaHead(RequestDto requestDto, List<String> distId) {
 		String query = env.getProperty("getPendingAprrovalOutletForAreaHead");
 		try {
@@ -841,7 +912,12 @@ System.out.println("list"+list);
 		return null;
 	}
 
-
+	@Override
+	public String getBeatDetailsAgainsBeatName(String beatName) throws ServiceException, IOException {
+		String query = env.getProperty("getBeatDetailsAgainsBeatName");
+		String mobileNo = jdbcTemplate.queryForObject(query, new Object[] {beatName}, String.class);
+		return mobileNo;
+	}
 	
 
 }

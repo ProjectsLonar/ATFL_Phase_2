@@ -413,14 +413,14 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		//System.out.print("This is sysAdminUserList in sendNotifications method " + sysAdminUserList);
 		
 		String distributorId = ltSoHeadersDao.findDistributorIdAgainstOutletId(ltSoHeader.getOutletId());
-		
+		System.out.println("Notifi distributorId" + distributorId);
 		List<LtMastUsers> areaHeadUserList = ltSoHeadersDao.getAllAreaHeadAgainstDist(distributorId);
-		System.out.print("areaHeadUserList = "+areaHeadUserList);
+		System.out.println("Notifi areaHeadUserList = "+areaHeadUserList);
 		String orgId="1";
 		List<LtMastUsers> sysAdminUserList = ltSoHeadersDao.getSystemAdministartorsDetails(orgId);
-		System.out.print("sysAdminUserList = "+sysAdminUserList);
+		System.out.println("Notifi sysAdminUserList = "+sysAdminUserList);
 		List<LtMastUsers> ltMastUsersSalesOfficers = ltSoHeadersDao.getAllSalesOfficersAgainstDist(distributorId);
-		System.out.print("ltMastUsersSalesOfficers = "+ltMastUsersSalesOfficers);
+		System.out.println("Notifi ltMastUsersSalesOfficers = "+ltMastUsersSalesOfficers);
 		
 		//	Optional<LtMastOutles> outletsObj =ltMastOutletRepository.findById(ltSoHeader.getOutletId());
 		//List<LtMastOutles> ltMastOutle = new ArrayList<LtMastOutles>();
@@ -517,7 +517,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		               
 			}
 			if(userType.equalsIgnoreCase("SALES") || userType.equalsIgnoreCase("DISTRIBUTOR")) {
-				System.out.print("This is SALES/DISTRIBUTOR in sendNotifications method " + userType);
+				System.out.println("This is SALES/DISTRIBUTOR in sendNotifications method " + userType);
 				// send salesOrder approval notification to areHead if order is outOfStock
 				System.out.println("In-Notif1"+areaHeadUserList);
 //				System.out.println("In-Notif2"+ltSoHeader.getInStockFlag());
@@ -5582,6 +5582,11 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		ltSoHeader.setSiebelRemark(siebelData.getSiebelRemark());
 		ltSoHeader.setSiebelStatus(siebelData.getSiebelStatus());
 		
+		if(ltSoHeader.getPriceList()==null) {
+			ltSoHeader.setPriceList(siebelData.getPriceList());
+			soHeaderDto.setPriceList(siebelData.getPriceList());
+		}
+		
 //		System.out.print("Hii sievelgel 1"+siebelData.getSiebelInvoiceNumber());
 //		System.out.print("Hii sievelgel 2"+siebelData.getSiebelJsonpayload());
 //		System.out.print("Hii sievelgel 3"+siebelData.getSiebelStatus());
@@ -5605,13 +5610,13 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	     }
 		System.out.println(" before saveOutOfStockOrderIntoSiebel method at = "+LocalDateTime.now());
 		
-		System.out.println("old order number befor siebel api call = "+soHeaderDto.getOrderNumber());
+	//	System.out.println("old order number befor siebel api call = "+soHeaderDto.getOrderNumber());
 		inCheckOrderNoInSiebel = System.currentTimeMillis();
 		System.out.println(" before checkOrderNoInSiebel method at = "+LocalDateTime.now());
 		String newOrderNo = checkOrderNoInSiebel(soHeaderDto.getOrderNumber(), soHeaderDto.getOutletId());
 		System.out.println(" after checkOrderNoInSiebel method at = "+LocalDateTime.now());
 		outCheckOrderNoInSiebel = System.currentTimeMillis();
-		System.out.println("newOrderNo order number befor siebel api call = "+newOrderNo);
+	//	System.out.println("newOrderNo order number befor siebel api call = "+newOrderNo);
 		if (newOrderNo != null) {
 			status.setCode(FAIL);    //this logic comment on 05-Sep-2024 bcz of venkat get this msg in app & share on team
 			status.setMessage(" Order number" + soHeaderDto.getOrderNumber()+" already exist in Siebel, can't place order, please contact admin.");
@@ -5637,7 +5642,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			
 			if(ltSoHeader.getStatus().equalsIgnoreCase("APPROVED")) {
 				
-				System.out.println("New Update siebel instock order call in ====" +ltSoHeader.getStatus());
+		//		System.out.println("New Update siebel instock order call in ====" +ltSoHeader.getStatus());
 				
 				//	saveOrderIntoSiebel(ltSoHeader, soHeaderDto);  this is original with out async call to siebel
 				if(siebelData.getSiebelStatus()== null || !siebelData.getSiebelStatus().equalsIgnoreCase("200")) { 
@@ -6385,9 +6390,15 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	        Status status = new Status();
 	        inQuerygetSoHeader = System.currentTimeMillis();
 	        System.out.println("Above getSoHeaderV3 query call method at = "+LocalDateTime.now());
+	        
+	        if(requestDto.getOrderNumber()!= null) {
+	        	String distId = ltSoHeadersDao.getDistIdFromOrderNo(requestDto.getOrderNumber());
+	        	requestDto.setDistributorId(distId);
+	        }
+	        
 	        List<Long> headerIdsList = ltSoHeadersDao.getSoHeader(requestDto);
 	        System.out.println("below getSoHeaderV3 query call method at = "+LocalDateTime.now());
-	        System.out.println("getOrderV3 headerIdsList = "+ headerIdsList);
+	        //System.out.println("getOrderV3 headerIdsList = "+ headerIdsList);
 	        outQuerygetSoHeader = System.currentTimeMillis();
 	        System.out.println("Below getSoHeader query call method at = "+LocalDateTime.now());
 	        inQuerygetRecordCount = System.currentTimeMillis();
@@ -6467,12 +6478,12 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	        
 	        System.out.println("above for loop of MrpForMultipleProductV1 method at = "+LocalDateTime.now());
 	        for (ResponseDto responseDto : responseDtoList) {
-	        	System.out.println("responseDto InventoryQuantity is = "+responseDto.getInventoryQuantity());
+	        	//System.out.println("responseDto InventoryQuantity is = "+responseDto.getInventoryQuantity());
 	        	if(responseDto.getInstockFlag().equalsIgnoreCase("Y")) {
 	        	try {
 	        		
 	        		if(mrpProdList.size()>1) {
-	        			System.out.println("In if mrpList.size()>1 = "+mrpProdList.size());
+	        		//	System.out.println("In if mrpList.size()>1 = "+mrpProdList.size());
 	        			List<ResponseDto> qty2 = mrpProdList.stream()
 			                    .filter(x -> x.getProductId().equalsIgnoreCase(responseDto.getProductId()))
 			                    .collect(Collectors.toList());
@@ -6483,7 +6494,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			                    .collect(Collectors.toList());
 	        		//	System.out.println("New prodId = " + responseDto.getProductId() + " MRP is" + responseDto.getLinelistPrice());
 	    	        //    System.out.println("New qty = " + qty.get(0).getInventoryQuantity() + "orderNo is " + responseDto.getOrderNumber());
-	    		        System.out.println("New qty = " +qty);
+	    		   //     System.out.println("New qty = " +qty);
 	        		if(qty2.size() > 1) {
 	        			if(qty.size()>=1) {
 		        			responseDto.setInventoryQuantity(qty.get(0).getInventoryQuantity());
@@ -6497,7 +6508,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 	        		
 	        		//responseDto.setInventoryQuantity(qty.get(0).getInventoryQuantity());
 	        		}else {
-	        			System.out.println("In else mrpList.size()>1 = "+mrpProdList.size());
+	        			//System.out.println("In else mrpList.size()>1 = "+mrpProdList.size());
 		            List<ResponseDto> qty = mrpProdList.stream()
 		                    .filter(x -> x.getProductId().equalsIgnoreCase(responseDto.getProductId())
 		                            && x.getMrp().equalsIgnoreCase(responseDto.getLineListPrice()))
@@ -6542,7 +6553,7 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 		        }
 	        	
 	            SoLineDto soLineDto = buildSoLineDto(responseDto);
-	            System.out.println("New soLineDto = " + soLineDto);
+	            //System.out.println("New soLineDto = " + soLineDto);
 	            
 
 	            // Add soLineDto to the soLineDtoMap only if lineId is not null

@@ -93,13 +93,25 @@ public class LtMastOutletController implements CodeMaster {
 	@RequestMapping(value = "/getPriceListAgainstDistributor/{distributorId}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> getPriceListAgainstDistributor(@PathVariable("distributorId") String distributorId) throws ServerException {
 		try {
-			return new ResponseEntity<Status>(ltMastOutletService.getPriceListAgainstDistributor(distributorId), HttpStatus.OK);
+			String priceList=null;
+			return new ResponseEntity<Status>(ltMastOutletService.getPriceListAgainstDistributor(distributorId,priceList), HttpStatus.OK);
 		} catch (Exception e) {
 			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
 		}
 
 	}
 	
+	
+	@RequestMapping(value = "/getPriceListAgainstDistributor/{distributorId}/{priceList}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
+	public ResponseEntity<Status> getPriceListAgainstDistributor(@PathVariable("distributorId") String distributorId,
+			@PathVariable("priceList") String priceList) throws ServerException {
+		try {
+			return new ResponseEntity<Status>(ltMastOutletService.getPriceListAgainstDistributor(distributorId, priceList), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new BusinessException(INTERNAL_SERVER_ERROR, null, e);
+		}
+
+	}
 
 	@RequestMapping(value = "/getPendingAprrovalOutlet", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE,headers = "X-API-Version=v1.0")
 	public ResponseEntity<Status> getPendingAprrovalOutlet(@RequestBody RequestDto requestDto) throws ServerException {
