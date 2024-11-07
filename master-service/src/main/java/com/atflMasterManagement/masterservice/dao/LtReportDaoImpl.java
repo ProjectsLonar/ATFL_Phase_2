@@ -101,24 +101,26 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 
 				List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
 				System.out.println("Hi i'm in Dao SALESOFFICER userList = "+userList);
-				if (userList == null) {
-					return null;
-				}
-				query = env.getProperty("getReportDataBySalesPersonDistributor");
-				query = query + " and lsv.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") order by lsv.order_number desc";
+//				if (userList == null) {
+//					return null;           this block comment on 05-Nov-2024 by vaibhav to use new query
+//				}
+//				query = env.getProperty("getReportDataBySalesPersonDistributor");
+				query = env.getProperty("getReportDataBySalesPersonDistributorAH");
+//				query = query + " and lsv.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
+//						+ ") order by lsv.order_number desc";   this block comment on 05-Nov-2024 by vaibhav to use new query
 				System.out.println("SALESOFFICER Fullquery =" +query);
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 
 				List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId());
 				System.out.println("Hi i'm in Dao AREAHEAD userList = "+userList);
-				if (userList == null) {
-					return null;
-				}
+//				if (userList == null) {
+//					return null;                this block comment on 05-Nov-2024 by vaibhav to use new query
+//				}
 
-				query = env.getProperty("getReportDataBySalesPersonDistributor");
-				query = query + " and lsv.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") order by lsv.order_number desc";
+				//query = env.getProperty("getReportDataBySalesPersonDistributor");  comment on 05-Nov-2024 by vaibhav to use new query
+				query = env.getProperty("getReportDataBySalesPersonDistributorAH");
+//				query = query + " and lsv.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
+//						+ ") order by lsv.order_number desc";   this block comment on 05-Nov-2024 by vaibhav to use new query
 				System.out.println("AREAHEAD query =" +query);
 			}
 			else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR") ||
@@ -152,8 +154,9 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 			List<ExcelDataSelesperson> dataList = jdbcTemplate.query(query,
 					new Object[] { excelReportDto.getStatus(), //excelReportDto.getOrgId(),
 							excelReportDto.getDistributorId(), excelReportDto.getEmployeeId(), 
-							startDate, endDate,
-							strStartDate, strEndDate },
+							startDate, endDate//,
+							//strStartDate, strEndDate 
+							},
 					new BeanPropertyRowMapper<ExcelDataSelesperson>(ExcelDataSelesperson.class));
 			if (dataList != null) {
       System.out.print("result="+dataList);

@@ -907,6 +907,7 @@ try {
 		  System.out.println("Get ltMastOutletsDump.getPriceList() = "+ltMastOutletsDump.getPriceList());
 		  accounts.put("Price List", ltMastOutletsDump.getPriceList());
 		  accounts.put("Price List Id", priceListId);
+		  accounts.put("Main Phone Number",ltMastOutletsDump.getPrimaryMobile()); // this is added on 6-Nov-24 as per chandra's requirement.
 		  accounts.put("Type", ltMastOutletsDump.getOutletType());
 //		  accounts.put("Type", "Retailer");
 		  accounts.put("Account Id", "1");

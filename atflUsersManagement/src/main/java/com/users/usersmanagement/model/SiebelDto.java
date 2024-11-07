@@ -28,8 +28,16 @@ public class SiebelDto {
 	 String territory;
 	 
 	 String orgId;
+	 String PositionCode;
 	 
 	 
+	 
+	public String getPositionCode() {
+		return PositionCode;
+	}
+	public void setPositionCode(String positionCode) {
+		PositionCode = positionCode;
+	}
 	public String getOrgId() {
 		return orgId;
 	}
@@ -172,7 +180,8 @@ public class SiebelDto {
 				+ address + ", email=" + email + ", homephNum=" + homephNum + ", mobileNumber=" + mobileNumber
 				+ ", asstPhNum=" + asstPhNum + ", addressDetails=" + addressDetails + ", PositionId=" + PositionId
 				+ ", lastUpdateDate=" + lastUpdateDate + ", lastUpdatedBy=" + lastUpdatedBy + ", creationDate="
-				+ creationDate + ", createdBy=" + createdBy + ", territory=" + territory + ", orgId=" + orgId + "]";
+				+ creationDate + ", createdBy=" + createdBy + ", territory=" + territory + ", orgId=" + orgId
+				+ ", PositionCode=" + PositionCode + "]";
 	}
 	
 		

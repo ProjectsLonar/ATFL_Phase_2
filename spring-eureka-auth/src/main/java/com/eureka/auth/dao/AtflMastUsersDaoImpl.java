@@ -78,8 +78,8 @@ public class AtflMastUsersDaoImpl implements AtflMastUsersDao {
         String jsonBody = objectMapper.writeValueAsString(body);
 
         // Build the URI
-        //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
-        String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
+        String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
+        //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
         
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);

@@ -458,6 +458,8 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 			 
 				seibelUserdata.setTerritory(seibelUserdata.getTerritory());
 				
+				seibelUserdata.setPositionCode(seibelUserdata.getPositionCode());
+				
 				System.out.println("seibelUserdata =" +seibelUserdata);
 				if(seibelUserdata!= null) {
 					status.setCode(SUCCESS);
@@ -547,6 +549,7 @@ public class LtMastDistributorsServiceImpl implements LtMastDistributorsService,
 			user.setAsstOPhNum(seibelUserdata.getAsstPhNum());
 			user.setAddressDetails(seibelUserdata.getAddressDetails()); 
 			user.setPositionId(seibelUserdata.getPositionId());
+			user.setPositionCode(seibelUserdata.getPositionCode());
 			user.setCreatedBy(-1L); 
 			user.setLastUpdatedBy(-1L);
 			user.setLastUpdateLogin(-1L);

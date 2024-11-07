@@ -165,7 +165,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 					List<String> roles = new ArrayList<String>();
 					roles = auth.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 							.collect(Collectors.toList());
-
+					ltMastUser.setIsFirstLogin(ltMastUser.getFirstLogin());
 					jwtResponse = new JwtResponse(token, "Bearer", auth.getName(), roles, ltMastUser.getStatus(),
 							ltMastUser.getUserId(), ltMastUser.getUserType(), ltMastUser.getEmployeeCode(),
 							ltMastUser.getOrgId(), ltMastUser.getUserName(), ltMastUser.getDistributorId(),
@@ -173,8 +173,9 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 							ltMastUser.getTokenData(),ltMastUser.getOutletName(),ltMastUser.getDistributorCode(),
 							ltMastUser.getDistributorName(),ltMastUser.getProprietorName(),ltMastUser.getPosition(),
 							ltMastUser.getCreationDate(),ltMastUser.getLastUpdateDate(),ltMastUser.getIsFirstLogin(),
-							ltMastUser.getTerritory());
-
+							ltMastUser.getTerritory(),ltMastUser.getFirstLogin());
+					System.out.println("jwtResponse is = " +jwtResponse);
+					System.out.println("ltMastUser for jwtResponse is = "+ltMastUser);
 					long methodOut = System.currentTimeMillis();
 					timeDifference.put("methodInOut", timeDiff(methodIn,methodOut));
 					status.setData(jwtResponse);
