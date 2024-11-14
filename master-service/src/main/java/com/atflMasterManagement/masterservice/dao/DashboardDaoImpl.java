@@ -59,12 +59,14 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 					+ ") group by lsh.status";
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 //			List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
-			List<String> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+//			List<String> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId()); this is original code comment on 12-Nov-24 to get record
+			List<Long> userList = getUsersByDistIdAgainstSO(userDetailsDto.getEmployeeCode());
 			query = env.getProperty("statusWiseOrdersCountForDistributor");
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
 					+ ") group by lsh.status";
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
-			List<Long> userList = getUsersByMonthlySalesAH(userDetailsDto.getPositionId());
+//			List<Long> userList = getUsersByMonthlySalesAH(userDetailsDto.getPositionId()); this is original code comment on 12-Nov-24 to get record
+			List<Long> userList = getUsersByDistIdAgainstAH(userDetailsDto.getEmployeeCode());
 			query = env.getProperty("statusWiseOrdersCountForDistributor");
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
 					+ ") group by lsh.status";
@@ -94,6 +96,24 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			return null;
 	}
 
+	private List<Long> getUsersByDistIdAgainstAH(String employeeCode) throws ServiceException {
+		String query = env.getProperty("getUsersByDistIdAgainstAH");
+		List<Long> userIdList = jdbcTemplate.queryForList(query, Long.class, employeeCode);
+		if (!userIdList.isEmpty())
+			return userIdList;
+		else
+			return null;
+	}
+	
+	private List<Long> getUsersByDistIdAgainstSO(String employeeCode) throws ServiceException {
+		String query = env.getProperty("getUsersByDistIdAgainstSO");
+		List<Long> userIdList = jdbcTemplate.queryForList(query, Long.class, employeeCode);
+		if (!userIdList.isEmpty())
+			return userIdList;
+		else
+			return null;
+	}
+	
 	@Override
 	public List<CategoryRevenueDto> categoryRevenueDistribution(String orgId, String userId) throws ServiceException {
 		
@@ -111,14 +131,16 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 			
 	//		List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
-			List<String> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+//			List<String> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());this is original code comment on 12-Nov-24 to get record
+			List<Long> userList = getUsersByDistIdAgainstSO(userDetailsDto.getEmployeeCode());
 			query = env.getProperty("categoryRevenueDistributionForDistributor");
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "") + ") "
 					+ "group by lmpc.category_name,lmpc.category_id, lsl.ptr_price,lsl.quantity  ";
 			
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 			
-			List<Long> userList = getUsersByMonthlySalesAH(userDetailsDto.getPositionId());
+//			List<Long> userList = getUsersByMonthlySalesAH(userDetailsDto.getPositionId());  this is original code comment on 12-Nov-24 to get record
+			List<Long> userList = getUsersByDistIdAgainstAH(userDetailsDto.getEmployeeCode());
 			query = env.getProperty("categoryRevenueDistributionForDistributor");
 			query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "") + ") "
 					+ "group by lmpc.category_name,lmpc.category_id,lsl.ptr_price,lsl.quantity  ";
@@ -185,7 +207,8 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 			//List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
-			List<String> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+//			List<String> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId()); this is original code comment on 12-Nov-24 to get record
+			List<Long> userList = getUsersByDistIdAgainstSO(userDetailsDto.getEmployeeCode());
 			if (userList == null) {
 				return null;
 			}
@@ -198,7 +221,8 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 			
-			List<Long> userList = getUsersByMonthlySalesAH(userDetailsDto.getPositionId());
+//			List<Long> userList = getUsersByMonthlySalesAH(userDetailsDto.getPositionId()); this is original code comment on 12-Nov-24 to get record
+			List<Long> userList = getUsersByDistIdAgainstAH(userDetailsDto.getEmployeeCode());
 			if (userList == null) {
 				return null;
 			}
@@ -245,7 +269,8 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 
 //			List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
-			List<String> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+//			List<String> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId()); this is original code comment on 12-Nov-24
+			List<Long> userList = getUsersByDistIdAgainstSO(userDetailsDto.getEmployeeCode());
 			if (userList == null) {
 				return null;
 			}
@@ -258,7 +283,8 @@ public class DashboardDaoImpl implements DashboardDao, CodeMaster {
 			System.out.println("monthly sales query = "+query);
 		} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 
-			List<Long> userList = getUsersByMonthlySalesAH(userDetailsDto.getPositionId());
+//			List<Long> userList = getUsersByMonthlySalesAH(userDetailsDto.getPositionId()); this is original code comment on 12-Nov-24
+			List<Long> userList = getUsersByDistIdAgainstAH(userDetailsDto.getEmployeeCode());
 			if (userList == null) {
 				return null;
 			}

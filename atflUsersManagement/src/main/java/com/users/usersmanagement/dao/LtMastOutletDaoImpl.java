@@ -534,28 +534,37 @@ System.out.println("list"+list);
 
 	@Override
 	public List<OutletSequenceData> getBeatDetailsAgainsDistirbutorCode(BeatDetailsDto beatDetailsDto)throws ServiceException, IOException {
-		
+		try {
 		String searchField= null;
 		if (beatDetailsDto.getSearchField() != null) {
 			searchField = "%" + beatDetailsDto.getSearchField().toUpperCase() + "%";
 		}
-/*		if(beatDetailsDto.getLimit() == 0 || beatDetailsDto.getLimit() == 1) {
+		if(beatDetailsDto.getLimit() == 0 || beatDetailsDto.getLimit() == 1) {
 			beatDetailsDto.setLimit(Integer.parseInt(env.getProperty("limit_value")));
 		}
 		if(beatDetailsDto.getOffset() ==0) {
 			beatDetailsDto.setOffset(Integer.parseInt(env.getProperty("offset_value")));
 		}
-	*/	
+		ConsumeApiService consumeApiService = new ConsumeApiService();
 		String query = env.getProperty("getBeatDetailsAgainsDistirbutorCode");
-	       List<OutletSequenceData> list = jdbcTemplate.query(query, new Object[] 
-	    		   {beatDetailsDto.getDistributorCode(), searchField 
-	    			//	   beatDetailsDto.getLimit(), beatDetailsDto.getOffset()
-	    			}, 
-				
-	    		   new BeanPropertyRowMapper<OutletSequenceData>(OutletSequenceData.class));
+//	       List<OutletSequenceData> list = jdbcTemplate.query(query, new Object[] 
+//	    		   {beatDetailsDto.getDistributorCode(), searchField, 
+//	    				   beatDetailsDto.getLimit(), beatDetailsDto.getOffset()
+//	    			}, 				
+//	    		   new BeanPropertyRowMapper<OutletSequenceData>(OutletSequenceData.class));
+	       
+	       List<OutletSequenceData> list =consumeApiService.consumeApi(query, 
+					new Object[] {beatDetailsDto.getDistributorCode(), searchField, 
+		    				   beatDetailsDto.getLimit(), beatDetailsDto.getOffset()}, 
+					OutletSequenceData.class);
+	       
 	               if(!list.isEmpty()) {
-				                         return list;
-			                           }
+				         return list;
+			           }
+	               }catch(Exception e)
+		                {
+	       			      e.printStackTrace();
+	       		        }
 				return null;
 			}
 

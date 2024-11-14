@@ -2184,23 +2184,23 @@ System.out.println("Query is "+query);
 	@Override
 	public LtSoHeaders getSiebelDataById(Long headerId) throws ServiceException, IOException {
 		String query= env.getProperty("getSiebelDataById");
-		List<LtSoHeaders> siebelData= new ArrayList<>();
+		//List<LtSoHeaders> siebelData= new ArrayList<>();
 		ConsumeApiService consumeApiService = new ConsumeApiService();
 
-//		List<LtSoHeaders> siebelData= jdbcTemplate.query(query, new Object[] {headerId}, 
-//				new BeanPropertyRowMapper<LtSoHeaders>(LtSoHeaders.class));
+		List<LtSoHeaders> siebelData= jdbcTemplate.query(query, new Object[] {headerId}, 
+				new BeanPropertyRowMapper<LtSoHeaders>(LtSoHeaders.class));
 		
-		try {
-			siebelData = consumeApiService.consumeApi(query, 
-					new Object[] { headerId }, 
-					LtSoHeaders.class);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			siebelData = consumeApiService.consumeApi(query, 
+//					new Object[] { headerId }, 
+//					LtSoHeaders.class);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		if (!siebelData.isEmpty())
 			return siebelData.get(0);

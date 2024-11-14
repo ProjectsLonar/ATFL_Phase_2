@@ -99,28 +99,30 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				System.out.println("Fullquery =" +query);
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 
-				List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+				List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());//this original block comment on 12-Nov-2024 by vaibhav to use new query
+//				List<Long> userList = getUsersByDistIdAgainstSO(userDetailsDto.getEmployeeCode());
 				System.out.println("Hi i'm in Dao SALESOFFICER userList = "+userList);
 //				if (userList == null) {
-//					return null;           this block comment on 05-Nov-2024 by vaibhav to use new query
+//					return null;           //this original block comment on 12-Nov-2024 by vaibhav to use new query
 //				}
 //				query = env.getProperty("getReportDataBySalesPersonDistributor");
 				query = env.getProperty("getReportDataBySalesPersonDistributorAH");
 //				query = query + " and lsv.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-//						+ ") order by lsv.order_number desc";   this block comment on 05-Nov-2024 by vaibhav to use new query
+//						+ ") order by lsv.order_number desc";   //this original block comment on 05-Nov-2024 by vaibhav to use new query
 				System.out.println("SALESOFFICER Fullquery =" +query);
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
 
-				List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId());
+				List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId()); //this block comment on 05-Nov-2024 by vaibhav to use new query
+//				List<Long> userList = getUsersByDistIdAgainstAH(userDetailsDto.getEmployeeCode());
 				System.out.println("Hi i'm in Dao AREAHEAD userList = "+userList);
 //				if (userList == null) {
-//					return null;                this block comment on 05-Nov-2024 by vaibhav to use new query
+//					return null;      //this original block comment on 12-Nov-2024 by vaibhav to use new query          
 //				}
 
-				//query = env.getProperty("getReportDataBySalesPersonDistributor");  comment on 05-Nov-2024 by vaibhav to use new query
+//				query = env.getProperty("getReportDataBySalesPersonDistributor");  
 				query = env.getProperty("getReportDataBySalesPersonDistributorAH");
 //				query = query + " and lsv.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-//						+ ") order by lsv.order_number desc";   this block comment on 05-Nov-2024 by vaibhav to use new query
+//						+ ") order by lsv.order_number desc";   
 				System.out.println("AREAHEAD query =" +query);
 			}
 			else if (userDetailsDto.getUserType().equalsIgnoreCase("SYSTEMADMINISTRATOR") ||
@@ -359,7 +361,8 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				System.out.println("Hi i'm in Dao query userDetailsDto = "+ userDetailsDto);
 				
 				if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
-					List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+//					List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId()); this original block comment on 12-Nov-2024 by vaibhav to use new query
+					List<Long> userList = getUsersByDistIdAgainstSO(userDetailsDto.getEmployeeCode());
 					System.out.println("Hi i'm in Dao query userList = "+ userList);
 					if (userList == null) {
 						return null;
@@ -380,7 +383,9 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 						return dataList;
 					}
 				} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
-					List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId());
+//					List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId()); this original block comment on 12-Nov-2024 by vaibhav to use new query
+					List<Long> userList = getUsersByDistIdAgainstAH(userDetailsDto.getEmployeeCode());
+
 					System.out.println("Hi i'm in Dao query userList = "+ userList);
 					if (userList == null) {
 						return null;
@@ -489,7 +494,8 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
 						+ ") order by lsh.last_update_date desc";
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
-				List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+//				List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());  this original block comment on 12-Nov-2024 by vaibhav to use new query
+				List<Long> userList = getUsersByDistIdAgainstSO(userDetailsDto.getEmployeeCode());
 				System.out.println("Hi i'm in Dao userList is = "+userList);
 				if (userList == null) {
 					return null;
@@ -499,8 +505,9 @@ public class LtReportDaoImpl implements LtReportDao, CodeMaster {
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
 						+ ") order by lsh.last_update_date desc";
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
-				List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId());
-				System.out.println("Hi i'm in Dao userList is = "+userList);
+//				List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId()); this original block comment on 12-Nov-2024 by vaibhav to use new query
+				List<Long> userList = getUsersByDistIdAgainstAH(userDetailsDto.getEmployeeCode());
+     			System.out.println("Hi i'm in Dao userList is = "+userList);
 				if (userList == null) {
 					return null;
 				}
@@ -819,6 +826,15 @@ System.out.println("ReqData is ="+excelReportDto + "UserId is = "+excelReportDto
 			return null;
 	}
 
+	public List<Long> getUsersByDistIdAgainstSO(String employeeCode) throws ServiceException {
+		String query = env.getProperty("getUsersByDistIdAgainstSO");
+		List<Long> userIdList = jdbcTemplate.queryForList(query, Long.class, employeeCode);
+		if (!userIdList.isEmpty())
+			return userIdList;
+		else
+			return null;
+	}
+	
 //	private List<Long> getUsersByAreaHead(Long userId) throws ServiceException {
 //		String query = env.getProperty("getUsersByAreaHead");
 //		List<Long> userIdList = jdbcTemplate.queryForList(query, Long.class, userId);
@@ -837,6 +853,15 @@ System.out.println("ReqData is ="+excelReportDto + "UserId is = "+excelReportDto
 			return null;
 	}
 
+	private List<Long> getUsersByDistIdAgainstAH(String userId) throws ServiceException {
+		String query = env.getProperty("getUsersByDistIdAgainstAH");
+		List<Long> userIdList = jdbcTemplate.queryForList(query, Long.class, userId);
+		if (!userIdList.isEmpty())
+			return userIdList;
+		else
+			return null;
+	}
+	
 	@Override // Same Used for dashboard also
 	public SalesOrderLineCountDto getSalesOrderLineCount(String distId, ExcelReportDto excelReportDto)
 			throws ServiceException {
@@ -1005,7 +1030,8 @@ System.out.println("ReqData is ="+excelReportDto + "UserId is = "+excelReportDto
 				}
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(SALESOFFICER)) {
 
-				List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId());
+//				List<Long> userList = getUsersBySalesOfficer(userDetailsDto.getPositionId()); this original block comment on 12-Nov-2024 by vaibhav to use new query
+				List<Long> userList = getUsersByDistIdAgainstSO(userDetailsDto.getEmployeeCode());
 				System.out.println("Hi i'm in serviceImpl SALESOFFICER userList = "+userList);
 				if (userList == null) {
 					return null;
@@ -1025,17 +1051,20 @@ System.out.println("ReqData is ="+excelReportDto + "UserId is = "+excelReportDto
 					return dataList;
 				}
 			} else if (userDetailsDto.getUserType().equalsIgnoreCase(AREAHEAD)) {
-				List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId());
+//				List<Long> userList = getReportUsersByAreaHead(userDetailsDto.getPositionId()); this original block comment on 12-Nov-2024 by vaibhav to use new query
+				List<Long> userList = getUsersByDistIdAgainstAH(userDetailsDto.getEmployeeCode());
 				System.out.println("Hi i'm in serviceImpl AREAHEAD userList = "+userList);
 				if (userList == null) {
-					return null;
+					return null;                 //this is original code comment on 12-Nov-24 to use new query
 				}
 
-				query = env.getProperty("getReportDataByProductDistributor");
-
+				query = env.getProperty("getReportDataByProductDistributor");   //this is original code comment on 12-Nov-24 to use new query
 				query = query + " and lsh.last_updated_by in (" + userList.toString().replace("[", "").replace("]", "")
-						+ ") group by lmp.product_id,lmp.product_name, lmp.product_code, lsl.ptr_price, lsl.quantity";
-				 dataList = jdbcTemplate.query(query,
+						+ ") group by lmp.product_id,lmp.product_name, lmp.product_code, lsl.ptr_price, lsl.quantity"; //this is original code comment on 12-Nov-24 to use new query
+				 
+//				query = env.getProperty("getReportDataByProductDistributorAH");
+				
+				dataList = jdbcTemplate.query(query,
 						new Object[] { excelReportDto.getOrgId(), excelReportDto.getProductId(), startDate, endDate,
 								strStartDate, strEndDate },
 						new BeanPropertyRowMapper<ExcelDataProduct>(ExcelDataProduct.class));

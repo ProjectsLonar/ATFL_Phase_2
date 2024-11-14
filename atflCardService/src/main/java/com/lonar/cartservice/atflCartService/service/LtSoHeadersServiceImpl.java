@@ -5587,6 +5587,10 @@ public class LtSoHeadersServiceImpl implements LtSoHeadersService, CodeMaster {
 			soHeaderDto.setPriceList(siebelData.getPriceList());
 		}
 		
+		if (soHeaderDto.getSalesPersonId() == null) {
+			ltSoHeader.setSalesPersonId(siebelData.getSalesPersonId()); ;
+		}
+		
 //		System.out.print("Hii sievelgel 1"+siebelData.getSiebelInvoiceNumber());
 //		System.out.print("Hii sievelgel 2"+siebelData.getSiebelJsonpayload());
 //		System.out.print("Hii sievelgel 3"+siebelData.getSiebelStatus());
