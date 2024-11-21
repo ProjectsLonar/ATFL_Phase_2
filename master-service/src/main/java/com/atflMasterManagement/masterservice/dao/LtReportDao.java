@@ -48,5 +48,7 @@ public interface LtReportDao {
 	
 	String getRegionV2(String orgId, String userId) throws ServiceException;
 	
+	List<String> getRegionV3(String orgId, String userId) throws ServiceException;
+	
 	List<Long> getUsersBySalesOfficer(String userId) throws ServiceException;
 }

@@ -276,7 +276,7 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 		Status status = new Status();
 		try {
 			List<ExcelDataOutlet> outletReportDataList = ltReportDao.getOutletReportData(excelReportDto);
-			System.out.println("Hi i'm in serviceImpl query dats is = "+outletReportDataList.size());
+			//System.out.println("Hi i'm in serviceImpl query dats is = "+outletReportDataList.size());
 			if (outletReportDataList == null || outletReportDataList.isEmpty()) {
 				status.setMessage("Report data not available");
 				status.setCode(FAIL);
@@ -817,9 +817,13 @@ public class LtReportServiceImpl implements LtReportService, CodeMaster {
 	public Status getRegionV2(String orgId, String userid) throws ServiceException {
 		Status status = new Status();
 		try {
-			String defaultRegion = ltReportDao.getRegionV2(orgId, userid);
-			if (defaultRegion != "") {
-				status.setData(defaultRegion);
+			
+//			String defaultRegion = ltReportDao.getRegionV2(orgId, userid);
+			List<String> getRegionList = ltReportDao.getRegionV3(orgId, userid);
+//			if (defaultRegion != "") {
+//			status.setData(defaultRegion);
+				if (!getRegionList.isEmpty()) {				
+				status.setData(getRegionList);
 				status.setMessage("Sucess");
 				status.setCode(SUCCESS);
 			} else {
