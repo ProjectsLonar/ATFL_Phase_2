@@ -202,7 +202,8 @@ public class LtMastOutletDaoImpl implements LtMastOutletDao, CodeMaster {
         String jsonBody = objectMapper.writeValueAsString(body);
 
         // Build the URI
-        String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;
+        //String uri = "http://10.245.4.74/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;  // for UAT 
+        String uri = "http://10.245.5.62:84/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery;   // for production 
         //String uri = "http://174.138.187.142:8085/OrderApi/ExecuteQueryWithParams?query=" + encodedQuery; 
         // Create HttpPost request
         HttpPost httpPost = new HttpPost(uri);
